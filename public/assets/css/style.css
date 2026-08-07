@@ -1,0 +1,32 @@
+.card-img {
+    /*height: 11vw;*/
+    object-fit: cover;
+}
+.footer-guest {
+    padding: 20px;
+    text-align: center;
+}
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .card-img-top {
+        height: 19vw;
+    }
+}
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .card-img-top {
+        height: 16vw;
+    }
+}
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .card-img-top {
+        height: 11vw;
+    }
+}
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 992px) {
+    .card-img-top {
+        height: 11vw;
+    }
+}
