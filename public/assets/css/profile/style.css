@@ -1,18 +1,42 @@
 @import url("./root.css");
 
+
+
+@import url("./root.css");
+
 body {
-    background-color: var(--color-background);
+    background-color: var(--color-border-light);
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 p {
     margin-bottom: unset;
 }
 
 .user-card {
-    margin-top: 1rem;
+    display: grid;
+    grid-template-columns: 3fr 1fr;
     width: 100%;
-    background-color: var(--color-surface);
     border-radius: 14px;
+}
+
+.user-card-left,
+.user-card-right {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.user-card-left>*,
+.user-card-right>* {
+    background-color: var(--color-white);
 }
 
 .user-card-header {
@@ -31,23 +55,32 @@ p {
 }
 
 .icon {
-    position: absolute;
-    display: flex !important;
-    border-radius: 50%;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex;
     align-items: center !important;
     justify-content: center !important;
-    width: 40px;
-    height: 40px;
+    border-radius: 50%;
     background-color: var(--white);
     cursor: pointer;
+    box-shadow: var(--shadow-lg);
     aspect-ratio: 1 /1;
     color: #000;
 }
 
+.icon-container {
+    position: absolute;
+    display: flex;
+    gap: 0.5rem;
+    height: 40px;
+    right: 15px;
+    top: 15px;
+}
+
 .user-profile-group {
+    position: relative;
     width: 100%;
     height: 50px;
-    position: relative;
 }
 
 .profile-image {
@@ -66,6 +99,12 @@ p {
 .user-profile-ditail {
     margin-top: 1rem;
     padding: 1rem;
+    position: relative;
+}
+
+.user-profile-ditail .waves-effect {
+    right: 10px;
+    top: 10px;
 }
 
 .verified {
@@ -97,4 +136,60 @@ p {
     margin-top: 0.5rem;
 }
 
-@media (max-width: 520px) {}
+.user-card section {
+    box-shadow: var(--shadow-sm);
+    padding: 1rem;
+    position: relative !important;
+}
+
+.skills a {
+    padding: 0.4rem;
+    border-radius: 5px;
+}
+
+.images .image {
+    width: 120px;
+    height: 90px;
+    cursor: pointer;
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    position: relative;
+}
+
+.images .image:nth-child(3)::after {
+    position: absolute;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+hr {
+    width: 100%;
+    height: 0.5px;
+    box-shadow: var(--shadow-xs);
+}
+
+#education article,
+#experience article {
+    display: grid;
+    grid-template-columns: 3rem auto;
+}
+
+@media (max-width: 1400px) {
+    .user-card {
+        grid-template-columns: 1fr;
+    }
+}
