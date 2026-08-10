@@ -362,8 +362,7 @@
 
                     <article class="m-1 d-flex flex-column gap-2">
                         <h4>Dean's List Award</h4>
-                        <p>Issued by FTMK UTeM · Academic Session 2024/2025</p>
-
+                        <p>Issued Oct 2025</p>
                         <!-- <div class="d-flex align-items-center company-group">
              <img src="./utemjpg.jpg" alt="" style="width: 50px; border-radius: 50%;"> -->
                         <p>Associated with Universiti Teknikal Malaysia Melaka</p>
@@ -495,7 +494,7 @@
                         </div>
                     </article>
                     <article class="m-1">
-                        <div class="col d-flex justify-content-between m-1">
+                        <div class="col d-flex justify-content-between m-1" style="text-align: end">
                             <h4>English</h4>
                             <p>Professional working proficiency</p>
                         </div>
