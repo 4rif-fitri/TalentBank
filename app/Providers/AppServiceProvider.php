@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Semester;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +21,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Relation::enforceMorphMap([
+            'semester' => Semester::class,
+            'education' => Semester::class,
+            'experience' => Semester::class,
+            'project' => Semester::class,
+            'honors_award' => Semester::class,
+            'certification' => Semester::class,
+        ]);
     }
 }
