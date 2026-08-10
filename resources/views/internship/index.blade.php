@@ -162,7 +162,7 @@
 
                     <article class="m-1">
                         <div>
-                            <img src="./utemjpg.jpg" alt="" style="width: 50px !important; border-radius: 50%;">
+                            <img src="{{ asset('assets/images/profile/utemjpg.jpg') }}" alt="" style="width: 50px !important; border-radius: 50%;">
                         </div>
                         <div class="col d-flex flex-column mx-1">
                             <h4>Universiti Teknikal Malaysia Melaka (UTeM)</h4>
@@ -204,8 +204,6 @@
                             </div>
                         </div>
 
-                        <hr>
-
                     </article>
 
                     <hr>
@@ -246,19 +244,15 @@
                                 <span>Laravel</span>
                             </a>
                             <a href="" class="waves-effect bg-secondary">
-                                <i class="fa-brands fa-vuejs"></i>
                                 <span>Vue</span>
                             </a>
                             <a href="" class="waves-effect bg-secondary">
-                                <i class="fa-brands fa-react"></i>
                                 <span>React</span>
                             </a>
                             <a href="" class="waves-effect bg-secondary">
-                                <i class="fa-brands fa-html5"></i>
                                 <span>Html</span>
                             </a>
                             <a href="" class="waves-effect bg-secondary">
-                                <i class="fa-brands fa-css3"></i>
                                 <span>Css</span>
                             </a>
                         </div>
@@ -276,7 +270,6 @@
                             </div>
                         </div>
 
-                        <hr>
                     </article>
 
                     <hr>
@@ -303,7 +296,7 @@
 
                     <article class="m-1">
                         <div>
-                            <img src="./utemjpg.jpg" alt="" style="width: 50px !important; border-radius: 50%;">
+                            <img src="{{ asset('assets/images/profile/utemjpg.jpg') }}" alt="" style="width: 50px !important; border-radius: 50%;">
                         </div>
                         <div class="col d-flex flex-column mx-1">
                             <h4>Web Developer Intern</h4>
@@ -342,8 +335,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <hr>
 
                     </article>
 
@@ -409,7 +400,6 @@
                             </div>
                         </div>
 
-                        <hr>
                     </article>
 
                     <hr>
