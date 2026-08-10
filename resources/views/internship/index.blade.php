@@ -176,18 +176,18 @@
 
                             <div class="skills d-flex flex-wrap align-items-center">
                                 Skills:
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>Software Engineering</span>
-                                </a>
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                </div>
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>System Analysis</span>
-                                </a>
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                </div>
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>Database Design</span>
-                                </a>
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                </div>
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>Web Development</span>
-                                </a>
+                                </div>
                             </div>
 
                             <div class="images d-flex flex-wrap">
@@ -239,22 +239,21 @@
                             custom number pads and immediate answer feedback.</p>
 
                         <div class="skills">
-                            <a href="" class="waves-effect bg-secondary">
-                                <i class="fa-brands fa-laravel"></i>
+                            <div href="" class="waves-effect bg-secondary">
                                 <span>Laravel</span>
-                            </a>
-                            <a href="" class="waves-effect bg-secondary">
+                            </div>
+                            <div href="" class="waves-effect bg-secondary">
                                 <span>Vue</span>
-                            </a>
-                            <a href="" class="waves-effect bg-secondary">
+                            </div>
+                            <div href="" class="waves-effect bg-secondary">
                                 <span>React</span>
-                            </a>
-                            <a href="" class="waves-effect bg-secondary">
+                            </div>
+                            <div href="" class="waves-effect bg-secondary">
                                 <span>Html</span>
-                            </a>
-                            <a href="" class="waves-effect bg-secondary">
+                            </div>
+                            <div href="" class="waves-effect bg-secondary">
                                 <span>Css</span>
-                            </a>
+                            </div>
                         </div>
 
                         <div class="images d-flex flex-wrap">
@@ -308,18 +307,18 @@
 
                             <div class="skills d-flex flex-wrap align-items-center">
                                 Skills:
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>Laravel</span>
-                                </a>
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                </div>
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>JavaScript</span>
-                                </a>
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                </div>
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>MySQL</span>
-                                </a>
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                </div>
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>Bootstrap</span>
-                                </a>
+                                </div>
                             </div>
 
                             <div class="images d-flex flex-wrap">
@@ -374,18 +373,18 @@
 
                         <div class="skills d-flex flex-wrap align-items-center">
                             Skills:
-                            <a href="" class="waves-effect bg-secondary m-1">
+                            <div href="" class="waves-effect bg-secondary m-1">
                                 <span>Academic Excellence</span>
-                            </a>
-                            <a href="" class="waves-effect bg-secondary m-1">
+                            </div>
+                            <div href="" class="waves-effect bg-secondary m-1">
                                 <span>Problem Solving</span>
-                            </a>
-                            <a href="" class="waves-effect bg-secondary m-1">
+                            </div>
+                            <div href="" class="waves-effect bg-secondary m-1">
                                 <span>Database</span>
-                            </a>
-                            <a href="" class="waves-effect bg-secondary m-1">
+                            </div>
+                            <div href="" class="waves-effect bg-secondary m-1">
                                 <span>Web Programming</span>
-                            </a>
+                            </div>
                         </div>
 
                         <div class="images d-flex flex-wrap">
@@ -442,9 +441,9 @@
 
                             <div class="skills d-flex flex-wrap align-items-center">
                                 Skills:
-                                <a href="" class="waves-effect bg-secondary m-1">
+                                <div href="" class="waves-effect bg-secondary m-1">
                                     <span>Oracle Database</span>
-                                </a>
+                                </div>
                             </div>
 
                             <div class="images d-flex flex-wrap">
