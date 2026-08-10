@@ -14,7 +14,18 @@ class OrganizationUser extends Model
         'organization_id',
         'user_id',
         'role_id',
+        'status',
     ];
 
     public $timestamps = false;
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
 }
