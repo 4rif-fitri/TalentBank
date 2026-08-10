@@ -215,7 +215,7 @@
                 </section>
 
                 <section id="projects" class="d-flex flex-column gap-1">
-                    <h2>projects</h2>
+                    <h2>Project</h2>
 
                     <div class="icon-container">
                         <div class="icon">
@@ -346,7 +346,7 @@
                 </section>
 
                 <section id="Honors_awards" class="d-flex flex-column gap-1">
-                    <h2>Honors & awards (2)</h2>
+                    <h2>Honors & Awards</h2>
 
                     <div class="icon-container">
                         <div class="icon">
@@ -409,7 +409,7 @@
                 </section>
 
                 <section id="certifications" class="d-flex flex-column gap-1">
-                    <h2>Certifications (2)</h2>
+                    <h2>Certifications</h2>
 
                     <div class="icon-container">
                         <div class="icon">
