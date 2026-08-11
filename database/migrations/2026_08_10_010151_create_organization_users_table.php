@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignId('organization_id')->constrained('organizations')->onDelete('restrict');
             $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->foreignId('role_id')->constrained('roles')->onDelete('restrict');
+            $table->boolean('status');
         });
     }
 
