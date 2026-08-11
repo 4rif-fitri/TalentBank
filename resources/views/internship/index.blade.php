@@ -725,11 +725,9 @@
                 e.preventDefault();
 
                 let requestData = {
-                    nameInput: $("#nameInput").val(),
-                    headlineInput: $("#headlineInput").val(),
-                    countryInput: $("#countryInput").val(),
-                    negeriInput: $("#stateInput").val(),
-                    cityInput: $("#cityInput").val(),
+                    name: $("#nameInput").val(),
+					location: $("#cityInput").val() + ", " + $("#stateInput").val() + ", " + $("#countryInput").val(),
+                    headline: $("#headlineInput").val(),
                     social_media: []
                 };
 
