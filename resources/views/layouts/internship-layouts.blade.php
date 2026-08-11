@@ -9,7 +9,7 @@
     <meta content="UTeM" name="author" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/JobTalent-logo-cropped-cropped.svg')}}">
+    <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/JobTalent-logo-cropped-cropped.svg') }}">
     <!-- Web Application Manifest -->
     <link rel="manifest" href="/manifest.json">
     @include('layouts.head')
@@ -38,9 +38,7 @@
         <!-- ============================================================== -->
         <!-- Start right Content here -->
         <!-- ============================================================== -->
-        @auth
-            <div class="main-content">
-        @endauth
+        <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
                     @yield('content')
