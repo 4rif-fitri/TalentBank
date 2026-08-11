@@ -189,12 +189,9 @@
                             </div>
 
                             <div class="images d-flex flex-wrap">
-                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
-                                </div>
-                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
-                                </div>
-                                <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                    style="background-image: url('./cover-image.png'); filter: brightness(0.5);">
+                                <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
+                                <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
+                                <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center" style="background-image: url('/assets/images/profile/cover-image.png'); filter: brightness(0.5);">
                                     <h4 class="text-white">+5</h4>
                                 </div>
                             </div>
@@ -253,10 +250,9 @@
                         </div>
 
                         <div class="images d-flex flex-wrap">
-                            <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');"></div>
-                            <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');"></div>
-                            <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                style="background-image: url('./cover-image.png'); filter: brightness(0.5);">
+                            <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
+                            <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
+                            <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center" style="background-image: url('/assets/images/profile/cover-image.png'); filter: brightness(0.5);">
                                 <h4 class="text-white">+5</h4>
                             </div>
                         </div>
@@ -313,14 +309,11 @@
                             </div>
 
                             <div class="images d-flex flex-wrap">
-                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
-                                </div>
-                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
-                                </div>
-                                <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                    style="background-image: url('./cover-image.png'); filter: brightness(0.5);">
-                                    <h4 class="text-white">+5</h4>
-                                </div>
+                             <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
+                            <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
+                            <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center" style="background-image: url('/assets/images/profile/cover-image.png'); filter: brightness(0.5);">
+                                <h4 class="text-white">+5</h4>
+                            </div>
                             </div>
                         </div>
 
@@ -378,10 +371,9 @@
                         </div>
 
                         <div class="images d-flex flex-wrap">
-                            <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');"></div>
-                            <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');"></div>
-                            <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                style="background-image: url('./cover-image.png'); filter: brightness(0.5);">
+                            <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
+                            <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
+                            <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center" style="background-image: url('/assets/images/profile/cover-image.png'); filter: brightness(0.5);">
                                 <h4 class="text-white">+5</h4>
                             </div>
                         </div>
@@ -434,8 +426,7 @@
                             </div>
 
                             <div class="images d-flex flex-wrap">
-                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
-                                </div>
+                                <div class="image rounded-5 m-1" style="background-image: url('/assets/images/profile/cover-image.png')"></div>
                             </div>
                         </div>
 
