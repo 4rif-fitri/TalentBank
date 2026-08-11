@@ -52,12 +52,12 @@ class OrganizationController extends Controller
     public function getAllOrganizationsJson(Request $request)
     {
         if (!$request->ajax()) {
-            return ApiResponse::error('Ajax request required.', 405);
+            return ApiResponse::error('Ajax request required.', 405)->toJsonResponse();
         }
 
         $organizations = $this->organizationService->getAllOrganizations();
 
-        return ApiResponse::success('Success.', $organizations);
+        return ApiResponse::success('Success.', $organizations)->toJsonResponse();
     }
 
     /**
@@ -73,7 +73,7 @@ class OrganizationController extends Controller
 
             $organization = $this->organizationService->createOrganization($validated);
 
-            return redirect()->back()->with(['success' => 'Organization created successfully.', 'data' => $organization]);
+            return redirect()->back()->with(ApiResponse::success('Organization created successfully.', $organization, 201)->toArray());
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
@@ -97,7 +97,7 @@ class OrganizationController extends Controller
 
             $this->organizationService->updateOrganization($validated, $orgId);
 
-            return redirect()->back()->with(['success' => 'Organization updated successfully.']);
+            return redirect()->back()->with(ApiResponse::success('Organization updated successfully.', null)->toArray());
         } catch (Exception $e) {
             return redirect()->back()->withErrors($e->getMessage());
         }
@@ -110,7 +110,8 @@ class OrganizationController extends Controller
      */
     public function getAllOrganizationTypesJson()
     {
-        return $this->organizationService->getAllOrganizationTypes();
+        $organizationTypes = $this->organizationService->getAllOrganizationTypes();
+        return ApiResponse::success('Success.', $organizationTypes)->toJsonResponse();
     }
 
     /**
@@ -120,7 +121,8 @@ class OrganizationController extends Controller
      */
     public function getAllIndustryCategoriesJson()
     {
-        return $this->organizationService->getAllIndustryCategories();
+        $industryCategories = $this->organizationService->getAllIndustryCategories();
+        return ApiResponse::success('Success.', $industryCategories)->toJsonResponse();
     }
 
     /**
@@ -130,6 +132,7 @@ class OrganizationController extends Controller
      */
     public function getAllIndustrySectorsJson()
     {
-        return $this->organizationService->getAllIndustrySectors();
+        $industrySectors = $this->organizationService->getAllIndustrySectors();
+        return ApiResponse::success('Success.', $industrySectors)->toJsonResponse();
     }
 }

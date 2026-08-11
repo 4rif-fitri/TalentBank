@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Helpers\ApiResponse;
 use App\Http\Services\ProfileService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,14 +33,18 @@ class ProfileController extends Controller
     public function getProfileDataByUserIdJson(Request $request)
     {
         if (!$request->ajax()) {
-            return response()->json(['error' => 'Ajax request required.']);
+            return ApiResponse::error('Ajax request required.')->toJsonResponse();
         }
 
-        $userId = $request->input('user_id');
+        try {
+            $userId = $request->input('user_id');
 
-        $profile = $this->profileService->getProfileDataByUserId($userId);
+            $profile = $this->profileService->getProfileDataByUserId($userId);
 
-        return response()->json(['profile' => $profile]);
+            return ApiResponse::success('Success.', $profile)->toJsonResponse();
+        } catch (Exception $e) {
+            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+        }
     }
 
     /**
@@ -50,20 +56,21 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'telno' => ['nullable', 'string', 'max:11'],
-            'address' => ['nullable', 'string', 'max:255'],
-            'profile_image' => ['nullable', 'image', 'mimes:png,jpeg,jpg', 'max:2048'],
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'max:255'],
+                'telno' => ['nullable', 'string', 'max:11'],
+                'address' => ['nullable', 'string', 'max:255'],
+                'profile_image' => ['nullable', 'image', 'mimes:png,jpeg,jpg', 'max:2048'],
+            ]);
 
-        $result = $this->profileService->updateProfileData($validated, $request->file('profile_image'));
+            $this->profileService->updateProfileData($validated, $request->file('profile_image'));
 
-        if ($result['status'] == 200) {
-            return redirect()->back()->with(['success' => $result['message']]);
+            return redirect()->back()->with(ApiResponse::success('Profile updated successfully.', null)->toArray());
+
+        } catch (Exception $e) {
+            return redirect()->back()->withErrors($e->getMessage());
         }
-
-        return redirect()->back()->withErrors($result['message']);
     }
 }

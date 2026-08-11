@@ -6,6 +6,17 @@ use Illuminate\Http\JsonResponse;
 
 class ApiResponse
 {
+    private int $status;
+    private string $message;
+    private mixed $data;
+
+    public function __construct(int $status, string $message, mixed $data = null)
+    {
+        $this->status = $status;
+        $this->message = $message;
+        $this->data = $data;
+    }
+
     /**
      * Return a success json response.
      * 
@@ -13,15 +24,11 @@ class ApiResponse
      * @param mixed $data
      * @param int $status
      * 
-     * @return JsonResponse
+     * @return ApiResponse
      */
     public static function success(string $message, mixed $data, int $status = 200)
     {
-        return response()->json([
-            'status' => $status,
-            'message' => $message,
-            'data' => $data,
-        ], $status);
+        return new self($status, $message, $data);
     }
 
     /**
@@ -30,13 +37,38 @@ class ApiResponse
      * @param string $message
      * @param int $status
      * 
-     * @return JsonResponse
+     * @return ApiResponse
      */
     public static function error(string $message, int $status = 400)
     {
+        return new self($status, $message);
+    }
+
+    /**
+     * Return an array response.
+     * 
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'status' => $this->status,
+            'message' => $this->message,
+            'data' => $this->data,
+        ];
+    }
+
+    /**
+     * Return a json response.
+     * 
+     * @return JsonResponse
+     */
+    public function toJsonResponse()
+    {
         return response()->json([
-            'status' => $status,
-            'message' => $message,
-        ], $status);
+            'status' => $this->status,
+            'message' => $this->message,
+            'data' => $this->data,
+        ], $this->status);
     }
 }
