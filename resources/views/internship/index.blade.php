@@ -55,19 +55,19 @@
                         </div>
                     </div>
 
-                    <div class="user-profile-ditail">
+                    <div class="user-profile-detail">
                         <div class="icon-container">
-                            <button type="button" class="btn btn-primary waves-effect icon" data-toggle="modal"
-                                data-target="#userDetailModal">
+                            <button data-type="user-profile-detail" type="button" class="btn btn-primary waves-effect icon"
+                                data-toggle="modal" data-target="#profileDetailModal">
                                 <i class="ti-pencil ti-md"></i>
                             </button>
                         </div>
 
                         <h2 id="name">Lorem bin Ipsum</h2>
                         <p id="headline">Computer Science Student | Web Developer | UI/UX Enthusiast</p>
-                        <a href="" id="uni-name">
+                        <div href="" id="uni-name">
                             <h5>Universiti Teknikal Malaysia Melaka (UTeM)</h5>
-                        </a>
+                        </div>
                         <p id="programe">Bachelor of Computer Science (Software Engineering)</p>
 
                         <article id="location">
@@ -119,9 +119,6 @@
                                 <i class="fa-solid fa-plus"></i>
                                 Copy Link
                             </button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                                Launch demo modal
-                            </button>
                         </div>
                     </div>
 
@@ -141,9 +138,10 @@
                     </p>
 
                     <div class="icon-container">
-                        <div class="waves-effect icon">
+                        <button data-type="about" data-toggle="modal" data-target="#aboutModal"
+                            class="waves-effect icon">
                             <i class="ti-pencil ti-md"></i>
-                        </div>
+                        </button>
                     </div>
                 </section>
 
@@ -151,18 +149,18 @@
                     <h2>Education</h2>
 
                     <div class="icon-container">
-                        <div class="icon">
+                        <button data-toggle="modal" data-target="#educationModal" class="waves-effect icon">
                             <i class="fa-solid fa-plus"></i>
-                        </div>
-                        <div class="icon">
+                        </button>
+                        <a href="" class="icon">
                             <i class="ti-pencil ti-md"></i>
-                        </div>
+                        </a>
                     </div>
                     <hr>
 
                     <article class="m-1">
                         <div>
-                            <img src="{{ asset('assets/images/profile/utemjpg.jpg') }}" alt="" style="width: 50px !important; border-radius: 50%;">
+                            <img src="./utemjpg.jpg" alt="" style="width: 50px !important; border-radius: 50%;">
                         </div>
                         <div class="col d-flex flex-column mx-1">
                             <h4>Universiti Teknikal Malaysia Melaka (UTeM)</h4>
@@ -191,14 +189,12 @@
                             </div>
 
                             <div class="images d-flex flex-wrap">
-                                <div class="image rounded-5 mx-1"
-                                    style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
+                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
                                 </div>
-                                <div class="image rounded-5 mx-1"
-                                    style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
+                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
                                 </div>
                                 <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                    style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}'); filter: brightness(0.5);">
+                                    style="background-image: url('./cover-image.png'); filter: brightness(0.5);">
                                     <h4 class="text-white">+5</h4>
                                 </div>
                             </div>
@@ -208,9 +204,9 @@
 
                     <hr>
 
-                    <a href="" class="d-flex justify-content-center align-items-center">
+                    <div href="" class="d-flex justify-content-center align-items-center">
                         <h4>Show All</h4>
-                    </a>
+                    </div>
 
                 </section>
 
@@ -218,12 +214,12 @@
                     <h2>Project</h2>
 
                     <div class="icon-container">
-                        <div class="icon">
+                        <button data-toggle="modal" data-target="#educationModal" class="waves-effect icon">
                             <i class="fa-solid fa-plus"></i>
-                        </div>
-                        <div class="icon">
+                        </button>
+                        <a href="" class="icon">
                             <i class="ti-pencil ti-md"></i>
-                        </div>
+                        </a>
                     </div>
 
                     <hr>
@@ -257,25 +253,20 @@
                         </div>
 
                         <div class="images d-flex flex-wrap">
-                            <div class="image rounded-5 mx-1"
-                                style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
-                            </div>
-                            <div class="image rounded-5 mx-1"
-                                style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
-                            </div>
+                            <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');"></div>
+                            <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');"></div>
                             <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}'); filter: brightness(0.5);">
+                                style="background-image: url('./cover-image.png'); filter: brightness(0.5);">
                                 <h4 class="text-white">+5</h4>
                             </div>
                         </div>
 
+                        <hr>
                     </article>
 
-                    <hr>
-
-                    <a href="" class="d-flex justify-content-center align-items-center">
+                    <div href="" class="d-flex justify-content-center align-items-center">
                         <h4>Show All</h4>
-                    </a>
+                    </div>
 
                 </section>
 
@@ -295,11 +286,11 @@
 
                     <article class="m-1">
                         <div>
-                            <img src="{{ asset('assets/images/profile/utemjpg.jpg') }}" alt="" style="width: 50px !important; border-radius: 50%;">
+                            <img src="./utemjpg.jpg" alt="" style="width: 50px !important; border-radius: 50%;">
                         </div>
                         <div class="col d-flex flex-column mx-1">
                             <h4>Web Developer Intern</h4>
-                            <a href="">Wahdah Technology - Internship</a>
+                            <div href="">Wahdah Technology - Internship</div>
                             <p>Jul 2026 - Present</p>
                             <p>Melaka, Malaysia - On-site</p>
                             <p>Contributed to Laravel-based web applications, database planning,
@@ -322,31 +313,29 @@
                             </div>
 
                             <div class="images d-flex flex-wrap">
-                                <div class="image rounded-5 mx-1"
-                                    style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
+                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
                                 </div>
-                                <div class="image rounded-5 mx-1"
-                                    style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
+                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
                                 </div>
                                 <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                    style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}'); filter: brightness(0.5);">
+                                    style="background-image: url('./cover-image.png'); filter: brightness(0.5);">
                                     <h4 class="text-white">+5</h4>
                                 </div>
                             </div>
                         </div>
 
+                        <hr>
+
                     </article>
 
-                    <hr>
-
-                    <a href="" class="d-flex justify-content-center align-items-center">
+                    <div href="" class="d-flex justify-content-center align-items-center">
                         <h4>Show All</h4>
-                    </a>
+                    </div>
 
                 </section>
 
                 <section id="Honors_awards" class="d-flex flex-column gap-1">
-                    <h2>Honors & Awards</h2>
+                    <h2>Honors & Awards </h2>
 
                     <div class="icon-container">
                         <div class="icon">
@@ -361,9 +350,10 @@
 
                     <article class="m-1 d-flex flex-column gap-2">
                         <h4>Dean's List Award</h4>
-                        <p>Issued Oct 2025</p>
+                        <p>Issued by FTMK UTeM · Academic Session 2024/2025</p>
+
                         <!-- <div class="d-flex align-items-center company-group">
-             <img src="./utemjpg.jpg" alt="" style="width: 50px; border-radius: 50%;"> -->
+                         <img src="./utemjpg.jpg" alt="" style="width: 50px; border-radius: 50%;"> -->
                         <p>Associated with Universiti Teknikal Malaysia Melaka</p>
                         <!-- </div> -->
 
@@ -388,28 +378,25 @@
                         </div>
 
                         <div class="images d-flex flex-wrap">
-                            <div class="image rounded-5 mx-1" style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
-                            </div>
-                            <div class="image rounded-5 mx-1" style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
-                            </div>
+                            <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');"></div>
+                            <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');"></div>
                             <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}'); filter: brightness(0.5);">
+                                style="background-image: url('./cover-image.png'); filter: brightness(0.5);">
                                 <h4 class="text-white">+5</h4>
                             </div>
                         </div>
 
+                        <hr>
                     </article>
 
-                    <hr>
-
-                    <a href="" class="d-flex justify-content-center align-items-center">
+                    <div href="" class="d-flex justify-content-center align-items-center">
                         <h4>Show All</h4>
-                    </a>
+                    </div>
 
                 </section>
 
                 <section id="certifications" class="d-flex flex-column gap-1">
-                    <h2>Certifications</h2>
+                    <h2>Certifications </h2>
 
                     <div class="icon-container">
                         <div class="icon">
@@ -422,10 +409,10 @@
 
                     <hr>
 
-                    <section class="m-1">
+                    <div class="m-1">
                         <div>
                             <!-- <img src="./utemjpg.jpg" alt=""
-              style="width: 50px !important; border-radius: 50%;"> -->
+                          style="width: 50px !important; border-radius: 50%;"> -->
                         </div>
                         <div class="col d-flex flex-column mx-1">
                             <h4>Oracle Certified Foundations Associate, Database</h4>
@@ -447,24 +434,18 @@
                             </div>
 
                             <div class="images d-flex flex-wrap">
-                                <div class="image rounded-5 mx-1" style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
-                                </div>
-                                <div class="image rounded-5 mx-1" style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}');">
-                                </div>
-                                <div class="image rounded-5 m-1 d-flex justify-content-center align-items-center"
-                                    style="background-image: url('{{ asset('assets/images/profile/cover-image.png') }}'); filter: brightness(0.5);">
-                                    <h4 class="text-white">+5</h4>
+                                <div class="image rounded-5 m-1" style="background-image: url('./cover-image.png');">
                                 </div>
                             </div>
                         </div>
 
-                    </section>
+                        <hr>
 
-                    <hr>
+                    </div>
 
-                    <a href="" class="d-flex justify-content-center align-items-center">
+                    <div href="" class="d-flex justify-content-center align-items-center">
                         <h4>Show All</h4>
-                    </a>
+                    </div>
 
                 </section>
 
@@ -488,21 +469,16 @@
 
                     <article class="m-1">
                         <div class="col d-flex m-1 justify-content-between">
-                            <h4>Bahasa Melayu</h4>
+                            <h5>Bahasa Melayu</h5>
                             <p>Native</p>
                         </div>
                     </article>
                     <article class="m-1">
-                        <div class="col d-flex justify-content-between m-1" style="text-align: end">
-                            <h4>English</h4>
-                            <p>Professional working proficiency</p>
+                        <div class="col d-flex justify-content-between m-1">
+                            <h5>English</h5>
+                            <p style="text-align: end;">Professional working proficiency</=>
                         </div>
                     </article>
-                    <!-- <hr>
-
-           <a href="" class="d-flex justify-content-center align-items-center">
-            <h4>Show All</h4>
-           </a> -->
 
                 </section>
 
@@ -521,145 +497,292 @@
 
                     <article class="m-1">
                         <div class="col d-flex justify-content-between m-1">
-                            <h4>
+                            <h5>
                                 <i class="fa-solid fa-database"></i>
                                 Database
-                            </h4>
+                            </h5>
                             <p>Advanced</p>
                         </div>
                     </article>
 
                     <article class="m-1">
                         <div class="col d-flex justify-content-between m-1">
-                            <h4>
+                            <h5>
                                 <i class="fa-brands fa-html5"></i>
                                 HTML
-                            </h4>
+                            </h5>
                             <p>Advanced</p>
                         </div>
                     </article>
-                    <!-- <hr> -->
-                    <!-- <a href="" class="d-flex justify-content-center align-items-center">
-            <h4>Show All</h4>
-           </a> -->
 
                 </section>
             </div>
 
         </div>
-
     </div>
 
 
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					...
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-	<div class="modal fade" id="userDetailModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
-		aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title" id="exampleModalLabel">Edit intro</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<p class="required">* Indicates required</p>
-					<h4>Basic info</h4>
-					<form action="" class="d-flex flex-column mt-2">
+    <div class="modal fade" id="profileDetailModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Edit Intro</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" id="profileDetailModalForm" class="d-flex flex-column mt-2">
 
-						<div class="form-group">
-							<label for="headlineInput">Headline</label>
-							<textarea class="form-control" name="headlineInput" id="headlineInput"></textarea>
-						</div>
+                        <div class="form-group">
+                            <label for="nameInput">
+                                <h4>Full Name</h4>
+                            </label>
+                            <input type="text" class="form-control" name="nameInput" id="nameInput"></input>
+                        </div>
 
-						<section id="locationInputs">
-							<h4>Location</h4>
+                        <div class="form-group">
+                            <label for="headlineInput">
+                                <h4>Headline</h4>
+                            </label>
+                            <textarea class="form-control" name="headlineInput" id="headlineInput"></textarea>
+                        </div>
 
-							<div class="d-grid">
+                        <section id="locationInputs">
+                            <h4>Location</h4>
+                            <div class="d-grid">
+                                <div class="row">
+                                    <div class="form-group col-4">
+                                        <label for="countryInput">Country/Region*</label>
+                                        <select class="form-control" id="countryInput" name="countryInput">
+                                            <option selected disabled>Select Country</option>
+                                            <option value="Malaysia">Malaysia</option>
+                                        </select>
+                                    </div>
 
-								<div class="row">
-									<div class="form-group col">
-										<label for="countryInput">Country/Region*</label>
-										<select class="form-control" id="countryInput" name="countryInput">
-											<option selected disabled>Select Country</option>
-											<option value="Malaysia">Malaysia</option>
-										</select>
-									</div>
+                                    <div class="form-group col-4">
+                                        <div id="stateContainer">
+                                            <label for="stateInput">State*</label>
+                                            <select class="form-control" id="stateInput" name="stateInput">
+                                                <option selected disabled>Select State</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
-									<div class="form-group col">
-										<label for="poscodeInput">Poscode</label>
-										<input type="number" name="poscodeInput" class="form-control"
-											id="poscodeInput">
-									</div>
+                                    <div class="form-group col-4">
+                                        <div id="cityContainer">
+                                            <label for="cityInput">City*</label>
+                                            <select class="form-control" id="cityInput" name="cityInput">
+                                                <option selected disabled>Select City</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
 
-									<div class="form-group col">
-										<label for="cityInput">City*</label>
-										<select class="form-control" id="cityInput" name="cityInput">
-											<option selected disabled>Select City</option>
-											<option value="Kulai">Kulai</option>
-										</select>
-									</div>
-								</div>
-							</div>
+                        <section id="socialMediaInputs" class="d-flex flex-column" style="gap: 0.1rem;">
+                            <div class="d-flex justify-content-between">
+                                <h4>Social Media Links</h4>
+                                <button type="button" class="btn btn-primary" id="addLinkBtn">Add Link</button>
+                            </div>
 
-						</section>
+                            <div class="input-group social-group">
 
-						<section id="socialMediaInputs" class="d-flex flex-column" style="gap: 0.5rem;">
-							<div class="d-flex justify-content-between">
-								<h4>Social Media Links</h4>
-								<button type="button" class="btn btn-primary">Add Link</button>
-							</div>
+                            </div>
+                        </section>
 
-							<div class="input-group social-group">
-								<select class="form-select" name="social_platform" id="socialPlatform">
-									<option value="" selected disabled>Select App</option>
-									<option value="linkedin">LinkedIn</option>
-									<option value="github">GitHub</option>
-									<option value="youtube">YouTube</option>
-									<option value="facebook">Facebook</option>
-									<option value="instagram">Instagram</option>
-									<option value="tiktok">TikTok</option>
-									<option value="twitter">X (Twitter)</option>
-								</select>
-								<input type="url" class="form-control" name="social_url" id="socialUrl"
-									placeholder="https://example.com/username">
-								<button type="button" class="btn btn-outline-danger">
-									<i class="fa-solid fa-trash"></i>
-								</button>
-							</div>
-						</section>
-
-
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save</button>
-				</div>
-			</div>
-		</div>
-	</div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnCloseEditIntro" class="btn btn-secondary" type="reset"
+                        data-dismiss="modal">Close</button>
+                    <button id="btnSaveEditIntro" class="btn btn-primary" type="submit">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('script')
-    <script></script>
+    <script>
+        $('#vertical-menu-btn').on('click', function(event) {
+            event.preventDefault();
+            $('body').toggleClass('sidebar-enable');
+            if ($(window).width() >= 992) {
+                $('body').toggleClass('vertical-collpsed');
+            } else {
+                $('body').removeClass('vertical-collpsed');
+            }
+        });
+
+        $(document).ready(function() {
+
+            $("#stateContainer").hide();
+            $("#cityContainer").hide();
+
+            const dataMalaysia = [{
+                    "name": "Melaka",
+                    "city": ["Alor Gajah", "Asahan", "Ayer Keroh", "Bemban", "Durian Tunggal", "Jasin",
+                        "Kem Trendak", "Kuala Sungai Baru", "Lubok China", "Masjid Tanah", "Melaka",
+                        "Merlimau", "Selandar", "Sungai Rambai", "Sungai Udang", "Tanjong Kling"
+                    ]
+                },
+                {
+                    "name": "Johor",
+                    "city": ["Batu Pahat", "Johor Bahru", "Kluang", "Kota Tinggi", "Kulai", "Mersing", "Muar",
+                        "Pontian", "Segamat", "Tangkak"
+                    ]
+                },
+                {
+                    "name": "Selangor",
+                    "city": ["Shah Alam", "Petaling Jaya", "Subang Jaya", "Klang", "Sepang", "Kajang", "Gombak"]
+                }
+            ];
+
+            $("#countryInput").on("change", function() {
+                if ($(this).val() === "Malaysia") {
+                    $("#stateContainer").show();
+
+                    let stateOptions = '<option selected disabled>Select State</option>';
+                    dataMalaysia.forEach(negeri => {
+                        stateOptions += `<option value="${negeri.name}">${negeri.name}</option>`;
+                    });
+                    $("#stateInput").html(stateOptions);
+
+                    $("#cityContainer").hide();
+                    $("#cityInput").html('<option selected disabled>Select City</option>');
+                } else {
+                    $("#stateContainer").hide();
+                    $("#cityContainer").hide();
+                }
+            });
+
+            $("#stateInput").on("change", function() {
+                let selectedState = $(this).val();
+
+                let cariNegeri = dataMalaysia.find(negeri => negeri.name === selectedState);
+
+                if (cariNegeri) {
+                    $("#cityContainer").show();
+
+                    let cityOptions = '<option selected disabled>Select City</option>';
+                    cariNegeri.city.forEach(bandar => {
+                        cityOptions += `<option value="${bandar}">${bandar}</option>`;
+                    });
+                    $("#cityInput").html(cityOptions);
+                }
+            });
+
+            $("#addLinkBtn").on("click", () => {
+                let newField = `
+					<div class="input-group social-group mt-1">
+						<select class="form-select" name="social_platform[]">
+							<option value="" selected disabled>Select App</option>
+							<option value="1">LinkedIn</option>
+							<option value="2">GitHub</option>
+							<option value="3">YouTube</option>
+							<option value="4">Facebook</option>
+							<option value="5">Instagram</option>
+							<option value="6">TikTok</option>
+							<option value="7">X (Twitter)</option>
+						</select>
+						<input type="url" class="form-control" name="social_url[]" placeholder="https://example.com/username">
+						<button type="button" class="btn btn-outline-danger remove-btn">
+							<i class="fa-solid fa-trash"></i>
+						</button>
+					</div>
+				`;
+                $("#socialMediaInputs").append(newField);
+            });
+
+            $("#socialMediaInputs").on("click", ".remove-btn", function() {
+                $(this).closest(".social-group").remove();
+            });
+
+            // btn close modal
+            $("#btnCloseEditIntro").on("click", () => {
+                $("#profileDetailModalForm")[0].reset();
+                $("#socialMediaInputs .social-group:not(:first)").remove();
+                $("#stateContainer").hide();
+                $("#cityContainer").hide();
+            });
+
+            // btn save modal
+            $("#btnSaveEditIntro").on("click", function(e) {
+                e.preventDefault();
+
+                let requestData = {
+                    nameInput: $("#nameInput").val(),
+                    headlineInput: $("#headlineInput").val(),
+                    countryInput: $("#countryInput").val(),
+                    negeriInput: $("#stateInput").val(),
+                    cityInput: $("#cityInput").val(),
+                    social_media: []
+                };
+
+                // get data social media links
+                $("#socialMediaInputs .social-group").each(function() {
+                    let selectedPlatform = $(this).find("select[name='social_platform[]']").val();
+                    let inputtedUrl = $(this).find("input[name='social_url[]']").val();
+
+                    if (selectedPlatform && inputtedUrl) {
+                        requestData.social_media.push({
+                            platform: selectedPlatform,
+                            url: inputtedUrl
+                        });
+                    }
+                });
+
+                console.log(requestData)
+
+                let $btn = $(this);
+                let originalText = $btn.text();
+                $btn.text("Saving...").prop("disabled", true);
+
+                $.ajax({
+                    url: '',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(requestData),
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            $('#userDetailModal').modal('hide');
+                        } else {
+                            alert("Gagal menyimpan data: " + response.message);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("AJAX Error: ", error);
+                    },
+                    complete: function() {
+                        $btn.text(originalText).prop("disabled", false);
+                    }
+                });
+            });
+
+        });
+    </script>
 @endsection
