@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FacultyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\internshipController;
+use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 
 // auth routes
@@ -27,3 +29,24 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
 });
 
+Route::middleware('auth')->prefix('organizations')->group(function () {
+    // page routes
+
+    // crud routes
+    Route::get('/', [OrganizationController::class, 'getAllOrganizationsJson'])->name('organization.getAllOrganizationsJson');
+    Route::get('/types', [OrganizationController::class, 'getAllOrganizationTypesJson'])->name('organization.getAllOrganizationTypesJson');
+    Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategoriesJson'])->name('organization.getAllIndustryCategoriesJson');
+    Route::get('/industry-sectors', [OrganizationController::class, 'getAllIndustrySectorsJson'])->name('organization.getAllIndustrySectorsJson');
+    Route::post('/store', [OrganizationController::class, 'store'])->name('organization.store');
+    Route::put('/update', [OrganizationController::class, 'update'])->name('organization.update');
+});
+
+Route::middleware('auth')->prefix('faculties')->group(function () {
+    // page routes
+
+    // crud routes
+    Route::get('/', [FacultyController::class, 'getFacultiesByOrgIdJson'])->name('faculty.getFacultiesByOrgIdJson');
+    Route::get('/{id}', [FacultyController::class, 'getFacultyByIdJson'])->name('faculty.getFacultyByIdJson');
+    Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store');
+    Route::put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update');
+});
