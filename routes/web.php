@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\FacultyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\internshipController;
 use App\Http\Controllers\OrganizationController;
@@ -38,4 +39,14 @@ Route::middleware('auth')->prefix('organizations')->group(function () {
     Route::get('/industry-sectors', [OrganizationController::class, 'getAllIndustrySectorsJson'])->name('organization.getAllIndustrySectorsJson');
     Route::post('/store', [OrganizationController::class, 'store'])->name('organization.store');
     Route::put('/update', [OrganizationController::class, 'update'])->name('organization.update');
+});
+
+Route::middleware('auth')->prefix('faculties')->group(function () {
+    // page routes
+
+    // crud routes
+    Route::get('/', [FacultyController::class, 'getFacultiesByOrgIdJson'])->name('faculty.getFacultiesByOrgIdJson');
+    Route::get('/{id}', [FacultyController::class, 'getFacultyByIdJson'])->name('faculty.getFacultyByIdJson');
+    Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store');
+    Route::put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update');
 });
