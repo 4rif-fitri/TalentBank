@@ -1,7 +1,7 @@
 :root {
     --sidebar-width: 240px;
     --sidebar-mini-width: 70px;
-    --topbar-height: 70px;
+    --topbar-height: 50px;
 
     --sidebar-bg: #35394d;
     --sidebar-text: #8790a6;
@@ -33,7 +33,7 @@ body {
     background: var(--sidebar-bg);
     overflow-x: hidden;
     overflow-y: auto;
-    z-index: 2000;
+    z-index: 10;
     transition: width .25s ease, transform .25s ease;
 }
 
@@ -152,7 +152,7 @@ body {
     justify-content: space-between;
     background: #f8f8fb;
     border-bottom: 1px solid #e3e4e8;
-    z-index: 1500;
+    z-index: 10;
     transition: left .25s ease;
 }
 
@@ -206,7 +206,7 @@ body {
     background: white;
     box-shadow: 0 4px 15px rgba(0, 0, 0, .15);
     display: none;
-    z-index: 3000;
+    z-index: 10;
 }
 
 .profile-dropdown.show {
@@ -350,7 +350,7 @@ body.sidebar-collapsed .main-content {
     inset: 0;
     background: rgba(0, 0, 0, .4);
     display: none;
-    z-index: 1900;
+    z-index: 10;
 }
 
 @media (max-width: 768px) {
