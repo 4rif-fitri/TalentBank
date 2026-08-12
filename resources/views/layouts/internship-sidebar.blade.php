@@ -11,47 +11,85 @@
 
         <!-- Dashboard -->
         <div class="sidebar-item">
-            <a href="index.html" class="sidebar-link">
-                <i class="fa-solid fa-gauge-high menu-icon"></i>
+            <a href="{{ route('home') }}" class="sidebar-link">
+                <i class="fa-solid fa-gauge"></i>
                 <span class="menu-text">
-                    Index
+                    Dashboard
                 </span>
             </a>
         </div>
 
-        <!-- SUBMENU -->
-        <div class="sidebar-item has-submenu">
-            <a href="#" class="sidebar-link submenu-toggle">
-                <i class="fa-regular fa-user menu-icon"></i>
-                <span class="menu-text">My Profile</span>
-                <i class="fa-solid fa-chevron-right submenu-arrow"></i>
+        <div class="sidebar-item">
+            <a href="{{ route('profile.student') }}" class="sidebar-link">
+                <i class="fa-solid fa-user"></i>
+                <span class="menu-text">
+                    My Profile
+                </span>
             </a>
-
-            <ul class="submenu">
-                <li>
-                    <a href="profile.html" class="submenu-link">
-                        View Profile
-                    </a>
-                </li>
-                <li>
-                    <a href="edit-profile.html" class="submenu-link">
-                        Edit Profile
-                    </a>
-                </li>
-                <li>
-                    <a href="employment-status.html" class="submenu-link">Employment Status
-                    </a>
-                </li>
-            </ul>
         </div>
 
         <div class="sidebar-item">
-            <a href="resume.html" class="sidebar-link">
-                <i class="fa-regular fa-file menu-icon"></i>
-                <span class="menu-text">Resume</span>
+            <a href="" class="sidebar-link">
+                <i class="fa-solid fa-file"></i>
+                <span class="menu-text">
+                    Resume
+                </span>
             </a>
         </div>
 
+        <div class="sidebar-item">
+            <a href="" class="sidebar-link">
+                <i class="fa-solid fa-envelope"></i>
+                <span class="menu-text">
+                    Invitations
+                </span>
+            </a>
+        </div>
+
+        <div class="sidebar-item">
+            <a href="" class="sidebar-link">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span class="menu-text">
+                    Interviews
+                </span>
+            </a>
+        </div>
+
+        <div class="sidebar-item">
+            <a href="" class="sidebar-link">
+                <i class="fa-solid fa-briefcase"></i>
+                <span class="menu-text">
+                    Job Offers
+                </span>
+            </a>
+        </div>
+
+        <div class="sidebar-item">
+            <a href="" class="sidebar-link">
+                <i class="fa-solid fa-message"></i>
+                <span class="menu-text">
+                    Massages
+                </span>
+            </a>
+        </div>
+
+        <div class="sidebar-item">
+            <a href="" class="sidebar-link">
+                <i class="fa-solid fa-user-tie"></i>
+                <span class="menu-text">
+                    Employment Status
+                </span>
+            </a>
+        </div>
+
+        <div class="sidebar-item">
+            <a href="" class="sidebar-link">
+                <i class="fa-solid fa-message"></i>
+                <span class="menu-text">
+                    Settings
+                </span>
+            </a>
+        </div>
     </nav>
 
 </aside>

@@ -19,10 +19,13 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
 });
 
-Route::middleware('auth')->get('/', [internshipController::class, "index"])->name('home');
+Route::middleware('auth')->group(function () {
+    Route::get('/', [internshipController::class, "index"])->name('home');
+});
 
 Route::middleware('auth')->prefix('profile')->group(function () {
     // page routes
+    Route::get('/student', [internshipController::class, "profile"])->name('profile.student');
 
     // crud routes
     Route::get('/', [ProfileController::class, 'getProfileDataByUserIdJson'])->name('profile.getProfileDataByUserIdJson');
