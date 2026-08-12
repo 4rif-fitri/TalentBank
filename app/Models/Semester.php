@@ -17,4 +17,9 @@ class Semester extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function media()
+    {
+        return $this->morphOne(Media::class, 'source', 'source_name', 'source_id');
+    }
 }

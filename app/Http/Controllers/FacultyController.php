@@ -20,7 +20,7 @@ class FacultyController extends Controller
     }
 
     /**
-     * Get all faculties by organization ID.
+     * Handle request to get all faculties by organization ID.
      * 
      * @param Request $request
      * 
@@ -44,7 +44,7 @@ class FacultyController extends Controller
     }
 
     /**
-     * Get faculty by faculty ID.
+     * Handle request to get faculty by faculty ID.
      * 
      * @param int $id
      * 
@@ -66,7 +66,7 @@ class FacultyController extends Controller
     }
 
     /**
-     * Create a new faculty.
+     * Handle request to create a new faculty.
      * 
      * @param Request $request
      * 
@@ -90,7 +90,7 @@ class FacultyController extends Controller
     }
 
     /**
-     * Update an existing faculty info.
+     * Handle request to update an existing faculty info.
      * 
      * @param Request $request
      * 
