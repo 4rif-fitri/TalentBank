@@ -1,69 +1,57 @@
-<!-- ========== Left Sidebar Start ========== -->
-<div class="vertical-menu">
+<aside class="sidebar">
 
-    <div data-simplebar class="h-100">
+    <!-- LOGO -->
+    <div class="sidebar-logo d-flex justify-content-center">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>TalentBank</span>
+    </div>
 
-        <!--- Sidemenu -->
-        <div id="sidebar-menu">
-            <!-- Left Menu Start -->
-            <ul class="metismenu list-unstyled" id="side-menu">
+    <!-- MENU -->
+    <nav class="sidebar-menu">
+
+        <!-- Dashboard -->
+        <div class="sidebar-item">
+            <a href="index.html" class="sidebar-link">
+                <i class="fa-solid fa-gauge-high menu-icon"></i>
+                <span class="menu-text">
+                    Index
+                </span>
+            </a>
+        </div>
+
+        <!-- SUBMENU -->
+        <div class="sidebar-item has-submenu">
+            <a href="#" class="sidebar-link submenu-toggle">
+                <i class="fa-regular fa-user menu-icon"></i>
+                <span class="menu-text">My Profile</span>
+                <i class="fa-solid fa-chevron-right submenu-arrow"></i>
+            </a>
+
+            <ul class="submenu">
                 <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-dashboard"></i>
-                        <span>Dashboard</span>
+                    <a href="profile.html" class="submenu-link">
+                        View Profile
                     </a>
                 </li>
-
                 <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-user"></i>
-                        <span>My Profile</span>
+                    <a href="edit-profile.html" class="submenu-link">
+                        Edit Profile
                     </a>
                 </li>
-
                 <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-file"></i>
-                        <span>Resume</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-email"></i>
-                        <span>Invitations</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-briefcase"></i>
-                        <span>Job Offers</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-comments"></i>
-                        <span>Messages</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-id-badge"></i>
-                        <span>Employment Status</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-settings"></i>
-                        <span>Settings</span>
+                    <a href="employment-status.html" class="submenu-link">Employment Status
                     </a>
                 </li>
             </ul>
-
         </div>
-    </div>
-</div>
+
+        <div class="sidebar-item">
+            <a href="resume.html" class="sidebar-link">
+                <i class="fa-regular fa-file menu-icon"></i>
+                <span class="menu-text">Resume</span>
+            </a>
+        </div>
+
+    </nav>
+
+</aside>

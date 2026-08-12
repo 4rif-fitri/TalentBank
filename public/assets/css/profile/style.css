@@ -72,6 +72,12 @@ background-image: url("/assets/images/profile/cover-image.png");
     right: 15px;
     top: 15px;
 }
+.profile-image .icon-container{
+    all: unset;
+    position: absolute;
+    bottom: 0 !important;
+    left: 0 !important;
+}
 
 .user-profile-group {
     position: relative;
@@ -87,7 +93,7 @@ background-image: url("/assets/images/profile/cover-image.png");
     left: 1rem;
     top: -160%;
     background-color: var(--color-border);
-background-image: url("/assets/images/profile/cover-image.png");
+    background-image: url("/assets/images/profile/cover-image.png");
     background-position: center;
     background-size: cover;
 }
