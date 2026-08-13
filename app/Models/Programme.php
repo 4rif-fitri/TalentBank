@@ -20,4 +20,9 @@ class Programme extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'programme_id');
+    }
 }

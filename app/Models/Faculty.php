@@ -17,4 +17,9 @@ class Faculty extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function programmes()
+    {
+        return $this->hasMany(Programme::class, 'faculty_id');
+    }
 }
