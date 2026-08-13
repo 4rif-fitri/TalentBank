@@ -1,6 +1,6 @@
 {
     "id": 15,
-    "institution": "Universiti Teknikal Malaysia Melaka (UTeM)",
+    "institution_id": 1,
     "field_of_study": "Computer Science",
     "qualification": "degree",
     "programme_name": "Bachelor of Computer Science (Software Engineering)",
@@ -23,13 +23,13 @@
             "id": 1,
             "title": "Project Screenshot",
             "description": "Screenshot for education",
-            "file_url": "/assets/internship-assets/images/cover-image.png"
+            "file_url": "/assets/internship-assets/images/1.jpg"
         },
         {
             "id": 2,
             "title": "Project Screenshot",
             "description": "Screenshot for education",
-            "file_url": "/assets/internship-assets/images/cover-image.png"
+            "file_url": "/assets/internship-assets/images/2.jpg"
         }
     ]
 }

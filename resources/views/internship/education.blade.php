@@ -92,8 +92,9 @@
                 <!-- Institution -->
                 <div class="mb-3">
                     <label for="institution" class="form-label">Institution</label>
-                    <input type="text" class="form-control" id="institution" name="institution"
-                        placeholder="Universiti Teknikal Malaysia Melaka" required>
+                    <select class="form-select" id="institution" name="institution" required>
+                        <option value="" selected disabled>Select Institution</option>
+                    </select>
                 </div>
 
                 <!-- Field of Study -->
@@ -291,6 +292,29 @@
     let btnSaveEducation = document.getElementById("btnSaveEducation");
 
     let skillList = [];
+
+    function loadInstitutions() {
+        $.ajax({
+            url: "{{ asset('assets/internship-assets/data/institution.json') }}",
+            type: "GET",
+            dataType: "json",
+
+            success: function (response) {
+                $("#institution").html('<option value="" selected disabled>Select Institution</option>');
+
+                response.forEach(function (institution) {
+                    $("#institution").append(`
+					<option value="${institution.id}">${institution.name}</option>
+				`);
+                });
+            },
+
+            error: function (xhr) {
+                console.log(xhr);
+            }
+        });
+    }
+    loadInstitutions();
 
     function loadSkills() {
         $.ajax({
@@ -731,3 +755,36 @@
     });
 </script>
 @endsection
+<!--
+{
+	"id": 15,
+	"institution": "Universiti Teknikal Malaysia Melaka (UTeM)",
+	"field_of_study": "Computer Science",
+	"qualification": "degree",
+	"programme_name": "Bachelor of Computer Science (Software Engineering)",
+	"cgpa": "4.00",
+	"description": "Currently pursuing a degree in software engineering",
+	"start_date": "2026-10-01",
+	"end_date": "2027-10-01",
+
+	"media": [
+		{
+			"id": 1,
+			"title": "Project Screenshot",
+			"description": "Image lama yang kekal",
+			"file_url": "/assets/internship-assets/images/cover-image.png"
+		},
+		{
+			"id": null,
+			"title": "New Screenshot",
+			"description": "Image baru",
+			"file": "NEW_FILE"
+		}
+	],
+
+	"deleted_media_ids": [
+		2,
+		3
+	]
+}
+-->
