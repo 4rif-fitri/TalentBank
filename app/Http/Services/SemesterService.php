@@ -36,12 +36,12 @@ class SemesterService
         }
 
         if (explode('/', $file->getMimeType())[1] != 'pdf') {
-            throw new Exception('File must be in pdf format.' . $file->getClientOriginalExtension(), Response::HTTP_BAD_REQUEST);
+            throw new Exception('File must be in pdf format.', Response::HTTP_BAD_REQUEST);
         }
 
         $data['source_name'] = 'semester';
         $data['source_id'] = $semesterId;
-        $data['file_url'] = uniqid('semester_results_') . '_' . $file->getClientOriginalName();
+        $data['file_url'] = uniqid('semester_results_') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
         $data['file_path'] = env('SEMESTER_RESULTS_FILE_URL');
 
         return $this->mediaService->createMedia($data, $file);

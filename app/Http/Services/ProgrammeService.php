@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\Organization;
 use App\Models\Programme;
 use App\Models\User;
 use App\Models\UserProfile;
@@ -69,5 +70,25 @@ class ProgrammeService
                 });
             })
             ->get();
+    }
+
+    /**
+     * Get programmes by organization ID.
+     * 
+     * @param int $organizationId
+     * @throws Exception
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Programme>
+     */
+    public function getProgrammesByOrgId(int $organizationId)
+    {
+        $orgExists = Organization::where('id', $organizationId)->exists();
+
+        if (!$orgExists) {
+            throw new Exception('Organization not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        return Programme::whereHas('organization', function ($query) use ($organizationId) {
+            $query->where('organizations.id', $organizationId);
+        })->get();
     }
 }

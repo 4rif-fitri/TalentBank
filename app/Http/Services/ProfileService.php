@@ -52,7 +52,6 @@ class ProfileService
     private function getProfileModel()
     {
         $userId = Auth::id();
-        $userId = 4;  // for testing purposes
 
         $profile = UserProfile::where('user_id', $userId)->first();
 
