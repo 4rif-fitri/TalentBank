@@ -26,6 +26,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->prefix('profile')->group(function () {
     // page routes
     Route::get('/student', [internshipController::class, "profile"])->name('profile.student');
+    Route::get('/education', [internshipController::class, "education"])->name('profile.education');
+    Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience');
 
     // crud routes
     Route::get('/', [ProfileController::class, 'getProfileDataByUserIdJson'])->name('profile.getProfileDataByUserIdJson');
