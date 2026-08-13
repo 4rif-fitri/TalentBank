@@ -1,16 +1,12 @@
 @extends('layouts.internship-layouts')
 
-@section('css')
-
-@endsection
-
 @section('content')
 
 <div class="user-card">
     <div class="user-card-left">
         <section class="user-card-header">
 
-            <div class="user-card-banner" style="background-image: url('/assets/images/profile/cover-image.png');">
+            <div class="user-card-banner" style="background-image: url('../assets/internship-assets/images/7.jpg');">
                 <div class="icon-container">
                     <label for="coverPhotoInput" class="btn icon bg-body">
                         <i class="fa-solid fa-pencil"></i>
@@ -20,7 +16,7 @@
             </div>
 
             <div class="user-profile-group">
-                <div class="profile-image" style="background-image: url('/assets/images/profile/cover-image.png');">
+                <div class="profile-image" style="background-image: url('../assets/internship-assets/images/7.jpg');">
                     <div class="w-100 h-100 position-relative">
                         <label for="profileImageInput" class="btn icon bg-body">
                             <i class="fa-solid fa-camera"></i>
@@ -134,7 +130,7 @@
 
                 <article class="gap-2">
                     <div class="d-flex gap-1 align-items-center">
-                        <img src="{{ asset('assets/images/profile/cover-image.png') }}" alt="UTeM"
+                        <img src="{{ asset('../assets/internship-assets/images/7.jpg') }}" alt="UTeM"
                             style="width:50px;height:50px;border-radius:50%;object-fit:cover;">
                         <p class="h5 fw-bold">
                             Universiti Teknikal Malaysia Melaka
@@ -159,15 +155,15 @@
 
                         <div class="images d-flex flex-wrap">
                             <div class="image rounded-1 m-1"
-                                style="background-image:url('/assets/images/profile/cover-image.png'); cursor:pointer;"
+                                style="background-image:url('../../assets/internship-assets/images/7.jpg'); cursor:pointer;"
                                 data-bs-toggle="modal" data-bs-target="#imagePreviewModal" data-slide-index="0">
                             </div>
                             <div class="image rounded-1 m-1"
-                                style=" background-image:url('/assets/images/profile/cover-image.png');cursor:pointer;"
+                                style=" background-image:url('../assets/internship-assets/images/7.jpg');cursor:pointer;"
                                 data-bs-toggle="modal" data-bs-target="#imagePreviewModal" data-slide-index="1">
                             </div>
                             <div class="image rounded-1 m-1 d-flex justify-content-center align-items-center"
-                                style="background-image:url('/assets/images/profile/cover-image.png'); filter:brightness(.5);cursor:pointer;"
+                                style="background-image:url('../assets/internship-assets/images/7.jpg'); filter:brightness(.5);cursor:pointer;"
                                 data-bs-toggle="modal" data-bs-target="#imagePreviewModal" data-slide-index="2">
                                 <h4 class="text-white m-0">
                                     +5
@@ -206,13 +202,13 @@
 
                     <div class="images d-flex flex-wrap">
                         <div class="image rounded-1 m-1"
-                            style="background-image:url('/assets/images/profile/cover-image.png');">
+                            style="background-image:url('../assets/internship-assets/images/7.jpg');">
                         </div>
                         <div class="image rounded-1 m-1"
-                            style="background-image:url('/assets/images/profile/cover-image.png');">
+                            style="background-image:url('../assets/internship-assets/images/7.jpg');">
                         </div>
                         <div class="image rounded-1 m-1 d-flex justify-content-center align-items-center"
-                            style="background-image:url('/assets/images/profile/cover-image.png'); filter:brightness(.5);">
+                            style="background-image:url('../assets/internship-assets/images/7.jpg'); filter:brightness(.5);">
                             <h4 class="text-white m-0">+5</h4>
                         </div>
                     </div>
@@ -233,7 +229,7 @@
 
                 <article class="m-1">
                     <div class="d-flex gap-1 align-items-center">
-                        <img src="{{ asset('assets/images/profile/cover-image.png') }}" alt="UTeM"
+                        <img src="{{ asset('../assets/internship-assets/images/7.jpg') }}" alt="UTeM"
                             style="width:50px; height:50px; border-radius:50%; object-fit:cover;">
                         <p class="h5 fw-bold">Web Developer Intern</p>
                     </div>
@@ -254,11 +250,11 @@
 
                         <div class="images d-flex flex-wrap">
                             <div class="image rounded-1 m-1"
-                                style="background-image:url('/assets/images/profile/cover-image.png');"></div>
+                                style="background-image:url('../assets/internship-assets/images/7.jpg');"></div>
                             <div class="image rounded-1 m-1"
-                                style="background-image:url('/assets/images/profile/cover-image.png');"></div>
+                                style="background-image:url('../assets/internship-assets/images/7.jpg');"></div>
                             <div class="image rounded-1 m-1 d-flex justify-content-center align-items-center"
-                                style="background-image:url('/assets/images/profile/cover-image.png'); filter:brightness(.5);">
+                                style="background-image:url('../assets/internship-assets/images/7.jpg'); filter:brightness(.5);">
                                 <h4 class="text-white m-0">+5</h4>
                             </div>
                         </div>
@@ -298,7 +294,7 @@
 
                     <div class="images d-flex flex-wrap">
                         <div class="image rounded-1 m-1"
-                            style="background-image:url('/assets/images/profile/cover-image.png');">
+                            style="background-image:url('../assets/internship-assets/images/7.jpg');">
                         </div>
                     </div>
                 </article>
@@ -347,6 +343,10 @@
             <section>
                 <div class="d-flex justify-content-between align-items-center">
                     <h3 class="fw-bold">Semester Results</h3>
+                    <button class="btn btn-primary" id="addResult">
+                        <i class="fa-solid fa-plus"></i>
+                        Add Result
+                    </button>
                 </div>
                 <hr>
 
@@ -486,7 +486,7 @@
                     <div class="carousel-inner">
 
                         <div class="carousel-item active">
-                            <img src="/assets/images/profile/cover-image.png" class="d-block w-100" alt="Preview 1">
+                            <img src="../assets/internship-assets/images/7.jpg" class="d-block w-100" alt="Preview 1">
                             <div class="carousel-caption d-block bg-dark bg-opacity-75 rounded p-2">
                                 <h5>Title Image 1</h5>
                                 <p class="d-none d-md-block">Description for image 1</p>
@@ -494,7 +494,7 @@
                         </div>
 
                         <div class="carousel-item">
-                            <img src="/assets/images/profile/cover-image.png" class="d-block w-100" alt="Preview 2">
+                            <img src="../assets/internship-assets/images/7.jpg" class="d-block w-100" alt="Preview 2">
                             <div class="carousel-caption d-block bg-dark bg-opacity-75 rounded p-2">
                                 <h5>Title Image 2</h5>
                                 <p class="d-none d-md-block">Description for image 2.</p>
@@ -502,7 +502,7 @@
                         </div>
 
                         <div class="carousel-item">
-                            <img src="/assets/images/profile/cover-image.png" class="d-block w-100" alt="Preview 3">
+                            <img src="../assets/internship-assets/images/7.jpg" class="d-block w-100" alt="Preview 3">
                             <div class="carousel-caption d-block bg-dark bg-opacity-75 rounded p-2">
                                 <h5>Title Image 3</h5>
                                 <p class="d-none d-md-block">Description for image 3.</p>
@@ -624,13 +624,83 @@
     </div>
 </div>
 
+<div class="modal fade" id="addResultModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+
+        <div class="modal-content">
+            <form id="profileForm" action="" method="POST">
+                @csrf
+                <input type="hidden" name="_method" value="PUT">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Intro</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="profileLoading" class="text-center py-4 d-none">
+                        <div class="spinner-border spinner-border-sm" role="status"></div>
+                        <span class="ms-2">Loading...</span>
+                    </div>
+
+                    <div id="profileFields">
+                        <div class="mb-3">
+                            <label for="profileNameInput" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" name="name" id="profileNameInput" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="profileHeadlineInput" class="form-label">Headline</label>
+                            <textarea class="form-control" name="headline" id="profileHeadlineInput" rows="3"
+                                maxlength="255"></textarea>
+                            <div class="text-end text-muted small mt-1">
+                                <span id="headlineCount">0</span>/255
+                            </div>
+                        </div>
+                        <hr>
+
+                        <h6 class="fw-bold mb-3">Location</h6>
+                        <div class="mb-3">
+                            <label for="locationInput" class="form-label">Location</label>
+                            <input type="text" id="locationInput" class="form-control">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveProfile">Save</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('script')
 <script>
     $(document).ready(function () {
-        console.log("jQuery loaded");
-        console.log($("#btnEditProfile").length);
+
+            $.ajax({
+                url: "{{ route('profile.getProfileDataByUserIdJson') }}",
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+
+                },
+
+
+                error: function (xhr) {
+                    Swal.fire({
+                        title: "Unable to load profile",
+                        text: "Profile data could not be loaded.",
+                        icon: "error"
+                    });
+                }
+            });
 
         let resultLoaded = false;
         $(".profile-tab").on("click", function () {
@@ -648,7 +718,6 @@
                 if (!resultLoaded) loadSemesterResults()
             }
         });
-
 
         function loadSemesterResults() {
 
@@ -709,27 +778,12 @@
 
         let profileModalEl = document.getElementById("editProfileModal");
         let profileModal = bootstrap.Modal.getOrCreateInstance(profileModalEl);
+
         let aboutModalEl = document.getElementById("editAboutModal");
         let aboutModal = bootstrap.Modal.getOrCreateInstance(aboutModalEl);
 
-        let malaysiaStates = [
-            {
-                name: "Melaka",
-                cities: ["Alor Gajah", "Asahan", "Ayer Keroh", "Bemban", "Durian Tunggal", "Jasin", "Kem Trendak", "Kuala Sungai Baru", "Lubok China", "Masjid Tanah", "Melaka", "Merlimau", "Selandar", "Sungai Rambai", "Sungai Udang", "Tanjong Kling"]
-            }, {
-                name: "Johor",
-                cities: ["Batu Pahat", "Johor Bahru", "Kluang", "Kota Tinggi", "Kulai", "Mersing", "Muar", "Pontian", "Segamat", "Tangkak"]
-            }, {
-                name: "Selangor",
-                cities: ["Shah Alam", "Petaling Jaya", "Subang Jaya", "Klang", "Sepang", "Kajang", "Gombak"]
-            }
-        ];
-
-        let $countryInput = $("#countryInput");
-        let $stateInput = $("#stateInput");
-        let $cityInput = $("#cityInput");
-        let $stateContainer = $("#stateContainer");
-        let $cityContainer = $("#cityContainer");
+        let addResultModalEl = document.getElementById("addResultModal");
+        let addResultModal = bootstrap.Modal.getOrCreateInstance(addResultModalEl);
 
         let $profileLoading = $("#profileLoading");
         let $profileFields = $("#profileFields");
@@ -739,64 +793,9 @@
         let $aboutFields = $("#aboutFields");
         let $btnSaveAbout = $("#btnSaveAbout");
 
-        function renderStates(selectedState = "") {
-
-            let html = `<option value="">Select State</option>`;
-
-            malaysiaStates.forEach(
-                function (state) {
-                    let selected = state.name === selectedState ? "selected" : "";
-                    html += `<option value="${state.name}" ${selected}> ${state.name} </option>`;
-                }
-            );
-            $stateInput.html(html);
-        }
-
-        function renderCities(stateName, selectedCity = "") {
-            let state = malaysiaStates.find(function (item) {
-                return (item.name === stateName);
-            });
-
-            let html = `<option value="">Select City</option>`;
-            if (state) {
-                state.cities.forEach(function (city) {
-                    let selected = city === selectedCity ? "selected" : "";
-                    html += `<option value="${city}" ${selected}>
-									${city}
-								</option>`;
-
-                });
-            }
-
-            $cityInput.html(html);
-        }
-
-        $countryInput.on("change", function () {
-            let country = $(this).val();
-
-            if (country === "Malaysia") {
-                renderStates();
-                $stateContainer.removeClass("d-none");
-
-            } else {
-
-                $stateContainer.addClass("d-none");
-                $cityContainer.addClass("d-none");
-                $stateInput.val("");
-                $cityInput.val("");
-            }
-
-        });
-
-        $stateInput.on("change", function () {
-            let state = $(this).val();
-            if (!state) {
-                $cityContainer.addClass("d-none");
-                return;
-            }
-            renderCities(state);
-            $cityContainer.removeClass("d-none");
-        });
+        $("#addResult").on("click", function () {
+            addResultModal.show()
+        })
 
         function showProfileLoading() {
             $profileLoading.removeClass("d-none");
@@ -836,23 +835,7 @@
                         (response.headline ?? "").length
                     );
 
-
-                    $countryInput.val(response.country ?? "");
-                    if (response.country === "Malaysia") {
-
-                        renderStates(response.state ?? "");
-                        $stateContainer.removeClass("d-none");
-
-                        if (response.state) {
-                            renderCities(response.state, response.city ?? "");
-                            $cityContainer.removeClass("d-none");
-                        } else {
-                            $cityContainer.addClass("d-none");
-                        }
-                    } else {
-                        $stateContainer.addClass("d-none");
-                        $cityContainer.addClass("d-none");
-                    }
+                    $("#locationInput").val(response.location ?? "");
 
                     hideProfileLoading();
                     profileModal.show();
@@ -940,8 +923,6 @@
             $("#profileForm")[0].reset();
             $("#headlineCount").text("0");
 
-            $stateContainer.addClass("d-none");
-            $cityContainer.addClass("d-none");
             $btnSaveProfile.prop("disabled", false).text("Save");
         });
 
