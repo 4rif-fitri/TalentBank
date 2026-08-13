@@ -306,6 +306,7 @@
     let mediaTitleCount = document.getElementById("mediaTitleCount");
     let btnSaveEducation = document.getElementById("btnSaveEducation");
 
+    let skillRequest;
     let institutionRequest;
 
     function loadInstitutions() {
@@ -330,8 +331,9 @@
         });
     }
 
+
     function loadSkills() {
-        $.ajax({
+        skillRequest = $.ajax({
             url: "{{ asset('assets/internship-assets/data/skills.json') }}",
             type: "GET",
             dataType: "json",
@@ -638,8 +640,8 @@
         deletedSkillIds = [];
         resetMediaForm();
 
-        document.querySelector("#educationModal .modal-title").textContent = "Add Education";
-        btnSaveEducation.textContent = "Save";
+        $(".modal-title").text("Add Education")
+        $("#btnSaveEducation").text("Add")
 
         $("#institution").val("");
         $("#fieldOfStudy").val("");
@@ -669,15 +671,14 @@
         deletedSkillIds = [];
         resetMediaForm();
 
-
-        let data = educationList.find(function (education) {
+        let data = educationList.find((education) => {
             return education.id == id;
         });
 
         if (!data) return;
 
-        document.querySelector("#educationModal .modal-title").textContent = "Edit Education";
-        btnSaveEducation.textContent = "Update";
+        $(".modal-title").text("Edit Education")
+        $("#btnSaveEducation").text("Update")
 
         institutionRequest.done(function () {
             $("#institution").val(data.institution);
@@ -690,7 +691,9 @@
         $("#startDate").val(data.start_date);
         $("#endDate").val(data.end_date);
 
-        renderSkills(data.skills ?? []);
+        skillRequest.done(function () {
+            renderSkills(data.skills ?? []);
+        });
 
         mediaList = (data.media ?? []).map(function (media) {
             return {
@@ -751,10 +754,9 @@
             formData.append(`deleted_media_ids[${index}]`, id);
         });
 
-        let url, method
+        let url
         if (educationMode === "add") {
             url = "/education";
-            method = "POST"
         } else {
             url = `/education/${editingEducationId}`;
             formData.append("_method", "PUT");
@@ -789,36 +791,87 @@
     });
 </script>
 @endsection
-<!--
+<!-- Add request
 {
-	"id": 15,
-	"institution": "Universiti Teknikal Malaysia Melaka (UTeM)",
-	"field_of_study": "Computer Science",
-	"qualification": "degree",
-	"programme_name": "Bachelor of Computer Science (Software Engineering)",
-	"cgpa": "4.00",
-	"description": "Currently pursuing a degree in software engineering",
-	"start_date": "2026-10-01",
-	"end_date": "2027-10-01",
+    "institution": 1,
+    "field_of_study": "Computer Science",
+    "qualification": "degree",
+    "programme_name": "Bachelor of Computer Science (Software Engineering)",
+    "cgpa": "4.00",
+    "description": "Currently pursuing a degree in software engineering",
+    "start_date": "2026-10-01",
+    "end_date": "2027-10-01",
 
-	"media": [
-		{
-			"id": 1,
-			"title": "Project Screenshot",
-			"description": "Image lama yang kekal",
-			"file_url": "/assets/internship-assets/images/cover-image.png"
-		},
-		{
-			"id": null,
-			"title": "New Screenshot",
-			"description": "Image baru",
-			"file": "NEW_FILE"
-		}
-	],
+    "skills": [
+        {
+            "skill_id": 1,
+            "proficiency": "Advanced"
+        },
+        {
+            "skill_id": 3,
+            "proficiency": "Intermediate"
+        }
+    ],
 
-	"deleted_media_ids": [
-		2,
-		3
-	]
+    "media": [
+        {
+            "file": "FILE",
+            "title": "Project Screenshot",
+            "description": "Screenshot of my university project"
+        },
+        {
+            "file": "FILE",
+            "title": "System Design",
+            "description": "System interface design"
+        }
+    ]
+}
+
+update request
+{
+    "institution": 1,
+    "field_of_study": "Computer Science",
+    "qualification": "degree",
+    "programme_name": "Bachelor of Computer Science (Software Engineering)",
+    "cgpa": "4.00",
+    "description": "Updated education description",
+    "start_date": "2026-10-01",
+    "end_date": "2027-10-01",
+
+    "skills": [
+        {
+            "id": 10,
+            "skill_id": 1,
+            "proficiency": "Advanced"
+        },
+        {
+            "skill_id": 6,
+            "proficiency": "Intermediate"
+        }
+    ],
+
+    "deleted_skill_ids": [
+        11
+    ],
+
+    "media": [
+        {
+            "id": 1,
+            "title": "Project Screenshot",
+            "description": "Image lama yang kekal"
+        },
+        {
+            "title": "New Screenshot",
+            "description": "Image baru",
+            "file": "FILE"
+            "source_name":EXPERIENCES" huruf kecil,
+            "source_id":"id_table"
+        }
+    ],
+
+    "deleted_media_ids": [
+        2,
+        3
+    ]
 }
 -->

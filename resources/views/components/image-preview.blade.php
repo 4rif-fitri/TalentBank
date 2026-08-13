@@ -36,6 +36,7 @@
 @push('scripts')
 <script>
     $(document).on("click", "[data-preview-image]", function () {
+        $(".modal-title").text("Media Preview")
         let group = $(this).closest("[data-image-preview-group]");
         let images = group.find("[data-preview-image]");
         let selectedIndex = images.index(this);
@@ -63,7 +64,7 @@
         let modal = bootstrap.Modal.getOrCreateInstance(
             document.getElementById("imagePreviewModal")
         );
-
+        document.activeElement.blur();
         modal.show();
     });
 </script>
