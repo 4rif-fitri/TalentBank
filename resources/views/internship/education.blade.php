@@ -144,97 +144,26 @@
 
                 <!-- Start Date -->
                 <div class="mb-3">
-                    <label class="form-label fw-bold">
-                        Start Date
-                    </label>
+                    <label class="form-label fw-bold">Start Date</label>
 
                     <div class="row g-3">
-
-                        <div class="col-6">
-                            <label for="startMonth" class="form-label">
-                                Month
-                            </label>
-
-                            <select class="form-select" id="startMonth" name="start_month" required>
-                                <option selected disabled value="">Select Month</option>
-                                <option value="01">January</option>
-                                <option value="02">February</option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                        </div>
-
-                        <div class="col-6">
-                            <label for="startYear" class="form-label">Year</label>
-                            <select class="form-select" id="startYear" name="start_year" required>
-                                <option selected disabled value="">Select Year</option>
-                                <option value="2026">2026</option>
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                                <option value="2022">2022</option>
-                                <option value="2021">2021</option>
-                                <option value="2020">2020</option>
-                            </select>
-                        </div>
-
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="start_date" required>
                     </div>
+
                 </div>
 
                 <!-- End Date -->
                 <div class="mb-4">
-                    <label class="form-label fw-bold">End Date</label>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <label for="endMonth" class="form-label">Month</label>
-                            <select class="form-select" id="endMonth" name="end_month" required>
-                                <option selected disabled value="">Select Month</option>
-                                <option value="01">January</option>
-                                <option value="02">February</option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label for="endYear" class="form-label">Year</label>
-                            <select class="form-select" id="endYear" name="end_year" required>
-                                <option selected disabled value="">Select Year</option>
-                                <option value="2030">2030</option>
-                                <option value="2029">2029</option>
-                                <option value="2028">2028</option>
-                                <option value="2027">2027</option>
-                                <option value="2026">2026</option>
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                            </select>
-                        </div>
-
-                    </div>
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" class="form-control" id="endDate" name="end_date" required>
                 </div>
 
                 <!-- Skills -->
                 <div class="mb-3">
                     <label class="form-label">Skill</label>
                     <div>
-                        <button id="addSkill" type="button" class="btn btn-outline-primary btn-sm">+ Add
-                            Skill</button>
+                        <button id="addSkill" type="button" class="btn btn-outline-primary btn-sm">+ Add Skill</button>
                         <div class="mt-2" id="skillContainer">
 
                         </div>
@@ -361,45 +290,62 @@
     let mediaTitleCount = document.getElementById("mediaTitleCount");
     let btnSaveEducation = document.getElementById("btnSaveEducation");
 
+    let skillList = [];
+
+    function loadSkills() {
+        $.ajax({
+            url: "{{ asset('assets/internship-assets/data/skills.json') }}",
+            type: "GET",
+            dataType: "json",
+
+            success: function (response) {
+                skillList = response;
+            },
+
+            error: function (xhr) {
+                console.log(xhr.responseJSON);
+            }
+        });
+    }
+    loadSkills();
+
     function createSkillRow(skill = "", proficiency = "") {
-
         let skillRow = document.createElement("div");
-
         skillRow.classList.add("mb-3", "skill-row");
 
+        let skillOptions = "";
+
+        skillList.forEach(function (item) {
+            skillOptions += `
+			<option value="${item.id}" ${skill == item.id ? "selected" : ""}>${item.name}</option>
+		`;
+        });
+
         skillRow.innerHTML = `
-                <div class="input-group">
+		<div class="input-group">
 
-                    <select class="form-select form-select-sm skill-select" required>
-                        <option value="" disabled ${skill === "" ? "selected" : ""}>Select Skill</option>
-                        <option value="PHP" ${skill === "PHP" ? "selected" : ""}>PHP</option>
-                        <option value="Laravel" ${skill === "Laravel" ? "selected" : ""}>Laravel</option>
-                        <option value="JavaScript" ${skill === "JavaScript" ? "selected" : ""}>JavaScript</option>
-                        <option value="Vue" ${skill === "Vue" ? "selected" : ""}>Vue.js</option>
-                        <option value="React" ${skill === "React" ? "selected" : ""}>React</option>
-                        <option value="MySQL" ${skill === "MySQL" ? "selected" : ""}>MySQL</option>
-                        <option value="HTML_CSS" ${skill === "HTML_CSS" ? "selected" : ""}>HTML & CSS</option>
-                    </select>
+			<select class="form-select form-select-sm skill-select" required>
+				<option value="" disabled ${skill === "" ? "selected" : ""}>Select Skill</option>
+				${skillOptions}
+			</select>
 
+			<select class="form-select form-select-sm proficiency-select" required>
+				<option value="" disabled ${proficiency === "" ? "selected" : ""}>Select Proficiency</option>
+				<option value="Beginner" ${proficiency === "Beginner" ? "selected" : ""}>Beginner</option>
+				<option value="Intermediate" ${proficiency === "Intermediate" ? "selected" : ""}>Intermediate</option>
+				<option value="Advanced" ${proficiency === "Advanced" ? "selected" : ""}>Advanced</option>
+				<option value="Expert" ${proficiency === "Expert" ? "selected" : ""}>Expert</option>
+			</select>
 
-                    <select class="form-select form-select-sm proficiency-select" required>
-                        <option value="" disabled ${proficiency === "" ? "selected" : ""}>Select Proficiency</option>
-                        <option value="Beginner" ${proficiency === "Beginner" ? "selected" : ""}>Beginner</option>
-                        <optionvalue="Intermediate"${proficiency === "Intermediate" ? "selected" : ""}>Intermediate</optionvalue=>
-                        <optionvalue="Advanced"${proficiency === "Advanced" ? "selected" : ""}>Advanced</optionvalue=>
-                        <optionvalue="Expert"${proficiency === "Expert" ? "selected" : ""}>Expert</option>
-                    </select>
+			<button type="button" class="btn btn-outline-danger remove-skill">
+				<i class="fa-solid fa-trash"></i>
+			</button>
 
-                    <button type="button"class="btn btn-outline-danger remove-skill">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
+		</div>
+	`;
 
-                </div>
-            `;
         return skillRow;
     }
-
-
     addSkillBtn.addEventListener("click", function () {
         skillContainer.appendChild(createSkillRow());
     });
@@ -415,7 +361,7 @@
     function renderSkills(skills = []) {
         skillContainer.innerHTML = "";
         skills.forEach(function (skill) {
-            skillContainer.appendChild(createSkillRow(skill.skill, skill.proficiency));
+            skillContainer.appendChild(createSkillRow(skill.skill_id, skill.proficiency));
         });
     }
 
@@ -642,10 +588,8 @@
         $("#programmeName").val("");
         $("#cgpaInput").val("");
         $("#descriptionInput").val("");
-        $("#startMonth").val("");
-        $("#startYear").val("");
-        $("#endMonth").val("");
-        $("#endYear").val("");
+        $("#startDate").val("");
+        $("#endDate").val("");
 
         skillContainer.innerHTML = "";
         mediaList.forEach(function (media) {
@@ -665,69 +609,44 @@
         deletedMediaIds = [];
         resetMediaForm();
 
-        let data = {
-            id: id,
-            institution: "Universiti Teknikal Malaysia Melaka (UTeM)",
-            field_of_study: "Computer Science",
-            qualification: "degree",
-            programme_name: "Bachelor of Computer Science (Software Engineering)",
-            cgpa: "4.00",
-            description: "Currently pursuing a degree in software engineering with emphasis on system",
-            start_month: "10",
-            start_year: "2026",
-            end_month: "10",
-            end_year: "2027",
-            skills: [
-                {
-                    skill: "PHP",
-                    proficiency: "Advanced"
-                }, {
-                    skill: "Laravel",
-                    proficiency: "Intermediate"
-                }
-            ],
-            media: [
-                {
-                    id: 1,
-                    title: "Project Screenshot",
-                    description: "My education media",
-                    preview: "../images/cover-image.png",
-                    file: null
-                }
-            ]
-        };
+        $.ajax({
+            url: "{{ asset('assets/internship-assets/data/education.json') }}",
+            type: "GET",
 
+            success: function (data) {
+                document.querySelector("#educationModal .modal-title").textContent = "Edit Education";
+                btnSaveEducation.textContent = "Update";
 
-        document.querySelector("#educationModal .modal-title").textContent = "Edit Education";
-        btnSaveEducation.textContent = "Update";
+                $("#institution").val(data.institution);
+                $("#fieldOfStudy").val(data.field_of_study);
+                $("#qualification").val(data.qualification);
+                $("#programmeName").val(data.programme_name);
+                $("#cgpaInput").val(data.cgpa);
+                $("#descriptionInput").val(data.description);
+                $("#startDate").val(data.start_date);
+                $("#endDate").val(data.end_date);
 
-        $("#institution").val(data.institution);
-        $("#fieldOfStudy").val(data.field_of_study);
-        $("#qualification").val(data.qualification);
-        $("#programmeName").val(data.programme_name);
-        $("#cgpaInput").val(data.cgpa);
-        $("#descriptionInput").val(data.description);
-        $("#startMonth").val(data.start_month);
-        $("#startYear").val(data.start_year);
-        $("#endMonth").val(data.end_month);
-        $("#endYear").val(data.end_year);
+                renderSkills(data.skills ?? []);
 
-        renderSkills(data.skills ?? []);
-        mediaList = (data.media ?? []).map(function (media) {
-            return {
-                id: media.id,
-                file: null,
-                title: media.title,
-                description: media.description ?? "",
-                preview: media.preview
-            };
+                mediaList = (data.media ?? []).map(function (media) {
+                    return {
+                        id: media.id,
+                        file: null,
+                        title: media.title,
+                        description: media.description ?? "",
+                        preview: media.file_url
+                    };
+                });
 
+                renderMedia();
+                educationModal.show();
+            },
+
+            error: function (xhr) {
+                console.log(xhr.responseJSON);
+            }
         });
-
-        renderMedia();
-        educationModal.show();
     }
-
     btnSaveEducation.addEventListener("click", function (event) {
         event.preventDefault();
         let formData = new FormData();
@@ -738,10 +657,8 @@
         formData.append("programme_name", $("#programmeName").val());
         formData.append("cgpa", $("#cgpaInput").val());
         formData.append("description", $("#descriptionInput").val());
-        formData.append("start_month", $("#startMonth").val());
-        formData.append("start_year", $("#startYear").val());
-        formData.append("end_month", $("#endMonth").val());
-        formData.append("end_year", $("#endYear").val());
+        formData.append("start_date", $("#startDate").val());
+        formData.append("end_date", $("#endDate").val());
 
         document.querySelectorAll("#skillContainer .skill-row").forEach((row, index) => {
             let skill = row.querySelector(".skill-select").value;
@@ -784,7 +701,7 @@
         }
 
         $.ajax({
-            url: url,
+            url: "{{ asset('assets/internship-assets/data/education.json') }}",
             type: "POST",
             data: formData,
             processData: false,
