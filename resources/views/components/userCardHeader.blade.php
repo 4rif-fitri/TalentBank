@@ -44,8 +44,8 @@
 
         <div class="btn-container">
 
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
+            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom"
+                aria-controls="offcanvasBottom">
                 Add Section
             </button>
 
@@ -53,12 +53,27 @@
 
     </div>
 
-    <nav class="horizontal-nav d-flex gap-4 px-3">
-        <button type="button" class="profile-tab active d-flex justify-content-center" data-target="main">
+    <nav class="horizontal-nav d-flex flex-wrap px-3">
+        <button type="button" class="profile-tab active d-flex justify-content-center mt-3" data-target="main">
             Main
         </button>
-        <button type="button" class="profile-tab d-flex justify-content-center" data-target="result">
-            Result Sem
+        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="result">
+            Result
+        </button>
+        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="education">
+            Education
+        </button>
+        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="awards">
+            Awards
+        </button>
+        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="projects">
+            Projects
+        </button>
+        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="experience">
+            Experience
+        </button>
+        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="certifications">
+            Certifications
         </button>
     </nav>
 
