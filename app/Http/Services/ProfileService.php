@@ -2,12 +2,17 @@
 
 namespace App\Http\Services;
 
-use App\Models\User;
+use App\Models\profile;
+use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use PHPUnit\Framework\ExpectationFailedException;
+use Symfony\Component\HttpFoundation\File\Exception\UploadException;
 
 class ProfileService
 {
@@ -20,61 +25,70 @@ class ProfileService
     }
 
     /**
-     * Get profile data of user by user ID.
+     * Get profile data of profile by profile ID.
      * 
      * @param   int $userId
-     * @return  User
+     * @return  UserProfile
      */
     public function getProfileDataByUserId($userId = null)
     {
-        $user = User::with([
+        $profile = UserProfile::with([
             'organizationUsers' => function ($query) {
                 $query->where('status', 1);
             },
             'organizationUsers.organization',
             'organizationUsers.role'
         ])
-            ->find($userId ?? Auth::id());
+            ->where('user_id', $userId ?? Auth::id())
+            ->first();
 
-        if (!isset($user)) {
-            throw new Exception('User not found with given ID.', Response::HTTP_NOT_FOUND);
+        if (!isset($profile)) {
+            throw new Exception('profile not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        return $user;
+        return $profile;
+    }
+
+    private function getProfileModel()
+    {
+        $userId = Auth::id();
+        $userId = 4;  // for testing purposes
+
+        $profile = UserProfile::where('user_id', $userId)->first();
+
+        if (!isset($profile)) {
+            throw new Exception('Profile not found with given profile ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        return $profile;
     }
 
     /**
-     * Update profile data of user by user ID.
+     * Update profile data of profile by profile ID.
      * Excluding password update.
      * 
      * @param   array $data 
      * @return  bool
      */
-    public function updateProfileData(array $data, ?UploadedFile $profileImage = null)
+    public function updateProfileData(array $data)
     {
-        $userId = Auth::id() ?? 4;
+        $profile = $this->getProfileModel();
 
-        $user = User::find($userId);
+        $isEmailChanged = $data['email'] !== $profile->email;
+        $isPhoneChanged = $data['phone_no'] !== $profile->phone_no;
 
-        if (!isset($user)) {
-            throw new Exception('User not found with given user ID.', Response::HTTP_NOT_FOUND);
-        }
-
-        $isEmailChanged = $data['email'] !== $user->email;
-        $isPhoneChanged = $data['telno'] !== $user->telno;
-
-        // if the email and telno changed, then check if the updated one already exists in db before updating
+        // if the email and phone_no changed, then check if the updated one already exists in db before updating
         if ($isEmailChanged || $isPhoneChanged) {
-            $emailOrPhoneExists = User::where(function ($query) use ($data, $isEmailChanged, $isPhoneChanged) {
+            $emailOrPhoneExists = UserProfile::where(function ($query) use ($data, $isEmailChanged, $isPhoneChanged) {
                 if ($isEmailChanged) {
                     $query->where('email', $data['email']);
                 }
 
-                if ($isPhoneChanged && isset($data['telno'])) {
-                    $query->orWhere('telno', $data['telno']);
+                if ($isPhoneChanged && isset($data['phone_no'])) {
+                    $query->orWhere('phone_no', $data['phone_no']);
                 }
             })
-                ->where('id', '<>', $userId)
+                ->where('user_id', '<>', Auth::id())
                 ->exists();
 
             if ($emailOrPhoneExists) {
@@ -82,20 +96,12 @@ class ProfileService
             }
         }
 
-        // upload user profile image
-        if (isset($profileImage)) {
-            $profileImagePath = 'uploads/profile_images';
-            $filename = uniqid('profile_') . '_' . str_replace(' ', '-', $profileImage->getClientOriginalName());
-            $profileImage->move(public_path($profileImagePath), $filename);
-            $data['profile_image'] = $filename;
-        }
-
-        $result = $user->update([
+        $result = $profile->update([
             'name' => $data['name'],
             'email' => $data['email'],
-            'telno' => $data['telno'] ?? $user->telno,
-            'address' => $data['address'] ?? $user->address,
-            'profile_image' => $data['profile_image'] ?? $user->profile_image,
+            'headline' => $data['headline'] ?? $profile->headline,
+            'location' => $data['location'] ?? $profile->location,
+            'phone_no' => $data['phone_no'] ?? $profile->phone_no,
         ]);
 
         if (!$result) {
@@ -103,5 +109,61 @@ class ProfileService
         }
 
         return $result;
+    }
+
+    /**
+     * Update about field for user profile
+     * @param string $about
+     * @throws Exception
+     * @return bool|int
+     */
+    public function updateAboutField(string $about)
+    {
+        $profile = $this->getProfileModel();
+
+        $result = $profile->update(['about' => $about]);
+
+        if (!$result) {
+            throw new Exception('Failed to update about field.', Response::HTTP_BAD_REQUEST);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Upload profile image for user profile
+     * @param UploadedFile $profileImage
+     * @return bool|int
+     */
+    public function uploadProfileImage(UploadedFile $profileImage)
+    {
+        return $this->uploadImage($profileImage, 'profile_image', env('PROFILE_IMAGE_URL'));
+    }
+
+    /**
+     * Upload cover image for user profile
+     * @param UploadedFile $coverImage
+     * @return bool|int
+     */
+    public function uploadCoverImage(UploadedFile $coverImage)
+    {
+        return $this->uploadImage($coverImage, 'cover_image', env('COVER_IMAGE_URL'));
+    }
+
+    private function uploadImage(UploadedFile $image, string $column, string $imagePath)
+    {
+        $profile = $this->getProfileModel();
+
+        // delete existing image file
+        if (isset($profile->{$column}) && File::exists($imagePath . $profile->{$column})) {
+            File::delete($imagePath . $profile->{$column});
+        }
+
+        $filename = uniqid($column . '_') . '_' . str_replace(' ', '-', $image->getClientOriginalName());
+        $image->move($imagePath, $filename);
+
+        $results = $profile->update([$column => $filename]);
+
+        return $results;
     }
 }

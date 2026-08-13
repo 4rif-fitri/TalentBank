@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             IndustryCategorySeeder::class,
             OrganizationTypeSeeder::class,
             OrganizationSeeder::class,
+            UserProfileSeeder::class,
             OrganizationUserSeeder::class,
             FacultySeeder::class,
             ProgrammeSeeder::class,

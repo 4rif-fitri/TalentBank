@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Enrollment;
 use App\Models\Programme;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,7 +22,7 @@ class EnrollmentFactory extends Factory
     {
         return [
             'programme_id' => Programme::inRandomOrder()->first()->id,
-            'user_id' => User::inRandomOrder()->first()->id,
+            'user_profile_id' => UserProfile::inRandomOrder()->first()->id,
             'student_email' => $this->faker->email(),
             'matric_number' => $this->faker->word(),
             'intake_year' => $this->faker->year(),

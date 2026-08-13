@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('programme_id')->constrained('programmes')->onDelete('restrict');
-            $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
+            $table->foreignId('user_profile_id')->constrained('user_profiles')->onDelete('restrict');
             $table->string('student_email')->unique();
             $table->string('matric_number')->unique();
             $table->year('intake_year');

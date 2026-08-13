@@ -8,6 +8,8 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
@@ -24,20 +26,19 @@ class ProfileController extends Controller
     }
 
     /**
-     * get the profile data by given user ID 
+     * Handles request to get profile data based on given user ID 
      * (or current user ID if one is not provided)
      * 
      * @param   Request $request
+     * @param   int $userId
      * @return  JsonResponse
      */
-    public function getProfileDataByUserIdJson(Request $request)
+    public function getProfileDataByUserIdJson(Request $request, int $userId)
     {
-        if (!$request->ajax()) {
-            return ApiResponse::error('Ajax request required.')->toJsonResponse();
-        }
-
         try {
-            $userId = $request->input('user_id');
+            if (!$request->ajax()) {
+                throw new Exception('Ajax request required.', Response::HTTP_METHOD_NOT_ALLOWED);
+            }
 
             $profile = $this->profileService->getProfileDataByUserId($userId);
 
@@ -48,11 +49,10 @@ class ProfileController extends Controller
     }
 
     /**
-     * update the profile data by given user ID 
-     * (or current user ID if one is not provided)
+     * Handles request to update profile data for current logged in user
      * 
      * @param   Request $request
-     * @return  RedirectResponse
+     * @return  JsonResponse
      */
     public function update(Request $request)
     {
@@ -60,17 +60,88 @@ class ProfileController extends Controller
             $validated = $request->validate([
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'email', 'max:255'],
-                'telno' => ['nullable', 'string', 'max:11'],
-                'address' => ['nullable', 'string', 'max:255'],
-                'profile_image' => ['nullable', 'image', 'mimes:png,jpeg,jpg', 'max:2048'],
+                'headline' => ['nullable', 'string', 'max:255'],
+                'location' => ['nullable', 'string', 'max:255'],
+                'phone_no' => ['nullable', 'string', 'max:11'],
             ]);
 
-            $this->profileService->updateProfileData($validated, $request->file('profile_image'));
+            $this->profileService->updateProfileData($validated);
 
-            return redirect()->back()->with(ApiResponse::success('Profile updated successfully.', null)->toArray());
-
+            return ApiResponse::success('Profile updated successfully.', null)->toJsonResponse();
+        } catch (ValidationException $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
         } catch (Exception $e) {
-            return redirect()->back()->withErrors($e->getMessage());
+            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+        }
+    }
+
+    /**
+     * Handles request to update the about field of a user profile
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function updateAboutField(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'about' => ['nullable', 'max:255']
+            ]);
+
+            $this->profileService->updateAboutField($validated['about']);
+
+            return ApiResponse::success('About saved successfully.', null)->toJsonResponse();
+        } catch (ValidationException $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
+        } catch (Exception $e) {
+            return ApiResponse::error($e->getMessage())->toJsonResponse();
+        }
+    }
+
+    /**
+     * Handles request to upload user' profile image
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function uploadProfileImage(Request $request)
+    {
+        try {
+            $request->validate([
+                'profile_image' => ['required', 'image', 'max:2048']
+            ]);
+
+            $file = $request->file('profile_image');
+
+            $this->profileService->uploadProfileImage($file);
+
+            return ApiResponse::success('Profile image uploaded successfully.', null)->toJsonResponse();
+        } catch (ValidationException $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
+        } catch (Exception $e) {
+            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+        }
+    }
+
+    /**
+     * Handles request to upload user' cover image
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function uploadCoverImage(Request $request)
+    {
+        try {
+            $request->validate([
+                'cover_image' => ['required', 'image', 'max:2048']
+            ]);
+
+            $file = $request->file('cover_image');
+
+            $this->profileService->uploadCoverImage($file);
+
+            return ApiResponse::success('Cover image uploaded successfully.', null)->toJsonResponse();
+        } catch (ValidationException $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
+        } catch (Exception $e) {
+            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
         }
     }
 }
