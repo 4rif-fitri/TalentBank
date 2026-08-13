@@ -1,0 +1,56 @@
+[
+    {
+        "id": 15,
+        "institution": 1,
+        "institution_name": "Universiti Teknikal Malaysia Melaka (UTeM)",
+        "field_of_study": "Computer Science",
+        "qualification": "degree",
+        "programme_name": "Bachelor of Computer Science (Software Engineering)",
+        "cgpa": "4.00",
+        "description": "Currently pursuing a degree in software engineering",
+        "start_date": "2026-10-01",
+        "end_date": "2027-10-01",
+        "skills": [
+            {
+                "skill_id": 1,
+                "skill_name": "PHP",
+                "proficiency": "Advanced"
+            }
+        ],
+        "media": [
+            {
+                "id": 1,
+                "title": "Project Screenshot",
+                "description": "Education media",
+                "file_url": "/assets/internship-assets/images/cover-image.png"
+            }
+        ]
+    },
+    {
+        "id": 16,
+        "institution": 1,
+        "institution_name": "Universiti Teknikal Malaysia Melaka (UTeM)",
+        "field_of_study": "Computer Science",
+        "qualification": "diploma",
+        "programme_name": "Diploma in Computer Science",
+        "cgpa": "3.60",
+        "description": "Completed diploma in computer science",
+        "start_date": "2023-10-01",
+        "end_date": "2026-08-01",
+        "skills": [
+            {
+                "skill_id": 2,
+                "skill_name": "Laravel",
+                "proficiency": "Intermediate"
+            }
+        ],
+        "media": [
+            {
+                "id": 2,
+                "title": "Diploma Project",
+                "description": "Diploma project screenshot",
+                "file_url": "/assets/internship-assets/images/cover-image.png"
+            }
+        ]
+    }
+]

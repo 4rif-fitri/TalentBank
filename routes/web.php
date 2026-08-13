@@ -25,6 +25,9 @@ Route::middleware('')->get('/', [internshipController::class, "index"])->name('h
 
 Route::middleware('')->prefix('profile')->group(function () {
     // page routes
+    Route::get('/student', [internshipController::class, "profile"])->name('profile.student');
+    Route::get('/education', [internshipController::class, "education"])->name('profile.education');
+    Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience');
 
     // crud routes
     Route::get('/{userId}', [ProfileController::class, 'getProfileDataByUserIdJson'])->name('profile.getProfileDataByUserIdJson');
