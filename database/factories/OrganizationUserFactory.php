@@ -6,6 +6,7 @@ use App\Models\Organization;
 use App\Models\OrganizationUser;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,7 +23,7 @@ class OrganizationUserFactory extends Factory
     {
         return [
             'organization_id' => Organization::inRandomOrder()->first()->id,
-            'user_id' => User::inRandomOrder()->first()->id,
+            'user_profile_id' => UserProfile::inRandomOrder()->first()->id,
             'role_id' => Role::inRandomOrder()->first()->id,
             'status' => $this->faker->boolean()
         ];
