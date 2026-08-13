@@ -22,58 +22,67 @@
         </div>
         <hr>
 
-        <article class="gap-2 d-flex flex-column position-relative mb-2">
+        @foreach ($educations as $education)
+        <article class="gap-2 d-flex flex-column position-relative mb-4">
+
             <div class="icon-container" style="top: 0; right: 0;">
-                <button type="button" class="btn btn-secondary icon" onclick="editEducation(15)">
+                <button type="button" class="btn btn-secondary icon" onclick="editEducation({{ $education['id'] }})">
                     <i class="fa-solid fa-pencil"></i>
                 </button>
             </div>
+
             <div class="d-flex align-items-center gap-2">
-                <img src="{{ URL::asset('assets/images/profile/cover-image.png') }}" alt=""
-                    style="width: 50px !important; height: 50px !important; border-radius: 50%;">
-                <p class="h5 fw-bold">Universiti Teknikal Malaysia Melaka (UTeM)</p>
+                <img src="{{ asset('assets/images/profile/cover-image.png') }}" alt=""
+                    style="width: 50px; height: 50px; border-radius: 50%;">
+
+                <p class="h5 fw-bold">
+                    {{ $education['institution_name'] }}
+                </p>
             </div>
+
             <div class="col d-flex flex-column mx-1 gap-1">
-                <p>Bachelor of Computer Science (Software Engineering)</p>
-                <p>Oct 2026 - Oct 2027</p>
-                <p>Grade: 4.00</p>
-                <p>Currently pursuing a degree in software engineering with emphasis on system</p>
 
-                <div class="skills d-flex flex-wrap align-items-center">
-                    Skills:
-                    <div class="badge text-bg-secondary m-1">
-                        <span>Software Engineering</span>
-                    </div>
-                    <div class="badge text-bg-secondary m-1">
-                        <span>System Analysis</span>
-                    </div>
-                    <div class="badge text-bg-secondary m-1">
-                        <span>Database Design</span>
-                    </div>
-                    <div class="badge text-bg-secondary m-1">
-                        <span>Web Development</span>
-                    </div>
-                </div>
+                <p>{{ $education['programme_name'] }}</p>
 
-                <div class="images d-flex flex-wrap">
-                    <div class="image rounded-1 m-1"
-                        style="background-image: url('{{ URL::asset('assets/images/profile/cover-image.png') }}'); cursor: pointer;"
-                        data-bs-toggle="modal" data-bs-target="#imagePreviewModal" onclick="goToSlide(0)">
-                    </div>
-                    <div class="image rounded-1 m-1"
-                        style="background-image: url('{{ URL::asset('assets/images/profile/cover-image.png') }}'); cursor: pointer;"
-                        data-bs-toggle="modal" data-bs-target="#imagePreviewModal" onclick="goToSlide(1)">
-                    </div>
-                    <div class="image rounded-1 m-1 d-flex justify-content-center align-items-center"
-                        style="background-image: url('{{ URL::asset('assets/images/profile/cover-image.png') }}'); filter: brightness(0.5); cursor: pointer;"
-                        data-bs-toggle="modal" data-bs-target="#imagePreviewModal" onclick="goToSlide(2)">
-                        <h4 class="text-white m-0">+5</h4>
-                    </div>
-                </div>
+                <p>
+                    {{ \Carbon\Carbon::parse($education['start_date'])->format('M Y') }}
+                    -
+                    {{ \Carbon\Carbon::parse($education['end_date'])->format('M Y') }}
+                </p>
+
+                <p>Grade: {{ $education['cgpa'] }}</p>
+
+                <p>{{ $education['description'] }}</p>
+
             </div>
+            @if (!empty($education['skills']))
+            <div class="skills d-flex flex-wrap align-items-center">
+                Skills:
 
+                @foreach ($education['skills'] as $skill)
+                <div class="badge text-bg-secondary m-1">
+                    <span>{{ $skill['skill_name'] }}</span>
+                </div>
+                @endforeach
+            </div>
+            @endif
+
+            @if (!empty($education['media']))
+            <div class="images d-flex flex-wrap" data-image-preview-group>
+
+                @foreach ($education['media'] as $media)
+                <div class="image rounded-1 m-1" data-preview-image data-image="{{ $media['file_url'] }}"
+                    data-title="{{ $media['title'] }}" data-description="{{ $media['description'] ?? '' }}"
+                    style="background-image: url('{{ $media['file_url'] }}'); cursor: pointer;">
+                </div>
+                @endforeach
+
+            </div>
+            @endif
         </article>
 
+        @endforeach
+        @include('components.image-preview')
     </div>
 </div>
 
@@ -258,10 +267,13 @@
         </div>
     </div>
 </div>
+
 @endsection
 
 @section('script')
-<script>
+<script defer>
+    let educationList = @json($educations);
+
     let educationMode = "add";
     let editingEducationId = null;
 
@@ -270,6 +282,9 @@
 
     let mediaList = [];
     let deletedMediaIds = [];
+    let skillList = [];
+    let deletedSkillIds = [];
+
     let educationModalEl = document.getElementById("educationModal");
     let editMediaModalEl = document.getElementById("editMediaModal");
     let educationModal = bootstrap.Modal.getOrCreateInstance(educationModalEl);
@@ -291,10 +306,10 @@
     let mediaTitleCount = document.getElementById("mediaTitleCount");
     let btnSaveEducation = document.getElementById("btnSaveEducation");
 
-    let skillList = [];
+    let institutionRequest;
 
     function loadInstitutions() {
-        $.ajax({
+        institutionRequest = $.ajax({
             url: "{{ asset('assets/internship-assets/data/institution.json') }}",
             type: "GET",
             dataType: "json",
@@ -304,8 +319,8 @@
 
                 response.forEach(function (institution) {
                     $("#institution").append(`
-					<option value="${institution.id}">${institution.name}</option>
-				`);
+                    <option value="${institution.id}">${institution.name}</option>
+                `);
                 });
             },
 
@@ -314,7 +329,6 @@
             }
         });
     }
-    loadInstitutions();
 
     function loadSkills() {
         $.ajax({
@@ -331,11 +345,19 @@
             }
         });
     }
+
+    // load ajax
+    loadInstitutions();
     loadSkills();
 
-    function createSkillRow(skill = "", proficiency = "") {
+    function createSkillRow(skill = "", proficiency = "", skillRowId = null) {
         let skillRow = document.createElement("div");
+
         skillRow.classList.add("mb-3", "skill-row");
+
+        if (skillRowId) {
+            skillRow.dataset.id = skillRowId;
+        }
 
         let skillOptions = "";
 
@@ -370,6 +392,7 @@
 
         return skillRow;
     }
+
     addSkillBtn.addEventListener("click", function () {
         skillContainer.appendChild(createSkillRow());
     });
@@ -379,13 +402,24 @@
         let removeBtn = event.target.closest(".remove-skill");
         if (!removeBtn) return;
         let row = removeBtn.closest(".skill-row");
-        if (row) row.remove();
+        if (!row) return;
+        if (row.dataset.id) {
+            deletedSkillIds.push(row.dataset.id);
+        }
+        row.remove();
     });
 
     function renderSkills(skills = []) {
         skillContainer.innerHTML = "";
+
         skills.forEach(function (skill) {
-            skillContainer.appendChild(createSkillRow(skill.skill_id, skill.proficiency));
+            skillContainer.appendChild(
+                createSkillRow(
+                    skill.skill_id,
+                    skill.proficiency,
+                    skill.id
+                )
+            );
         });
     }
 
@@ -601,6 +635,7 @@
         educationMode = "add";
         editingEducationId = null;
         deletedMediaIds = [];
+        deletedSkillIds = [];
         resetMediaForm();
 
         document.querySelector("#educationModal .modal-title").textContent = "Add Education";
@@ -631,45 +666,44 @@
         educationMode = "edit";
         editingEducationId = id;
         deletedMediaIds = [];
+        deletedSkillIds = [];
         resetMediaForm();
 
-        $.ajax({
-            url: "{{ asset('assets/internship-assets/data/education.json') }}",
-            type: "GET",
 
-            success: function (data) {
-                document.querySelector("#educationModal .modal-title").textContent = "Edit Education";
-                btnSaveEducation.textContent = "Update";
-
-                $("#institution").val(data.institution);
-                $("#fieldOfStudy").val(data.field_of_study);
-                $("#qualification").val(data.qualification);
-                $("#programmeName").val(data.programme_name);
-                $("#cgpaInput").val(data.cgpa);
-                $("#descriptionInput").val(data.description);
-                $("#startDate").val(data.start_date);
-                $("#endDate").val(data.end_date);
-
-                renderSkills(data.skills ?? []);
-
-                mediaList = (data.media ?? []).map(function (media) {
-                    return {
-                        id: media.id,
-                        file: null,
-                        title: media.title,
-                        description: media.description ?? "",
-                        preview: media.file_url
-                    };
-                });
-
-                renderMedia();
-                educationModal.show();
-            },
-
-            error: function (xhr) {
-                console.log(xhr.responseJSON);
-            }
+        let data = educationList.find(function (education) {
+            return education.id == id;
         });
+
+        if (!data) return;
+
+        document.querySelector("#educationModal .modal-title").textContent = "Edit Education";
+        btnSaveEducation.textContent = "Update";
+
+        institutionRequest.done(function () {
+            $("#institution").val(data.institution);
+        });
+        $("#fieldOfStudy").val(data.field_of_study);
+        $("#qualification").val(data.qualification);
+        $("#programmeName").val(data.programme_name);
+        $("#cgpaInput").val(data.cgpa);
+        $("#descriptionInput").val(data.description);
+        $("#startDate").val(data.start_date);
+        $("#endDate").val(data.end_date);
+
+        renderSkills(data.skills ?? []);
+
+        mediaList = (data.media ?? []).map(function (media) {
+            return {
+                id: media.id,
+                file: null,
+                title: media.title,
+                description: media.description ?? "",
+                preview: media.file_url
+            };
+        });
+
+        renderMedia();
+        educationModal.show();
     }
     btnSaveEducation.addEventListener("click", function (event) {
         event.preventDefault();
@@ -687,8 +721,17 @@
         document.querySelectorAll("#skillContainer .skill-row").forEach((row, index) => {
             let skill = row.querySelector(".skill-select").value;
             let proficiency = row.querySelector(".proficiency-select").value;
-            formData.append(`skills[${index}][skill]`, skill);
+
+            if (row.dataset.id) {
+                formData.append(`skills[${index}][id]`, row.dataset.id);
+            }
+
+            formData.append(`skills[${index}][skill_id]`, skill);
             formData.append(`skills[${index}][proficiency]`, proficiency);
+        });
+
+        deletedSkillIds.forEach(function (id, index) {
+            formData.append(`deleted_skill_ids[${index}]`, id);
         });
 
         mediaList.forEach(function (media, index) {
@@ -708,10 +751,10 @@
             formData.append(`deleted_media_ids[${index}]`, id);
         });
 
-        let url;
-
+        let url, method
         if (educationMode === "add") {
             url = "/education";
+            method = "POST"
         } else {
             url = `/education/${editingEducationId}`;
             formData.append("_method", "PUT");
@@ -724,29 +767,20 @@
             console.log(key, value);
         }
 
+        return
+
         $.ajax({
-            url: "{{ asset('assets/internship-assets/data/education.json') }}",
+            url: url,
             type: "POST",
             data: formData,
             processData: false,
             contentType: false,
-            /*
-            headers: {
-                "X-CSRF-TOKEN":
-                    document
-                        .querySelector(
-                            'meta[name="csrf-token"]'
-                        )
-                        .getAttribute(
-                            "content"
-                        )
-            },
-            */
 
             success: function (response) {
-                console.log(response);
-                educationModal.hide();
+                document.activeElement.blur();
+                window.location.reload();
             },
+
             error: function (xhr) {
                 console.log(xhr.responseJSON);
             }
