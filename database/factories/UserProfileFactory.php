@@ -20,6 +20,12 @@ class UserProfileFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
+            'name' => function (array $attributes) {
+                return User::find($attributes['user_id'])->name;
+            },
+            'email' => function (array $attributes) {
+                return User::find($attributes['user_id'])->email;
+            },
             'about' => fake()->paragraph(3),
             'headline' => fake()->jobTitle(),
             'location' => fake()->city() . ', ' . fake()->country(),

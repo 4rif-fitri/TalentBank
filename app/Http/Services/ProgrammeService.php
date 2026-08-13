@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\Programme;
 use App\Models\User;
+use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -30,15 +31,17 @@ class ProgrammeService
      */
     public function getProgrammesByUserId(int $userId, string $search = null, string $session = null)
     {
-        $userExists = User::find($userId);
+        $userProfile = UserProfile::where('user_id', $userId)->first();
 
-        if (!isset($userExists)) {
+        if (!isset($userProfile)) {
             throw new Exception('User not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
+        $userProfileId = $userProfile->id;
+
         return Programme::with([
-            'enrollments' => function ($query) use ($userId) {
-                $query->where('user_id', $userId);
+            'enrollments' => function ($query) use ($userProfileId) {
+                $query->where('user_profile_id', $userProfileId);
             },
             'enrollments.semesters' => function ($query) use ($session) {
                 // filter for session
@@ -48,8 +51,8 @@ class ProgrammeService
             },
             'enrollments.semesters.media',
         ])
-            ->whereHas('enrollments', function ($query) use ($userId) {
-                $query->where('user_id', $userId);
+            ->whereHas('enrollments', function ($query) use ($userProfileId) {
+                $query->where('user_profile_id', $userProfileId);
             })
             ->whereHas('enrollments.semesters', function ($query) use ($session) {
                 // filter for session
@@ -60,9 +63,9 @@ class ProgrammeService
             ->when(isset($search), function ($query) use ($search) {
                 // filter for search query
                 $query->where(function ($query) use ($search) {
-                    $query->where('programme_name', 'LIKE', $search)
-                        ->orWhere('programme_code', 'LIKE', $search)
-                        ->orWhere('programme_level', 'LIKE', $search);
+                    $query->where('programme_name', 'LIKE', "%$search%")
+                        ->orWhere('programme_code', 'LIKE', "%$search%")
+                        ->orWhere('programme_level', 'LIKE', "%$search%");
                 });
             })
             ->get();

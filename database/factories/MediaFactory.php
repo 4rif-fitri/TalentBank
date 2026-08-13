@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Media;
 use App\Models\Semester;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +21,7 @@ class MediaFactory extends Factory
     public function definition(): array
     {
         return [
-            'uploaded_by_user_id' => User::inRandomOrder()->first()->id,
+            'uploaded_by_user_id' => UserProfile::inRandomOrder()->first()->id,
             'source_name' => $this->faker->randomElement([
                 'semester',
                 // 'education',

@@ -11,6 +11,8 @@ class UserProfile extends Model
     use HasFactory;
 
     public $fillable = [
+        'name',
+        'email',
         'user_id',
         'about',
         'headline',
