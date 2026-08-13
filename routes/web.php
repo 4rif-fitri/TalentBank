@@ -21,19 +21,20 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::get('/', [internshipController::class, "index"])->name('home');
-});
+Route::middleware('')->get('/', [internshipController::class, "index"])->name('home');
 
-Route::middleware('auth')->prefix('profile')->group(function () {
+Route::middleware('')->prefix('profile')->group(function () {
     // page routes
     Route::get('/student', [internshipController::class, "profile"])->name('profile.student');
     Route::get('/education', [internshipController::class, "education"])->name('profile.education');
     Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience');
 
     // crud routes
-    Route::get('/', [ProfileController::class, 'getProfileDataByUserIdJson'])->name('profile.getProfileDataByUserIdJson');
+    Route::get('/{userId}', [ProfileController::class, 'getProfileDataByUserIdJson'])->name('profile.getProfileDataByUserIdJson');
     Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
+    Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage');
+    Route::post('/upload/cover-image', [ProfileController::class, 'uploadCoverImage'])->name('update.uploadCoverImage');
 });
 
 Route::middleware('auth')->prefix('organizations')->group(function () {

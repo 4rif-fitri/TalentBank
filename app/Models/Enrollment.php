@@ -12,7 +12,7 @@ class Enrollment extends Model
 
     protected $fillable = [
         'programme_id',
-        'user_id',
+        'user_profile_id',
         'student_email',
         'matric_number',
         'intake_year',

@@ -85,7 +85,7 @@ class FacultyController extends Controller
 
             return redirect()->back()->with(ApiResponse::success('Faculty created successfully', $faculty, 201)->toArray());
         } catch (Exception $e) {
-            return redirect()->back()->withErrors('Failed to create faculty. ' . $e->getMessage(), $e->getCode());
+            return redirect()->back()->withErrors('Failed to create faculty. ' . $e->getMessage());
         }
     }
 
@@ -108,7 +108,7 @@ class FacultyController extends Controller
 
             return redirect()->back()->with(ApiResponse::success('Faculty updated successfully', null)->toArray());
         } catch (Exception $e) {
-            return redirect()->back()->withErrors('Failed to update faculty. ' . $e->getMessage(), $e->getCode());
+            return redirect()->back()->withErrors('Failed to update faculty. ' . $e->getMessage());
         }
     }
 }

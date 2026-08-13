@@ -23,9 +23,6 @@ class User extends Authenticatable
         'email',
         'email_verified_at',
         'password',
-        'telno',
-        'address',
-        'profile_image',
         'remember_token',
         'created_at',
         'updated_at',
@@ -52,15 +49,5 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function organizations()
-    {
-        return $this->belongsToMany(Organization::class, 'organization_user', 'user_id', 'organization_id');
-    }
-
-    public function organizationUsers()
-    {
-        return $this->hasMany(OrganizationUser::class, 'user_id');
     }
 }

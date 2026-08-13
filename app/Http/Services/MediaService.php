@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\Media;
+use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
@@ -34,7 +35,7 @@ class MediaService
     public function createMedia(array $data, UploadedFile $file)
     {
         $filename = $data['file_url'];
-        $userId = 1;
+        $userProfileId = UserProfile::where('user_id', Auth::id() ?? 4)->firstOrFail()->id;
         $fileMimeType = $file->getMimeType();
 
         if (!in_array($fileMimeType, $this->allowedMediaType)) {
@@ -45,7 +46,7 @@ class MediaService
         $file->move($data['file_path'], $filename);
 
         $media = Media::create([
-            'uploaded_by_user_id' => $userId,
+            'uploaded_by_user_id' => $userProfileId,
             'source_name' => $data['source_name'],
             'source_id' => $data['source_id'],
             'media_type' => $mediaType,

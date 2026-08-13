@@ -12,7 +12,7 @@ class OrganizationUser extends Model
 
     protected $fillable = [
         'organization_id',
-        'user_id',
+        'user_profile_id',
         'role_id',
         'status',
     ];
