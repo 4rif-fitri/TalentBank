@@ -23,7 +23,7 @@ class EnrollmentFactory extends Factory
             'programme_id' => Programme::inRandomOrder()->first()->id,
             'user_id' => User::inRandomOrder()->first()->id,
             'student_email' => $this->faker->email(),
-            'matric_number' => $this->faker->word(),
+            'matric_number' => fake()->unique()->numerify('B########'),
             'intake_year' => $this->faker->year(),
             'graduation_year' => $this->faker->year(),
             'cgpa' => $this->faker->randomFloat(2, 0, 4.0),

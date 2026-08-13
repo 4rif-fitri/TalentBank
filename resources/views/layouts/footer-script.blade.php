@@ -1,13 +1,13 @@
-        <!-- JAVASCRIPT -->
-        <script src="{{ URL::asset('assets/libs/jquery/jquery.min.js')}}"></script>
-        <script src="{{ URL::asset('assets/libs/jquery-ui/jquery-ui.min.js')}}"></script>
-        <script src="{{ URL::asset('assets/libs/bootstrap/bootstrap.min.js')}}"></script>
-        <script src="{{ URL::asset('assets/libs/metismenu/metismenu.min.js')}}"></script>
-        <script src="{{ URL::asset('assets/libs/simplebar/simplebar.min.js')}}"></script>
-        <script src="{{ URL::asset('assets/libs/node-waves/node-waves.min.js')}}"></script>
-        @yield('script')
-
-        <!-- App js -->
-        <script src="{{ URL::asset('assets/js/app.min.js')}}"></script>
-        
-        @yield('script-bottom')
+<!-- JAVASCRIPT -->
+<script src="{{URL::asset('assets/internship-assets/libs/jquery-4.0.0.min.js')}}"></script>
+<script src="{{URL::asset('assets/internship-assets/libs/jquery-ui.min.js')}}"></script>
+<script src="{{URL::asset('assets/internship-assets/libs/bootstrap.min.js')}}"></script>
+<script src="{{URL::asset('assets/internship-assets/libs/sweetalert2@11.js')}}"></script>
+<script src="{{URL::asset('assets/internship-assets/layout/newLayout.js')}}"></script>
+<script>
+    if (window.innerWidth > 768 && localStorage.getItem("sidebarCollapsed") === "true") {
+        document.documentElement.classList.add("sidebar-collapsed-init");
+    }
+</script>
+@yield('script')
+<!-- JAVASCRIPT -->
