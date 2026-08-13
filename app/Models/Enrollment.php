@@ -23,4 +23,9 @@ class Enrollment extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function semesters()
+    {
+        return $this->hasMany(Semester::class, 'enrollment_id');
+    }
 }

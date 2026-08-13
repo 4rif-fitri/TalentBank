@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\internshipController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProgrammeController;
+use App\Http\Controllers\SemesterController;
 
 // auth routes
 Route::middleware('guest')->group(function () {
@@ -54,4 +56,14 @@ Route::middleware('auth')->prefix('faculties')->group(function () {
     Route::get('/{id}', [FacultyController::class, 'getFacultyByIdJson'])->name('faculty.getFacultyByIdJson');
     Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store');
     Route::put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update');
+});
+
+Route::middleware('auth')->prefix('programmes')->group(function () {
+    // crud routes
+    Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson');
+});
+
+Route::middleware('auth')->prefix('semesters')->group(function () {
+    // crud routes
+    Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults');
 });
