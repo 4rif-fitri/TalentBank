@@ -21,9 +21,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
 });
 
-Route::middleware('')->get('/', [internshipController::class, "index"])->name('home');
+Route::middleware('auth')->get('/', [internshipController::class, "index"])->name('home');
 
-Route::middleware('')->prefix('profile')->group(function () {
+Route::middleware('auth')->prefix('profile')->group(function () {
     // page routes
     Route::get('/student', [internshipController::class, "profile"])->name('profile.student');
     Route::get('/education', [internshipController::class, "education"])->name('profile.education');
