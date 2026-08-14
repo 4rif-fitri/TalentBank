@@ -53,10 +53,6 @@ class OrganizationController extends Controller
      */
     public function getAllOrganizationsJson(Request $request)
     {
-        if (!$request->ajax()) {
-            return ApiResponse::error('Ajax request required.', Response::HTTP_METHOD_NOT_ALLOWED)->toJsonResponse();
-        }
-
         $organizations = $this->organizationService->getAllOrganizations();
 
         return ApiResponse::success('Success.', $organizations)->toJsonResponse();
