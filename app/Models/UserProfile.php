@@ -38,9 +38,9 @@ class UserProfile extends Model
         return $this->hasMany(OrganizationUser::class, 'user_profile_id');
     }
 
-    public function activeEnrollment()
+    public function activeProgramme()
     {
-        return $this->hasOne(Enrollment::class, 'user_profile_id')
-            ->where('enrollment_status', 'Active');
+        return $this->hasOneThrough(Programme::class, Enrollment::class, 'user_profile_id', 'id', 'id', 'programme_id')
+            ->where('enrollments.enrollment_status', 'Active');
     }
 }

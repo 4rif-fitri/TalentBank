@@ -53,7 +53,7 @@ class ProfileService
             },
             'organizationUsers.organization',
             'organizationUsers.role',
-            'activeEnrollment'
+            'activeProgramme'
         ])
             ->where('user_id', $userId)
             ->first();
