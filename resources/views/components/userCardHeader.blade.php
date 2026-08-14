@@ -1,5 +1,5 @@
 <section class="user-card-header">
-    <div class="user-card-banner" id="coverImage" style="background-image: url('../assets/internship-assets/images/7.jpg');">
+    <div class="user-card-banner" id="coverImage" style="background-image: url('');">
         <div class="icon-container">
             <label for="coverImageInput" class="btn icon bg-body">
                 <i class="fa-solid fa-pencil"></i>
@@ -9,7 +9,7 @@
     </div>
 
     <div class="user-profile-group">
-        <div class="profile-image" id="profileImage" style="background-image: url('../assets/internship-assets/images/7.jpg');">
+        <div class="profile-image" id="profileImage" style="background-image: url('');">
             <div class="w-100 h-100 position-relative">
                 <label for="profileImageInput" class="btn icon bg-body">
                     <i class="fa-solid fa-camera"></i>
@@ -26,9 +26,9 @@
             </button>
         </div>
         <h2 id="name" class="fw-bold"></h2>
-        <p id="headline">Computer Science Student | Web Developer | UI/UX Enthusiast</p>
-        <a id="uni-name" href="#" class="h5 fw-bold">Universiti Teknikal Malaysia Melaka (UTeM)</a>
-        <p id="programme">Bachelor of Computer Science (Software Engineering)</p>
+        <p id="headline"></p>
+        <a id="uni-name" href="#" class="h5 fw-bold"></a>
+        <p id="programme"></p>
 
         <article id="location">
             <p>

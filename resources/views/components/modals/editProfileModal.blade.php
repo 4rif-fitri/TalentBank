@@ -2,10 +2,9 @@
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
 
         <div class="modal-content">
-            <form id="profileForm" action="/profile" method="POST">
-                <!-- @csrf -->
-                <input type="hidden" name="_method" value="PUT">
-
+            <form id="profileForm" action="{{ route('profile.update') }}" method="POST">
+                @csrf
+                @method('PUT')
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Intro</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -23,21 +22,29 @@
                             <input type="text" class="form-control" name="name" id="profileNameInput" required>
                         </div>
 
+                        <div class="mb-3 d-none">
+                            <label for="profileEmailInput" class="form-label">Email</label>
+                            <input type="text" class="form-control" name="email" id="profileEmailInput" required>
+                        </div>
+
+                        <div class="mb-3 d-none">
+                            <label for="profileEmailInput" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" name="phone_no" id="profilePhoneNoInput" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="locationInput" class="form-label">Location</label>
+                            <input type="text" name="location" id="locationInput" class="form-control">
+                        </div>
+
                         <div class="mb-3">
                             <label for="profileHeadlineInput" class="form-label">Headline</label>
-                            <textarea class="form-control" name="headline" id="profileHeadlineInput" rows="3" maxlength="255"></textarea>
+                            <textarea class="form-control" name="headline" id="profileHeadlineInput" rows="3"
+                                maxlength="255"></textarea>
                             <div class="text-end text-muted small mt-1">
                                 <span id="headlineCount">0</span>/255
                             </div>
                         </div>
-                        <hr>
-
-                        <h6 class="fw-bold mb-3">Location</h6>
-                        <div class="mb-3">
-                            <label for="locationInput" class="form-label">Location</label>
-                            <input type="text" id="locationInput" class="form-control">
-                        </div>
-
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -52,84 +59,89 @@
 
 
 @push('scripts')
-    <script>
-        let profileModalEl = document.getElementById("editProfileModal");
-        let profileModal = bootstrap.Modal.getOrCreateInstance(profileModalEl);
+<script>
+    let profileModalEl = document.getElementById("editProfileModal");
+    let profileModal = bootstrap.Modal.getOrCreateInstance(profileModalEl);
 
-        let $profileLoading = $("#profileLoading");
-        let $profileFields = $("#profileFields");
-        let $btnSaveProfile = $("#btnSaveProfile")
+    let $profileLoading = $("#profileLoading");
+    let $profileFields = $("#profileFields");
+    let $btnSaveProfile = $("#btnSaveProfile")
 
-        function showProfileLoading() {
-            $profileLoading.removeClass("d-none");
-            $profileFields.addClass("d-none");
-            $btnSaveProfile.prop("disabled", true);
-        }
+    function showProfileLoading() {
+        $profileLoading.removeClass("d-none");
+        $profileFields.addClass("d-none");
+        $btnSaveProfile.prop("disabled", true);
+    }
 
-        function hideProfileLoading() {
-            $profileLoading.addClass("d-none");
-            $profileFields.removeClass("d-none");
-            $btnSaveProfile.prop("disabled", false);
-        }
+    function hideProfileLoading() {
+        $profileLoading.addClass("d-none");
+        $profileFields.removeClass("d-none");
+        $btnSaveProfile.prop("disabled", false);
+    }
 
-        $("#btnEditProfile").on("click", function() {
-            showProfileLoading();
+    $("#btnEditProfile").on("click", function () {
+        profileModal.show();
+        $("#profileNameInput").val($("#name").text())
+        $("#profileHeadlineInput").val($("#headline").text())
+        $("#locationInput").val($("#profileLocation").text())
+        $("#profileEmailInput").val($("#email").text())
+        $("#profilePhoneNoInput").val($("#phoneNo").text())
+    });
+
+    $("#profileForm").on("submit", function (e) {
+        e.preventDefault();
+
+        let $form = $(this);
+        let formData = new FormData(this);
+
+        $btnSaveProfile.prop("disabled", true).text("Saving...");
 
         $.ajax({
-            url: "../data/profile.json",
-            type: "GET",
-            dataType: "json",
-            success: function(response) {
+            url: $form.attr("action"),
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+
+            success: function (response) {
                 console.log(response);
-                /*
-                |----------------------------------------------
-                | Expected:
-                |
-                | {
-                |   "name": "Lorem bin Ipsum",
-                |   "headline": "...",
-                |   "location": "Durian Tunggal, Melaka, Malaysia"
-                | }
-                |----------------------------------------------
-                */
-                $("#profileNameInput").val(response.name ?? "");
-                $("#profileHeadlineInput").val(response.headline ?? "");
-                $("#headlineCount").text(
-                    (response.headline ?? "").length
-                );
 
-                $("#locationInput").val(response.location ?? "");
-
-                hideProfileLoading();
-                profileModal.show();
-            },
-
-
-            error: function(xhr) {
-                console.error(xhr);
-                hideProfileLoading();
+                profileModal.hide();
+                getProfileData()
 
                 Swal.fire({
-                    title: "Unable to load profile",
-                    text: "Profile data could not be loaded.",
+                    title: "Success",
+                    text: response.message ?? "Profile updated successfully.",
+                    icon: "success"
+                });
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseJSON);
+
+                Swal.fire({
+                    title: "Unable to edit profile",
+                    text: xhr.responseJSON?.message ?? "Unable to update profile.",
                     icon: "error"
                 });
+            },
+
+            complete: function () {
+                $btnSaveProfile
+                    .prop("disabled", false)
+                    .text("Save");
             }
         });
-        });
+    });
 
-        $("#profileForm").on("submit", function() {
-            $btnSaveProfile.prop("disabled", true).text("Saving...");
-        });
+    $("#profileHeadlineInput").on("input", function () {
+        $("#headlineCount").text(this.value.length);
+    });
 
-        $("#profileHeadlineInput").on("input", function() {
-            $("#headlineCount").text(this.value.length);
-        });
-
-        profileModalEl.addEventListener("hidden.bs.modal", function() {
-            $("#profileForm")[0].reset();
-            $("#headlineCount").text("0");
-            $btnSaveProfile.prop("disabled", false).text("Save");
-        });
-    </script>
+    profileModalEl.addEventListener("hidden.bs.modal", function () {
+        $("#profileForm")[0].reset();
+        $("#headlineCount").text("0");
+        $btnSaveProfile.prop("disabled", false).text("Save");
+    });
+</script>
 @endpush

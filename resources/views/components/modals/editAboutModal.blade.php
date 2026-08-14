@@ -75,7 +75,6 @@
 
     $("#aboutForm").on("submit", function (e) {
         e.preventDefault();
-
         $btnSaveAbout.prop("disabled", true).text("Saving...");
 
         let $form = $(this);
