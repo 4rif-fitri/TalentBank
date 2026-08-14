@@ -86,6 +86,7 @@
         $("#locationInput").val($("#profileLocation").text())
         $("#profileEmailInput").val($("#email").text())
         $("#profilePhoneNoInput").val($("#phoneNo").text())
+        $("#headlineCount").text($("#profileHeadlineInput").val().length);
     });
 
     $("#profileForm").on("submit", function (e) {
