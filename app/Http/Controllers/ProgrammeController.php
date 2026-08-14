@@ -40,7 +40,7 @@ class ProgrammeController extends Controller
 
             return ApiResponse::success('Success', $programmes)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error('Failed to get programmes. ' . $e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error('Failed to get programmes. ' . $e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -62,7 +62,7 @@ class ProgrammeController extends Controller
 
             return ApiResponse::success('Success.', $programmes)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error('Failed to get programmes. ' . $e->getMessage())->toJsonResponse();
+            return ApiResponse::error('Failed to get programmes. ' . $e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 }

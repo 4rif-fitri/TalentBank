@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\EducationController;
 use App\Http\Controllers\FacultyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\internshipController;
@@ -67,4 +68,16 @@ Route::middleware('auth')->prefix('programmes')->group(function () {
 Route::middleware('auth')->prefix('semesters')->group(function () {
     // crud routes
     Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults');
+});
+
+Route::middleware('auth')->prefix('education')->group(function () {
+    // crud routes
+    Route::get('/getEducationByUserProfileId/{id}', [EducationController::class, 'getEducationByUserProfileId'])->name('education.getEducationByUserProfileId');
+    Route::get('/getEducationById/{id}', [EducationController::class, 'getEducationById'])->name('education.getEducationById');
+    Route::post('/store', [EducationController::class, 'store'])->name('education.store');
+    Route::put('/update/{id}', [EducationController::class, 'update'])->name('education.update');
+    Route::delete('/delete/{id}', [EducationController::class, 'delete'])->name('education.delete');
+
+    Route::get('/getAllFieldOfStudies', [EducationController::class, 'getAllFieldOfStudies'])->name('education.getAllFieldOfStudies');
+    Route::get('/getAllQualifications', [EducationController::class, 'getAllQualifications'])->name('education.getAllQualifications');
 });

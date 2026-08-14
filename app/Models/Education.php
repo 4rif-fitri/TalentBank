@@ -24,4 +24,24 @@ class Education extends Model
         'enrollment_status',
         'verification_status',
     ];
+
+    public function semesters()
+    {
+        return $this->hasMany(Semester::class, 'education_id');
+    }
+
+    public function fieldOfStudy()
+    {
+        return $this->belongsTo(FieldOfStudy::class, 'field_of_study_id');
+    }
+
+    public function qualification()
+    {
+        return $this->belongsTo(Qualification::class, 'qualification_id');
+    }
+
+    public function programme()
+    {
+        return $this->belongsTo(Programme::class, 'programme_id');
+    }
 }

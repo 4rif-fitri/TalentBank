@@ -2,6 +2,7 @@
 
 namespace App\Http\Helpers;
 
+use Exception;
 use Illuminate\Http\JsonResponse;
 
 class ApiResponse
@@ -70,5 +71,15 @@ class ApiResponse
             'message' => $this->message,
             'data' => $this->data,
         ], $this->status);
+    }
+
+    /**
+     * Get a valid status code from exception (100 - 599)
+     * @param Exception $e
+     * @return int
+     */
+    public static function getValidatedStatusCode(Exception $e)
+    {
+        return $e->getCode() >= 100 && $e->getCode() < 600 ? $e->getCode() : 400;
     }
 }
