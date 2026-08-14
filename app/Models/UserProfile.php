@@ -18,7 +18,6 @@ class UserProfile extends Model
         'headline',
         'location',
         'phone_no',
-        'address',
         'profile_image',
         'cover_image',
         'employment_status',
@@ -37,5 +36,11 @@ class UserProfile extends Model
     public function organizationUsers()
     {
         return $this->hasMany(OrganizationUser::class, 'user_profile_id');
+    }
+
+    public function activeProgramme()
+    {
+        return $this->hasOneThrough(Programme::class, Enrollment::class, 'user_profile_id', 'id', 'id', 'programme_id')
+            ->where('enrollments.enrollment_status', 'Active');
     }
 }
