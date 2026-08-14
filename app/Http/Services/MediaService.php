@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 
 class MediaService
 {
@@ -35,7 +36,8 @@ class MediaService
     public function createMedia(array $data, UploadedFile $file)
     {
         $filename = $data['file_url'];
-        $userProfileId = UserProfile::where('user_id', Auth::id() ?? 4)->firstOrFail()->id;
+        $filePath = $data['file_path'];
+        $userProfileId = session('user_profile_id');
         $fileMimeType = $file->getMimeType();
 
         if (!in_array($fileMimeType, $this->allowedMediaType)) {
@@ -43,7 +45,7 @@ class MediaService
         }
 
         $mediaType = str_starts_with($fileMimeType, 'application') ? 'pdf' : explode('/', $fileMimeType)[0];
-        $file->move($data['file_path'], $filename);
+        $file->move($filePath, $filename);
 
         $media = Media::create([
             'uploaded_by_user_id' => $userProfileId,

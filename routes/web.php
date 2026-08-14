@@ -21,6 +21,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
 });
 
+Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 Route::middleware('auth')->get('/', [internshipController::class, "index"])->name('home');
 
 Route::middleware('auth')->prefix('profile')->group(function () {
@@ -62,6 +64,7 @@ Route::middleware('auth')->prefix('faculties')->group(function () {
 Route::middleware('auth')->prefix('programmes')->group(function () {
     // crud routes
     Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson');
+    Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId');
 });
 
 Route::middleware('auth')->prefix('semesters')->group(function () {

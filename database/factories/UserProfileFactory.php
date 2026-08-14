@@ -30,7 +30,6 @@ class UserProfileFactory extends Factory
             'headline' => fake()->jobTitle(),
             'location' => fake()->city() . ', ' . fake()->country(),
             'phone_no' => fake()->phoneNumber(),
-            'address' => fake()->address(),
             'profile_image' => 'default.png',
             'cover_image' => 'default.png',
             'profile_visibility' => fake()->randomElement(['Public', 'Recruiter', 'Private']),

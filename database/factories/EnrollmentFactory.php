@@ -24,6 +24,7 @@ class EnrollmentFactory extends Factory
             'programme_id' => Programme::inRandomOrder()->first()->id,
             'user_profile_id' => UserProfile::inRandomOrder()->first()->id,
             'student_email' => $this->faker->email(),
+            // 'matric_number' => $this->faker->unique()->word(),
             'matric_number' => fake()->unique()->numerify('B########'),
             'intake_year' => $this->faker->year(),
             'graduation_year' => $this->faker->year(),

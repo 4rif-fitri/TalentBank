@@ -19,7 +19,6 @@ return new class extends Migration {
             $table->string('headline')->nullable();
             $table->string('location')->nullable();
             $table->string('phone_no')->nullable();
-            $table->string('address')->nullable();
             $table->string('profile_image')->nullable();
             $table->string('cover_image')->nullable();
             $table->enum('profile_visibility', ['Public', 'Recruiter', 'Private'])->default('Public');

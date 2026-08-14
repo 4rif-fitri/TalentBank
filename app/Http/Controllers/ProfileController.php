@@ -36,10 +36,6 @@ class ProfileController extends Controller
     public function getProfileDataByUserIdJson(Request $request, int $userId)
     {
         try {
-            if (!$request->ajax()) {
-                throw new Exception('Ajax request required.', Response::HTTP_METHOD_NOT_ALLOWED);
-            }
-
             $profile = $this->profileService->getProfileDataByUserId($userId);
 
             return ApiResponse::success('Success.', $profile)->toJsonResponse();
