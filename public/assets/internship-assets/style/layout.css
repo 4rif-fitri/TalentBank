@@ -213,7 +213,7 @@ body {
 	display: block;
 }
 
-.profile-dropdown a {
+.profile-dropdown > * {
 	height: 48px;
 	display: flex;
 	align-items: center;

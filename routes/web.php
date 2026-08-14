@@ -63,7 +63,7 @@ Route::middleware('auth')->prefix('faculties')->group(function () {
 
 Route::middleware('auth')->prefix('programmes')->group(function () {
     // crud routes
-    Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson');
+    Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson'); //
     Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId');
 });
 

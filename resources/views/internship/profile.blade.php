@@ -10,15 +10,16 @@
 
             <x-about />
 
-            <!-- <x-education />
+            <x-education />
 
+            <!--
             <x-projects />
 
             <x-experience />
 
             <x-honorsAwards />
 
-            <x-certifications /> -->
+            <x-certifications />-->
 
         </div>
 
@@ -89,7 +90,7 @@
             }
         });
         // Tab nav
-        
+
         function getProfileData() {
             $.ajax({
                 url: "{{ route('profile.getProfileDataByUserIdJson', ['userId' => auth()->id()]) }}",

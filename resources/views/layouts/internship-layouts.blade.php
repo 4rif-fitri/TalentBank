@@ -14,11 +14,9 @@
     <!-- <link rel="manifest" href="/manifest.json"> -->
     @include('layouts.head')
 </head>
-
 <body>
-
     @include('layouts.internship-sidebar')
-    <div class="sidebar-overlay"></div>
+
     @include('layouts.internship-topbar')
 
     <main class="main-content">
@@ -27,8 +25,6 @@
 
     @include('layouts.footer-script')
 
-@stack('scripts')
-
+    @stack('scripts')
 </body>
-
 </html>
