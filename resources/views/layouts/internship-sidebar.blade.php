@@ -10,86 +10,23 @@
     <nav class="sidebar-menu">
 
         <!-- Dashboard -->
-        <div class="sidebar-item">
-            <a href="{{ route('home') }}" class="sidebar-link">
-                <i class="fa-solid fa-gauge"></i>
-                <span class="menu-text">
-                    Dashboard
-                </span>
-            </a>
-        </div>
+        <x-sidebar-link :route="route('home')" routeName="home" icon="fa-solid fa-gauge" label="Dashboard" />
 
-        <div class="sidebar-item">
-            <a href="{{ route('profile.student') }}" class="sidebar-link">
-                <i class="fa-solid fa-user"></i>
-                <span class="menu-text">
-                    My Profile
-                </span>
-            </a>
-        </div>
+        <x-sidebar-link :route="route('profile.student')" routeName="profile.student" icon="fa-solid fa-user" label="My Profile" />
 
-        <div class="sidebar-item">
-            <a href="" class="sidebar-link">
-                <i class="fa-solid fa-file"></i>
-                <span class="menu-text">
-                    Resume
-                </span>
-            </a>
-        </div>
+        <!-- <x-sidebar-link :route="route('home')" routeName="profile.student" icon="fa-solid fa-file" label="Resume" />
 
-        <div class="sidebar-item">
-            <a href="" class="sidebar-link">
-                <i class="fa-solid fa-envelope"></i>
-                <span class="menu-text">
-                    Invitations
-                </span>
-            </a>
-        </div>
+        <x-sidebar-link :route="route('home')" routeName="profile.student" icon="fa-solid fa-envelope" label="Invitations" />
 
-        <div class="sidebar-item">
-            <a href="" class="sidebar-link">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span class="menu-text">
-                    Interviews
-                </span>
-            </a>
-        </div>
+        <x-sidebar-link :route="route('home')" routeName="profile.student" icon="fa-solid fa-calendar-days" label="Interviews" />
 
-        <div class="sidebar-item">
-            <a href="" class="sidebar-link">
-                <i class="fa-solid fa-briefcase"></i>
-                <span class="menu-text">
-                    Job Offers
-                </span>
-            </a>
-        </div>
+        <x-sidebar-link :route="route('home')" routeName="profile.student" icon="fa-solid fa-briefcase" label="Job Offers" />
 
-        <div class="sidebar-item">
-            <a href="" class="sidebar-link">
-                <i class="fa-solid fa-message"></i>
-                <span class="menu-text">
-                    Massages
-                </span>
-            </a>
-        </div>
+        <x-sidebar-link :route="route('home')" routeName="profile.student" icon="fa-solid fa-message" label="Message" />
 
-        <div class="sidebar-item">
-            <a href="" class="sidebar-link">
-                <i class="fa-solid fa-user-tie"></i>
-                <span class="menu-text">
-                    Employment Status
-                </span>
-            </a>
-        </div>
+        <x-sidebar-link :route="route('home')" routeName="profile.student" icon="fa-solid fa-user-tie" label="Employment Status" />
 
-        <div class="sidebar-item">
-            <a href="" class="sidebar-link">
-                <i class="fa-solid fa-message"></i>
-                <span class="menu-text">
-                    Settings
-                </span>
-            </a>
-        </div>
+        <x-sidebar-link :route="route('home')" routeName="profile.student" icon="fa-solid fa-message" label="Settings" /> -->
+
     </nav>
-
 </aside>
