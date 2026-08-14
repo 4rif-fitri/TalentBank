@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Override;
 
 class LoginController extends Controller
 {
@@ -40,5 +40,18 @@ class LoginController extends Controller
         $password = $request->input('password');
 
         return ['email' => $email, 'password' => $password];
+    }
+
+    /**
+     * Runs after user is authenticated after login
+     * @param Request $request
+     * @param mixed $user
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        $profileId = UserProfile::where('user_id', $user->id)->firstOrFail()->id;
+        session(['user_profile_id' => $profileId]);
+        return redirect()->intended($this->redirectPath());
     }
 }

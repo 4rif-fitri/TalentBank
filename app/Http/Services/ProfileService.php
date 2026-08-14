@@ -3,11 +3,13 @@
 namespace App\Http\Services;
 
 use App\Models\profile;
+use App\Models\User;
 use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -24,13 +26,26 @@ class ProfileService
         //
     }
 
+    private function getProfileModel()
+    {
+        $profileId = session('user_profile_id');
+
+        $profile = UserProfile::find($profileId);
+
+        if (!isset($profile)) {
+            throw new Exception('Profile not found with given profile ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        return $profile;
+    }
+
     /**
      * Get profile data of profile by profile ID.
      * 
      * @param   int $userId
      * @return  UserProfile
      */
-    public function getProfileDataByUserId($userId = null)
+    public function getProfileDataByUserId($userId)
     {
         $profile = UserProfile::with([
             'organizationUsers' => function ($query) {
@@ -39,24 +54,11 @@ class ProfileService
             'organizationUsers.organization',
             'organizationUsers.role'
         ])
-            ->where('user_id', $userId ?? Auth::id())
+            ->where('user_id', $userId)
             ->first();
 
         if (!isset($profile)) {
-            throw new Exception('profile not found with given ID.', Response::HTTP_NOT_FOUND);
-        }
-
-        return $profile;
-    }
-
-    private function getProfileModel()
-    {
-        $userId = Auth::id();
-
-        $profile = UserProfile::where('user_id', $userId)->first();
-
-        if (!isset($profile)) {
-            throw new Exception('Profile not found with given profile ID.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Profile not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
         return $profile;
@@ -73,6 +75,7 @@ class ProfileService
     {
         $profile = $this->getProfileModel();
 
+        $isNameChanged = $data['name'] !== $profile->name;
         $isEmailChanged = $data['email'] !== $profile->email;
         $isPhoneChanged = $data['phone_no'] !== $profile->phone_no;
 
@@ -87,7 +90,7 @@ class ProfileService
                     $query->orWhere('phone_no', $data['phone_no']);
                 }
             })
-                ->where('user_id', '<>', Auth::id())
+                ->where('id', '<>', session('user_profile_id'))
                 ->exists();
 
             if ($emailOrPhoneExists) {
@@ -95,13 +98,24 @@ class ProfileService
             }
         }
 
-        $result = $profile->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'headline' => $data['headline'] ?? $profile->headline,
-            'location' => $data['location'] ?? $profile->location,
-            'phone_no' => $data['phone_no'] ?? $profile->phone_no,
-        ]);
+        $result = DB::transaction(function () use ($data, $isEmailChanged, $isNameChanged, $profile) {
+            $result = $profile->update([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'headline' => $data['headline'],
+                'location' => $data['location'],
+                'phone_no' => $data['phone_no'],
+            ]);
+
+            if ($isNameChanged || $isEmailChanged) {
+                User::find(Auth::id())->update([
+                    'name' => $data['name'],
+                    'email' => $data['email']
+                ]);
+            }
+
+            return $result;
+        });
 
         if (!$result) {
             throw new Exception('Failed to update profile.', Response::HTTP_BAD_REQUEST);

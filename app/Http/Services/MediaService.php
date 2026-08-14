@@ -37,7 +37,7 @@ class MediaService
     {
         $filename = $data['file_url'];
         $filePath = $data['file_path'];
-        $userProfileId = UserProfile::where('user_id', Auth::id())->firstOrFail()->id;
+        $userProfileId = session('user_profile_id');
         $fileMimeType = $file->getMimeType();
 
         if (!in_array($fileMimeType, $this->allowedMediaType)) {

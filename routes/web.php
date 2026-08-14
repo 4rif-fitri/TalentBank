@@ -21,6 +21,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('register');
 });
 
+Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 Route::middleware('auth')->get('/', [internshipController::class, "index"])->name('home');
 
 Route::middleware('auth')->prefix('profile')->group(function () {
