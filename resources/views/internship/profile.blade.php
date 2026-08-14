@@ -4,28 +4,17 @@
 <div class="user-card">
     <div class="user-card-left">
 
-        <x-userCardHeader />
+        <x-sections.userCardHeader />
 
         <div id="mainTabContent">
 
-            <x-about />
-
-            <!--
-            <x-education />
-
-            <x-projects />
-
-            <x-experience />
-
-            <x-honorsAwards />
-
-            <x-certifications />-->
+            <x-sections.about />
 
         </div>
 
         <div id="resultTabContent" class="d-none">
 
-            <x-semesterResults />
+            <x-sections.semesterResults />
 
         </div>
 
@@ -33,11 +22,11 @@
 
     <div class="user-card-right">
 
-        <x-contact-information />
+        <x-sections.contact-information />
 
-        <x-languages />
+        <x-sections.languages />
 
-        <x-skills />
+        <x-sections.skills />
 
     </div>
 
