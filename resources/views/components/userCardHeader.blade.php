@@ -1,16 +1,15 @@
 <section class="user-card-header">
-
-    <div class="user-card-banner" style="background-image: url('../assets/internship-assets/images/7.jpg');">
+    <div class="user-card-banner" id="coverImage" style="background-image: url('../assets/internship-assets/images/7.jpg');">
         <div class="icon-container">
-            <label for="coverPhotoInput" class="btn icon bg-body">
+            <label for="coverImageInput" class="btn icon bg-body">
                 <i class="fa-solid fa-pencil"></i>
-                <input type="file" hidden id="coverPhotoInput" accept="image/*">
+                <input type="file" hidden id="coverImageInput" name="cover_image" accept="image/*">
             </label>
         </div>
     </div>
 
     <div class="user-profile-group">
-        <div class="profile-image" style="background-image: url('../assets/internship-assets/images/7.jpg');">
+        <div class="profile-image" id="profileImage" style="background-image: url('../assets/internship-assets/images/7.jpg');">
             <div class="w-100 h-100 position-relative">
                 <label for="profileImageInput" class="btn icon bg-body">
                     <i class="fa-solid fa-camera"></i>
@@ -26,7 +25,7 @@
                 <i class="fa-solid fa-pencil"></i>
             </button>
         </div>
-        <h2 id="name" class="fw-bold">Lorem bin Ipsum</h2>
+        <h2 id="name" class="fw-bold"></h2>
         <p id="headline">Computer Science Student | Web Developer | UI/UX Enthusiast</p>
         <a id="uni-name" href="#" class="h5 fw-bold">Universiti Teknikal Malaysia Melaka (UTeM)</a>
         <p id="programme">Bachelor of Computer Science (Software Engineering)</p>
@@ -34,7 +33,7 @@
         <article id="location">
             <p>
                 <i class="fa-solid fa-location-dot"></i>
-                <span id="profileLocation">Durian Tunggal, Melaka, Malaysia</span>|
+                <span id="profileLocation"></span>|
                 <i class="fa-solid fa-user-check verified"></i>
                 University Verified
             </p>

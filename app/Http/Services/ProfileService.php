@@ -52,7 +52,7 @@ class ProfileService
     private function getProfileModel()
     {
         $userId = Auth::id();
-        $userId = 4;  // for testing purposes
+        // $userId = 4;  // for testing purposes
 
         $profile = UserProfile::where('user_id', $userId)->first();
 
@@ -66,8 +66,8 @@ class ProfileService
     /**
      * Update profile data of profile by profile ID.
      * Excluding password update.
-     * 
-     * @param   array $data 
+     *
+     * @param   array $data
      * @return  bool
      */
     public function updateProfileData(array $data)

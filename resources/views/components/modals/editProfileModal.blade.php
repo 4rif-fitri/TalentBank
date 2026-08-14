@@ -75,47 +75,47 @@
         $("#btnEditProfile").on("click", function() {
             showProfileLoading();
 
-            $.ajax({
-                url: "../data/profile.json",
-                type: "GET",
-                dataType: "json",
-                success: function(response) {
-                    console.log(response);
-                    /*
-                    |----------------------------------------------
-                    | Expected:
-                    |
-                    | {
-                    |   "name": "Lorem bin Ipsum",
-                    |   "headline": "...",
-                    |   "location": "Durian Tunggal, Melaka, Malaysia"
-                    | }
-                    |----------------------------------------------
-                    */
-                    $("#profileNameInput").val(response.name ?? "");
-                    $("#profileHeadlineInput").val(response.headline ?? "");
-                    $("#headlineCount").text(
-                        (response.headline ?? "").length
-                    );
+        $.ajax({
+            url: "../data/profile.json",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                console.log(response);
+                /*
+                |----------------------------------------------
+                | Expected:
+                |
+                | {
+                |   "name": "Lorem bin Ipsum",
+                |   "headline": "...",
+                |   "location": "Durian Tunggal, Melaka, Malaysia"
+                | }
+                |----------------------------------------------
+                */
+                $("#profileNameInput").val(response.name ?? "");
+                $("#profileHeadlineInput").val(response.headline ?? "");
+                $("#headlineCount").text(
+                    (response.headline ?? "").length
+                );
 
-                    $("#locationInput").val(response.location ?? "");
+                $("#locationInput").val(response.location ?? "");
 
-                    hideProfileLoading();
-                    profileModal.show();
-                },
+                hideProfileLoading();
+                profileModal.show();
+            },
 
 
-                error: function(xhr) {
-                    console.error(xhr);
-                    hideProfileLoading();
+            error: function(xhr) {
+                console.error(xhr);
+                hideProfileLoading();
 
-                    Swal.fire({
-                        title: "Unable to load profile",
-                        text: "Profile data could not be loaded.",
-                        icon: "error"
-                    });
-                }
-            });
+                Swal.fire({
+                    title: "Unable to load profile",
+                    text: "Profile data could not be loaded.",
+                    icon: "error"
+                });
+            }
+        });
         });
 
         $("#profileForm").on("submit", function() {
