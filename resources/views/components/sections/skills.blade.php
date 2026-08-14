@@ -16,9 +16,6 @@
         <p class="fw-bold">HTML</p>
         <p>Advanced</p>
     </article>
-    <hr>
-
-    <a href="./skills.html" class="d-flex justify-content-center align-items-center">Show All</a>
 </section>
 
 @push('scripts')

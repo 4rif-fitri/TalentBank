@@ -16,9 +16,6 @@
                     <p class="fw-bold">English</p>
                     <p> Professional working proficiency</p>
                 </article>
-                <hr>
-
-                <a href="./languages.html" class="d-flex justify-content-center align-items-center">Show All</a>
             </section>
 
 @push('scripts')

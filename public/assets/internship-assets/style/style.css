@@ -87,7 +87,6 @@ p {
 	left: 1rem;
 	top: -160%;
 	background-color: var(--color-border);
-	background-image: url("./cover-image.png");
 	background-position: center;
 	background-size: cover;
 }

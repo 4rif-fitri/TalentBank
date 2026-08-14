@@ -1,3 +1,24 @@
+<style>
+    .profile-actions {
+        width: 100%;
+    }
+
+    .profile-action-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+        .profile-actions {
+            width: 25%;
+            flex-shrink: 0;
+            align-content: flex-start;
+        }
+    }
+</style>
+
 <section class="user-card-header">
     <div class="user-card-banner" id="coverImage" style="background-image: url('');">
         <div class="icon-container">
@@ -19,37 +40,54 @@
         </div>
     </div>
 
-    <div class="user-profile-detail">
-        <div class="icon-container" style="top:-5px;">
+    <div class="d-md-flex justify-content-md-between">
+        <div class="user-profile-detail">
+            <!-- <div class="icon-container" style="top:-25px;">
+                <button type="button" class="btn btn-secondary icon" id="btnEditProfile">
+                    <i class="fa-solid fa-pencil"></i>
+                </button>
+            </div> -->
+            <h2 id="name" class="fw-bold"></h2>
             <button type="button" class="btn btn-secondary icon" id="btnEditProfile">
                 <i class="fa-solid fa-pencil"></i>
             </button>
-        </div>
-        <h2 id="name" class="fw-bold"></h2>
-        <p id="headline"></p>
-        <a id="uni-name" href="#" class="h5 fw-bold"></a>
-        <p id="programme"></p>
+            <p id="headline"></p>
+            <a id="uni-name" href="#" class="h5 fw-bold"></a>
+            <p id="programme"></p>
 
-        <article id="location">
-            <p>
-                <i class="fa-solid fa-location-dot"></i>
-                <span id="profileLocation"></span>|
-                <i class="fa-solid fa-user-check verified"></i>
-                University Verified
-            </p>
-        </article>
+            <article id="location">
+                <p>
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span id="profileLocation"></span>
+                </p>
+            </article>
 
-        <x-links />
-
-        <div class="btn-container">
-
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom"
-                aria-controls="offcanvasBottom">
-                Add Section
-            </button>
+            <x-links />
 
         </div>
 
+        <div class="row g-2 profile-actions mt-lg-4 mt-md-4">
+            <div class="col-12 order-1 order-md-2">
+                <button class="btn btn-primary w-100 profile-action-btn" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
+                    <i class="fa-solid fa-plus"></i>
+                    Add Section
+                </button>
+            </div>
+            <div class="col-6 col-md-12 order-2 order-md-1">
+                <button class="btn btn-outline-primary w-100 profile-action-btn" type="button">
+                    <i class="fa-regular fa-eye"></i>
+                    Preview
+                </button>
+            </div>
+            <div class="col-6 col-md-12 order-3 order-md-3">
+                <button class="btn btn-outline-primary w-100 profile-action-btn" type="button">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    Share
+                </button>
+            </div>
+
+        </div>
     </div>
 
     <nav class="horizontal-nav d-flex flex-wrap px-3">

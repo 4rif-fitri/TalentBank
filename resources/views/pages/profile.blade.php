@@ -84,27 +84,25 @@
     });
     // Tab nav
 
-    let email
-
     function getProfileData() {
         $.ajax({
             url: "{{ route('profile.getProfileDataByUserIdJson', ['userId' => auth()->id()]) }}",
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
-                console.log(data);
+                // console.log(data);
                 $("#name").text(data.name)
                 $("#headline").text(data.headline)
                 $("#aboutText").text(data.about)
                 $("#profileLocation").text(data.location)
-                $("#programme").text(data.active_programme.programme_name)
+                $("#programme").text(data.active_programmes[0].programme_name)
 
-                let imageUrl = "{{ asset('cover-image-url') }}/" + data.cover_image;
-                $("#coverImage").css("background-image", `url("${imageUrl}")`);
-                imageUrl = "{{ asset('profile-image-url') }}/" + data.profile_image;
-                $("#profileImage").css("background-image", `url("${imageUrl}")`);
+                let imageUrl = "{{ asset('cover-image-url') }}/" + data.cover_image
+                $("#coverImage").css("background-image", `url("${imageUrl}")`)
+                imageUrl = "{{ asset('profile-image-url') }}/" + data.profile_image
+                $("#profileImage").css("background-image", `url("${imageUrl}")`)
+                $("#profileBtn").css("background-image", `url("${imageUrl}")`)
 
-                email = data.email
             },
             error: function (xhr) {
                 console.error(xhr);

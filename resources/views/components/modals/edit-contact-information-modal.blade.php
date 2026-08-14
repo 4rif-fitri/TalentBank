@@ -10,7 +10,7 @@
                 @method('PUT')
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Contact Information</h5>
+                    <h5 class="modal-title">Edit Contact</h5>
 
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
@@ -137,7 +137,7 @@
                 Swal.fire({
                     title: "Success",
                     text: response.message ??
-                        "Contact information updated successfully.",
+                        "Contact updated successfully.",
                     icon: "success"
                 });
             },
@@ -146,9 +146,9 @@
                 console.error(xhr.responseJSON);
 
                 Swal.fire({
-                    title: "Unable to edit contact information",
+                    title: "Unable to edit contact",
                     text: xhr.responseJSON?.message ??
-                        "Unable to update contact information.",
+                        "Unable to update contact.",
                     icon: "error"
                 });
             },

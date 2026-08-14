@@ -22,9 +22,14 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisterController::class, 'register'])->name('register'); //+
 });
 
-Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->name('logout'); //+
-
 Route::middleware('auth')->get('/', [internshipController::class, "index"])->name('home'); //+
+Route::middleware('auth')->get('/invitations', [internshipController::class, "invitations"])->name('invitations'); //+
+Route::middleware('auth')->get('/interviews', [internshipController::class, "interviews"])->name('interviews'); //+
+Route::middleware('auth')->get('/jobOffers', [internshipController::class, "jobOffers"])->name('jobOffers'); //+
+Route::middleware('auth')->get('/messages', [internshipController::class, "messages"])->name('messages'); //+
+Route::middleware('auth')->get('/settings', [internshipController::class, "settings"])->name('settings'); //+
+
+Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->name('logout'); //+
 
 Route::middleware('auth')->prefix('profile')->group(function () {
     // page routes
