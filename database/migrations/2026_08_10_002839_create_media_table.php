@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('uploaded_by_user_id')->constrained('user_profiles', 'id')->onDelete('restrict');
+            $table->foreignId('uploaded_by_user_id')->constrained('user_profiles', 'id')->onDelete('cascade');
             $table->string('source_name');
             $table->integer('source_id')->unsigned();
             $table->enum('media_type', ['image', 'video', 'pdf', 'document']);

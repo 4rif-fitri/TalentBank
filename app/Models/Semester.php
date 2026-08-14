@@ -11,7 +11,7 @@ class Semester extends Model
     use HasFactory;
 
     protected $fillable = [
-        'enrollment_id',
+        'education_id',
         'gpa',
         'session',
         'created_at',
