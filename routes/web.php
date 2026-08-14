@@ -45,7 +45,7 @@ Route::middleware('auth')->prefix('organizations')->group(function () {
     Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategoriesJson'])->name('organization.getAllIndustryCategoriesJson');
     Route::get('/industry-sectors', [OrganizationController::class, 'getAllIndustrySectorsJson'])->name('organization.getAllIndustrySectorsJson');
     Route::post('/store', [OrganizationController::class, 'store'])->name('organization.store');
-    Route::put('/update', [OrganizationController::class, 'update'])->name('organization.update');
+    Route::put('/update/{orgId}', [OrganizationController::class, 'update'])->name('organization.update');
 });
 
 Route::middleware('auth')->prefix('faculties')->group(function () {

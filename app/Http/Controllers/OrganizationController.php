@@ -85,11 +85,10 @@ class OrganizationController extends Controller
      * @param   Request $request
      * @return  JsonResponse
      */
-    public function update(Request $request)
+    public function update(Request $request, int $orgId)
     {
         try {
             $validated = $this->validateOrganizationData($request);
-            $orgId = $request->input('org_id');
 
             if (!isset($orgId)) {
                 throw new Exception('Organization ID is required.', Response::HTTP_BAD_REQUEST);
