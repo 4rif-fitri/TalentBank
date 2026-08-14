@@ -21,9 +21,9 @@ class Programme extends Model
         'updated_at',
     ];
 
-    public function enrollments()
+    public function education()
     {
-        return $this->hasMany(Enrollment::class, 'programme_id');
+        return $this->hasMany(Education::class, 'programme_id');
     }
 
     public function organization()

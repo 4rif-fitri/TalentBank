@@ -41,21 +41,21 @@ class ProgrammeService
         $userProfileId = $userProfile->id;
 
         return Programme::with([
-            'enrollments' => function ($query) use ($userProfileId) {
+            'education' => function ($query) use ($userProfileId) {
                 $query->where('user_profile_id', $userProfileId);
             },
-            'enrollments.semesters' => function ($query) use ($session) {
+            'education.semesters' => function ($query) use ($session) {
                 // filter for session
                 $query->when(isset($session), function ($query) use ($session) {
                     $query->where('session', $session);
                 });
             },
-            'enrollments.semesters.media',
+            'education.semesters.media',
         ])
-            ->whereHas('enrollments', function ($query) use ($userProfileId) {
+            ->whereHas('education', function ($query) use ($userProfileId) {
                 $query->where('user_profile_id', $userProfileId);
             })
-            ->whereHas('enrollments.semesters', function ($query) use ($session) {
+            ->whereHas('education.semesters', function ($query) use ($session) {
                 // filter for session
                 $query->when(isset($session), function ($query) use ($session) {
                     $query->where('session', $session);

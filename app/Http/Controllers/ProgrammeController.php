@@ -19,7 +19,7 @@ class ProgrammeController extends Controller
     }
 
     /**
-     * Handles request for get all programmes with enrollments and semesters
+     * Handles request for get all programmes with education and semesters
      * 
      * @param Request $request
      * @param int $userId

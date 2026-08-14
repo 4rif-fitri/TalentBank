@@ -10,12 +10,9 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('semesters', function (Blueprint $table) {
+        Schema::create('qualifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('education_id')->constrained('education')->onDelete('cascade');
-            $table->decimal('gpa', 3, 2);
-            $table->string('session');
-            $table->timestamps();
+            $table->string('name')->unique();
         });
     }
 
@@ -24,6 +21,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('semesters');
+        Schema::dropIfExists('qualifications');
     }
 };

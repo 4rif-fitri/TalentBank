@@ -10,18 +10,18 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('enrollments', function (Blueprint $table) {
+        Schema::create('education', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('programme_id')->constrained('programmes')->onDelete('restrict');
             $table->foreignId('user_profile_id')->constrained('user_profiles')->onDelete('restrict');
-            $table->string('student_email')->unique();
-            $table->string('matric_number')->unique();
-            $table->year('intake_year');
-            $table->year('graduation_year');
-            $table->decimal('cgpa', 3, 2)->unsigned();
+            $table->foreignId('programme_id')->constrained('programmes')->onDelete('restrict');
+            $table->text('description')->nullable();
+            $table->foreignId('field_of_study_id')->constrained('field_of_studies')->nullable();
+            $table->foreignId('qualification_id')->constrained('qualifications')->nullable();
+            $table->decimal('cgpa', 3, 2)->nullable();
+            $table->date('start_date');
+            $table->date('end_date');
             $table->enum('enrollment_status', ['Active', 'Graduated', 'Deferred', 'Withdrawn']);
             $table->enum('verification_status', ['Pending', 'Verified', 'Rejected']);
-            $table->timestamps();
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('enrollments');
+        Schema::dropIfExists('education');
     }
 };
