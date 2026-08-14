@@ -52,7 +52,8 @@ class ProfileService
                 $query->where('status', 1);
             },
             'organizationUsers.organization',
-            'organizationUsers.role'
+            'organizationUsers.role',
+            'activeEnrollment'
         ])
             ->where('user_id', $userId)
             ->first();
