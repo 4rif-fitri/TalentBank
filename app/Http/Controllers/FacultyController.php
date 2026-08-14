@@ -39,7 +39,7 @@ class FacultyController extends Controller
 
             return ApiResponse::success('Success.', $faculties)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -61,7 +61,7 @@ class FacultyController extends Controller
 
             return ApiResponse::success('Success.', $faculty)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -70,7 +70,7 @@ class FacultyController extends Controller
      * 
      * @param Request $request
      * 
-     * @return RedirectResponse
+     * @return JsonResponse
      */
     public function store(Request $request)
     {
@@ -83,9 +83,9 @@ class FacultyController extends Controller
 
             $faculty = $this->facultyService->createFaculty($validated);
 
-            return redirect()->back()->with(ApiResponse::success('Faculty created successfully', $faculty, 201)->toArray());
+            return ApiResponse::success('Faculty created successfully.', $faculty, Response::HTTP_CREATED)->toJsonResponse();
         } catch (Exception $e) {
-            return redirect()->back()->withErrors('Failed to create faculty. ' . $e->getMessage());
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -94,7 +94,7 @@ class FacultyController extends Controller
      * 
      * @param Request $request
      * 
-     * @return RedirectResponse
+     * @return JsonResponse
      */
     public function update(Request $request, int $id)
     {
@@ -106,9 +106,9 @@ class FacultyController extends Controller
 
             $this->facultyService->updateFaculty($id, $validated);
 
-            return redirect()->back()->with(ApiResponse::success('Faculty updated successfully', null)->toArray());
+            return ApiResponse::success('Faculty updated successfully.', null)->toJsonResponse();
         } catch (Exception $e) {
-            return redirect()->back()->withErrors('Failed to update faculty. ' . $e->getMessage());
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
@@ -40,7 +39,7 @@ class ProfileController extends Controller
 
             return ApiResponse::success('Success.', $profile)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -64,10 +63,8 @@ class ProfileController extends Controller
             $this->profileService->updateProfileData($validated);
 
             return ApiResponse::success('Profile updated successfully.', null)->toJsonResponse();
-        } catch (ValidationException $e) {
-            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -86,10 +83,8 @@ class ProfileController extends Controller
             $this->profileService->updateAboutField($validated['about']);
 
             return ApiResponse::success('About saved successfully.', null)->toJsonResponse();
-        } catch (ValidationException $e) {
-            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -110,10 +105,8 @@ class ProfileController extends Controller
             $this->profileService->uploadProfileImage($file);
 
             return ApiResponse::success('Profile image uploaded successfully.', null)->toJsonResponse();
-        } catch (ValidationException $e) {
-            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -134,10 +127,8 @@ class ProfileController extends Controller
             $this->profileService->uploadCoverImage($file);
 
             return ApiResponse::success('Cover image uploaded successfully.', null)->toJsonResponse();
-        } catch (ValidationException $e) {
-            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 }

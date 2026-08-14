@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Enrollment;
+use App\Models\Education;
 use App\Models\Semester;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -19,7 +19,7 @@ class SemesterFactory extends Factory
     public function definition(): array
     {
         return [
-            'enrollment_id' => Enrollment::inRandomOrder()->first()->id,
+            'education_id' => Education::inRandomOrder()->first()->id,
             'gpa' => $this->faker->randomFloat(2, 0, 4.0),
             'session' => '1 - 2025/2026',
         ];

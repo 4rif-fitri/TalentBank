@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 
 class SemesterController extends Controller
 {
@@ -45,10 +44,8 @@ class SemesterController extends Controller
             $this->semesterService->uploadResults($validated, $request->file('result_file'), $id);
 
             return ApiResponse::success('File uploaded successfully.', null)->toJsonResponse();
-        } catch (ValidationException $e) {
-            return ApiResponse::error($e->getMessage(), 400)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 }

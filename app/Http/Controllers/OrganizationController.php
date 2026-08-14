@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Validation\ValidationException;
 
 class OrganizationController extends Controller
 {
@@ -71,11 +70,9 @@ class OrganizationController extends Controller
 
             $organization = $this->organizationService->createOrganization($validated);
 
-            return ApiResponse::success('Organization created successfully.', $organization, 201)->toJsonResponse();
-        } catch (ValidationException $e) {
-            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
+            return ApiResponse::success('Organization created successfully.', $organization, Response::HTTP_CREATED)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 
@@ -85,11 +82,10 @@ class OrganizationController extends Controller
      * @param   Request $request
      * @return  JsonResponse
      */
-    public function update(Request $request)
+    public function update(Request $request, int $orgId)
     {
         try {
             $validated = $this->validateOrganizationData($request);
-            $orgId = $request->input('org_id');
 
             if (!isset($orgId)) {
                 throw new Exception('Organization ID is required.', Response::HTTP_BAD_REQUEST);
@@ -98,10 +94,8 @@ class OrganizationController extends Controller
             $this->organizationService->updateOrganization($validated, $orgId);
 
             return ApiResponse::success('Organization updated successfully.', null)->toJsonResponse();
-        } catch (ValidationException $e) {
-            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
         } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
+            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
         }
     }
 

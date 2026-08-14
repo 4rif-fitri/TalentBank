@@ -25,7 +25,9 @@ class DatabaseSeeder extends Seeder
             OrganizationUserSeeder::class,
             FacultySeeder::class,
             ProgrammeSeeder::class,
-            EnrollmentSeeder::class,
+            FieldOfStudySeeder::class,
+            QualificationSeeder::class,
+            EducationSeeder::class,
             SemesterSeeder::class,
             MediaSeeder::class,
         ]);
