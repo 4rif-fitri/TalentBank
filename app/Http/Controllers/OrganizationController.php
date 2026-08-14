@@ -8,6 +8,8 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class OrganizationController extends Controller
 {
@@ -52,7 +54,7 @@ class OrganizationController extends Controller
     public function getAllOrganizationsJson(Request $request)
     {
         if (!$request->ajax()) {
-            return ApiResponse::error('Ajax request required.', 405)->toJsonResponse();
+            return ApiResponse::error('Ajax request required.', Response::HTTP_METHOD_NOT_ALLOWED)->toJsonResponse();
         }
 
         $organizations = $this->organizationService->getAllOrganizations();
@@ -64,7 +66,7 @@ class OrganizationController extends Controller
      * Handle request to create new organization
      * 
      * @param   Request $request
-     * @return  RedirectResponse
+     * @return  JsonResponse
      */
     public function store(Request $request)
     {
@@ -73,9 +75,11 @@ class OrganizationController extends Controller
 
             $organization = $this->organizationService->createOrganization($validated);
 
-            return redirect()->back()->with(ApiResponse::success('Organization created successfully.', $organization, 201)->toArray());
+            return ApiResponse::success('Organization created successfully.', $organization, 201)->toJsonResponse();
+        } catch (ValidationException $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
         } catch (Exception $e) {
-            return redirect()->back()->withErrors($e->getMessage());
+            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
         }
     }
 
@@ -83,7 +87,7 @@ class OrganizationController extends Controller
      * Handle request for updating existing organization info
      * 
      * @param   Request $request
-     * @return  RedirectResponse
+     * @return  JsonResponse
      */
     public function update(Request $request)
     {
@@ -92,14 +96,16 @@ class OrganizationController extends Controller
             $orgId = $request->input('org_id');
 
             if (!isset($orgId)) {
-                return redirect()->back()->withErrors('Organization ID is required.');
+                throw new Exception('Organization ID is required.', Response::HTTP_BAD_REQUEST);
             }
 
             $this->organizationService->updateOrganization($validated, $orgId);
 
-            return redirect()->back()->with(ApiResponse::success('Organization updated successfully.', null)->toArray());
+            return ApiResponse::success('Organization updated successfully.', null)->toJsonResponse();
+        } catch (ValidationException $e) {
+            return ApiResponse::error($e->getMessage(), Response::HTTP_BAD_REQUEST)->toJsonResponse();
         } catch (Exception $e) {
-            return redirect()->back()->withErrors($e->getMessage());
+            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
         }
     }
 

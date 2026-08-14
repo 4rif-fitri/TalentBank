@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Helpers\ApiResponse;
 use App\Http\Services\SemesterService;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class SemesterController extends Controller
 {
@@ -21,7 +23,7 @@ class SemesterController extends Controller
      * Handles request to upload results file
      * @param Request $request
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return JsonResponse
      */
     public function uploadResults(Request $request, int $id)
     {
@@ -40,11 +42,13 @@ class SemesterController extends Controller
                 throw new Exception('Semester ID is required.', Response::HTTP_BAD_REQUEST);
             }
 
-            $results = $this->semesterService->uploadResults($validated, $request->file('result_file'), $id);
+            $this->semesterService->uploadResults($validated, $request->file('result_file'), $id);
 
-            return redirect()->back()->with(ApiResponse::success('Results uploaded successfully.', null)->toArray());
+            return ApiResponse::success('File uploaded successfully.', null)->toJsonResponse();
+        } catch (ValidationException $e) {
+            return ApiResponse::error($e->getMessage(), 400)->toJsonResponse();
         } catch (Exception $e) {
-            return redirect()->back()->withErrors($e->getMessage());
+            return ApiResponse::error($e->getMessage(), $e->getCode())->toJsonResponse();
         }
     }
 }

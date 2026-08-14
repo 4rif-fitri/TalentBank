@@ -25,4 +25,9 @@ class Programme extends Model
     {
         return $this->hasMany(Enrollment::class, 'programme_id');
     }
+
+    public function organization()
+    {
+        return $this->hasOneThrough(Organization::class, Faculty::class, 'id', 'id', 'faculty_id', 'organization_id');
+    }
 }

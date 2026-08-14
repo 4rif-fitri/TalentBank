@@ -52,14 +52,14 @@ class OrganizationService
             throw new Exception('SSM number already taken..', Response::HTTP_CONFLICT);
         }
 
-        $userId = Auth::id() ?? 1;
+        $profileId = session('user_profile_id');
         $role = Role::where('name', 'Organization Admin')->first();
 
         if (!isset($role)) {
             throw new Exception('Role not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $organization = DB::transaction(function () use ($data, $userId, $role) {
+        $organization = DB::transaction(function () use ($data, $profileId, $role) {
             // insert new organization
             $organization = Organization::create([
                 'company_name' => $data['company_name'],
@@ -80,7 +80,7 @@ class OrganizationService
             // insert new organization_user
             OrganizationUser::create([
                 'organization_id' => $organization->id,
-                'user_id' => $userId,
+                'user_profile_id' => $profileId,
                 'role_id' => $role->id,
                 'status' => 1
             ]);
