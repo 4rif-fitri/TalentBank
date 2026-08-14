@@ -13,30 +13,30 @@ use App\Http\Controllers\SemesterController;
 // auth routes
 Route::middleware('guest')->group(function () {
     // page routes
-    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginPage');
-    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('registerPage');
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginPage'); //+
+    Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('registerPage'); //+
 
     // crud routes
-    Route::post('/login', [LoginController::class, 'login'])->name('login');
-    Route::post('/register', [RegisterController::class, 'register'])->name('register');
+    Route::post('/login', [LoginController::class, 'login'])->name('login'); //+
+    Route::post('/register', [RegisterController::class, 'register'])->name('register'); //+
 });
 
-Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->name('logout'); //+
 
-Route::middleware('auth')->get('/', [internshipController::class, "index"])->name('home');
+Route::middleware('auth')->get('/', [internshipController::class, "index"])->name('home'); //+
 
 Route::middleware('auth')->prefix('profile')->group(function () {
     // page routes
-    Route::get('/student', [internshipController::class, "profile"])->name('profile.student');
-    Route::get('/education', [internshipController::class, "education"])->name('profile.education');
-    Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience');
+    Route::get('/student', [internshipController::class, "profile"])->name('profile.student'); //+
+    Route::get('/education', [internshipController::class, "education"])->name('profile.education');//+
+    Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience'); //+
 
     // crud routes
-    Route::get('/{userId}', [ProfileController::class, 'getProfileDataByUserIdJson'])->name('profile.getProfileDataByUserIdJson');
-    Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
-    Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage');
-    Route::post('/upload/cover-image', [ProfileController::class, 'uploadCoverImage'])->name('update.uploadCoverImage');
+    Route::get('/{userId}', [ProfileController::class, 'getProfileDataByUserIdJson'])->name('profile.getProfileDataByUserIdJson'); //+
+    Route::put('/update', [ProfileController::class, 'update'])->name('profile.update'); //+
+    Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField'); //+
+    Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage'); //+
+    Route::post('/upload/cover-image', [ProfileController::class, 'uploadCoverImage'])->name('update.uploadCoverImage'); //+
 });
 
 Route::middleware('auth')->prefix('organizations')->group(function () {
@@ -55,19 +55,19 @@ Route::middleware('auth')->prefix('faculties')->group(function () {
     // page routes
 
     // crud routes
-    Route::get('/', [FacultyController::class, 'getFacultiesByOrgIdJson'])->name('faculty.getFacultiesByOrgIdJson');
-    Route::get('/{id}', [FacultyController::class, 'getFacultyByIdJson'])->name('faculty.getFacultyByIdJson');
-    Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store');
-    Route::put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update');
+    Route::get('/', [FacultyController::class, 'getFacultiesByOrgIdJson'])->name('faculty.getFacultiesByOrgIdJson'); //-
+    Route::get('/{id}', [FacultyController::class, 'getFacultyByIdJson'])->name('faculty.getFacultyByIdJson');//-
+    Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store'); //-
+    Route::put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update'); //-
 });
 
 Route::middleware('auth')->prefix('programmes')->group(function () {
     // crud routes
-    Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson'); //
-    Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId');
+    Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson'); //!
+    Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId'); //-
 });
 
 Route::middleware('auth')->prefix('semesters')->group(function () {
     // crud routes
-    Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults');
+    Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults'); //+
 });

@@ -53,31 +53,37 @@
     </div>
 
     <nav class="horizontal-nav d-flex flex-wrap px-3">
-        <button type="button" class="profile-tab active d-flex justify-content-center mt-3" data-target="main">
+        <x-button-horizontal-nav target="main" class="active">
             Main
-        </button>
-        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="result">
+        </x-button-horizontal-nav>
+
+        <x-button-horizontal-nav target="result">
             Result
-        </button>
-        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="education">
+        </x-button-horizontal-nav>
+
+        <x-button-horizontal-nav target="education">
             Education
-        </button>
-        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="awards">
+        </x-button-horizontal-nav>
+
+        <x-button-horizontal-nav target="awards">
             Awards
-        </button>
-        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="projects">
+        </x-button-horizontal-nav>
+
+        <x-button-horizontal-nav target="projects">
             Projects
-        </button>
-        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="experience">
+        </x-button-horizontal-nav>
+
+        <x-button-horizontal-nav target="experience">
             Experience
-        </button>
-        <button type="button" class="profile-tab d-flex justify-content-center mt-3" data-target="certifications">
+        </x-button-horizontal-nav>
+
+        <x-button-horizontal-nav target="certifications">
             Certifications
-        </button>
+        </x-button-horizontal-nav>
     </nav>
 
 </section>
 
 @push('scripts')
-    <script></script>
+<script></script>
 @endpush
