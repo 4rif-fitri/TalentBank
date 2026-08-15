@@ -16,6 +16,10 @@
             <x-sections.semesterResults />
         </div>
 
+        <div id="educationsTabContent" class="d-none">
+            <x-sections.education />
+        </div>
+
     </div>
 
 
@@ -138,7 +142,7 @@
 
                     $("#activeEducationList").append($element);
                 });
-                
+
             },
 
             error: function (xhr) {
@@ -234,21 +238,27 @@
     });
 
     $(".profile-tab").on("click", function () {
-
         $(".profile-tab").removeClass("active");
-
         $(this).addClass("active");
-
         let target = $(this).data("target");
+        // console.log(target);
 
         if (target === "main") {
             $("#mainTabContent").removeClass("d-none");
             $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
         }
 
         if (target === "result") {
             $("#mainTabContent").addClass("d-none");
             $("#resultTabContent").removeClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
+        }
+
+        if (target === "education") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").removeClass("d-none");
         }
     });
 
