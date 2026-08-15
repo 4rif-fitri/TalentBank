@@ -73,105 +73,107 @@
 
 @push('scripts')
 <script>
-    let contactModalEl =
-        document.getElementById("editContactInformationModal");
+    document.addEventListener('DOMContentLoaded', function () {
+        let contactModalEl =
+            document.getElementById("editContactInformationModal");
 
-    let contactModal =
-        bootstrap.Modal.getOrCreateInstance(contactModalEl);
+        let contactModal =
+            bootstrap.Modal.getOrCreateInstance(contactModalEl);
 
-    let $contactLoading = $("#contactLoading");
-    let $contactFields = $("#contactFields");
-    let $btnSaveContact = $("#btnSaveContact");
+        let $contactLoading = $("#contactLoading");
+        let $contactFields = $("#contactFields");
+        let $btnSaveContact = $("#btnSaveContact");
 
-    $("#btnEditContactInformation").on("click", function () {
-        console.log("asd");
+        $("#btnEditContactInformation").on("click", function () {
+            console.log("asd");
 
-        $("#contactNameInput")
-            .val($("#name").text().trim());
+            $("#contactNameInput")
+                .val($("#name").text().trim());
 
-        $("#contactHeadlineInput")
-            .val($("#headline").text().trim());
+            $("#contactHeadlineInput")
+                .val($("#headline").text().trim());
 
-        $("#contactLocationInput")
-            .val($("#profileLocation").text().trim());
+            $("#contactLocationInput")
+                .val($("#profileLocation").text().trim());
 
-        $("#contactEmailInput")
-            .val($("#email").text().trim());
+            $("#contactEmailInput")
+                .val($("#email").text().trim());
 
-        $("#contactPhoneNoInput")
-            .val($("#phoneNo").text().trim());
+            $("#contactPhoneNoInput")
+                .val($("#phoneNo").text().trim());
 
-        contactModal.show();
-    });
+            contactModal.show();
+        });
 
 
-    $("#contactInformationForm").on("submit", function (e) {
-        e.preventDefault();
+        $("#contactInformationForm").on("submit", function (e) {
+            e.preventDefault();
 
-        let $form = $(this);
-        let formData = new FormData(this);
+            let $form = $(this);
+            let formData = new FormData(this);
 
-        $btnSaveContact
-            .prop("disabled", true)
-            .text("Saving...");
+            $btnSaveContact
+                .prop("disabled", true)
+                .text("Saving...");
 
-        $.ajax({
-            url: $form.attr("action"),
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
+            $.ajax({
+                url: $form.attr("action"),
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
 
-            success: function (response) {
+                success: function (response) {
 
-                $("#email").text(
-                    $("#contactEmailInput").val()
-                );
+                    $("#email").text(
+                        $("#contactEmailInput").val()
+                    );
 
-                $("#phoneNo").text(
-                    $("#contactPhoneNoInput").val()
-                );
+                    $("#phoneNo").text(
+                        $("#contactPhoneNoInput").val()
+                    );
 
-                contactModal.hide();
+                    contactModal.hide();
 
-                Swal.fire({
-                    title: "Success",
-                    text: response.message ??
-                        "Contact updated successfully.",
-                    icon: "success"
-                });
-            },
+                    Swal.fire({
+                        title: "Success",
+                        text: response.message ??
+                            "Contact updated successfully.",
+                        icon: "success"
+                    });
+                },
 
-            error: function (xhr) {
-                console.error(xhr.responseJSON);
+                error: function (xhr) {
+                    console.error(xhr.responseJSON);
 
-                Swal.fire({
-                    title: "Unable to edit contact",
-                    text: xhr.responseJSON?.message ??
-                        "Unable to update contact.",
-                    icon: "error"
-                });
-            },
+                    Swal.fire({
+                        title: "Unable to edit contact",
+                        text: xhr.responseJSON?.message ??
+                            "Unable to update contact.",
+                        icon: "error"
+                    });
+                },
 
-            complete: function () {
+                complete: function () {
+                    $btnSaveContact
+                        .prop("disabled", false)
+                        .text("Save");
+                }
+            });
+        });
+
+
+        contactModalEl.addEventListener(
+            "hidden.bs.modal",
+            function () {
+
+                $("#contactInformationForm")[0].reset();
+
                 $btnSaveContact
                     .prop("disabled", false)
                     .text("Save");
             }
-        });
-    });
-
-
-    contactModalEl.addEventListener(
-        "hidden.bs.modal",
-        function () {
-
-            $("#contactInformationForm")[0].reset();
-
-            $btnSaveContact
-                .prop("disabled", false)
-                .text("Save");
-        }
-    );
+        );
+    })
 </script>
 @endpush

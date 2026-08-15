@@ -125,15 +125,12 @@
                             </label>
 
 
-                            <label for="resultFile" id="resultDropZone"
-                                class="border border-2 border-dashed rounded-3
-                                       w-100 text-center p-5"
-                                style="cursor:pointer;">
+                            <label for="resultFile" id="resultDropZone" class="border border-2 border-dashed rounded-3
+                                       w-100 text-center p-5" style="cursor:pointer;">
 
                                 <div id="resultUploadEmpty">
 
-                                    <i
-                                        class="fa-solid fa-cloud-arrow-up
+                                    <i class="fa-solid fa-cloud-arrow-up
                                               text-primary fs-1 mb-3">
                                     </i>
 
@@ -150,8 +147,7 @@
 
                                 <div id="resultUploadSelected" class="d-none">
 
-                                    <i
-                                        class="fa-solid fa-file-pdf
+                                    <i class="fa-solid fa-file-pdf
                                               text-danger fs-1 mb-3">
                                     </i>
 
@@ -191,7 +187,8 @@
 </div>
 
 @push('scripts')
-    <script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
         let programmesData = [];
         let addResultModalEl = document.getElementById("addResultModal");
         let addResultModal = bootstrap.Modal.getOrCreateInstance(addResultModalEl);
@@ -208,7 +205,7 @@
                 type: "GET",
                 dataType: "json",
 
-                success: function(response) {
+                success: function (response) {
 
                     console.log("Programme response:", response);
 
@@ -220,7 +217,7 @@
                 </option>
             `;
 
-                    programmesData.forEach(function(programme) {
+                    programmesData.forEach(function (programme) {
 
                         options += `
                     <option value="${programme.id}">
@@ -237,7 +234,7 @@
                     $("#resultFormContent").removeClass("d-none");
                 },
 
-                error: function(xhr) {
+                error: function (xhr) {
 
                     console.error(xhr);
 
@@ -250,7 +247,7 @@
                 }
             });
         }
-        $("#resultProgramme").on("change", function() {
+        $("#resultProgramme").on("change", function () {
 
             const programmeId = Number($(this).val());
 
@@ -271,7 +268,7 @@
             }
 
 
-            const programme = programmesData.find(function(item) {
+            const programme = programmesData.find(function (item) {
                 return Number(item.id) === programmeId;
             });
 
@@ -292,9 +289,9 @@
             // Collect semester
             let semesters = [];
 
-            (programme.enrollments ?? []).forEach(function(enrollment) {
+            (programme.enrollments ?? []).forEach(function (enrollment) {
 
-                (enrollment.semesters ?? []).forEach(function(semester, index) {
+                (enrollment.semesters ?? []).forEach(function (semester, index) {
 
                     semesters.push({
                         ...semester,
@@ -322,7 +319,7 @@
             <option value="">Select Semester</option>`;
 
 
-            semesters.forEach(function(semester) {
+            semesters.forEach(function (semester) {
 
                 options += `
             <option
@@ -345,7 +342,7 @@
         });
 
 
-        $("#resultSemester").on("change", function() {
+        $("#resultSemester").on("change", function () {
 
             const semesterId = $(this).val();
 
@@ -364,7 +361,7 @@
 
             console.log("Form action:", newAction);
         });
-        $("#resultFile").on("change", function() {
+        $("#resultFile").on("change", function () {
 
             const file = this.files[0];
 
@@ -453,9 +450,9 @@
                 url: "../data/semester-results.json",
                 type: "GET",
                 dataType: "json",
-                success: function(response) {
+                success: function (response) {
                     let html = "";
-                    response.forEach(function(result) {
+                    response.forEach(function (result) {
                         html += `
 								<article class="semester-result-item py-3">
 									<div class="d-flex justify-content-between align-items-center">
@@ -483,7 +480,7 @@
                     resultLoaded = true;
                 },
 
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
 
                     console.error(error);
 
@@ -515,7 +512,7 @@
             $("#btnUploadResult").prop("disabled", true);
         }
 
-        $("#resultProgramme").on("change", function() {
+        $("#resultProgramme").on("change", function () {
 
             const programmeId = Number($(this).val());
 
@@ -533,7 +530,7 @@
             }
 
 
-            const programme = programmesData.find(function(item) {
+            const programme = programmesData.find(function (item) {
                 return Number(item.id) === programmeId;
             });
 
@@ -542,9 +539,9 @@
 
             let semesters = [];
 
-            (programme.enrollments ?? []).forEach(function(enrollment) {
+            (programme.enrollments ?? []).forEach(function (enrollment) {
 
-                (enrollment.semesters ?? []).forEach(function(semester, index) {
+                (enrollment.semesters ?? []).forEach(function (semester, index) {
 
                     semesters.push({
                         ...semester,
@@ -570,7 +567,7 @@
 
             let options = `<option value="">Select Semester</option>`;
 
-            semesters.forEach(function(semester) {
+            semesters.forEach(function (semester) {
                 options += `
                     <option
                         value="${semester.id}"
@@ -585,10 +582,11 @@
             $("#resultSemester").html(options).prop("disabled", false);
         });
 
-        $("#addResult").on("click", function() {
+        $("#addResult").on("click", function () {
             resetResultForm();
             addResultModal.show();
             loadProgrammesForResult();
         });
-    </script>
+    })
+</script>
 @endpush

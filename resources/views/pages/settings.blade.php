@@ -79,7 +79,6 @@
         } else if (target === "result") {
             $("#mainTabContent").addClass("d-none");
             $("#resultTabContent").removeClass("d-none");
-            if (!resultLoaded) loadSemesterResults()
         }
     });
     // Tab nav

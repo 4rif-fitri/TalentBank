@@ -15,5 +15,21 @@
 </section>
 
 @push('scripts')
-    <script></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        $.ajax({
+            url: "{{ route('programme.getProgrammesByUserIdJson',['userId' => auth()->id()]) }}",
+            type: "GET",
+            success: function (response) {
+                console.log(response);
+
+            },
+            error: function (xhr) {
+                Swal.fire({ title: "Upload Failed", text: xhr.responseJSON?.message ?? "Something went wrong", icon: "error" });
+
+            }
+        });
+    })
+</script>
 @endpush

@@ -21,7 +21,8 @@
                     <div id="aboutFields">
                         <div class="mb-3">
                             <label for="aboutInput" class="form-label">About</label>
-                            <textarea class="form-control" name="about" id="aboutInput" rows="6" maxlength="255"></textarea>
+                            <textarea class="form-control" name="about" id="aboutInput" rows="6"
+                                maxlength="255"></textarea>
                             <div class="text-end text-muted small mt-1">
                                 <span id="aboutCount">0</span>/255
                             </div>
@@ -46,81 +47,83 @@
 
 @push('scripts')
 <script>
-    let aboutModalEl = document.getElementById("editAboutModal");
-    let aboutModal = bootstrap.Modal.getOrCreateInstance(aboutModalEl);
+    document.addEventListener('DOMContentLoaded', function () {
+        let aboutModalEl = document.getElementById("editAboutModal");
+        let aboutModal = bootstrap.Modal.getOrCreateInstance(aboutModalEl);
 
-    let $aboutLoading = $("#aboutLoading");
-    let $aboutFields = $("#aboutFields");
-    let $btnSaveAbout = $("#btnSaveAbout");
+        let $aboutLoading = $("#aboutLoading");
+        let $aboutFields = $("#aboutFields");
+        let $btnSaveAbout = $("#btnSaveAbout");
 
-    function showAboutLoading() {
-        $aboutLoading.removeClass("d-none");
-        $aboutFields.addClass("d-none");
-        $btnSaveAbout.prop("disabled", true);
-    }
+        function showAboutLoading() {
+            $aboutLoading.removeClass("d-none");
+            $aboutFields.addClass("d-none");
+            $btnSaveAbout.prop("disabled", true);
+        }
 
-    function hideAboutLoading() {
-        $aboutLoading.addClass("d-none");
-        $aboutFields.removeClass("d-none");
-        $btnSaveAbout.prop("disabled", false);
-    }
+        function hideAboutLoading() {
+            $aboutLoading.addClass("d-none");
+            $aboutFields.removeClass("d-none");
+            $btnSaveAbout.prop("disabled", false);
+        }
 
-    $("#btnEditAbout").on("click", function () {
-        let about = $("#aboutText").text().trim();
+        $("#btnEditAbout").on("click", function () {
+            let about = $("#aboutText").text().trim();
 
-        $("#aboutInput").val(about);
-        $("#aboutCount").text(about.length);
-        aboutModal.show();
-    });
-
-    $("#aboutForm").on("submit", function (e) {
-        e.preventDefault();
-        $btnSaveAbout.prop("disabled", true).text("Saving...");
-
-        let $form = $(this);
-        let formData = new FormData(this);
-
-        $.ajax({
-            url: $form.attr("action"),
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-
-            success: function (response) {
-                let about = $("#aboutInput").val();
-                $("#aboutText").text(about);
-                aboutModal.hide();
-                Swal.fire({
-                    title: "Success",
-                    text: response.message ?? "About updated successfully.",
-                    icon: "success"
-                });
-            },
-
-            error: function (xhr) {
-                console.error(xhr);
-                Swal.fire({
-                    title: "Update Failed",
-                    text: xhr.responseJSON?.message ?? "Unable to update about.",
-                    icon: "error"
-                });
-            },
-
-            complete: function () {
-                $btnSaveAbout.prop("disabled", false).text("Save");
-            }
+            $("#aboutInput").val(about);
+            $("#aboutCount").text(about.length);
+            aboutModal.show();
         });
-    });
 
-    $("#aboutInput").on("input", function () {
-        $("#aboutCount").text(this.value.length);
-    });
+        $("#aboutForm").on("submit", function (e) {
+            e.preventDefault();
+            $btnSaveAbout.prop("disabled", true).text("Saving...");
 
-    aboutModalEl.addEventListener("hidden.bs.modal", function () {
-        $("#aboutForm")[0].reset();
-        $("#aboutCount").text("0");
-        $btnSaveAbout.prop("disabled", false).text("Save");
-    });
+            let $form = $(this);
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: $form.attr("action"),
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                success: function (response) {
+                    let about = $("#aboutInput").val();
+                    $("#aboutText").text(about);
+                    aboutModal.hide();
+                    Swal.fire({
+                        title: "Success",
+                        text: response.message ?? "About updated successfully.",
+                        icon: "success"
+                    });
+                },
+
+                error: function (xhr) {
+                    console.error(xhr);
+                    Swal.fire({
+                        title: "Update Failed",
+                        text: xhr.responseJSON?.message ?? "Unable to update about.",
+                        icon: "error"
+                    });
+                },
+
+                complete: function () {
+                    $btnSaveAbout.prop("disabled", false).text("Save");
+                }
+            });
+        });
+
+        $("#aboutInput").on("input", function () {
+            $("#aboutCount").text(this.value.length);
+        });
+
+        aboutModalEl.addEventListener("hidden.bs.modal", function () {
+            $("#aboutForm")[0].reset();
+            $("#aboutCount").text("0");
+            $btnSaveAbout.prop("disabled", false).text("Save");
+        });
+    })
 </script>
 @endpush

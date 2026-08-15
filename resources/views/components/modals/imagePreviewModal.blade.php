@@ -57,12 +57,14 @@
 </div>
 
 @push('scripts')
-    <script>
-        $(document).on("click", "[data-slide-index]", function() {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        $(document).on("click", "[data-slide-index]", function () {
             let index = Number($(this).data("slide-index"));
             let carouselEl = document.getElementById("projectImageCarousel");
             let carousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
             carousel.to(index);
         });
-    </script>
+    })
+</script>
 @endpush
