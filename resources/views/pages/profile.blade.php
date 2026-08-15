@@ -1,24 +1,23 @@
 @extends('layouts.internship-layouts')
 
 @section('content')
+
 <div class="user-card">
+
     <div class="user-card-left">
 
         <x-sections.userCardHeader />
 
         <div id="mainTabContent">
-
             <x-sections.about />
-
         </div>
 
         <div id="resultTabContent" class="d-none">
-
             <x-sections.semesterResults />
-
         </div>
 
     </div>
+
 
     <div class="user-card-right">
 
@@ -32,6 +31,7 @@
 
 </div>
 
+
 <x-offcanvas />
 
 <x-modals.imagePreviewModal />
@@ -44,10 +44,16 @@
 
 <x-modals.edit-contact-information-modal />
 
+<x-modals.pdf-preview-modal />
+
 @endsection
 
+
+
 @section('script')
+
 @if (session('status') == 200)
+
 <script>
     Swal.fire({
         title: "Success",
@@ -55,8 +61,12 @@
         icon: "success"
     });
 </script>
+
 @endif
+
+
 @if ($errors->any())
+
 <script>
     Swal.fire({
         title: "Upload Failed",
@@ -64,141 +74,343 @@
         icon: "error"
     });
 </script>
+
 @endif
+
+
 <script>
-    function loadResultSemester() {
-        $.ajax({
-            url: "{{ route('programme.getProgrammesByUserIdJson',['userId' => auth()->id()]) }}",
-            type: "GET",
-            success: function (response) {
-                console.log(response);
-            },
-            error: function (xhr) {
-                Swal.fire({ title: "Upload Failed", text: xhr.responseJSON?.message ?? "Something went wrong", icon: "error" });
-                console.log(response);
-            }
-        });
-    }
+
+    // ==========================================
+    // GET PROFILE
+    // ==========================================
 
     function getProfileData() {
-        $.ajax({
-            url: "{{ route('profile.getProfileDataByUserIdJson', ['userId' => auth()->id()]) }}",
-            type: "GET",
-            dataType: "json",
-            success: function ({ data }) {
-                // console.log({data});
-                $("#name").text(data.name)
-                $("#headline").text(data.headline)
-                $("#aboutText").text(data.about)
-                $("#profileLocation").text(data.location)
 
-                let programme = data.active_programmes?.[0];
+        $.ajax({
+
+            url: "{{ route(
+                'profile.getProfileDataByUserIdJson',
+            ['userId' => auth() -> id()]
+            )
+    }}",
+
+    type: "GET",
+
+        dataType: "json",
+
+            success: function ({ data }) {
+
+                $("#name")
+                    .text(data.name ?? "");
+
+                $("#headline")
+                    .text(data.headline ?? "");
+
+                $("#aboutText")
+                    .text(data.about ?? "");
+
+                $("#profileLocation")
+                    .text(data.location ?? "");
+
+
+                const programme =
+                    data.active_programmes?.[0];
+
 
                 if (programme) {
-                    $("#programme").text(programme.programme_name).show();
-                    $("#uni-name").text(programme.organization_name ?? "").show();
+
+                    $("#programme")
+                        .text(programme.programme_name ?? "")
+                        .show();
+
+
+                    $("#uni-name")
+                        .text(programme.organization_name ?? "")
+                        .show();
+
                 } else {
-                    $("#programme, #uni-name").hide();
+
+                    $("#programme, #uni-name")
+                        .hide();
+
                 }
 
-                let imageUrl = "{{ asset('cover-image-url') }}/" + data.cover_image
-                $("#coverImage").css("background-image", `url("${imageUrl}")`)
 
-                imageUrl = "{{ asset('profile-image-url') }}/" + data.profile_image
-                $("#profileImage").css("background-image", `url("${imageUrl}")`)
-                $("#profileBtn").css("background-image", `url("${imageUrl}")`)
+                // Cover
+                const coverImageUrl =
+                    "{{ asset('cover-image-url') }}/"
+                    + data.cover_image;
+
+
+                $("#coverImage")
+                    .css(
+                        "background-image",
+                        `url("${coverImageUrl}")`
+                    );
+
+
+                // Profile
+                const profileImageUrl =
+                    "{{ asset('profile-image-url') }}/"
+                    + data.profile_image;
+
+
+                $("#profileImage, #profileBtn")
+                    .css(
+                        "background-image",
+                        `url("${profileImageUrl}")`
+                    );
 
             },
-            error: function (xhr) {
-                console.error(xhr);
-            }
-        });
+
+
+    error: function (xhr) {
+
+        console.error(xhr);
+
     }
-    getProfileData()
+
+        });
+
+    }
+
+
+
+    // ==========================================
+    // FILE CHECK
+    // ==========================================
 
     function fileCheck(file) {
+
         if (!file) {
+
             Swal.fire({
                 title: "Upload Failed",
                 text: "Please select an image",
                 icon: "error"
             });
+
             return true;
+
         }
+
         return false;
+
     }
 
-    $('#profileImageInput').on('change', function () {
-        let file = this.files[0];
 
-        if (fileCheck(file)) return
 
-        let formData = new FormData();
-        formData.append('profile_image', file);
+    // ==========================================
+    // PROFILE IMAGE
+    // ==========================================
 
-        $.ajax({
-            url: "{{ route('update.uploadProfileImage') }}",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                getProfileData()
-                Swal.fire({ title: "Success", text: "Cover image uploaded successfully", icon: "success" });
-                getProfileData()
-            },
-            error: function (xhr) {
-                Swal.fire({ title: "Upload Failed", text: xhr.responseJSON?.message ?? "Something went wrong", icon: "error" });
+    $("#profileImageInput")
+        .on("change", function () {
+
+            const file =
+                this.files[0];
+
+
+            if (fileCheck(file)) {
+                return;
             }
+
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "profile_image",
+                file
+            );
+
+
+            $.ajax({
+
+                url: "{{ route('update.uploadProfileImage') }}",
+
+                type: "POST",
+
+                data: formData,
+
+                processData: false,
+
+                contentType: false,
+
+                headers: {
+
+                    "X-CSRF-TOKEN":
+                        $('meta[name="csrf-token"]')
+                            .attr("content")
+
+                },
+
+
+                success: function () {
+
+                    getProfileData();
+
+
+                    Swal.fire({
+                        title: "Success",
+                        text: "Profile image uploaded successfully",
+                        icon: "success"
+                    });
+
+                },
+
+
+                error: function (xhr) {
+
+                    Swal.fire({
+                        title: "Upload Failed",
+                        text:
+                            xhr.responseJSON?.message ??
+                            "Something went wrong",
+                        icon: "error"
+                    });
+
+                }
+
+            });
+
         });
-    });
 
-    $('#coverImageInput').on('change', function () {
-        let file = this.files[0];
 
-        if (fileCheck(file)) return
 
-        let formData = new FormData();
-        formData.append('cover_image', file);
+    // ==========================================
+    // COVER IMAGE
+    // ==========================================
 
-        $.ajax({
-            url: "{{ route('update.uploadCoverImage') }}",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                Swal.fire({ title: "Success", text: "Cover image uploaded successfully", icon: "success" });
-                getProfileData()
-            },
-            error: function (xhr) {
-                Swal.fire({ title: "Upload Failed", text: xhr.responseJSON?.message ?? "Something went wrong", icon: "error" });
+    $("#coverImageInput")
+        .on("change", function () {
+
+            const file =
+                this.files[0];
+
+
+            if (fileCheck(file)) {
+                return;
             }
+
+
+            const formData =
+                new FormData();
+
+
+            formData.append(
+                "cover_image",
+                file
+            );
+
+
+            $.ajax({
+
+                url: "{{ route('update.uploadCoverImage') }}",
+
+                type: "POST",
+
+                data: formData,
+
+                processData: false,
+
+                contentType: false,
+
+                headers: {
+
+                    "X-CSRF-TOKEN":
+                        $('meta[name="csrf-token"]')
+                            .attr("content")
+
+                },
+
+
+                success: function () {
+
+                    getProfileData();
+
+
+                    Swal.fire({
+                        title: "Success",
+                        text: "Cover image uploaded successfully",
+                        icon: "success"
+                    });
+
+                },
+
+
+                error: function (xhr) {
+
+                    Swal.fire({
+                        title: "Upload Failed",
+                        text:
+                            xhr.responseJSON?.message ??
+                            "Something went wrong",
+                        icon: "error"
+                    });
+
+                }
+
+            });
+
         });
-    });
 
-    // Tab nav
-    $(".profile-tab").on("click", function () {
-        $(".profile-tab").removeClass("active");
-        $(this).addClass("active");
 
-        let target = $(this).data("target");
-        if (target === "main") {
-            $("#mainTabContent").removeClass("d-none");
-            $("#resultTabContent").addClass("d-none");
 
-        } else if (target === "result") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").removeClass("d-none");
-            loadResultSemester()
-        }
-    });
-    // Tab nav
+    // ==========================================
+    // PROFILE TABS
+    // ==========================================
+
+    $(".profile-tab")
+        .on("click", function () {
+
+            $(".profile-tab")
+                .removeClass("active");
+
+
+            $(this)
+                .addClass("active");
+
+
+            const target =
+                $(this).data("target");
+
+
+            if (target === "main") {
+
+                $("#mainTabContent")
+                    .removeClass("d-none");
+
+                $("#resultTabContent")
+                    .addClass("d-none");
+
+            }
+
+
+            if (target === "result") {
+
+                $("#mainTabContent")
+                    .addClass("d-none");
+
+                $("#resultTabContent")
+                    .removeClass("d-none");
+
+                // Jangan request API kat sini.
+                // Semester component handle sendiri.
+
+            }
+
+        });
+
+
+
+    // ==========================================
+    // INITIAL
+    // ==========================================
+
+    getProfileData();
+
 </script>
+
 @endsection
