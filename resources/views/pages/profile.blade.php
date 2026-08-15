@@ -66,22 +66,19 @@
 </script>
 @endif
 <script>
-    // Tab nav
-    $(".profile-tab").on("click", function () {
-        $(".profile-tab").removeClass("active");
-        $(this).addClass("active");
-
-        let target = $(this).data("target");
-        if (target === "main") {
-            $("#mainTabContent").removeClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-
-        } else if (target === "result") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").removeClass("d-none");
-        }
-    });
-    // Tab nav
+    function loadResultSemester() {
+        $.ajax({
+            url: "{{ route('programme.getProgrammesByUserIdJson',['userId' => auth()->id()]) }}",
+            type: "GET",
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (xhr) {
+                Swal.fire({ title: "Upload Failed", text: xhr.responseJSON?.message ?? "Something went wrong", icon: "error" });
+                console.log(response);
+            }
+        });
+    }
 
     function getProfileData() {
         $.ajax({
@@ -89,15 +86,24 @@
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
-                // console.log(data);
+                // console.log({data});
                 $("#name").text(data.name)
                 $("#headline").text(data.headline)
                 $("#aboutText").text(data.about)
                 $("#profileLocation").text(data.location)
-                $("#programme").text(data.active_programmes[0].programme_name)
+
+                let programme = data.active_programmes?.[0];
+
+                if (programme) {
+                    $("#programme").text(programme.programme_name).show();
+                    $("#uni-name").text(programme.organization_name ?? "").show();
+                } else {
+                    $("#programme, #uni-name").hide();
+                }
 
                 let imageUrl = "{{ asset('cover-image-url') }}/" + data.cover_image
                 $("#coverImage").css("background-image", `url("${imageUrl}")`)
+
                 imageUrl = "{{ asset('profile-image-url') }}/" + data.profile_image
                 $("#profileImage").css("background-image", `url("${imageUrl}")`)
                 $("#profileBtn").css("background-image", `url("${imageUrl}")`)
@@ -121,7 +127,6 @@
         }
         return false;
     }
-
 
     $('#profileImageInput').on('change', function () {
         let file = this.files[0];
@@ -169,7 +174,6 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
-                getProfileData()
                 Swal.fire({ title: "Success", text: "Cover image uploaded successfully", icon: "success" });
                 getProfileData()
             },
@@ -179,5 +183,22 @@
         });
     });
 
+    // Tab nav
+    $(".profile-tab").on("click", function () {
+        $(".profile-tab").removeClass("active");
+        $(this).addClass("active");
+
+        let target = $(this).data("target");
+        if (target === "main") {
+            $("#mainTabContent").removeClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+
+        } else if (target === "result") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").removeClass("d-none");
+            loadResultSemester()
+        }
+    });
+    // Tab nav
 </script>
 @endsection
