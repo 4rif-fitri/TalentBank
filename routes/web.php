@@ -69,13 +69,13 @@ Route::middleware('auth')->prefix('faculties')->group(function () {
 
 Route::middleware('auth')->prefix('programmes')->group(function () {
     // crud routes
-    Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson'); //!
+    Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson'); //!+
     Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId'); //-
 });
 
 Route::middleware('auth')->prefix('semesters')->group(function () {
     // crud routes
-    Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults');
+    Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults'); //+
 });
 
 Route::middleware('auth')->prefix('education')->group(function () {

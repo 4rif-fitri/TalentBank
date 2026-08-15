@@ -36,6 +36,8 @@
 
 <x-modals.imagePreviewModal />
 
+<x-modals.active-educations-modal />
+
 <x-modals.editAboutModal />
 
 <x-modals.editProfileModal />
@@ -47,8 +49,6 @@
 <x-modals.pdf-preview-modal />
 
 @endsection
-
-
 
 @section('script')
 
@@ -79,338 +79,180 @@
 
 
 <script>
-
-    // ==========================================
-    // GET PROFILE
-    // ==========================================
+    // $.ajax({
+    //     url: "{{ route('programme.getProgrammesByOrgId',['orgId' => 4])}}",
+    //     type: "GET",
+    //     dataType: "json",
+    //     success: function ({ data }) {
+    //         console.log(data);
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr);
+    //     }
+    // });
 
     function getProfileData() {
-
         $.ajax({
-
-            url: "{{ route(
-                'profile.getProfileDataByUserIdJson',
-            ['userId' => auth() -> id()]
-            )
-    }}",
-
-    type: "GET",
-
-        dataType: "json",
-
+            url: "{{ route('profile.getProfileDataByUserIdJson',['userId' => auth() -> id()])}}",
+            type: "GET",
+            dataType: "json",
             success: function ({ data }) {
+                console.log(data);
 
-                $("#name")
-                    .text(data.name ?? "");
+                $("#name").text(data.name ?? "");
+                $("#headline").text(data.headline ?? "");
+                $("#aboutText").text(data.about ?? "");
+                $("#profileLocation").text(data.location ?? "");
 
-                $("#headline")
-                    .text(data.headline ?? "");
-
-                $("#aboutText")
-                    .text(data.about ?? "");
-
-                $("#profileLocation")
-                    .text(data.location ?? "");
-
-
-                const programme =
-                    data.active_programmes?.[0];
-
+                let programme = data.active_programmes?.[0];
 
                 if (programme) {
-
-                    $("#programme")
-                        .text(programme.programme_name ?? "")
-                        .show();
-
-
-                    $("#uni-name")
-                        .text(programme.organization_name ?? "")
-                        .show();
-
+                    $("#programme").text(programme.programme_name ?? "").show();
+                    $("#uni-name").text(programme.organization_name ?? "").show();
                 } else {
-
-                    $("#programme, #uni-name")
-                        .hide();
-
+                    $("#programme, #uni-name").hide();
                 }
 
+                let coverImageUrl = "{{ asset('cover-image-url') }}/" + data.cover_image;
+                $("#coverImage").css("background-image", `url("${coverImageUrl}")`);
 
-                // Cover
-                const coverImageUrl =
-                    "{{ asset('cover-image-url') }}/"
-                    + data.cover_image;
+                let profileImageUrl = "{{ asset('profile-image-url') }}/" + data.profile_image;
+                $("#profileImage, #profileBtn").css("background-image", `url("${profileImageUrl}")`);
 
+                let activeEducationsModalBody = document.getElementById("activeEducationsModalBody")
+                data.active_programmes.forEach(data => {
 
-                $("#coverImage")
-                    .css(
-                        "background-image",
-                        `url("${coverImageUrl}")`
-                    );
+                    let $element = $("<div>").addClass("alert alert-primary d-flex gap-2").attr("role", "button");
+                    $element.html(`
+                        <div class="bg-body d-flex justify-content-center align-items-center"
+                            style="width: 40px; height: 40px; border-radius: 50%;">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                        </div>
 
+                        <div>
+                            <p>${data.organization_name ?? "Universiti Taknikal Malaysia Melaka(UTEM)"}</p>
+                            <p>${data.programme_name ?? ""}</p>
+                            <p>${data.programme_level ?? ""}</p>
+                            <p>${data.duration_years ?? ""} Years</p>
+                        </div>`);
 
-                // Profile
-                const profileImageUrl =
-                    "{{ asset('profile-image-url') }}/"
-                    + data.profile_image;
-
-
-                $("#profileImage, #profileBtn")
-                    .css(
-                        "background-image",
-                        `url("${profileImageUrl}")`
-                    );
-
+                    $("#activeEducationList").append($element);
+                });
+                
             },
 
-
-    error: function (xhr) {
-
-        console.error(xhr);
-
-    }
-
+            error: function (xhr) {
+                console.error(xhr);
+            }
         });
-
     }
-
-
-
-    // ==========================================
-    // FILE CHECK
-    // ==========================================
 
     function fileCheck(file) {
-
         if (!file) {
-
             Swal.fire({
                 title: "Upload Failed",
                 text: "Please select an image",
                 icon: "error"
             });
-
             return true;
-
         }
-
         return false;
-
     }
 
+    $("#profileImageInput").on("change", function () {
+        let file = this.files[0];
+        if (fileCheck(file)) return;
 
+        let formData = new FormData();
+        formData.append("profile_image", file);
 
-    // ==========================================
-    // PROFILE IMAGE
-    // ==========================================
+        $.ajax({
+            url: "{{ route('update.uploadProfileImage') }}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
 
-    $("#profileImageInput")
-        .on("change", function () {
+            success: function () {
+                getProfileData();
 
-            const file =
-                this.files[0];
+                Swal.fire({
+                    title: "Success",
+                    text: "Profile image uploaded successfully",
+                    icon: "success"
+                });
+            },
 
-
-            if (fileCheck(file)) {
-                return;
+            error: function (xhr) {
+                Swal.fire({
+                    title: "Upload Failed",
+                    text:
+                        xhr.responseJSON?.message ?? "Something went wrong",
+                    icon: "error"
+                });
             }
-
-
-            const formData =
-                new FormData();
-
-
-            formData.append(
-                "profile_image",
-                file
-            );
-
-
-            $.ajax({
-
-                url: "{{ route('update.uploadProfileImage') }}",
-
-                type: "POST",
-
-                data: formData,
-
-                processData: false,
-
-                contentType: false,
-
-                headers: {
-
-                    "X-CSRF-TOKEN":
-                        $('meta[name="csrf-token"]')
-                            .attr("content")
-
-                },
-
-
-                success: function () {
-
-                    getProfileData();
-
-
-                    Swal.fire({
-                        title: "Success",
-                        text: "Profile image uploaded successfully",
-                        icon: "success"
-                    });
-
-                },
-
-
-                error: function (xhr) {
-
-                    Swal.fire({
-                        title: "Upload Failed",
-                        text:
-                            xhr.responseJSON?.message ??
-                            "Something went wrong",
-                        icon: "error"
-                    });
-
-                }
-
-            });
-
         });
+    });
 
+    $("#coverImageInput").on("change", function () {
+        let file = this.files[0];
 
+        if (fileCheck(file)) return;
+        let formData = new FormData();
+        formData.append("cover_image", file);
 
-    // ==========================================
-    // COVER IMAGE
-    // ==========================================
+        $.ajax({
+            url: "{{ route('update.uploadCoverImage') }}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
 
-    $("#coverImageInput")
-        .on("change", function () {
-
-            const file =
-                this.files[0];
-
-
-            if (fileCheck(file)) {
-                return;
+            success: function () {
+                getProfileData();
+                Swal.fire({
+                    title: "Success",
+                    text: "Cover image uploaded successfully",
+                    icon: "success"
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    title: "Upload Failed",
+                    text:
+                        xhr.responseJSON?.message ?? "Something went wrong",
+                    icon: "error"
+                });
             }
-
-
-            const formData =
-                new FormData();
-
-
-            formData.append(
-                "cover_image",
-                file
-            );
-
-
-            $.ajax({
-
-                url: "{{ route('update.uploadCoverImage') }}",
-
-                type: "POST",
-
-                data: formData,
-
-                processData: false,
-
-                contentType: false,
-
-                headers: {
-
-                    "X-CSRF-TOKEN":
-                        $('meta[name="csrf-token"]')
-                            .attr("content")
-
-                },
-
-
-                success: function () {
-
-                    getProfileData();
-
-
-                    Swal.fire({
-                        title: "Success",
-                        text: "Cover image uploaded successfully",
-                        icon: "success"
-                    });
-
-                },
-
-
-                error: function (xhr) {
-
-                    Swal.fire({
-                        title: "Upload Failed",
-                        text:
-                            xhr.responseJSON?.message ??
-                            "Something went wrong",
-                        icon: "error"
-                    });
-
-                }
-
-            });
-
         });
+    });
 
+    $(".profile-tab").on("click", function () {
 
+        $(".profile-tab").removeClass("active");
 
-    // ==========================================
-    // PROFILE TABS
-    // ==========================================
+        $(this).addClass("active");
 
-    $(".profile-tab")
-        .on("click", function () {
+        let target = $(this).data("target");
 
-            $(".profile-tab")
-                .removeClass("active");
+        if (target === "main") {
+            $("#mainTabContent").removeClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+        }
 
-
-            $(this)
-                .addClass("active");
-
-
-            const target =
-                $(this).data("target");
-
-
-            if (target === "main") {
-
-                $("#mainTabContent")
-                    .removeClass("d-none");
-
-                $("#resultTabContent")
-                    .addClass("d-none");
-
-            }
-
-
-            if (target === "result") {
-
-                $("#mainTabContent")
-                    .addClass("d-none");
-
-                $("#resultTabContent")
-                    .removeClass("d-none");
-
-                // Jangan request API kat sini.
-                // Semester component handle sendiri.
-
-            }
-
-        });
-
-
-
-    // ==========================================
-    // INITIAL
-    // ==========================================
+        if (target === "result") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").removeClass("d-none");
+        }
+    });
 
     getProfileData();
-
 </script>
 
 @endsection

@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class pdf-preview-modal.blade extends Component
+class ActiveEducationsModal extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class pdf-preview-modal.blade extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.pdf-preview-modal.blade.php');
+        return view('components.active-educations-modal');
     }
 }

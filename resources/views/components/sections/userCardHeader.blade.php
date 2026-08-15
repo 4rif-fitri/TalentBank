@@ -54,7 +54,10 @@
             <p id="headline"></p>
             <a id="uni-name" href="#" class="h5 fw-bold"></a>
             <p id="programme"></p>
-
+            <button id="seeMoreActiveEducations" type="button" class="btn badge text-bg-primary" data-bs-toggle="tooltip" data-bs-placement="right"
+                data-bs-custom-class="custom-tooltip" data-bs-title="See More Active Educations">
+                See More
+            </button>
             <article id="location">
                 <p>
                     <i class="fa-solid fa-location-dot"></i>
