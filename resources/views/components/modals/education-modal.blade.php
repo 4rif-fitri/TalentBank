@@ -10,37 +10,49 @@
 
             <div class="modal-body">
 
+                <input type="hidden" id="educationId" name="education_id">
+                <input type="hidden" id="enrollmentStatus" name="enrollment_status">
+
                 <!-- Institution -->
                 <div class="mb-3">
-                    <label for="institution" class="form-label">Institution</label>
-                    <input type="text" class="form-control" id="institution" name="institution"
-                        placeholder="Universiti Teknikal Malaysia Melaka" required>
+                    <label for="educationInstitution" class="form-label">
+                        Institution
+                    </label>
+
+                    <select class="form-select" id="educationInstitution" required>
+                        <option value="" selected disabled>
+                            Select Institution
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Programme -->
+                <div class="mb-3">
+                    <label for="educationProgramme" class="form-label">
+                        Programme Name
+                    </label>
+
+                    <select class="form-select" id="educationProgramme" required disabled>
+                        <option value="" selected disabled>
+                            Select Programme
+                        </option>
+                    </select>
                 </div>
 
                 <!-- Field of Study -->
                 <div class="mb-3">
-                    <label for="fieldOfStudy" class="form-label">Field of Study</label>
-                    <input type="text" class="form-control" id="fieldOfStudy" name="field_of_study"
-                        placeholder="e.g. Computer Science" required>
+                    <label for="fieldOfStudy" class="form-label fw-bold">Field of Study</label>
+                    <select class="form-select" id="fieldOfStudy" name="field_of_study_id" required>
+                        <option value="" disabled selected>Select Field of Study</option>
+                    </select>
                 </div>
 
                 <!-- Qualification -->
                 <div class="mb-3">
-                    <label for="qualification" class="form-label">Qualification</label>
-                    <select class="form-select" id="qualification" name="qualification" required>
-                        <option selected disabled value="">Select Qualification</option>
-                        <option value="diploma">Diploma</option>
-                        <option value="degree">Degree</option>
-                        <option value="master">Master</option>
-                        <option value="doctorate">Doctorate</option>
+                    <label for="qualification" class="form-label fw-bold">Qualification</label>
+                    <select class="form-select" id="qualification" name="qualification_id" required>
+                        <option value="" disabled selected>Select Qualification</option>
                     </select>
-                </div>
-
-                <!-- Programme Name -->
-                <div class="mb-3">
-                    <label for="programmeName" class="form-label">Programme Name</label>
-                    <input type="text" class="form-control" id="programmeName" name="programme_name"
-                        placeholder="e.g. Bachelor of Computer Science" required>
                 </div>
 
                 <!-- CGPA -->
@@ -68,90 +80,19 @@
                     <label class="form-label fw-bold">
                         Start Date
                     </label>
-
-                    <div class="row g-3">
-
-                        <div class="col-6">
-                            <label for="startMonth" class="form-label">
-                                Month
-                            </label>
-
-                            <select class="form-select" id="startMonth" name="start_month" required>
-                                <option selected disabled value="">Select Month</option>
-                                <option value="01">January</option>
-                                <option value="02">February</option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                        </div>
-
-                        <div class="col-6">
-                            <label for="startYear" class="form-label">Year</label>
-                            <select class="form-select" id="startYear" name="start_year" required>
-                                <option selected disabled value="">Select Year</option>
-                                <option value="2026">2026</option>
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                                <option value="2022">2022</option>
-                                <option value="2021">2021</option>
-                                <option value="2020">2020</option>
-                            </select>
-                        </div>
-
-                    </div>
+                    <input type="date" class="form-control" id="dateStart">
                 </div>
 
                 <!-- End Date -->
-                <div class="mb-4">
-                    <label class="form-label fw-bold">End Date</label>
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <label for="endMonth" class="form-label">Month</label>
-                            <select class="form-select" id="endMonth" name="end_month" required>
-                                <option selected disabled value="">Select Month</option>
-                                <option value="01">January</option>
-                                <option value="02">February</option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <label for="endYear" class="form-label">Year</label>
-                            <select class="form-select" id="endYear" name="end_year" required>
-                                <option selected disabled value="">Select Year</option>
-                                <option value="2030">2030</option>
-                                <option value="2029">2029</option>
-                                <option value="2028">2028</option>
-                                <option value="2027">2027</option>
-                                <option value="2026">2026</option>
-                                <option value="2025">2025</option>
-                                <option value="2024">2024</option>
-                                <option value="2023">2023</option>
-                            </select>
-                        </div>
-
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">
+                        End Date
+                    </label>
+                    <input type="date" class="form-control" id="dateEnd">
                 </div>
 
                 <!-- Skills -->
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label class="form-label">Skill</label>
                     <div>
                         <button id="addSkill" type="button" class="btn btn-outline-primary btn-sm">+ Add
@@ -160,10 +101,10 @@
 
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Media -->
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label class="form-label fw-semibold">Media</label>
                     <p class="text-muted small mb-2">
                         Add media like images, documents or presentations.
@@ -176,12 +117,17 @@
                     </button>
 
                     <div id="mediaContainer" class="d-flex gap-2 flex-wrap mt-3"></div>
-                </div>
+                </div> -->
 
             </div>
 
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary" id="btnSaveEducation">Save</button>
+            <div class="modal-footer d-flex justify-content-between">
+                <button type="button" class="btn btn-outline-danger" id="btnDeleteEducation">
+                    Delete
+                </button>
+                <button type="button" class="btn btn-primary" id="btnSaveEducation">
+                    Save
+                </button>
             </div>
         </div>
     </div>
@@ -189,11 +135,570 @@
 
 @push('scripts')
 <script>
-    $(".btn-edit-education").on("click", function () {
+
+    let listOfFieldOfStudies = [];
+    let listOfQualifications = [];
+    let listOfOrganizations = [];
+
+    function getAllOrganizations() {
+
+        return $.ajax({
+            url: "{{ route('organization.getAllOrganizationsJson') }}",
+            type: "GET",
+            dataType: "json",
+
+            success: function ({ data }) {
+
+                listOfOrganizations = data;
+
+                let $institution = $("#educationInstitution");
+
+                $institution.html(`
+                <option value="" selected disabled>
+                    Select Institution
+                </option>
+            `);
+
+                data.forEach(organization => {
+
+                    $institution.append(`
+                    <option value="${organization.id}">
+                        ${organization.company_name}
+                    </option>
+                `);
+                });
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseJSON);
+            }
+        });
+    }
+
+    $(document).on("change", "#dateStart", function () {
+
+        let startDate = $(this).val();
+
+        if (!startDate) {
+            $("#dateEnd").removeAttr("min");
+            return;
+        }
+
+        $("#dateEnd").attr("min", startDate);
+
+        let endDate = $("#dateEnd").val();
+
+        if (endDate && endDate < startDate) {
+            $("#dateEnd").val("");
+        }
+    });
+
+    function getAllFieldOfStudies() {
+        $.ajax({
+            url: "{{ route('education.getAllFieldOfStudies') }}",
+            type: "GET",
+            dataType: "json",
+
+            success: function ({ data }) {
+                listOfFieldOfStudies = data;
+
+                $("#fieldOfStudy").html(`
+                <option value="" disabled selected>
+                    Select Field of Study
+                </option>
+            `);
+                data.forEach(item => {
+                    $("#fieldOfStudy").append(`
+                    <option value="${item.id}">
+                        ${item.name}
+                    </option>
+                `);
+                });
+            },
+            error: function (xhr) {
+                console.error(xhr);
+            }
+        });
+    }
+
+    function getAllQualifications() {
+        $.ajax({
+            url: "{{ route('education.getAllQualifications') }}",
+            type: "GET",
+            dataType: "json",
+
+            success: function ({ data }) {
+                listOfQualifications = data;
+
+                $("#qualification").html(`
+                    <option value="" disabled selected>
+                        Select Qualification
+                    </option>
+                `);
+
+                data.forEach(item => {
+                    $("#qualification").append(`
+                        <option value="${item.id}">
+                            ${item.name}
+                        </option>
+                    `);
+                });
+            },
+
+            error: function (xhr) {
+                console.error(xhr);
+            }
+        });
+    }
+
+    function getEducationDetail(eduId) {
+
+        let modalEl = document.getElementById("educationModal");
+        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        let url =
+            "{{ route('education.getEducationById', ['id' => '__ID__']) }}";
+
+        url = url.replace("__ID__", eduId);
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+
+            success: function ({ data }) {
+
+                $("#educationId").val(data.id);
+
+                $("#qualification").val(data.qualification_id);
+                $("#fieldOfStudy").val(data.field_of_study_id);
+
+                $("#cgpaInput").val(data.cgpa);
+                $("#descriptionInput").val(data.description);
+
+                $("#dateStart").val(data.start_date);
+                $("#dateEnd").val(data.end_date);
+
+                $("#enrollmentStatus").val(
+                    data.enrollment_status ?? "Active"
+                );
+
+                if (data.start_date) {
+                    $("#dateEnd").attr(
+                        "min",
+                        data.start_date
+                    );
+                }
+
+                let organizationId =
+                    data.programme?.organization?.id;
+
+                if (organizationId) {
+
+                    $("#educationInstitution")
+                        .val(organizationId);
+
+                    getProgrammesByOrganizationId(
+                        organizationId,
+                        data.programme_id
+                    );
+                }
+
+                $("#educationModal .modal-title")
+                    .text("Edit Education");
+
+                $("#btnSaveEducation")
+                    .text("Update");
+
+                $("#btnDeleteEducation").show();
+
+                modal.show();
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseJSON);
+            }
+        });
+    }
+
+    function validateEducationDates() {
+
+        let startDate = $("#dateStart").val();
+        let endDate = $("#dateEnd").val();
+
+        $("#dateStart, #dateEnd").removeClass("is-invalid");
+
+        if (!startDate) {
+            $("#dateStart").addClass("is-invalid");
+            return false;
+        }
+
+        if (endDate && endDate < startDate) {
+            $("#dateEnd").addClass("is-invalid");
+            return false;
+        }
+
+        return true;
+    }
+
+    $(document).on("click", ".btn-edit-education", function () {
         let eduId = $(this).data("id");
         console.log("Education ID:", eduId);
         getEducationDetail(eduId);
     });
 
+    $(document).on("click", "#btnDeleteEducation", function () {
+
+        let educationId = $("#educationId").val();
+
+        if (!educationId) {
+            return;
+        }
+
+        Swal.fire({
+            title: "Delete Education?",
+            text: "This education record will be permanently deleted.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#dc3545"
+        }).then(result => {
+
+            if (!result.isConfirmed) {
+                return;
+            }
+
+            let url =
+                "{{ route('education.delete', ['id' => '__ID__']) }}";
+
+            url = url.replace("__ID__", educationId);
+
+            $.ajax({
+                url: url,
+                type: "DELETE",
+
+                headers: {
+                    "X-CSRF-TOKEN":
+                        $('meta[name="csrf-token"]').attr("content")
+                },
+
+                success: function (response) {
+
+                    bootstrap.Modal
+                        .getInstance(
+                            document.getElementById("educationModal")
+                        )
+                        ?.hide();
+
+                    Swal.fire({
+                        title: "Success",
+                        text: response.message ??
+                            "Education deleted successfully.",
+                        icon: "success"
+                    });
+
+                    $(document).trigger("education:updated");
+                },
+
+                error: function (xhr) {
+                    console.error(xhr.responseJSON);
+
+                    Swal.fire({
+                        title: "Delete Failed",
+                        text: xhr.responseJSON?.message ??
+                            "Something went wrong.",
+                        icon: "error"
+                    });
+                }
+            });
+        });
+    });
+
+    $(document).on("click", "#addEducation", function () {
+
+        let modalEl = document.getElementById("educationModal");
+        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        $("#educationId").val("");
+
+        $("#educationInstitution").val("");
+
+        $("#educationProgramme")
+            .prop("disabled", true)
+            .html(`
+            <option value="" selected disabled>
+                Select Programme
+            </option>
+        `);
+
+        $("#qualification").val("");
+        $("#fieldOfStudy").val("");
+        $("#cgpaInput").val("");
+        $("#descriptionInput").val("");
+        $("#dateStart").val("");
+
+        $("#dateEnd")
+            .val("")
+            .removeAttr("min");
+
+        $("#enrollmentStatus").val("Active");
+
+        $("#educationModal .modal-title").text("Add Education");
+
+        $("#btnDeleteEducation").hide();
+        $("#btnSaveEducation").text("Save");
+
+        modal.show();
+    });
+
+    function updateEducation(url, formData) {
+
+        $.ajax({
+            url: url,
+            type: "PUT",
+            data: formData,
+
+            headers: {
+                "X-CSRF-TOKEN":
+                    $('meta[name="csrf-token"]').attr("content")
+            },
+
+            success: function (response) {
+
+                bootstrap.Modal
+                    .getInstance(
+                        document.getElementById("educationModal")
+                    )
+                    ?.hide();
+
+                Swal.fire({
+                    title: "Success",
+                    text: response.message ??
+                        "Education updated successfully.",
+                    icon: "success"
+                });
+
+                $(document).trigger("education:updated");
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseJSON);
+
+                Swal.fire({
+                    title: "Update Failed",
+                    text: xhr.responseJSON?.message ??
+                        "Something went wrong.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+
+    function createEducation(formData) {
+
+        $.ajax({
+            url: "{{ route('education.store') }}",
+            type: "POST",
+            data: formData,
+
+            headers: {
+                "X-CSRF-TOKEN":
+                    $('meta[name="csrf-token"]').attr("content")
+            },
+
+            success: function (response) {
+
+                bootstrap.Modal
+                    .getInstance(
+                        document.getElementById("educationModal")
+                    )
+                    ?.hide();
+
+                Swal.fire({
+                    title: "Success",
+                    text: response.message ??
+                        "Education created successfully.",
+                    icon: "success"
+                });
+
+                $(document).trigger("education:updated");
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseJSON);
+
+                Swal.fire({
+                    title: "Create Failed",
+                    text: xhr.responseJSON?.message ??
+                        "Something went wrong.",
+                    icon: "error"
+                });
+            }
+        });
+    }
+
+    $(document).on("click", "#btnSaveEducation", function () {
+
+        if (!$("#educationInstitution").val()) {
+            Swal.fire({
+                title: "Validation Error",
+                text: "Please select an institution.",
+                icon: "error"
+            });
+
+            return;
+        }
+
+        if (!$("#educationProgramme").val()) {
+            Swal.fire({
+                title: "Validation Error",
+                text: "Please select a programme.",
+                icon: "error"
+            });
+
+            return;
+        }
+
+        if (!$("#fieldOfStudy").val()) {
+            Swal.fire({
+                title: "Validation Error",
+                text: "Please select a field of study.",
+                icon: "error"
+            });
+
+            return;
+        }
+
+        if (!$("#qualification").val()) {
+            Swal.fire({
+                title: "Validation Error",
+                text: "Please select a qualification.",
+                icon: "error"
+            });
+
+            return;
+        }
+
+        if (!validateEducationDates()) {
+            return;
+        }
+
+        let educationId = $("#educationId").val();
+
+        let formData = {
+            programme_id: $("#educationProgramme").val(),
+            field_of_study_id: $("#fieldOfStudy").val(),
+            qualification_id: $("#qualification").val(),
+            cgpa: $("#cgpaInput").val() || null,
+            description: $("#descriptionInput").val(),
+            start_date: $("#dateStart").val(),
+            end_date: $("#dateEnd").val() || null,
+            enrollment_status:
+                $("#enrollmentStatus").val() || "Active"
+        };
+
+        if (educationId) {
+
+            let url =
+                "{{ route('education.update', ['id' => '__ID__']) }}";
+
+            url = url.replace("__ID__", educationId);
+
+            updateEducation(url, formData);
+
+            return;
+        }
+
+        createEducation(formData);
+    });
+
+    function getProgrammesByOrganizationId(
+        organizationId,
+        selectedProgrammeId = null
+    ) {
+        let $programme = $("#educationProgramme");
+
+        $programme
+            .prop("disabled", true)
+            .html(`
+            <option value="">
+                Loading programmes...
+            </option>
+        `);
+
+        let url =
+            "{{ route('programme.getProgrammesByOrgId', ['orgId' => '__ID__']) }}";
+
+        url = url.replace("__ID__", organizationId);
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+
+            success: function ({ data }) {
+
+                $programme.html(`
+                <option value="" selected disabled>
+                    Select Programme
+                </option>
+            `);
+
+                if (!data || data.length === 0) {
+                    $programme.html(`
+                    <option value="">
+                        No programmes available
+                    </option>
+                `);
+
+                    return;
+                }
+
+                data.forEach(programme => {
+                    $programme.append(`
+                    <option value="${programme.id}">
+                        ${programme.programme_name}
+                    </option>
+                `);
+                });
+
+                $programme.prop("disabled", false);
+
+                if (selectedProgrammeId) {
+                    $programme.val(selectedProgrammeId);
+                }
+            },
+
+            error: function (xhr) {
+
+                console.error(xhr.responseJSON);
+
+                $programme
+                    .prop("disabled", true)
+                    .html(`
+                    <option value="">
+                        Failed to load programmes
+                    </option>
+                `);
+            }
+        });
+    }
+    $(document).on("change", "#educationInstitution", function () {
+
+        let organizationId = $(this).val();
+
+        if (!organizationId) {
+            return;
+        }
+
+        getProgrammesByOrganizationId(organizationId);
+    });
+
+    $(document).ready(function () {
+        getAllOrganizations();
+        getAllFieldOfStudies();
+        getAllQualifications();
+    });
 </script>
 @endpush
