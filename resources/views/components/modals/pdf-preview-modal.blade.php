@@ -28,7 +28,7 @@
                 </iframe>
             </div>
 
-            <div class="modal-footer">
+            <!-- <div class="modal-footer">
                 <a href="#" target="_blank" rel="noopener" class="btn btn-outline-primary" id="openPdfNewTab">
                     <i class="fa-solid fa-arrow-up-right-from-square me-1"></i>
                     Open in New Tab
@@ -37,7 +37,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Close
                 </button>
-            </div>
+            </div> -->
 
         </div>
     </div>
