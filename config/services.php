@@ -36,6 +36,9 @@ return [
     ],
 
     'uploads_file_path' => [
-        'education' => env('EDUCATION_FILE_URL')
+        'profile_image' => env('PROFILE_IMAGE_URL'),
+        'cover_image' => env('COVER_IMAGE_URL'),
+        'semester_results' => env('SEMESTER_RESULTS_FILE_URL'),
+        'education' => env('EDUCATION_FILE_URL'),
     ],
 ];

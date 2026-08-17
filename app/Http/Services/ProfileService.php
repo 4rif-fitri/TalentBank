@@ -151,7 +151,7 @@ class ProfileService
      */
     public function uploadProfileImage(UploadedFile $profileImage)
     {
-        return $this->uploadImage($profileImage, 'profile_image', env('PROFILE_IMAGE_URL'));
+        return $this->uploadImage($profileImage, 'profile_image', config('services.uploads_file_path.profile_image'));
     }
 
     /**
@@ -161,7 +161,7 @@ class ProfileService
      */
     public function uploadCoverImage(UploadedFile $coverImage)
     {
-        return $this->uploadImage($coverImage, 'cover_image', env('COVER_IMAGE_URL'));
+        return $this->uploadImage($coverImage, 'cover_image', config('services.uploads_file_path.cover_image'));
     }
 
     private function uploadImage(UploadedFile $image, string $column, string $imagePath)
