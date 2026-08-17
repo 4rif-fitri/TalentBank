@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "PHP"
+    },
+    {
+        "id": 2,
+        "name": "Laravel"
+    },
+    {
+        "id": 3,
+        "name": "JavaScript"
+    },
+    {
+        "id": 4,
+        "name": "Vue.js"
+    }
+]

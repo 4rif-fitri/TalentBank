@@ -1,15 +1,13 @@
+<!-- Vendor CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/libs/jquery-ui.css') }}">
+<!-- Bootstrap via Vite -->
+@vite([
+    'resources/scss/app.scss',
+    'resources/js/app.js'
+])
+<!-- TalentBank Custom CSS -->
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/layout/newLayout.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/style.css') }}">
 
-        @yield('css')
-
-        <!-- App css -->
-        <link href="{{ URL::asset('assets/css/bootstrap-dark.min.css')}}" id="bootstrap-dark" rel="stylesheet" type="text/css" />
-        <link href="{{ URL::asset('assets/css/bootstrap.min.css')}}" id="bootstrap-light" rel="stylesheet" type="text/css" />
-        <link href="{{ URL::asset('assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
-        {{-- <link href="{{ URL::asset('assets/css/app-rtl.min.css')}}" id="app-rtl" rel="stylesheet" type="text/css" /> --}}
-        <link href="{{ URL::asset('assets/css/app-dark.min.css')}}" id="app-dark" rel="stylesheet" type="text/css" />
-        <link href="{{ URL::asset('assets/css/app.min.css')}}" id="app-light" rel="stylesheet" type="text/css" />
-        <link href="{{ URL::asset('assets/css/style.css')}}" id="app-light" rel="stylesheet" type="text/css" />
-    	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-        {{-- <script src="https://js.stripe.com/v3/"></script> --}}
-        {{-- @laravelPWA --}}
+@yield('css')

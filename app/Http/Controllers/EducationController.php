@@ -35,7 +35,7 @@ class EducationController extends Controller
 
     /**
      * Handles request to get education by user profile ID
-     * 
+     *
      * @param int $id
      * @throws Exception
      * @return \Illuminate\Http\JsonResponse
@@ -57,7 +57,7 @@ class EducationController extends Controller
 
     /**
      * Handles request to get education by education ID
-     * 
+     *
      * @param int $id
      * @throws Exception
      * @return \Illuminate\Http\JsonResponse
@@ -79,7 +79,7 @@ class EducationController extends Controller
 
     /**
      * Handles request to create a new education
-     * 
+     *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -98,7 +98,7 @@ class EducationController extends Controller
 
     /**
      * Handles request to update existing education
-     * 
+     *
      * @param Request $request
      * @param int $id
      * @throws Exception
@@ -123,7 +123,7 @@ class EducationController extends Controller
 
     /**
      * Handles request to delete existing education
-     * 
+     *
      * @param int $id
      * @throws Exception
      * @return \Illuminate\Http\JsonResponse
@@ -145,7 +145,7 @@ class EducationController extends Controller
 
     /**
      * Handles request to get all field of studies
-     * 
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function getAllFieldOfStudies()
