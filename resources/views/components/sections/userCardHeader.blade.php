@@ -21,19 +21,21 @@
 
 <section class="user-card-header">
     <div class="user-card-banner" id="coverImage" style="background-image: url('');">
-        <div class="icon-container">
+        <button class="icon-container btn"
+        data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-tooltip" data-bs-title="Edit Cover Image">>
             <label for="coverImageInput" class="btn icon bg-body">
                 <i class="fa-solid fa-pencil"></i>
                 <input type="file" hidden id="coverImageInput" name="cover_image" accept="image/*">
             </label>
-        </div>
+        </button>
     </div>
 
     <div class="user-profile-group">
         <div class="profile-image" id="profileImage" style="background-image: url('');">
             <div class="w-100 h-100 position-relative">
                 <label for="profileImageInput" class="btn icon bg-body">
-                    <i class="fa-solid fa-camera"></i>
+                    <i class="fa-solid fa-camera"
+                    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="custom-tooltip" data-bs-title="Edit Image Profile"></i>
                     <input type="file" hidden id="profileImageInput" accept="image/*">
                 </label>
             </div>
@@ -48,14 +50,15 @@
                 </button>
             </div> -->
             <h2 id="name" class="fw-bold"></h2>
-            <button type="button" class="btn btn-secondary icon" id="btnEditProfile">
+            <button type="button" class="btn btn-secondary icon" id="btnEditProfile"
+            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-tooltip" data-bs-title="Edit Profile Data">
                 <i class="fa-solid fa-pencil"></i>
             </button>
             <p id="headline"></p>
             <a id="uni-name" href="#" class="h5 fw-bold"></a>
             <p id="programme"></p>
-            <button id="seeMoreActiveEducations" type="button" class="btn badge text-bg-primary" data-bs-toggle="tooltip" data-bs-placement="right"
-                data-bs-custom-class="custom-tooltip" data-bs-title="See More Active Educations">
+            <button id="seeMoreActiveEducations" type="button" class="btn badge text-bg-primary"
+                data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="custom-tooltip" data-bs-title="See More Active Educations">
                 See More
             </button>
             <article id="location">

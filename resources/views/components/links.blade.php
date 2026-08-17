@@ -23,10 +23,11 @@
         Twitter
     </a>
 
-    <a href="./links.html" class="btn badge text-bg-primary">
+    <button class="btn badge text-bg-primary"
+    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="See More Social Media">
         <i class="fa-solid fa-pencil"></i>
         Edit
-    </a>
+    </button>
 </article>
 
 @push('scripts')
