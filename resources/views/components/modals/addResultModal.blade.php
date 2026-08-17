@@ -170,7 +170,7 @@
                 type: "GET",
                 dataType: "json",
                 success: function (response) {
-                    console.log("Programme response:", response);
+                    // console.log("Programme response:", response);
 
                     programmesData = response.data ?? [];
 
@@ -249,8 +249,8 @@
                 });
             });
 
-            console.log("Selected programme:", programme);
-            console.log("Available semesters:", semesters);
+            // console.log("Selected programme:", programme);
+            // console.log("Available semesters:", semesters);
 
             if (semesters.length === 0) {
                 $("#resultSemester")
@@ -370,7 +370,7 @@
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
                 success: function (response) {
-                    console.log("Upload result:", response);
+                    // console.log("Upload result:", response);
 
                     addResultModal.hide();
                     resetResultForm();

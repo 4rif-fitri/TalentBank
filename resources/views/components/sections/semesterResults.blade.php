@@ -161,7 +161,7 @@
                 dataType: "json",
 
                 success: function (response) {
-                    console.log("Semester result response:", response);
+                    // console.log("Semester result response:", response);
                     let programmes = response.data ?? [];
                     renderSemesterResults(programmes);
                     semesterResultsLoaded = true;
@@ -274,7 +274,7 @@
             semesterResultsLoaded = false;
             loadSemesterResults(true);
         };
-        
+
         $(document).on("education:updated", function () {
             refreshSemesterResults();
         })

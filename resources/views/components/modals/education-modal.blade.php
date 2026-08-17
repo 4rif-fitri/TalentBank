@@ -175,20 +175,20 @@
                 </div> -->
 
                 <!-- Media -->
-                <!-- <div class="mb-3">
+                <div class="mb-3">
                     <label class="form-label fw-semibold">Media</label>
                     <p class="text-muted small mb-2">
                         Add media like images, documents or presentations.
                     </p>
 
-                    <input type="file" id="mediaFileInput" accept="image/*" hidden>
+                    <input type="file" id="mediaFileInput" accept="image/*" multiple hidden>
 
-                    <button type="button" id="addMedia" class="btn btn-outline-primary btn-sm">
+                    <label for="mediaFileInput" id="addMedia" class="btn btn-outline-primary btn-sm">
                         + Add Media
-                    </button>
+                    </label>
 
                     <div id="mediaContainer" class="d-flex gap-2 flex-wrap mt-3"></div>
-                </div> -->
+                </div>
 
             </div>
 
@@ -346,7 +346,7 @@
             dataType: "json",
 
             success: function ({ data }) {
-                console.log(data);
+                // console.log(data);
 
                 $("#educationId").val(data.id);
                 $("#qualification").val(data.qualification_id);
@@ -488,7 +488,7 @@
             success: function (response) {
                 bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
                 swalfire("Success", response.message ?? "Education updated successfully", "success")
-                $(document).trigger("education:updated");
+                // $(document).trigger("education:updated");
             },
 
             error: function (xhr) {
@@ -506,6 +506,8 @@
             url: "{{ route('education.store') }}",
             type: "POST",
             data: formData,
+            processData: false,
+            contentType: false,
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
@@ -513,7 +515,7 @@
             success: function (response) {
                 bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
                 swalfire("Success", response.message ?? "Education created successfully.", "success")
-                $(document).trigger("education:updated");
+                // $(document).trigger("education:updated");
             },
 
             error: function (xhr) {
@@ -544,7 +546,7 @@
 
     $(document).on("click", ".btn-edit-education", function () {
         let eduId = $(this).data("id");
-        console.log("Education ID:", eduId);
+        // console.log("Education ID:", eduId);
         getEducationDetail(eduId);
     });
 
@@ -613,43 +615,40 @@
 
     $(document).on("click", "#btnSaveEducation", function () {
 
+        const input = document.getElementById("mediaFileInput");
+
         if (!$("#educationInstitution").val()) return;
 
         if (!$("#educationProgramme").val()) {
-            swalfire("Validation Error", "Please select a programme", "error")
+            swalfire("Validation Error", "Please select a programme", "error");
             return;
         }
 
         if (!$("#fieldOfStudy").val()) {
-            swalfire("Validation Error", "Please select a field of study", "error")
+            swalfire("Validation Error", "Please select a field of study", "error");
             return;
         }
 
         if (!$("#qualification").val()) {
-            swalfire("Validation Error", "Please select a qualification", "error")
+            swalfire("Validation Error", "Please select a qualification", "error");
             return;
         }
 
-        if (!validateEducationDates()) return;
+        const formData = new FormData();
 
-        let educationId = $("#educationId").val();
+        formData.append("programme_id", $("#educationProgramme").val());
+        formData.append("field_of_study_id", $("#fieldOfStudy").val());
+        formData.append("qualification_id", $("#qualification").val());
+        formData.append("cgpa", $("#cgpaInput").val() || "");
+        formData.append("description", $("#descriptionInput").val());
+        formData.append("start_date", $("#dateStart").val() || "2026-05-01");
+        formData.append("end_date", $("#dateEnd").val() || "2026-05-05");
+        formData.append("enrollment_status", $("#enrollmentStatus").val() || "Active");
 
-        let formData = {
-            programme_id: $("#educationProgramme").val(),
-            field_of_study_id: $("#fieldOfStudy").val(),
-            qualification_id: $("#qualification").val(),
-            cgpa: $("#cgpaInput").val() || null,
-            description: $("#descriptionInput").val(),
-            start_date: $("#dateStart").val(),
-            end_date: $("#dateEnd").val() || null,
-            enrollment_status: $("#enrollmentStatus").val() || "Active"
-        };
-
-        if (educationId) {
-            let url = "{{ route('education.update', ['id' => '__ID__']) }}";
-            url = url.replace("__ID__", educationId);
-            updateEducation(url, formData);
-            return;
+        if (input.files && input.files.length > 0) {
+            for (let i = 0; i < input.files.length; i++) {
+                formData.append(`media[${i}][file]`, input.files[i]);
+            }
         }
 
         createEducation(formData);

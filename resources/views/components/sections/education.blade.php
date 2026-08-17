@@ -127,6 +127,8 @@
 
                 educationGroup.forEach(education => {
 
+                    console.table(education);
+
                     let startDate = new Date(
                         education.start_date
                     ).toLocaleDateString("en-MY", {
@@ -142,6 +144,8 @@
 
                     let columnClass = itemsPerSlide === 1 ? "col-12" : "col-6";
                     let $column = $("<div>").addClass(columnClass);
+                        console.error(education);
+
                     $column.html(`
                         <article
                             class="education-item h-100 border rounded-3 p-3 position-relative">
@@ -154,7 +158,7 @@
 
                             <div class="pe-4">
                                 <p class="h5 fw-bold mb-2">
-                                    ${education.programme?.organization?.company_name ?? "Unknown Institution"}
+                                    ${education.programme?.organization?.company_name ?? ""}
                                 </p>
                                 <p class="mb-1">
                                     ${education.field_of_study?.name ?? ""}
@@ -231,7 +235,7 @@
                 dataType: "json",
 
                 success: function ({ data }) {
-                    console.log(data);
+                    // console.log(data);
 
                     if (!data || data.length === 0) {
                         educationData = [];

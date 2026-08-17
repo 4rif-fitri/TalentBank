@@ -106,7 +106,7 @@
                 contentType: false,
 
                 success: function (response) {
-                    console.log(response);
+                    // console.log(response);
 
                     profileModal.hide();
                     getProfileData()

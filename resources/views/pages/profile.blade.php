@@ -69,12 +69,13 @@
     // });
 
     function getProfileData() {
+
         $.ajax({
             url: "{{ route('profile.getProfileDataByProfileIdJson',['id' => auth()->id()])}}",
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
-                console.table(data);
+                console.log("DATA: ",data);
 
                 $("#name").text(data.name ?? "");
                 $("#headline").text(data.headline ?? "");
@@ -84,8 +85,8 @@
                 let programme = data.active_programmes?.[0];
 
                 if (programme) {
-                    $("#programme").text(programme.programme_name ?? "").show();
-                    $("#uni-name").text(programme.organization_name ?? "").show();
+                    $("#uni-name").text(data.active_programmes[0].organization.company_name ?? "").show();
+                    $("#programme").text(data.active_programmes[0].programme_name ?? "").show();
                 } else {
                     $("#programme, #uni-name").hide();
                 }
@@ -107,7 +108,7 @@
                         </div>
 
                         <div>
-                            <p>${data.organization_name ?? "Unknown Institution"}</p>
+                            <p>${data.organization.company_name ?? "Unknown Institution"}</p>
                             <p>${data.programme_name ?? ""}</p>
                             <p>${data.programme_level ?? ""}</p>
                             <p>${data.duration_years ?? ""} Years</p>
@@ -134,6 +135,8 @@
 
     $("#profileImageInput").on("change", function () {
         let file = this.files[0];
+        console.log(file);
+
         if (fileCheck(file)) return;
 
         let formData = new FormData();
