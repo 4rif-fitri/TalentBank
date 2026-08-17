@@ -17,8 +17,6 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => AuthMiddleware::class,
             'guest' => GuestMiddleware::class
         ]);
-
-        $middleware->validateCsrfTokens(['/*']);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

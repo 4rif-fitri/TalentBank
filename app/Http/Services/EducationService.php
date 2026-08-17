@@ -35,7 +35,8 @@ class EducationService
             'fieldOfStudy',
             'qualification',
             'programme',
-            'programme.organization'
+            'programme.organization',
+            'media'
         ])
             ->where('user_profile_id', $userProfileId)
             ->get();
@@ -54,7 +55,8 @@ class EducationService
             'fieldOfStudy',
             'qualification',
             'programme',
-            'programme.organization'
+            'programme.organization',
+            'media'
         ])
             ->find($id);
 

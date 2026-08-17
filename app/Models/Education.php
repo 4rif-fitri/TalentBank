@@ -44,4 +44,9 @@ class Education extends Model
     {
         return $this->belongsTo(Programme::class, 'programme_id');
     }
+
+    public function media()
+    {
+        return $this->morphMany(Media::class, 'source', 'source_name', 'source_id');
+    }
 }
