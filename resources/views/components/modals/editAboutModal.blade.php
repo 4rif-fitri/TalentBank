@@ -1,8 +1,8 @@
-<div class="modal fade" id="editAboutModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+<form id="aboutForm" action="{{ route('update.updateAboutField') }}" method="POST">
+    <div class="modal fade" id="editAboutModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
 
-        <div class="modal-content">
-            <form id="aboutForm" action="{{ route('update.updateAboutField') }}" method="POST">
+            <div class="modal-content">
                 @csrf
                 @method('PUT')
 
@@ -28,28 +28,23 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-                    <button type="submit" class="btn btn-primary" id="btnSaveAbout">
-                        Save
-                    </button>
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveAbout">Save</button>
                 </div>
 
-            </form>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    $(document).ready(function(){
         let aboutModalEl = document.getElementById("editAboutModal");
-        let aboutModal = bootstrap.Modal.getOrCreateInstance(aboutModalEl);
+        let aboutModal = bootstrap.Modal.getOrCreateInstance($("#editAboutModal"));
 
         let $aboutLoading = $("#aboutLoading");
         let $aboutFields = $("#aboutFields");
@@ -111,7 +106,7 @@
             $("#aboutCount").text(this.value.length);
         });
 
-        aboutModalEl.addEventListener("hidden.bs.modal", function () {
+        $("#editAboutModal").on("hidden.bs.modal", function () {
             $("#aboutForm")[0].reset();
             $("#aboutCount").text("0");
             $btnSaveAbout.prop("disabled", false).text("Save");
