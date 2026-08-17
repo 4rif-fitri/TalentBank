@@ -80,15 +80,86 @@
                     <label class="form-label fw-bold">
                         Start Date
                     </label>
-                    <input type="date" class="form-control" id="dateStart">
+
+                    <div class="row g-3">
+
+                        <div class="col-6">
+                            <label for="startMonth" class="form-label">
+                                Month
+                            </label>
+
+                            <select class="form-select" id="startMonth" name="start_month">
+                                <option selected value="">Select Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+
+                        <div class="col-6">
+                            <label for="startYear" class="form-label">Year</label>
+                            <select class="form-select" id="startYear" name="start_year" required>
+                                <option selected disabled value="">Select Year</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                            </select>
+                        </div>
+
+                    </div>
                 </div>
 
                 <!-- End Date -->
-                <div class="mb-3">
-                    <label class="form-label fw-bold">
-                        End Date
-                    </label>
-                    <input type="date" class="form-control" id="dateEnd">
+                <div class="mb-4">
+                    <label class="form-label fw-bold">End Date</label>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <label for="endMonth" class="form-label">Month</label>
+                            <select class="form-select" id="endMonth" name="end_month">
+                                <option selected value="">Select Month</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <label for="endYear" class="form-label">Year</label>
+                            <select class="form-select" id="endYear" name="end_year" required>
+                                <option selected disabled value="">Select Year</option>
+                                <option value="2030">2030</option>
+                                <option value="2029">2029</option>
+                                <option value="2028">2028</option>
+                                <option value="2027">2027</option>
+                                <option value="2026">2026</option>
+                                <option value="2025">2025</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+
+                    </div>
                 </div>
 
                 <!-- Skills -->
@@ -140,10 +211,41 @@
     let listOfQualifications = [];
     let listOfOrganizations = [];
 
-    function swalFireError() {
+    function formatEducationDate(date) {
+        if (!date) return "";
 
+        const [year, month, day] = date.split("-");
+
+        // 01-01 dianggap user hanya masukkan tahun
+        if (month === "01" && day === "01") {
+            return year;
+        }
+
+        return new Date(`${year}-${month}-${day}`)
+            .toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric"
+            });
     }
 
+    function setEducationDate(date, monthSelector, yearSelector) {
+        if (!date) {
+            $(monthSelector).val("");
+            $(yearSelector).val("");
+            return;
+        }
+
+        const [year, month, day] = date.split("-");
+
+        $(yearSelector).val(year);
+
+        if (month === "01" && day === "01") {
+            // Anggap tahun sahaja
+            $(monthSelector).val("");
+        } else {
+            $(monthSelector).val(month);
+        }
+    }
     // Get
     function getAllOrganizations() {
 
@@ -153,9 +255,7 @@
             dataType: "json",
 
             success: function ({ data }) {
-
                 listOfOrganizations = data;
-
                 let $institution = $("#educationInstitution");
 
                 $institution.html(`
@@ -165,7 +265,6 @@
             `);
 
                 data.forEach(organization => {
-
                     $institution.append(`
                     <option value="${organization.id}">
                         ${organization.company_name}
@@ -189,17 +288,12 @@
             success: function ({ data }) {
                 listOfFieldOfStudies = data;
 
-                $("#fieldOfStudy").html(`
-                <option value="" disabled selected>
-                    Select Field of Study
-                </option>
+                $("#fieldOfStudy").html(`<option value="" disabled selected>Select Field of Study</option>
             `);
                 data.forEach(item => {
-                    $("#fieldOfStudy").append(`
-                    <option value="${item.id}">
-                        ${item.name}
-                    </option>
-                `);
+                    $("#fieldOfStudy").append(`<option value="${item.id}">${item.name}</option>
+                `
+                    )
                 });
             },
             error: function (xhr) {
@@ -244,7 +338,6 @@
         let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
         let url = "{{ route('education.getEducationById', ['id' => '__ID__']) }}";
-
         url = url.replace("__ID__", eduId);
 
         $.ajax({
@@ -260,12 +353,18 @@
                 $("#fieldOfStudy").val(data.field_of_study_id);
                 $("#cgpaInput").val(data.cgpa);
                 $("#descriptionInput").val(data.description);
-                $("#dateStart").val(data.start_date);
-                $("#dateEnd").val(data.end_date);
                 $("#enrollmentStatus").val(data.enrollment_status ?? "Active");
-                if (data.start_date) {
-                    $("#dateEnd").attr("min", data.start_date);
-                }
+                setEducationDate(
+                    data.start_date,
+                    "#startMonth",
+                    "#startYear"
+                );
+
+                setEducationDate(
+                    data.end_date,
+                    "#endMonth",
+                    "#endYear"
+                );
 
                 let organizationId = data.programme?.organization?.id;
                 if (organizationId) {
@@ -436,7 +535,6 @@
         }
 
         $("#dateEnd").attr("min", startDate);
-
         let endDate = $("#dateEnd").val();
 
         if (endDate && endDate < startDate) {
@@ -451,12 +549,8 @@
     });
 
     $(document).on("click", "#btnDeleteEducation", function () {
-
         let educationId = $("#educationId").val();
-
-        if (!educationId) {
-            return;
-        }
+        if (!educationId) return
 
         Swal.fire({
             title: "Delete Education?",
@@ -538,7 +632,6 @@
 
         if (!validateEducationDates()) return;
 
-
         let educationId = $("#educationId").val();
 
         let formData = {
@@ -563,7 +656,6 @@
     });
 
     $(document).on("change", "#educationInstitution", function () {
-
         let organizationId = $(this).val();
         if (!organizationId) return;
         getProgrammesByOrganizationId(organizationId);
