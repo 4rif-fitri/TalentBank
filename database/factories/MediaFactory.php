@@ -24,7 +24,7 @@ class MediaFactory extends Factory
             'uploaded_by_user_id' => UserProfile::inRandomOrder()->first()->id,
             'source_name' => $this->faker->randomElement([
                 'semester',
-                // 'education',
+                'education',
                 // 'experience',
                 // 'project',
                 // 'honors_award',
@@ -32,7 +32,7 @@ class MediaFactory extends Factory
             ]),
             'source_id' => Semester::inRandomOrder()->first()->id,
             'media_type' => 'image',
-            'file_url' => $this->faker->imageUrl,
+            'file_name' => $this->faker->imageUrl,
             'title' => $this->faker->word(),
             'description' => $this->faker->paragraph(),
         ];

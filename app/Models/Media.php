@@ -15,7 +15,7 @@ class Media extends Model
         'source_name',
         'source_id',
         'media_type',
-        'file_url',
+        'file_name',
         'title',
         'description',
         'created_at',

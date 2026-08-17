@@ -8,15 +8,18 @@ use App\Models\Qualification;
 use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class EducationService
 {
+    private MediaService $mediaService;
+
     /**
      * Create a new class instance.
      */
-    public function __construct()
+    public function __construct(MediaService $mediaService)
     {
-        //
+        $this->mediaService = $mediaService;
     }
 
     /**
@@ -70,18 +73,28 @@ class EducationService
     {
         $userProfileId = session('user_profile_id');
 
-        $education = Education::create([
-            'user_profile_id' => $userProfileId,
-            'programme_id' => $data['programme_id'],
-            'description' => $data['description'],
-            'field_of_study_id' => $data['field_of_study_id'],
-            'qualification_id' => $data['qualification_id'],
-            'cgpa' => $data['cgpa'],
-            'start_date' => $data['start_date'],
-            'end_date' => $data['end_date'],
-            'enrollment_status' => $data['enrollment_status'],
-            'verification_status' => 'Pending',  // initially pending for admin to approve
-        ]);
+        $education = DB::transaction(function () use ($data, $userProfileId) {
+            $education = Education::create([
+                'user_profile_id' => $userProfileId,
+                'programme_id' => $data['programme_id'],
+                'description' => $data['description'],
+                'field_of_study_id' => $data['field_of_study_id'],
+                'qualification_id' => $data['qualification_id'],
+                'cgpa' => $data['cgpa'],
+                'start_date' => $data['start_date'],
+                'end_date' => $data['end_date'],
+                'enrollment_status' => $data['enrollment_status'],
+                'verification_status' => 'Pending',  // initially pending for admin to approve
+            ]);
+
+            $data['source_name'] = 'education';
+            $data['source_id'] = $education->id;
+            $data['file_path'] = config('services.uploads_file_path.education');
+
+            $this->mediaService->createMedia($data);
+
+            return $education;
+        });
 
         return $education;
     }
