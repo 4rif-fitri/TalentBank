@@ -70,12 +70,15 @@
 
     function getProfileData() {
 
+        let url = "{{ route('profile.getProfileDataByProfileIdJson', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+
         $.ajax({
-            url: "{{ route('profile.getProfileDataByProfileIdJson',['id' => auth()->id()])}}",
+            url: url,
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
-                console.log("DATA: ",data);
+                console.log("DATA: ", data);
 
                 $("#name").text(data.name ?? "");
                 $("#headline").text(data.headline ?? "");

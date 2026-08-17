@@ -229,8 +229,11 @@
             let $educationList = $("#educationList");
             renderLoading($educationList);
 
+            let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+
             $.ajax({
-                url: "{{ route('education.getEducationByUserProfileId', ['id' => auth()->id()]) }}",
+                url: url,
                 type: "GET",
                 dataType: "json",
 

@@ -114,6 +114,8 @@
                 },
 
                 error: function (xhr) {
+                    console.log(xhr);
+
                     console.error(xhr.responseJSON);
                     swalfire("Unable to edit profile", xhr.responseJSON?.message ?? "Unable to update profile", "error")
                 },
