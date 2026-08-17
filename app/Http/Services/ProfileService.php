@@ -41,11 +41,11 @@ class ProfileService
 
     /**
      * Get profile data of profile by profile ID.
-     *
-     * @param   int $userId
+     * 
+     * @param   int $userProfileId
      * @return  UserProfile
      */
-    public function getProfileDataByUserId($userId)
+    public function getProfileDataByProfileIdJson($userProfileId)
     {
         $profile = UserProfile::with([
             'organizationUsers' => function ($query) {
@@ -53,10 +53,10 @@ class ProfileService
             },
             'organizationUsers.organization',
             'organizationUsers.role',
-            'activeProgrammes'
+            'activeProgrammes',
+            'activeProgrammes.organization',
         ])
-            ->where('user_id', $userId)
-            ->first();
+            ->find($userProfileId);
 
         if (!isset($profile)) {
             throw new Exception('Profile not found with given ID.', Response::HTTP_NOT_FOUND);

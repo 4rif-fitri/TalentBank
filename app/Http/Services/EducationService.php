@@ -49,6 +49,7 @@ class EducationService
             'fieldOfStudy',
             'qualification',
             'programme',
+            'programme.organization'
         ])
             ->find($id);
 

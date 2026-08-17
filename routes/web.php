@@ -38,11 +38,11 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience'); //+
 
     // crud routes
-    Route::get('/{userId}', [ProfileController::class, 'getProfileDataByUserIdJson'])->name('profile.getProfileDataByUserIdJson'); //+
-    Route::put('/update', [ProfileController::class, 'update'])->name('profile.update'); //+
-    Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField'); //+
-    Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage'); //+
-    Route::post('/upload/cover-image', [ProfileController::class, 'uploadCoverImage'])->name('update.uploadCoverImage'); //+
+    Route::get('/{id}', [ProfileController::class, 'getProfileDataByProfileIdJson'])->name('profile.getProfileDataByProfileIdJson');
+    Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
+    Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage');
+    Route::post('/upload/cover-image', [ProfileController::class, 'uploadCoverImage'])->name('update.uploadCoverImage');
 });
 
 Route::middleware('auth')->prefix('organizations')->group(function () {

@@ -17,6 +17,7 @@ class Programme extends Model
         'programme_level',
         'duration_years',
         'status',
+        'organization_id',
         'created_at',
         'updated_at',
     ];
@@ -28,6 +29,6 @@ class Programme extends Model
 
     public function organization()
     {
-        return $this->hasOneThrough(Organization::class, Faculty::class, 'id', 'id', 'faculty_id', 'organization_id');
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 }
