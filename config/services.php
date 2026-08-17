@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'uploads_file_path' => [
+        'education' => env('EDUCATION_FILE_URL')
+    ],
 ];

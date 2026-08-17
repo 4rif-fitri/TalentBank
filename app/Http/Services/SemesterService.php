@@ -41,9 +41,10 @@ class SemesterService
 
         $data['source_name'] = 'semester';
         $data['source_id'] = $semesterId;
-        $data['file_url'] = uniqid('semester_results_') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+        $data['file_name'] = uniqid('semester_results_') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
         $data['file_path'] = env('SEMESTER_RESULTS_FILE_URL');
+        $data['file'] = $file;
 
-        return $this->mediaService->createMedia($data, $file);
+        return $this->mediaService->createMedia($data);
     }
 }

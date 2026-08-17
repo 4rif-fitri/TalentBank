@@ -29,6 +29,7 @@ class EducationController extends Controller
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],
             'enrollment_status' => ['required', 'string', Rule::in(['Active', 'Graduated', 'Deferred', 'Withdrawn'])],
+            'media' => ['nullable']
         ]);
     }
 
