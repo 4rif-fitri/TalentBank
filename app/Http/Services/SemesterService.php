@@ -29,7 +29,7 @@ class SemesterService
      */
     public function uploadResults(array $data, UploadedFile $file, int $semesterId)
     {
-        $filePath = env('SEMESTER_RESULTS_FILE_URL');
+        $filePath = config('services.uploads_file_path.semester_results');
 
         if (!isset($filePath)) {
             throw new Exception('No file path found for semester results uploads.', Response::HTTP_NOT_FOUND);
@@ -42,7 +42,7 @@ class SemesterService
         $data['source_name'] = 'semester';
         $data['source_id'] = $semesterId;
         $data['file_name'] = uniqid('semester_results_') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-        $data['file_path'] = env('SEMESTER_RESULTS_FILE_URL');
+        $data['file_path'] = config('services.uploads_file_path.semester_results');
         $data['file'] = $file;
 
         return $this->mediaService->createMedia($data);
