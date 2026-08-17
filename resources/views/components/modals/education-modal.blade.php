@@ -256,8 +256,7 @@
         let modalEl = document.getElementById("educationModal");
         let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
-        let url =
-            "{{ route('education.getEducationById', ['id' => '__ID__']) }}";
+        let url = "{{ route('education.getEducationById', ['id' => '__ID__']) }}";
 
         url = url.replace("__ID__", eduId);
 
@@ -267,6 +266,7 @@
             dataType: "json",
 
             success: function ({ data }) {
+                console.log(data);
 
                 $("#educationId").val(data.id);
 

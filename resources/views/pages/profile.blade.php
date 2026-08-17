@@ -101,7 +101,7 @@
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
-                console.log(data);
+                console.error(data);
 
                 $("#name").text(data.name ?? "");
                 $("#headline").text(data.headline ?? "");
@@ -134,7 +134,7 @@
                         </div>
 
                         <div>
-                            <p>${data.organization_name ?? "Universiti Taknikal Malaysia Melaka(UTEM)"}</p>
+                            <p>${data.organization_name ?? "Unknown Institution"}</p>
                             <p>${data.programme_name ?? ""}</p>
                             <p>${data.programme_level ?? ""}</p>
                             <p>${data.duration_years ?? ""} Years</p>
