@@ -1,110 +1,62 @@
-<div class="modal fade" id="editContactInformationModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+<form id="contactInformationForm" action="{{ route('profile.update') }}" method="POST">
 
-    <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-
-        <div class="modal-content">
-
-            <form id="contactInformationForm" action="{{ route('profile.update') }}" method="POST">
-
+    <div class="modal fade" id="editContactInformationModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
                 @csrf
                 @method('PUT')
 
                 <div class="modal-header">
                     <h5 class="modal-title">Edit Contact</h5>
-
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
 
                 <div class="modal-body">
-
                     <div id="contactLoading" class="text-center py-4 d-none">
-
                         <div class="spinner-border spinner-border-sm" role="status"></div>
-
                         <span class="ms-2">Loading...</span>
                     </div>
 
                     <div id="contactFields">
-
-                        {{-- Required oleh profile.update --}}
                         <input type="hidden" name="name" id="contactNameInput">
-
                         <input type="hidden" name="headline" id="contactHeadlineInput">
-
                         <input type="hidden" name="location" id="contactLocationInput">
-
                         <div class="mb-3">
-                            <label for="contactEmailInput" class="form-label">
-                                Email
-                            </label>
-
+                            <label for="contactEmailInput" class="form-label">Email</label>
                             <input type="email" class="form-control" name="email" id="contactEmailInput" required>
                         </div>
-
                         <div class="mb-3">
-                            <label for="contactPhoneNoInput" class="form-label">
-                                Phone Number
-                            </label>
-
-                            <input type="text" class="form-control" name="phone_no" id="contactPhoneNoInput"
-                                maxlength="11">
+                            <label for="contactPhoneNoInput" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" name="phone_no" id="contactPhoneNoInput" maxlength="11">
                         </div>
-
                     </div>
                 </div>
 
                 <div class="modal-footer">
-
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-
-                    <button type="submit" class="btn btn-primary" id="btnSaveContact">
-                        Save
-                    </button>
-
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveContact">Save</button>
                 </div>
-
-            </form>
+            </div>
         </div>
     </div>
-</div>
+</form>
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let contactModalEl =
-            document.getElementById("editContactInformationModal");
-
-        let contactModal =
-            bootstrap.Modal.getOrCreateInstance(contactModalEl);
-
-        let $contactLoading = $("#contactLoading");
-        let $contactFields = $("#contactFields");
+    $(document).ready(function () {
+        let contactModal = bootstrap.Modal.getOrCreateInstance($("#editContactInformationModal"));
         let $btnSaveContact = $("#btnSaveContact");
 
         $("#btnEditContactInformation").on("click", function () {
-            console.log("asd");
-
-            $("#contactNameInput")
-                .val($("#name").text().trim());
-
-            $("#contactHeadlineInput")
-                .val($("#headline").text().trim());
-
-            $("#contactLocationInput")
-                .val($("#profileLocation").text().trim());
-
-            $("#contactEmailInput")
-                .val($("#email").text().trim());
-
-            $("#contactPhoneNoInput")
-                .val($("#phoneNo").text().trim());
+            $("#contactNameInput").val($("#name").text().trim());
+            $("#contactHeadlineInput").val($("#headline").text().trim());
+            $("#contactLocationInput").val($("#profileLocation").text().trim());
+            $("#contactEmailInput").val($("#email").text().trim());
+            $("#contactPhoneNoInput").val($("#phoneNo").text().trim());
 
             contactModal.show();
         });
-
 
         $("#contactInformationForm").on("submit", function (e) {
             e.preventDefault();
@@ -124,15 +76,8 @@
                 contentType: false,
 
                 success: function (response) {
-
-                    $("#email").text(
-                        $("#contactEmailInput").val()
-                    );
-
-                    $("#phoneNo").text(
-                        $("#contactPhoneNoInput").val()
-                    );
-
+                    $("#email").text($("#contactEmailInput").val());
+                    $("#phoneNo").text($("#contactPhoneNoInput").val());
                     contactModal.hide();
                     swalfire("Success", response.message ?? "Contact updated successfully", "success")
                 },
@@ -151,16 +96,12 @@
         });
 
 
-        contactModalEl.addEventListener(
-            "hidden.bs.modal",
-            function () {
-
-                $("#contactInformationForm")[0].reset();
-
-                $btnSaveContact
-                    .prop("disabled", false)
-                    .text("Save");
-            }
+        $("#editContactInformationModal").on("hidden.bs.modal", function () {
+            $("#contactInformationForm")[0].reset();
+            $btnSaveContact
+                .prop("disabled", false)
+                .text("Save");
+        }
         );
     })
 </script>
