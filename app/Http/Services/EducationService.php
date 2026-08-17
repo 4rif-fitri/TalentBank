@@ -34,6 +34,8 @@ class EducationService
         return Education::with([
             'fieldOfStudy',
             'qualification',
+            'programme',
+            'programme.organization'
         ])
             ->where('user_profile_id', $userProfileId)
             ->get();
