@@ -70,7 +70,7 @@
 
     function getProfileData() {
         $.ajax({
-            url: "{{ route('profile.getProfileDataByUserIdJson',['userId' => auth() -> id()])}}",
+            url: "{{ route('profile.getProfileDataByProfileIdJson',['id' => auth()->id()])}}",
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
