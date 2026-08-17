@@ -1,33 +1,21 @@
-<div class="modal fade" id="addResultModal" data-bs-backdrop="static" tabindex="-1"
-    aria-labelledby="addResultModalLabel" aria-hidden="true">
+<form id="addResultForm" enctype="multipart/form-data">
+    <div class="modal fade" id="addResultModal" data-bs-backdrop="static" tabindex="-1"
+        aria-labelledby="addResultModalLabel" aria-hidden="true">
 
-    <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content">
-
-            <form id="addResultForm" enctype="multipart/form-data">
-
+        <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
+            <div class="modal-content">
                 @csrf
-
                 <div class="modal-header">
                     <div>
                         <h5 class="modal-title fw-bold" id="addResultModalLabel">
                             Add Semester Result
                         </h5>
-
-                        <small class="text-muted">
-                            Select your programme and semester, then upload your result.
-                        </small>
                     </div>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                    </button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-
                 <div class="modal-body">
-
                     <div id="resultFormLoading" class="text-center py-5">
-
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">
                                 Loading...
@@ -37,205 +25,118 @@
                         <p class="text-muted mt-2 mb-0">
                             Loading programmes...
                         </p>
-
                     </div>
 
-
                     <div id="resultFormContent" class="d-none">
-
                         <div class="mb-3">
-
                             <label for="resultProgramme" class="form-label fw-semibold">
-
                                 Programme
                                 <span class="text-danger">*</span>
                             </label>
 
                             <select class="form-select" id="resultProgramme" required>
-
                                 <option value="" selected disabled>
                                     Select Programme
                                 </option>
-
                             </select>
 
                         </div>
 
-
-                        {{-- Semester --}}
                         <div class="mb-3">
-
                             <label for="resultSemester" class="form-label fw-semibold">
-
                                 Semester
                                 <span class="text-danger">*</span>
                             </label>
-
                             <select class="form-select" id="resultSemester" required disabled>
-
                                 <option value="" selected disabled>
                                     Select Programme First
                                 </option>
-
                             </select>
-
                         </div>
 
-
-                        {{-- Selected semester information --}}
                         <div id="semesterInfo" class="alert alert-light border d-none">
-
                             <div class="row g-2">
-
                                 <div class="col-md-6">
-                                    <small class="text-muted d-block">
-                                        Session
-                                    </small>
-
-                                    <span class="fw-semibold" id="semesterSession">
-                                        -
-                                    </span>
+                                    <small class="text-muted d-block">Session</small>
+                                    <span class="fw-semibold" id="semesterSession">-</span>
                                 </div>
-
                                 <div class="col-md-6">
-                                    <small class="text-muted d-block">
-                                        GPA
-                                    </small>
-
-                                    <span class="fw-semibold" id="semesterGpa">
-                                        -
-                                    </span>
+                                    <small class="text-muted d-block">GPA</small>
+                                    <span class="fw-semibold" id="semesterGpa">-</span>
                                 </div>
-
                             </div>
-
                         </div>
 
-
-                        {{-- Title --}}
                         <div class="mb-3">
-
-                            <label for="resultTitle" class="form-label fw-semibold">
-
-                                Title
-                            </label>
-
+                            <label for="resultTitle" class="form-label fw-semibold">Title</label>
                             <input type="text" class="form-control" id="resultTitle" name="title" maxlength="255"
                                 value="Semester Result" placeholder="Semester Result">
-
                         </div>
 
-
-                        {{-- Description --}}
                         <div class="mb-3">
-
                             <label for="resultDescription" class="form-label fw-semibold">
-
                                 Description
                             </label>
-
                             <textarea class="form-control" id="resultDescription" name="description" rows="3"
                                 placeholder="Optional description"></textarea>
-
                         </div>
 
-
-                        {{-- PDF --}}
                         <div class="mb-3">
-
                             <label for="resultFile" class="form-label fw-semibold">
-
                                 Result File
                                 <span class="text-danger">*</span>
                             </label>
-
-
                             <label for="resultFile" id="resultDropZone"
                                 class="border border-2 rounded-3 w-100 text-center p-5" style="
                                     cursor: pointer;
                                     border-style: dashed !important;
                                 ">
-
-                                {{-- No file --}}
                                 <div id="resultUploadEmpty">
-
                                     <i class="fa-solid fa-cloud-arrow-up text-primary fs-1 mb-3"></i>
-
                                     <p class="fw-semibold mb-1">
                                         Click to choose your PDF result
                                     </p>
-
                                     <small class="text-muted">
                                         PDF only - Maximum 2MB
                                     </small>
-
                                 </div>
-
-
-                                {{-- File selected --}}
                                 <div id="resultUploadSelected" class="d-none">
-
                                     <i class="fa-solid fa-file-pdf text-danger fs-1 mb-3"></i>
-
-                                    <p class="fw-semibold mb-1" id="selectedResultFileName">
-                                    </p>
-
+                                    <p class="fw-semibold mb-1" id="selectedResultFileName"></p>
                                     <small class="text-muted" id="selectedResultFileSize">
                                     </small>
-
                                 </div>
-
                             </label>
-
-
                             <input type="file" class="d-none" id="resultFile" name="result_file"
                                 accept="application/pdf" required>
-
                         </div>
-
                     </div>
-
                 </div>
 
-
-                {{-- Footer --}}
                 <div class="modal-footer">
-
                     <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-
                         Cancel
                     </button>
-
                     <button type="submit" class="btn btn-primary" id="btnUploadResult" disabled>
-
                         <span id="uploadResultButtonText">
                             <i class="fa-solid fa-upload me-1"></i>
                             Upload Result
                         </span>
-
                         <span id="uploadResultSpinner" class="d-none">
-
                             <span class="spinner-border spinner-border-sm me-1">
                             </span>
-
                             Uploading...
                         </span>
-
                     </button>
-
                 </div>
-
-            </form>
-
+            </div>
         </div>
     </div>
-</div>
-
+</form>
 
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-
 
         let programmesData = [];
         let addResultModalEl = document.getElementById('addResultModal');
@@ -389,9 +290,9 @@
             let selectedOption = $(this).find(":selected");
             let session = selectedOption.data("session");
             let gpa = selectedOption.data("gpa");
-            $("#semesterSession").text(session || "-");
-            $("#semesterGpa").text(gpa || "-");
-            $("#semesterInfo").removeClass("d-none");
+            // $("#semesterSession").text(session || "-");
+            // $("#semesterGpa").text(gpa || "-");
+            // $("#semesterInfo").removeClass("d-none");
             checkResultForm();
         });
 
@@ -492,10 +393,9 @@
                         text: response.message ?? "File uploaded successfully.",
                         icon: "success"
                     });
-                    // Kalau nanti ada function
+                    
                     // untuk refresh result list:
-                    //
-                    // loadResultSemester();
+                    refreshSemesterResults();
                 },
 
                 error: function (xhr) {

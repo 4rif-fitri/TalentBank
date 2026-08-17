@@ -369,28 +369,18 @@
                 return;
             }
 
-            let url =
-                "{{ route('education.delete', ['id' => '__ID__']) }}";
-
+            let url = "{{ route('education.delete', ['id' => '__ID__']) }}";
             url = url.replace("__ID__", educationId);
 
             $.ajax({
                 url: url,
                 type: "DELETE",
-
                 headers: {
-                    "X-CSRF-TOKEN":
-                        $('meta[name="csrf-token"]').attr("content")
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
 
                 success: function (response) {
-
-                    bootstrap.Modal
-                        .getInstance(
-                            document.getElementById("educationModal")
-                        )
-                        ?.hide();
-
+                    bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
                     Swal.fire({
                         title: "Success",
                         text: response.message ??
@@ -416,21 +406,18 @@
     });
 
     $(document).on("click", "#addEducation", function () {
-
         let modalEl = document.getElementById("educationModal");
         let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
         $("#educationId").val("");
-
         $("#educationInstitution").val("");
 
         $("#educationProgramme")
             .prop("disabled", true)
-            .html(`
-            <option value="" selected disabled>
-                Select Programme
-            </option>
-        `);
+            .html(`<option value="" selected disabled>
+                        Select Programme
+                </option>
+            `);
 
         $("#qualification").val("");
         $("#fieldOfStudy").val("");
@@ -438,17 +425,11 @@
         $("#descriptionInput").val("");
         $("#dateStart").val("");
 
-        $("#dateEnd")
-            .val("")
-            .removeAttr("min");
-
+        $("#dateEnd").val("").removeAttr("min");
         $("#enrollmentStatus").val("Active");
-
         $("#educationModal .modal-title").text("Add Education");
-
         $("#btnDeleteEducation").hide();
         $("#btnSaveEducation").text("Save");
-
         modal.show();
     });
 
@@ -458,19 +439,12 @@
             url: url,
             type: "PUT",
             data: formData,
-
             headers: {
-                "X-CSRF-TOKEN":
-                    $('meta[name="csrf-token"]').attr("content")
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
 
             success: function (response) {
-
-                bootstrap.Modal
-                    .getInstance(
-                        document.getElementById("educationModal")
-                    )
-                    ?.hide();
+                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
 
                 Swal.fire({
                     title: "Success",
@@ -478,13 +452,11 @@
                         "Education updated successfully.",
                     icon: "success"
                 });
-
                 $(document).trigger("education:updated");
             },
 
             error: function (xhr) {
                 console.error(xhr.responseJSON);
-
                 Swal.fire({
                     title: "Update Failed",
                     text: xhr.responseJSON?.message ??
@@ -501,20 +473,12 @@
             url: "{{ route('education.store') }}",
             type: "POST",
             data: formData,
-
             headers: {
-                "X-CSRF-TOKEN":
-                    $('meta[name="csrf-token"]').attr("content")
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
 
             success: function (response) {
-
-                bootstrap.Modal
-                    .getInstance(
-                        document.getElementById("educationModal")
-                    )
-                    ?.hide();
-
+                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
                 Swal.fire({
                     title: "Success",
                     text: response.message ??
