@@ -28,14 +28,13 @@ class ProfileController extends Controller
      * Handles request to get profile data based on given user ID 
      * (or current user ID if one is not provided)
      * 
-     * @param   Request $request
-     * @param   int $userId
+     * @param   int $id
      * @return  JsonResponse
      */
-    public function getProfileDataByUserIdJson(Request $request, int $userId)
+    public function getProfileDataByProfileIdJson(int $id)
     {
         try {
-            $profile = $this->profileService->getProfileDataByUserId($userId);
+            $profile = $this->profileService->getProfileDataByProfileIdJson($id);
 
             return ApiResponse::success('Success.', $profile)->toJsonResponse();
         } catch (Exception $e) {

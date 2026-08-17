@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('source_name');
             $table->integer('source_id')->unsigned();
             $table->enum('media_type', ['image', 'video', 'pdf', 'document']);
-            $table->string('file_url');
+            $table->string('file_name');
             $table->string('title')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();

@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->enum('programme_level', ['Diploma', 'Bachelor', 'Master', 'Doctor of Philosophy']);
             $table->integer('duration_years', false, true);
             $table->boolean('status');
+            $table->foreignId('organization_id')->constrained('organizations')->onDelete('restrict');
             $table->timestamps();
         });
     }
