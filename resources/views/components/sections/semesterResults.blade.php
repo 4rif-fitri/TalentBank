@@ -205,7 +205,6 @@
                 });
             });
 
-            console.log("Flatten semester results:", results);
 
             // Empty
             if (results.length === 0) {
@@ -275,6 +274,7 @@
             semesterResultsLoaded = false;
             loadSemesterResults(true);
         };
+        
         $(document).on("education:updated", function () {
             refreshSemesterResults();
         })

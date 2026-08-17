@@ -134,24 +134,12 @@
                     );
 
                     contactModal.hide();
-
-                    Swal.fire({
-                        title: "Success",
-                        text: response.message ??
-                            "Contact updated successfully.",
-                        icon: "success"
-                    });
+                    swalfire("Success", response.message ?? "Contact updated successfully", "success")
                 },
 
                 error: function (xhr) {
                     console.error(xhr.responseJSON);
-
-                    Swal.fire({
-                        title: "Unable to edit contact",
-                        text: xhr.responseJSON?.message ??
-                            "Unable to update contact.",
-                        icon: "error"
-                    });
+                    swalfire("Unable to edit contact", xhr.responseJSON?.message ?? "Unable to update contact", "error")
                 },
 
                 complete: function () {

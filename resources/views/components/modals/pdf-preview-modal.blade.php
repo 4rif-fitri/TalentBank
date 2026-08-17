@@ -90,15 +90,8 @@
 
 
                         if (!fileUrl) {
-
-                            Swal.fire({
-                                title: "PDF Not Found",
-                                text: "Semester result file could not be found.",
-                                icon: "error"
-                            });
-
+                            swalfire("PDF Not Found", "Semester result file could not be found", "error")
                             return;
-
                         }
 
 

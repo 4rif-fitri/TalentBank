@@ -305,11 +305,8 @@
             }
 
             if (file.type !== "application/pdf") {
-                Swal.fire({
-                    title: "Invalid File",
-                    text: "Please upload PDF only.",
-                    icon: "error"
-                });
+                swalfire("Invalid File", "Please upload PDF only", "error")
+
                 $(this).val("");
                 resetFilePreview();
                 checkResultForm();
@@ -319,11 +316,8 @@
             let maxSize = 2 * 1024 * 1024;
 
             if (file.size > maxSize) {
-                Swal.fire({
-                    title: "File Too Large",
-                    text: "Maximum file size is 2MB.",
-                    icon: "error"
-                });
+                swalfire("File Too Large", "Maximum file size is 2MB", "error")
+
                 $(this).val("");
                 resetFilePreview();
                 checkResultForm();
@@ -352,20 +346,12 @@
             let file = $("#resultFile")[0]?.files?.[0];
 
             if (!semesterId) {
-                Swal.fire({
-                    title: "Semester Required",
-                    text: "Please select a semester.",
-                    icon: "warning"
-                });
+                swalfire("Semester Required", "Please select a semester", "warning")
                 return;
             }
 
             if (!file) {
-                Swal.fire({
-                    title: "File Required",
-                    text: "Please select a PDF result.",
-                    icon: "warning"
-                });
+                swalfire("File Required", "Please select a PDF result", "warning")
                 return;
             }
 
@@ -388,12 +374,8 @@
 
                     addResultModal.hide();
                     resetResultForm();
-                    Swal.fire({
-                        title: "Success",
-                        text: response.message ?? "File uploaded successfully.",
-                        icon: "success"
-                    });
-                    
+                    swalfire("Success", response.message ?? "File uploaded successfully","success")
+
                     // untuk refresh result list:
                     refreshSemesterResults();
                 },
@@ -413,11 +395,7 @@
                         }
                     }
 
-                    Swal.fire({
-                        title: "Upload Failed",
-                        text: message,
-                        icon: "error"
-                    });
+                    swalfire("Upload Failed", message, "error")
                 },
 
 

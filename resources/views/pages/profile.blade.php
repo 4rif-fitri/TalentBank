@@ -55,33 +55,6 @@
 @endsection
 
 @section('script')
-
-@if (session('status') == 200)
-
-<script>
-    Swal.fire({
-        title: "Success",
-        text: @json(session('message')),
-        icon: "success"
-    });
-</script>
-
-@endif
-
-
-@if ($errors->any())
-
-<script>
-    Swal.fire({
-        title: "Upload Failed",
-        text: @json($errors -> first()),
-        icon: "error"
-    });
-</script>
-
-@endif
-
-
 <script>
     // $.ajax({
     //     url: "{{ route('programme.getProgrammesByOrgId',['orgId' => 4])}}",
@@ -101,7 +74,7 @@
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
-                console.error(data);
+                console.table(data);
 
                 $("#name").text(data.name ?? "");
                 $("#headline").text(data.headline ?? "");
@@ -153,11 +126,7 @@
 
     function fileCheck(file) {
         if (!file) {
-            Swal.fire({
-                title: "Upload Failed",
-                text: "Please select an image",
-                icon: "error"
-            });
+            swalfire("Upload Failed", "Please select an image", "error")
             return true;
         }
         return false;
@@ -182,21 +151,11 @@
 
             success: function () {
                 getProfileData();
-
-                Swal.fire({
-                    title: "Success",
-                    text: "Profile image uploaded successfully",
-                    icon: "success"
-                });
+                swalfire("Success", "Profile image uploaded successfully", "success")
             },
 
             error: function (xhr) {
-                Swal.fire({
-                    title: "Upload Failed",
-                    text:
-                        xhr.responseJSON?.message ?? "Something went wrong",
-                    icon: "error"
-                });
+                swalfire("Upload Failed", xhr.responseJSON?.message ?? "Something went wrong", "error")
             }
         });
     });
@@ -220,19 +179,10 @@
 
             success: function () {
                 getProfileData();
-                Swal.fire({
-                    title: "Success",
-                    text: "Cover image uploaded successfully",
-                    icon: "success"
-                });
+                swalfire("Success", "Cover image uploaded successfully", "success")
             },
             error: function (xhr) {
-                Swal.fire({
-                    title: "Upload Failed",
-                    text:
-                        xhr.responseJSON?.message ?? "Something went wrong",
-                    icon: "error"
-                });
+                swalfire("Upload Failed", xhr.responseJSON?.message ?? "Something went wrong", "error")
             }
         });
     });
@@ -262,13 +212,15 @@
         }
     });
 
+    window.swalfire = function (title, text, icon) {
+        Swal.fire({ title: title, text: text, icon: icon });
+    };
+
     $(document).ready(function () {
         getProfileData();
-        let tooltipTriggerList =
-            document.querySelectorAll('[data-bs-toggle="tooltip"]');
 
-        [...tooltipTriggerList].forEach(function (tooltipTriggerEl) {
-            new bootstrap.Tooltip(tooltipTriggerEl);
+        $("[data-bs-toggle='tooltip']").each(function () {
+            new bootstrap.Tooltip(this);
         });
     })
 </script>

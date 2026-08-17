@@ -93,20 +93,12 @@
                     let about = $("#aboutInput").val();
                     $("#aboutText").text(about);
                     aboutModal.hide();
-                    Swal.fire({
-                        title: "Success",
-                        text: response.message ?? "About updated successfully.",
-                        icon: "success"
-                    });
+                    swalfire("Success", response.message ?? "About updated successfully", "success")
                 },
 
                 error: function (xhr) {
                     console.error(xhr);
-                    Swal.fire({
-                        title: "Update Failed",
-                        text: xhr.responseJSON?.message ?? "Unable to update about.",
-                        icon: "error"
-                    });
+                    swalfire("Update Failed", xhr.responseJSON?.message ?? "Unable to update about", "error")
                 },
 
                 complete: function () {

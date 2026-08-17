@@ -105,11 +105,10 @@
             }
         }
 
+        // Get Data
         function getEducationItemsPerSlide() {
             return $("#educationCarousel").width() < 500 ? 1 : 2;
         }
-        // Get Data
-
         // Get Data
 
         // Render
@@ -191,6 +190,7 @@
                 $educationList.append($carouselItem);
             }
         }
+
         function renderEmptyCardEducation($educationList) {
             $("#educationIndicators").hide();
 
@@ -255,7 +255,6 @@
         $(".profile-tab[data-target='education']").on("click", function () {
             loadEducations();
         });
-        // trigger
 
         let resizeTimer;
         let currentItemsPerSlide = getEducationItemsPerSlide();
@@ -269,13 +268,14 @@
 
                 if (educationData.length === 0) return;
 
-                renderCardEducation(educationData,$("#educationList"));
+                renderCardEducation(educationData, $("#educationList"));
             }, 200);
         });
 
         $(document).on("education:updated", function () {
             loadEducations();
         });
+        // trigger
     })
 
 </script>

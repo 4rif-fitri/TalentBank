@@ -140,6 +140,11 @@
     let listOfQualifications = [];
     let listOfOrganizations = [];
 
+    function swalFireError() {
+
+    }
+
+    // Get
     function getAllOrganizations() {
 
         return $.ajax({
@@ -174,24 +179,6 @@
             }
         });
     }
-
-    $(document).on("change", "#dateStart", function () {
-
-        let startDate = $(this).val();
-
-        if (!startDate) {
-            $("#dateEnd").removeAttr("min");
-            return;
-        }
-
-        $("#dateEnd").attr("min", startDate);
-
-        let endDate = $("#dateEnd").val();
-
-        if (endDate && endDate < startDate) {
-            $("#dateEnd").val("");
-        }
-    });
 
     function getAllFieldOfStudies() {
         $.ajax({
@@ -269,47 +256,24 @@
                 console.log(data);
 
                 $("#educationId").val(data.id);
-
                 $("#qualification").val(data.qualification_id);
                 $("#fieldOfStudy").val(data.field_of_study_id);
-
                 $("#cgpaInput").val(data.cgpa);
                 $("#descriptionInput").val(data.description);
-
                 $("#dateStart").val(data.start_date);
                 $("#dateEnd").val(data.end_date);
-
-                $("#enrollmentStatus").val(
-                    data.enrollment_status ?? "Active"
-                );
-
+                $("#enrollmentStatus").val(data.enrollment_status ?? "Active");
                 if (data.start_date) {
-                    $("#dateEnd").attr(
-                        "min",
-                        data.start_date
-                    );
+                    $("#dateEnd").attr("min", data.start_date);
                 }
 
-                let organizationId =
-                    data.programme?.organization?.id;
-
+                let organizationId = data.programme?.organization?.id;
                 if (organizationId) {
-
-                    $("#educationInstitution")
-                        .val(organizationId);
-
-                    getProgrammesByOrganizationId(
-                        organizationId,
-                        data.programme_id
-                    );
+                    $("#educationInstitution").val(organizationId);
+                    getProgrammesByOrganizationId(organizationId, data.programme_id);
                 }
-
-                $("#educationModal .modal-title")
-                    .text("Edit Education");
-
-                $("#btnSaveEducation")
-                    .text("Update");
-
+                $("#educationModal .modal-title").text("Edit Education");
+                $("#btnSaveEducation").text("Update");
                 $("#btnDeleteEducation").show();
 
                 modal.show();
@@ -321,266 +285,7 @@
         });
     }
 
-    function validateEducationDates() {
-
-        let startDate = $("#dateStart").val();
-        let endDate = $("#dateEnd").val();
-
-        $("#dateStart, #dateEnd").removeClass("is-invalid");
-
-        if (!startDate) {
-            $("#dateStart").addClass("is-invalid");
-            return false;
-        }
-
-        if (endDate && endDate < startDate) {
-            $("#dateEnd").addClass("is-invalid");
-            return false;
-        }
-
-        return true;
-    }
-
-    $(document).on("click", ".btn-edit-education", function () {
-        let eduId = $(this).data("id");
-        console.log("Education ID:", eduId);
-        getEducationDetail(eduId);
-    });
-
-    $(document).on("click", "#btnDeleteEducation", function () {
-
-        let educationId = $("#educationId").val();
-
-        if (!educationId) {
-            return;
-        }
-
-        Swal.fire({
-            title: "Delete Education?",
-            text: "This education record will be permanently deleted.",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Delete",
-            cancelButtonText: "Cancel",
-            confirmButtonColor: "#dc3545"
-        }).then(result => {
-
-            if (!result.isConfirmed) {
-                return;
-            }
-
-            let url = "{{ route('education.delete', ['id' => '__ID__']) }}";
-            url = url.replace("__ID__", educationId);
-
-            $.ajax({
-                url: url,
-                type: "DELETE",
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                },
-
-                success: function (response) {
-                    bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
-                    Swal.fire({
-                        title: "Success",
-                        text: response.message ??
-                            "Education deleted successfully.",
-                        icon: "success"
-                    });
-
-                    $(document).trigger("education:updated");
-                },
-
-                error: function (xhr) {
-                    console.error(xhr.responseJSON);
-
-                    Swal.fire({
-                        title: "Delete Failed",
-                        text: xhr.responseJSON?.message ??
-                            "Something went wrong.",
-                        icon: "error"
-                    });
-                }
-            });
-        });
-    });
-
-    $(document).on("click", "#addEducation", function () {
-        let modalEl = document.getElementById("educationModal");
-        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-
-        $("#educationId").val("");
-        $("#educationInstitution").val("");
-
-        $("#educationProgramme")
-            .prop("disabled", true)
-            .html(`<option value="" selected disabled>
-                        Select Programme
-                </option>
-            `);
-
-        $("#qualification").val("");
-        $("#fieldOfStudy").val("");
-        $("#cgpaInput").val("");
-        $("#descriptionInput").val("");
-        $("#dateStart").val("");
-
-        $("#dateEnd").val("").removeAttr("min");
-        $("#enrollmentStatus").val("Active");
-        $("#educationModal .modal-title").text("Add Education");
-        $("#btnDeleteEducation").hide();
-        $("#btnSaveEducation").text("Save");
-        modal.show();
-    });
-
-    function updateEducation(url, formData) {
-
-        $.ajax({
-            url: url,
-            type: "PUT",
-            data: formData,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
-
-            success: function (response) {
-                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
-
-                Swal.fire({
-                    title: "Success",
-                    text: response.message ??
-                        "Education updated successfully.",
-                    icon: "success"
-                });
-                $(document).trigger("education:updated");
-            },
-
-            error: function (xhr) {
-                console.error(xhr.responseJSON);
-                Swal.fire({
-                    title: "Update Failed",
-                    text: xhr.responseJSON?.message ??
-                        "Something went wrong.",
-                    icon: "error"
-                });
-            }
-        });
-    }
-
-    function createEducation(formData) {
-
-        $.ajax({
-            url: "{{ route('education.store') }}",
-            type: "POST",
-            data: formData,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
-
-            success: function (response) {
-                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
-                Swal.fire({
-                    title: "Success",
-                    text: response.message ??
-                        "Education created successfully.",
-                    icon: "success"
-                });
-
-                $(document).trigger("education:updated");
-            },
-
-            error: function (xhr) {
-                console.error(xhr.responseJSON);
-
-                Swal.fire({
-                    title: "Create Failed",
-                    text: xhr.responseJSON?.message ??
-                        "Something went wrong.",
-                    icon: "error"
-                });
-            }
-        });
-    }
-
-    $(document).on("click", "#btnSaveEducation", function () {
-
-        if (!$("#educationInstitution").val()) {
-            Swal.fire({
-                title: "Validation Error",
-                text: "Please select an institution.",
-                icon: "error"
-            });
-
-            return;
-        }
-
-        if (!$("#educationProgramme").val()) {
-            Swal.fire({
-                title: "Validation Error",
-                text: "Please select a programme.",
-                icon: "error"
-            });
-
-            return;
-        }
-
-        if (!$("#fieldOfStudy").val()) {
-            Swal.fire({
-                title: "Validation Error",
-                text: "Please select a field of study.",
-                icon: "error"
-            });
-
-            return;
-        }
-
-        if (!$("#qualification").val()) {
-            Swal.fire({
-                title: "Validation Error",
-                text: "Please select a qualification.",
-                icon: "error"
-            });
-
-            return;
-        }
-
-        if (!validateEducationDates()) {
-            return;
-        }
-
-        let educationId = $("#educationId").val();
-
-        let formData = {
-            programme_id: $("#educationProgramme").val(),
-            field_of_study_id: $("#fieldOfStudy").val(),
-            qualification_id: $("#qualification").val(),
-            cgpa: $("#cgpaInput").val() || null,
-            description: $("#descriptionInput").val(),
-            start_date: $("#dateStart").val(),
-            end_date: $("#dateEnd").val() || null,
-            enrollment_status:
-                $("#enrollmentStatus").val() || "Active"
-        };
-
-        if (educationId) {
-
-            let url =
-                "{{ route('education.update', ['id' => '__ID__']) }}";
-
-            url = url.replace("__ID__", educationId);
-
-            updateEducation(url, formData);
-
-            return;
-        }
-
-        createEducation(formData);
-    });
-
-    function getProgrammesByOrganizationId(
-        organizationId,
-        selectedProgrammeId = null
-    ) {
+    function getProgrammesByOrganizationId(organizationId, selectedProgrammeId = null) {
         let $programme = $("#educationProgramme");
 
         $programme
@@ -591,9 +296,7 @@
             </option>
         `);
 
-        let url =
-            "{{ route('programme.getProgrammesByOrgId', ['orgId' => '__ID__']) }}";
-
+        let url = "{{ route('programme.getProgrammesByOrgId', ['orgId' => '__ID__']) }}";
         url = url.replace("__ID__", organizationId);
 
         $.ajax({
@@ -648,21 +351,231 @@
             }
         });
     }
-    $(document).on("change", "#educationInstitution", function () {
+    // Get
 
-        let organizationId = $(this).val();
+    // Validate
+    function validateEducationDates() {
 
-        if (!organizationId) {
+        let startDate = $("#dateStart").val();
+        let endDate = $("#dateEnd").val();
+
+        $("#dateStart, #dateEnd").removeClass("is-invalid");
+
+        if (!startDate) {
+            $("#dateStart").addClass("is-invalid");
+            return false;
+        }
+
+        if (endDate && endDate < startDate) {
+            $("#dateEnd").addClass("is-invalid");
+            return false;
+        }
+
+        return true;
+    }
+    // Validate
+
+    // Update
+    function updateEducation(url, formData) {
+
+        $.ajax({
+            url: url,
+            type: "PUT",
+            data: formData,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+
+            success: function (response) {
+                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
+                swalfire("Success", response.message ?? "Education updated successfully", "success")
+                $(document).trigger("education:updated");
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseJSON);
+                swalfire("Update Failed", xhr.responseJSON?.message ?? "Something went wrong", "error")
+            }
+        });
+    }
+    // Update
+
+    // Create
+    function createEducation(formData) {
+
+        $.ajax({
+            url: "{{ route('education.store') }}",
+            type: "POST",
+            data: formData,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+
+            success: function (response) {
+                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
+                swalfire("Success", response.message ?? "Education created successfully.", "success")
+                $(document).trigger("education:updated");
+            },
+
+            error: function (xhr) {
+                console.error(xhr.responseJSON);
+                swalfire("Create Failed", xhr.responseJSON?.message ?? "Something went wrong", "error")
+            }
+        });
+    }
+    // Create
+
+    // trigger
+    $(document).on("change", "#dateStart", function () {
+
+        let startDate = $(this).val();
+
+        if (!startDate) {
+            $("#dateEnd").removeAttr("min");
             return;
         }
 
+        $("#dateEnd").attr("min", startDate);
+
+        let endDate = $("#dateEnd").val();
+
+        if (endDate && endDate < startDate) {
+            $("#dateEnd").val("");
+        }
+    });
+
+    $(document).on("click", ".btn-edit-education", function () {
+        let eduId = $(this).data("id");
+        console.log("Education ID:", eduId);
+        getEducationDetail(eduId);
+    });
+
+    $(document).on("click", "#btnDeleteEducation", function () {
+
+        let educationId = $("#educationId").val();
+
+        if (!educationId) {
+            return;
+        }
+
+        Swal.fire({
+            title: "Delete Education?",
+            text: "This education record will be permanently deleted.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "#dc3545"
+        }).then(result => {
+
+            if (!result.isConfirmed) return;
+
+            let url = "{{ route('education.delete', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", educationId);
+
+            $.ajax({
+                url: url,
+                type: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+
+                success: function (response) {
+                    bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
+                    swalfire("Success", response.message ?? "Education deleted successfully.", "success")
+                    $(document).trigger("education:updated");
+                },
+
+                error: function (xhr) {
+                    console.error(xhr.responseJSON);
+                    swalfire("Delete Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error")
+                }
+            });
+        });
+    });
+
+    $(document).on("click", "#addEducation", function () {
+        let modalEl = document.getElementById("educationModal");
+        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        $("#educationId").val("");
+        $("#educationInstitution").val("");
+        $("#educationProgramme")
+            .prop("disabled", true)
+            .html(`<option value="" selected disabled>Select Programme</option>`);
+        $("#qualification").val("");
+        $("#fieldOfStudy").val("");
+        $("#cgpaInput").val("");
+        $("#descriptionInput").val("");
+        $("#dateStart").val("");
+        $("#dateEnd").val("").removeAttr("min");
+        $("#enrollmentStatus").val("Active");
+        $("#educationModal .modal-title").text("Add Education");
+        $("#btnDeleteEducation").hide();
+        $("#btnSaveEducation").text("Save");
+
+        modal.show();
+    });
+
+    $(document).on("click", "#btnSaveEducation", function () {
+
+        if (!$("#educationInstitution").val()) return;
+
+        if (!$("#educationProgramme").val()) {
+            swalfire("Validation Error", "Please select a programme", "error")
+            return;
+        }
+
+        if (!$("#fieldOfStudy").val()) {
+            swalfire("Validation Error", "Please select a field of study", "error")
+            return;
+        }
+
+        if (!$("#qualification").val()) {
+            swalfire("Validation Error", "Please select a qualification", "error")
+            return;
+        }
+
+        if (!validateEducationDates()) return;
+
+
+        let educationId = $("#educationId").val();
+
+        let formData = {
+            programme_id: $("#educationProgramme").val(),
+            field_of_study_id: $("#fieldOfStudy").val(),
+            qualification_id: $("#qualification").val(),
+            cgpa: $("#cgpaInput").val() || null,
+            description: $("#descriptionInput").val(),
+            start_date: $("#dateStart").val(),
+            end_date: $("#dateEnd").val() || null,
+            enrollment_status: $("#enrollmentStatus").val() || "Active"
+        };
+
+        if (educationId) {
+            let url = "{{ route('education.update', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", educationId);
+            updateEducation(url, formData);
+            return;
+        }
+
+        createEducation(formData);
+    });
+
+    $(document).on("change", "#educationInstitution", function () {
+
+        let organizationId = $(this).val();
+        if (!organizationId) return;
         getProgrammesByOrganizationId(organizationId);
     });
 
+    // init Get Data
     $(document).ready(function () {
         getAllOrganizations();
         getAllFieldOfStudies();
         getAllQualifications();
     });
+    // trigger
+
 </script>
 @endpush
