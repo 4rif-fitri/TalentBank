@@ -8,7 +8,7 @@
     <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/JobTalent-logo-cropped-cropped.svg') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="{{ URL::asset('assets/libs/bootstrap5/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ URL::asset('assets/css/profile/login.css') }}">
+    <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/login.css') }}">
 </head>
 
 <body>

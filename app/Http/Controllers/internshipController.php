@@ -2,47 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class internshipController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view("internship.index");
+        return view("pages.index");
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function invitations()
     {
-        //
+        return view("pages.invitations");
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function profile()
     {
-        //
+        return view("pages.profile");
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function interviews()
     {
-        //
+        return view("pages.interviews");
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function jobOffers()
     {
-        //
+        return view("pages.jobOffers");
+    }
+
+    public function messages()
+    {
+        return view("pages.messages");
+    }
+
+    public function settings()
+    {
+        return view("pages.settings");
     }
 }
