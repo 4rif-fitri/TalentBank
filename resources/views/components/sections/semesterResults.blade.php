@@ -104,6 +104,8 @@
         }
 
         function templateResultArticle(semester, hasResult, resultButton) {
+            console.log(semester);
+
             return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -115,22 +117,27 @@
                                 </p>
                                 ${hasResult ? ` <span class="badge text-bg-success">Uploaded</span>` : ""}
                             </div>
-                            <p class="text-muted mb-1">
-                                Session
-                                ${escapeHtml(semester.session ?? "-")}
-                            </p>
-                            <div class="d-flex flex-wrap gap-3 small ">
-                                <span>
+                            <span class="text-muted mb-1 d-flex gap-2">
+                                <p>Session</p>
+                                <p class="session">${escapeHtml(semester.session ?? "-")}</p>
+                            </span>
+                            <div class="d-flex flex-wrap gap-3 small">
+                                <span class="d-flex gap-2">
                                     <strong>GPA:</strong>
-                                    ${escapeHtml(semester.gpa ?? "-")}
-                                </span>
-                                <span>
-                                    <strong>CGPA:</strong>
-                                    ${escapeHtml(semester.cgpa ?? "-")}
+                                    <p class="gpa">${escapeHtml(semester.gpa ?? "-")}</p>
                                 </span>
                             </div>
                         </div>
-                        <div>${resultButton}</div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div>${resultButton}</div>
+                            <button
+                                class="btn text-secondary icon border-1 btnEditSemester"
+                                data-id="${semester.semesterId}"
+                                data-education-id="${semester.educationId}"
+                                data-programme-name="${escapeHtml(semester.programmeName ?? "-")}">
+                                <i class="fa-solid fa-pencil"></i>
+                            </button>
+                        </div>
                     </div>
                 </article>
                 `
