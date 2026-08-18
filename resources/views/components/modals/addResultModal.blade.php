@@ -165,8 +165,11 @@
 
             $("#resultFormContent").addClass("d-none");
 
+            let url = "{{ route('programme.getProgrammesByUserProfileId', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+
             $.ajax({
-                url: "{{ route('programme.getProgrammesByUserProfileId',['id' => auth() -> id()])}}",
+                url: url,
                 type: "GET",
                 dataType: "json",
                 success: function (response) {

@@ -3,10 +3,16 @@
         <h3 class="fw-bold mb-0">
             Semester Results
         </h3>
-        <button class="btn btn-primary" id="addResult" type="button">
-            <i class="fa-solid fa-plus me-1"></i>
-            Add Result
-        </button>
+        <div>
+            <button class="btn btn-primary" id="addSemester" type="button">
+                <i class="fa-solid fa-plus me-1"></i>
+                Add Semester
+            </button>
+            <button class="btn btn-primary" id="addResult" type="button">
+                <i class="fa-solid fa-plus me-1"></i>
+                Add Result
+            </button>
+        </div>
     </div>
     <hr>
     <div id="semesterResultList">
@@ -155,8 +161,11 @@
 
             $("#semesterResultList").html(templateLoading());
 
+            let url = "{{ route('programme.getProgrammesByUserProfileId', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+
             $.ajax({
-                url: "{{ route('programme.getProgrammesByUserProfileId',['id' => auth() -> id()])}}",
+                url: url,
                 type: "GET",
                 dataType: "json",
 
@@ -180,6 +189,7 @@
 
         function renderSemesterResults(programmes) {
             let results = [];
+            console.log(programmes);
 
             programmes.forEach(function (programme) {
 

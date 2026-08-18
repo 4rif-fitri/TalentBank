@@ -38,6 +38,8 @@
 
 <x-offcanvas />
 
+<x-modals.semester-modal />
+
 <x-modals.imagePreviewModal />
 
 <x-modals.active-educations-modal />

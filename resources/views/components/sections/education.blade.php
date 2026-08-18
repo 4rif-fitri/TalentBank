@@ -77,9 +77,9 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function () {
-        let educationData = [];
+    let educationData = [];
 
+    $(document).ready(function () {
         let months = [
             "Jan", "Feb", "Mar", "Apr", "May", "Jun",
             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -281,8 +281,8 @@
             }, 200);
         });
 
-        $(document).on("education:updated", function () {
-            loadEducations();
+        $(document).on("education:updated", async function () {
+            await loadEducations();
         });
         // trigger
     })
