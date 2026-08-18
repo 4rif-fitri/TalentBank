@@ -31,11 +31,18 @@ class EducationService
      */
     public function getEducationByUserProfileId(int $userProfileId)
     {
+        $userExists = UserProfile::where('id', $userProfileId)->exists();
+
+        if (!$userExists) {
+            throw new Exception('User not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
         return Education::with([
             'fieldOfStudy',
             'qualification',
             'programme',
-            'programme.organization'
+            'programme.organization',
+            'media'
         ])
             ->where('user_profile_id', $userProfileId)
             ->get();
@@ -54,7 +61,8 @@ class EducationService
             'fieldOfStudy',
             'qualification',
             'programme',
-            'programme.organization'
+            'programme.organization',
+            'media'
         ])
             ->find($id);
 

@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
             EducationSeeder::class,
             SemesterSeeder::class,
             MediaSeeder::class,
+            SocialMediaSeeder::class,
+            SocialMediaLinkSeeder::class,
         ]);
     }
 }
