@@ -68,7 +68,7 @@
 
     function getProfileData() {
 
-        let url = "{{ route('profile.getProfileDataByProfileIdJson', ['id' => '__ID__']) }}";
+        let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
         url = url.replace("__ID__", "{{ session('user_profile_id') }}");
 
         $.ajax({

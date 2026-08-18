@@ -98,7 +98,7 @@
         }
 
         function templateResultArticle(semester, hasResult, resultButton) {
-            return  `
+            return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                         <div>
@@ -130,7 +130,7 @@
                 `
         }
 
-        function templateButtonViewResult(fileUrl, semester){
+        function templateButtonViewResult(fileUrl, semester) {
             return `
                 <button type="button"
                     class="btn btn-outline-primary btn-sm btn-view-result"
@@ -142,7 +142,7 @@
                 </button>`
         }
 
-        function templateBadgeResultUploaded(){
+        function templateBadgeResultUploaded() {
             return `<span class="badge text-bg-success">Result Uploaded</span>`;
         }
 
@@ -156,7 +156,7 @@
             $("#semesterResultList").html(templateLoading());
 
             $.ajax({
-                url: "{{ route('programme.getProgrammesByUserIdJson',['userId' => auth() -> id()])}}",
+                url: "{{ route('programme.getProgrammesByUserProfileId',['id' => auth() -> id()])}}",
                 type: "GET",
                 dataType: "json",
 

@@ -215,7 +215,7 @@
     function getAllOrganizations() {
 
         return $.ajax({
-            url: "{{ route('organization.getAllOrganizationsJson') }}",
+            url: "{{ route('organization.getAllOrganizations') }}",
             type: "GET",
             dataType: "json",
 

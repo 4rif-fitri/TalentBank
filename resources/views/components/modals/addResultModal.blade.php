@@ -166,7 +166,7 @@
             $("#resultFormContent").addClass("d-none");
 
             $.ajax({
-                url: "{{ route('programme.getProgrammesByUserIdJson',['userId' => auth() -> id()])}}",
+                url: "{{ route('programme.getProgrammesByUserProfileId',['id' => auth() -> id()])}}",
                 type: "GET",
                 dataType: "json",
                 success: function (response) {
@@ -374,7 +374,7 @@
 
                     addResultModal.hide();
                     resetResultForm();
-                    swalfire("Success", response.message ?? "File uploaded successfully","success")
+                    swalfire("Success", response.message ?? "File uploaded successfully", "success")
 
                     // untuk refresh result list:
                     refreshSemesterResults();
