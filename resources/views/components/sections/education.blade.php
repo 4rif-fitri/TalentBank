@@ -126,6 +126,49 @@
         }
         // Get Data
 
+        function tem(media) {
+            if (!media || media.length === 0) {
+                return "";
+            }
+
+            let html = "";
+
+            // Maximum 3 thumbnail
+            let visibleMedia = media.slice(0, 3);
+
+            visibleMedia.forEach((dt, index) => {
+
+                let baseUrl = "{{ URL::asset('EDUCATION_FILE_URL') }}";
+                let imageUrl = `${baseUrl}/${dt.file_name}`;
+                console.log(imageUrl);
+
+                // Kalau image ke-3 dan masih ada image lain
+                let remaining = media.length - 2;
+
+                if (index === 2 && media.length > 3) {
+
+                    html += `
+                        <div
+                            class="image rounded-1 m-1 d-flex justify-content-center align-items-center"
+                            style="background-image: url('${imageUrl}'); filter: brightness(.5); cursor: pointer;"
+                            data-bs-toggle="modal"
+                            data-bs-target="#imagePreviewModal"
+                            data-slide-index="${index}">
+                            <h4 class="text-white m-0">+${remaining}</h4>
+                        </div>`;
+                } else {
+                    html += `
+                    <div class="image rounded-1 m-1"
+                        style="background-image: url('${imageUrl}');cursor: pointer;"
+                        data-bs-toggle="modal"
+                        data-bs-target="#imagePreviewModal"
+                        data-slide-index="${index}">
+                    </div>`;
+                }
+            });
+            return html;
+        }
+
         // Render
         function renderCardEducation(data, $educationList) {
             $educationList.empty();
@@ -163,33 +206,46 @@
                                 <p class="h5 fw-bold mb-2">
                                     ${education.programme?.organization?.company_name ?? ""}
                                 </p>
+
                                 <p class="mb-1">
                                     ${education.programme?.programme_name ?? ""}
                                 </p>
+
                                 <p class="text-muted mb-2">
                                     ${startDate} - ${endDate}
                                 </p>
+
                                 <p class="mb-2">
                                     Grade: ${education.cgpa ?? "-"}
                                 </p>
+
                                 <p class="mb-2">
                                     ${education.description ?? ""}
                                 </p>
+
                                 <div class="d-flex gap-2 flex-wrap">
+
                                     ${education.enrollment_status ? `
                                         <span class="badge text-bg-primary">
                                             ${education.enrollment_status}
                                         </span>
                                     ` : ""}
+
                                     ${education.verification_status ? `
                                         <span class="badge text-bg-success">
                                             ${education.verification_status}
                                         </span>
                                     ` : ""}
+
                                 </div>
                             </div>
-                        </article>`);
 
+                            <div class="images d-flex flex-wrap">
+                                ${tem(education.media)}
+                            </div>
+
+                        </article>
+                    `);
                     $row.append($column);
                 });
 
