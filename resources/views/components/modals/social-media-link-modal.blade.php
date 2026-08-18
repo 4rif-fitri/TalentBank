@@ -23,7 +23,7 @@
                         <i class="fa-solid fa-pencil fa-lg" style="cursor: pointer;"></i>
                     </div>
                     <div class="d-flex flex-column ratio-1x1">
-                        <i class="fa-solid fa-trash fa-lg text-danger" style="cursor: pointer;"></i>
+                        <i class="fa-solid fa-floppy-disk fa-lg text-danger" style="cursor: pointer;"></i>
                     </div>
                 </div>
 
@@ -58,7 +58,7 @@
                     </div>
 
                     <div class="d-flex align-items-center justify-content-center px-2">
-                        <i class="fa-solid fa-circle-check fa-xl text-success" style="cursor: pointer;"></i>
+                        <i class="fa-solid floppy-disk fa-xl text-success" style="cursor: pointer;"></i>
                     </div>
 
                 </div>

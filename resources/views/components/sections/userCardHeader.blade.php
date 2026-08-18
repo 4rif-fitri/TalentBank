@@ -33,7 +33,7 @@
     <div class="user-profile-group">
         <div class="profile-image" id="profileImage" style="background-image: url('');">
             <div class="w-100 h-100 position-relative">
-                <label for="profileImageInput" class="btn icon bg-body">
+                <label for="profileImageInput" class="btn icon bg-body" >
                     <i class="fa-solid fa-camera"
                     data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="custom-tooltip" data-bs-title="Edit Image Profile"></i>
                     <input type="file" hidden id="profileImageInput" accept="image/*">
@@ -49,7 +49,7 @@
                     <i class="fa-solid fa-pencil"></i>
                 </button>
             </div> -->
-            <h2 id="name" class="fw-bold"></h2>
+            <p id="name" class="fw-bold lg-h2 sm-h6"></p>
             <button type="button" class="btn btn-secondary icon" id="btnEditProfile"
             data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="custom-tooltip" data-bs-title="Edit Profile Data">
                 <i class="fa-solid fa-pencil"></i>
