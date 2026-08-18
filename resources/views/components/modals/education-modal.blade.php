@@ -713,11 +713,13 @@
 
         createEducation(formData);
     });
+
     $(document).on("change", "#educationInstitution", function () {
         let organizationId = $(this).val();
         if (!organizationId) return;
         getProgrammesByOrganizationId(organizationId);
     });
+    // trigger
 
     // init Load Data from API
     $(document).ready(function () {
@@ -727,7 +729,6 @@
     });
     // init Load Data from API
 
-    // trigger
 
 </script>
 @endpush

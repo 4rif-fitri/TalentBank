@@ -77,8 +77,23 @@
 
 @push('scripts')
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    $(document).ready(function () {
         let educationData = [];
+
+        let months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        function convertDateTostring(date) {
+            let datee = date.split("-");
+
+            if (datee[1] === datee[2]) {
+                return datee[0];
+            }
+
+            return `${months[Number(datee[1]) - 1]} ${datee[0]}`;
+        }
 
         function renderEducationIndicators(totalSlides) {
             let $indicators = $("#educationIndicators");
@@ -126,25 +141,13 @@
                 let $row = $("<div>").addClass("row g-3 px-3");
 
                 educationGroup.forEach(education => {
+                    console.log(education);
 
-                    // console.log(education);
-
-                    let startDate = new Date(
-                        education.start_date
-                    ).toLocaleDateString("en-MY", {
-                        month: "short",
-                        year: "numeric"
-                    });
-
-                    let endDate = education.end_date ?
-                        new Date(education.end_date).toLocaleDateString("en-MY", {
-                            month: "short",
-                            year: "numeric"
-                        }) : "Present";
+                    let startDate = convertDateTostring(education.start_date)
+                    let endDate = convertDateTostring(education.end_date)
 
                     let columnClass = itemsPerSlide === 1 ? "col-12" : "col-6";
                     let $column = $("<div>").addClass(columnClass);
-                        // console.error(education);
 
                     $column.html(`
                         <article
@@ -258,7 +261,6 @@
         // Load
 
         // trigger
-
         $(".profile-tab[data-target='education']").on("click", function () {
             loadEducations();
         });
