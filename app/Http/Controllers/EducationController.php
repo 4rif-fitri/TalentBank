@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\ApiResponse;
-use App\Http\Services\EducationService;
+use App\Services\EducationService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

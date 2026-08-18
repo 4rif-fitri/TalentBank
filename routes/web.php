@@ -90,3 +90,10 @@ Route::middleware('auth')->prefix('education')->group(function () {
     Route::get('/getAllFieldOfStudies', [EducationController::class, 'getAllFieldOfStudies'])->name('education.getAllFieldOfStudies'); //+
     Route::get('/getAllQualifications', [EducationController::class, 'getAllQualifications'])->name('education.getAllQualifications'); //+
 });
+
+Route::middleware('auth')->prefix('social-media')->group(function () {
+    Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia');
+    Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store');
+    Route::put('/update/{id}', [SocialMediaLinkController::class, 'update'])->name('social-media.update');
+    Route::delete('/delete/{id}', [SocialMediaLinkController::class, 'delete'])->name('social-media.delete');
+});
