@@ -4,43 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\ApiResponse;
 use App\Services\FacultyService;
-use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class FacultyController extends Controller
 {
-    private FacultyService $facultyService;
-
-    public function __construct(FacultyService $facultyService)
-    {
-        $this->facultyService = $facultyService;
+    public function __construct(
+        private readonly FacultyService $facultyService
+    ) {
     }
 
     /**
      * Handle request to get all faculties by organization ID.
      * 
      * @param Request $request
+     * @param int $id
      * 
      * @return JsonResponse
      */
-    public function getFacultiesByOrgIdJson(Request $request)
+    public function getFacultiesByOrgId(Request $request, int $id): JsonResponse
     {
-        try {
-            $orgId = $request->input('org_id');
+        $faculties = $this->facultyService->getFacultiesByOrgId($id);
 
-            if (!isset($orgId)) {
-                return ApiResponse::error('Organization ID required.')->toJsonResponse();
-            }
-
-            $faculties = $this->facultyService->getFacultiesByOrgId($orgId);
-
-            return ApiResponse::success('Success.', $faculties)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Success.', $faculties)->toJsonResponse();
     }
 
     /**
@@ -50,19 +37,11 @@ class FacultyController extends Controller
      * 
      * @return JsonResponse
      */
-    public function getFacultyByIdJson(int $id)
+    public function getFacultyById(int $id): JsonResponse
     {
-        try {
-            if (!isset($id)) {
-                return ApiResponse::error('Faculty ID required.')->toJsonResponse();
-            }
+        $faculty = $this->facultyService->getFacultyById($id);
 
-            $faculty = $this->facultyService->getFacultyById($id);
-
-            return ApiResponse::success('Success.', $faculty)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Success.', $faculty)->toJsonResponse();
     }
 
     /**
@@ -72,21 +51,17 @@ class FacultyController extends Controller
      * 
      * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        try {
-            $validated = $request->validate([
-                'organization_id' => ['required', 'exists:organizations,id'],
-                'faculty_name' => ['required', 'string'],
-                'faculty_code' => ['required', 'string'],
-            ]);
+        $validated = $request->validate([
+            'organization_id' => ['required', 'exists:organizations,id'],
+            'faculty_name' => ['required', 'string'],
+            'faculty_code' => ['required', 'string'],
+        ]);
 
-            $faculty = $this->facultyService->createFaculty($validated);
+        $faculty = $this->facultyService->createFaculty($validated);
 
-            return ApiResponse::success('Faculty created successfully.', $faculty, Response::HTTP_CREATED)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Faculty created successfully.', $faculty, Response::HTTP_CREATED)->toJsonResponse();
     }
 
     /**
@@ -96,19 +71,15 @@ class FacultyController extends Controller
      * 
      * @return JsonResponse
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id): JsonResponse
     {
-        try {
-            $validated = $request->validate([
-                'faculty_name' => ['required', 'string'],
-                'faculty_code' => ['required', 'string'],
-            ]);
+        $validated = $request->validate([
+            'faculty_name' => ['required', 'string'],
+            'faculty_code' => ['required', 'string'],
+        ]);
 
-            $this->facultyService->updateFaculty($id, $validated);
+        $this->facultyService->updateFaculty($id, $validated);
 
-            return ApiResponse::success('Faculty updated successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Faculty updated successfully.', null)->toJsonResponse();
     }
 }

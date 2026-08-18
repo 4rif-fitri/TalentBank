@@ -39,7 +39,7 @@ Route::middleware('auth')->prefix('profile')->group(function () {
     Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience'); //+
 
     // crud routes
-    Route::get('/{id}', [ProfileController::class, 'getProfileDataByProfileIdJson'])->name('profile.getProfileDataByProfileIdJson');
+    Route::get('/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
     Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
     Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage');
@@ -47,30 +47,26 @@ Route::middleware('auth')->prefix('profile')->group(function () {
 });
 
 Route::middleware('auth')->prefix('organizations')->group(function () {
-    // page routes
-
     // crud routes
-    Route::get('/', [OrganizationController::class, 'getAllOrganizationsJson'])->name('organization.getAllOrganizationsJson'); //+
-    Route::get('/types', [OrganizationController::class, 'getAllOrganizationTypesJson'])->name('organization.getAllOrganizationTypesJson'); //-
-    Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategoriesJson'])->name('organization.getAllIndustryCategoriesJson'); //-
-    Route::get('/industry-sectors', [OrganizationController::class, 'getAllIndustrySectorsJson'])->name('organization.getAllIndustrySectorsJson'); //-
+    Route::get('/', [OrganizationController::class, 'getAllOrganizations'])->name('organization.getAllOrganizations'); //+
+    Route::get('/types', [OrganizationController::class, 'getAllOrganizationTypes'])->name('organization.getAllOrganizationTypes'); //-
+    Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategories'])->name('organization.getAllIndustryCategories'); //-
+    Route::get('/industry-sectors', [OrganizationController::class, 'getAllIndustrySectors'])->name('organization.getAllIndustrySectors'); //-
     Route::post('/store', [OrganizationController::class, 'store'])->name('organization.store'); //-
     Route::put('/update/{orgId}', [OrganizationController::class, 'update'])->name('organization.update'); //-
 });
 
 Route::middleware('auth')->prefix('faculties')->group(function () {
-    // page routes
-
     // crud routes
-    Route::get('/', [FacultyController::class, 'getFacultiesByOrgIdJson'])->name('faculty.getFacultiesByOrgIdJson'); //-
-    Route::get('/{id}', [FacultyController::class, 'getFacultyByIdJson'])->name('faculty.getFacultyByIdJson');//-
+    Route::get('/org/{id}', [FacultyController::class, 'getFacultiesByOrgId'])->name('faculty.getFacultiesByOrgId'); //-
+    Route::get('/{id}', [FacultyController::class, 'getFacultyById'])->name('faculty.getFacultyById');//-
     Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store'); //-
     Route::put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update'); //-
 });
 
 Route::middleware('auth')->prefix('programmes')->group(function () {
     // crud routes
-    Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson'); //!+
+    Route::get('/getProgrammesByUserProfileId/{id}', [ProgrammeController::class, 'getProgrammesByUserProfileId'])->name('programme.getProgrammesByUserProfileId'); //!+
     Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId'); //+
 });
 

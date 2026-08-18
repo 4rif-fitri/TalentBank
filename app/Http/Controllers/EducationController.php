@@ -4,21 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\ApiResponse;
 use App\Services\EducationService;
-use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 
 class EducationController extends Controller
 {
-    private EducationService $educationService;
-
-    public function __construct(EducationService $educationService)
-    {
-        $this->educationService = $educationService;
+    public function __construct(
+        private readonly EducationService $educationService
+    ) {
     }
 
-    private function validateEducationFields($request)
+    private function validateEducationFields(Request $request): array
     {
         return $request->validate([
             'programme_id' => ['required', 'exists:programmes,id'],
@@ -37,63 +35,42 @@ class EducationController extends Controller
      * Handles request to get education by user profile ID
      *
      * @param int $id
-     * @throws Exception
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getEducationByUserProfileId(int $id)
+    public function getEducationByUserProfileId(int $id): JsonResponse
     {
-        try {
-            if (!isset($id)) {
-                throw new Exception('User profile ID required.');
-            }
+        $education = $this->educationService->getEducationByUserProfileId($id);
 
-            $education = $this->educationService->getEducationByUserProfileId($id);
-
-            return ApiResponse::success('Success.', $education)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Success.', $education)->toJsonResponse();
     }
 
     /**
      * Handles request to get education by education ID
      *
      * @param int $id
-     * @throws Exception
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getEducationById(int $id)
+    public function getEducationById(int $id): JsonResponse
     {
-        try {
-            if (!isset($id)) {
-                throw new Exception('Education ID required.');
-            }
+        $education = $this->educationService->getEducationById($id);
 
-            $education = $this->educationService->getEducationById($id);
-
-            return ApiResponse::success('Success.', $education)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Success.', $education)->toJsonResponse();
     }
 
     /**
      * Handles request to create a new education
      *
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        try {
-            $validated = $this->validateEducationFields($request);
+        $validated = $this->validateEducationFields($request);
+        $userProfileId = session('user_profile_id');
 
-            $education = $this->educationService->createEducation($validated);
+        $education = $this->educationService->createEducation($validated, $userProfileId);
 
-            return ApiResponse::success('Education created successfully.', $education, Response::HTTP_CREATED)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Education created successfully.', $education, Response::HTTP_CREATED)->toJsonResponse();
     }
 
     /**
@@ -101,75 +78,51 @@ class EducationController extends Controller
      *
      * @param Request $request
      * @param int $id
-     * @throws Exception
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id): JsonResponse
     {
-        try {
-            $validated = $this->validateEducationFields($request);
+        $validated = $this->validateEducationFields($request);
+        $userProfileId = session('user_profile_id');
 
-            if (!isset($id)) {
-                throw new Exception('User profile ID required.');
-            }
+        $this->educationService->updateEducation($id, $validated, $userProfileId);
 
-            $this->educationService->updateEducation($id, $validated);
-
-            return ApiResponse::success('Education updated successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Education updated successfully.', null)->toJsonResponse();
     }
 
     /**
      * Handles request to delete existing education
      *
      * @param int $id
-     * @throws Exception
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function delete(int $id)
+    public function delete(int $id): JsonResponse
     {
-        try {
-            if (!isset($id)) {
-                throw new Exception('User profile ID required.');
-            }
+        $userProfileId = session('user_profile_id');
+        $this->educationService->deleteEducation($id, $userProfileId);
 
-            $this->educationService->deleteEducation($id);
-
-            return ApiResponse::success('Education deleted successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Education deleted successfully.', null)->toJsonResponse();
     }
 
     /**
      * Handles request to get all field of studies
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getAllFieldOfStudies()
+    public function getAllFieldOfStudies(): JsonResponse
     {
-        try {
-            $fieldOfStudies = $this->educationService->getAllFieldOfStudies();
-            return ApiResponse::success('Success.', $fieldOfStudies)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        $fieldOfStudies = $this->educationService->getAllFieldOfStudies();
+        return ApiResponse::success('Success.', $fieldOfStudies)->toJsonResponse();
     }
 
     /**
      * Handles request to get all qualifications
 
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function getAllQualifications()
+    public function getAllQualifications(): JsonResponse
     {
-        try {
-            $qualifications = $this->educationService->getAllQualifications();
-            return ApiResponse::success('Success.', $qualifications)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        $qualifications = $this->educationService->getAllQualifications();
+        return ApiResponse::success('Success.', $qualifications)->toJsonResponse();
     }
 }

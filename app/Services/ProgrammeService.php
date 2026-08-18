@@ -13,33 +13,16 @@ use Illuminate\Support\Collection;
 class ProgrammeService
 {
     /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Gets the programmes joined by the user and filters them based on search query or session
      * Search query can be programme name, programme code and programme level
      * 
-     * @param int $userId
-     * @param string $search
-     * @param string $session
-     * @throws Exception
+     * @param int $userProfileId
+     * @param ?string $search
+     * @param ?string $session
      * @return Collection
      */
-    public function getProgrammesByUserId(int $userId, string $search = null, string $session = null)
+    public function getProgrammesByUserProfileId(int $userProfileId, ?string $search = null, ?string $session = null): Collection
     {
-        $userProfile = UserProfile::where('user_id', $userId)->first();
-
-        if (!isset($userProfile)) {
-            throw new Exception('User not found with given ID.', Response::HTTP_NOT_FOUND);
-        }
-
-        $userProfileId = $userProfile->id;
-
         return Programme::with([
             'education' => function ($query) use ($userProfileId) {
                 $query->where('user_profile_id', $userProfileId);
@@ -76,10 +59,9 @@ class ProgrammeService
      * Get programmes by organization ID.
      * 
      * @param int $organizationId
-     * @throws Exception
-     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Programme>
+     * @return Collection
      */
-    public function getProgrammesByOrgId(int $organizationId)
+    public function getProgrammesByOrgId(int $organizationId): Collection
     {
         $orgExists = Organization::where('id', $organizationId)->exists();
 

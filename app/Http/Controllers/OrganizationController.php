@@ -4,19 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\ApiResponse;
 use App\Services\OrganizationService;
-use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class OrganizationController extends Controller
 {
-    private OrganizationService $organizationService;
-
-    public function __construct(OrganizationService $organizationService)
-    {
-        $this->organizationService = $organizationService;
+    public function __construct(
+        private readonly OrganizationService $organizationService
+    ) {
     }
 
     /**
@@ -25,7 +21,7 @@ class OrganizationController extends Controller
      * @param   Request $request
      * @return  array
      */
-    private function validateOrganizationData(Request $request)
+    private function validateOrganizationData(Request $request): array
     {
         return $request->validate([
             'company_name' => ['required', 'string', 'max:255'],
@@ -47,10 +43,9 @@ class OrganizationController extends Controller
     /**
      * Handle request to get all organizations
      * 
-     * @param   Request $request
      * @return  JsonResponse
      */
-    public function getAllOrganizationsJson(Request $request)
+    public function getAllOrganizations(): JsonResponse
     {
         $organizations = $this->organizationService->getAllOrganizations();
 
@@ -63,17 +58,14 @@ class OrganizationController extends Controller
      * @param   Request $request
      * @return  JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        try {
-            $validated = $this->validateOrganizationData($request);
+        $validated = $this->validateOrganizationData($request);
+        $userProfileId = session('user_profile_id');
 
-            $organization = $this->organizationService->createOrganization($validated);
+        $organization = $this->organizationService->createOrganization($validated, $userProfileId);
 
-            return ApiResponse::success('Organization created successfully.', $organization, Response::HTTP_CREATED)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Organization created successfully.', $organization, Response::HTTP_CREATED)->toJsonResponse();
     }
 
     /**
@@ -82,21 +74,13 @@ class OrganizationController extends Controller
      * @param   Request $request
      * @return  JsonResponse
      */
-    public function update(Request $request, int $orgId)
+    public function update(Request $request, int $orgId): JsonResponse
     {
-        try {
-            $validated = $this->validateOrganizationData($request);
+        $validated = $this->validateOrganizationData($request);
 
-            if (!isset($orgId)) {
-                throw new Exception('Organization ID is required.', Response::HTTP_BAD_REQUEST);
-            }
+        $this->organizationService->updateOrganization($validated, $orgId);
 
-            $this->organizationService->updateOrganization($validated, $orgId);
-
-            return ApiResponse::success('Organization updated successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Organization updated successfully.', null)->toJsonResponse();
     }
 
     /**
@@ -104,7 +88,7 @@ class OrganizationController extends Controller
      * 
      * @return  JsonResponse
      */
-    public function getAllOrganizationTypesJson()
+    public function getAllOrganizationTypes(): JsonResponse
     {
         $organizationTypes = $this->organizationService->getAllOrganizationTypes();
         return ApiResponse::success('Success.', $organizationTypes)->toJsonResponse();
@@ -115,7 +99,7 @@ class OrganizationController extends Controller
      * 
      * @return  JsonResponse
      */
-    public function getAllIndustryCategoriesJson()
+    public function getAllIndustryCategories(): JsonResponse
     {
         $industryCategories = $this->organizationService->getAllIndustryCategories();
         return ApiResponse::success('Success.', $industryCategories)->toJsonResponse();
@@ -126,7 +110,7 @@ class OrganizationController extends Controller
      * 
      * @return  JsonResponse
      */
-    public function getAllIndustrySectorsJson()
+    public function getAllIndustrySectors(): JsonResponse
     {
         $industrySectors = $this->organizationService->getAllIndustrySectors();
         return ApiResponse::success('Success.', $industrySectors)->toJsonResponse();

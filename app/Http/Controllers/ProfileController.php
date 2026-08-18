@@ -4,24 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\ApiResponse;
 use App\Services\ProfileService;
-use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class ProfileController extends Controller
 {
-    private ProfileService $profileService;
-
-    public function __construct(ProfileService $profileService)
-    {
-        $this->profileService = $profileService;
-    }
-
-    public function index()
-    {
-        return view();
+    public function __construct(
+        private readonly ProfileService $profileService
+    ) {
     }
 
     /**
@@ -31,15 +21,11 @@ class ProfileController extends Controller
      * @param   int $id
      * @return  JsonResponse
      */
-    public function getProfileDataByProfileIdJson(int $id)
+    public function getProfileDataByProfileId(int $id): JsonResponse
     {
-        try {
-            $profile = $this->profileService->getProfileDataByProfileIdJson($id);
+        $profile = $this->profileService->getProfileDataByProfileId($id);
 
-            return ApiResponse::success('Success.', $profile)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Success.', $profile)->toJsonResponse();
     }
 
     /**
@@ -48,23 +34,21 @@ class ProfileController extends Controller
      * @param   Request $request
      * @return  JsonResponse
      */
-    public function update(Request $request)
+    public function update(Request $request): JsonResponse
     {
-        try {
-            $validated = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'email', 'max:255'],
-                'headline' => ['nullable', 'string', 'max:255'],
-                'location' => ['nullable', 'string', 'max:255'],
-                'phone_no' => ['nullable', 'string', 'max:11'],
-            ]);
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'headline' => ['nullable', 'string', 'max:255'],
+            'location' => ['nullable', 'string', 'max:255'],
+            'phone_no' => ['nullable', 'string', 'max:11'],
+        ]);
 
-            $this->profileService->updateProfileData($validated);
+        $profileId = session('user_profile_id');
 
-            return ApiResponse::success('Profile updated successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        $this->profileService->updateProfileData($validated, $profileId);
+
+        return ApiResponse::success('Profile updated successfully.', null)->toJsonResponse();
     }
 
     /**
@@ -72,19 +56,17 @@ class ProfileController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function updateAboutField(Request $request)
+    public function updateAboutField(Request $request): JsonResponse
     {
-        try {
-            $validated = $request->validate([
-                'about' => ['nullable', 'max:255']
-            ]);
+        $validated = $request->validate([
+            'about' => ['nullable', 'max:255']
+        ]);
 
-            $this->profileService->updateAboutField($validated['about']);
+        $profileId = session('user_profile_id');
 
-            return ApiResponse::success('About saved successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        $this->profileService->updateAboutField($validated['about'], $profileId);
+
+        return ApiResponse::success('About saved successfully.', null)->toJsonResponse();
     }
 
     /**
@@ -92,21 +74,18 @@ class ProfileController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function uploadProfileImage(Request $request)
+    public function uploadProfileImage(Request $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'profile_image' => ['required', 'image', 'max:2048']
-            ]);
+        $request->validate([
+            'profile_image' => ['required', 'image', 'max:2048']
+        ]);
 
-            $file = $request->file('profile_image');
+        $file = $request->file('profile_image');
+        $profileId = session('user_profile_id');
 
-            $this->profileService->uploadProfileImage($file);
+        $this->profileService->uploadProfileImage($file, $profileId);
 
-            return ApiResponse::success('Profile image uploaded successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Profile image uploaded successfully.', null)->toJsonResponse();
     }
 
     /**
@@ -114,20 +93,17 @@ class ProfileController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function uploadCoverImage(Request $request)
+    public function uploadCoverImage(Request $request): JsonResponse
     {
-        try {
-            $request->validate([
-                'cover_image' => ['required', 'image', 'max:2048']
-            ]);
+        $request->validate([
+            'cover_image' => ['required', 'image', 'max:2048']
+        ]);
 
-            $file = $request->file('cover_image');
+        $file = $request->file('cover_image');
+        $profileId = session('user_profile_id');
 
-            $this->profileService->uploadCoverImage($file);
+        $this->profileService->uploadCoverImage($file, $profileId);
 
-            return ApiResponse::success('Cover image uploaded successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
-        }
+        return ApiResponse::success('Cover image uploaded successfully.', null)->toJsonResponse();
     }
 }
