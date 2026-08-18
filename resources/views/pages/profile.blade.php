@@ -64,17 +64,7 @@
 <script>
     let data
 
-    $.ajax({
-        url: "{{ route('social-media.getAllSocialMedia') }}",
-        type: "GET",
-        dataType: "json",
-        success: function ({ data }) {
-            console.log(data);
-        },
-        error: function (xhr) {
-            console.error(xhr);
-        }
-    });
+
 
     function getProfileData() {
 
@@ -127,7 +117,7 @@
 
                     $("#activeEducationList").append($element);
                 });
-
+                getAllSocialMedia()
                 renderSocialMediaLinks(data.social_media_links);
             },
 

@@ -10,10 +10,27 @@
 
 @push('scripts')
 <script>
+    let datalink = [];
+    let allSocialMedia = [];
+
+    function getAllSocialMedia() {
+        return $.ajax({
+            url: "{{ route('social-media.getAllSocialMedia') }}",
+            type: "GET",
+            dataType: "json"
+        }).done(function ({ data }) {
+            allSocialMedia = data;
+        }).fail(function (xhr) {
+            console.error(xhr);
+        });
+    }
+
     function renderSocialMediaLinks(socialMediaLinks) {
         $("#linksList").empty();
 
-        socialMediaLinks?.forEach(dt => {
+        datalink = socialMediaLinks ?? [];
+
+        datalink.forEach(dt => {
             const $a = $("<a>", {
                 class: "badge text-bg-light d-flex align-items-center gap-1",
                 href: dt.link,
@@ -25,20 +42,27 @@
                 class: dt.social_media.icon_class_name
             });
 
-            $a.append($icon,
-                `${dt.social_media.name}`
+            $a.append(
+                $icon,
+                dt.social_media.name
             );
-            $("#linksList").append($a);
 
+            $("#linksList").append($a);
         });
     }
 
     $("#btnSocialMediaLink").on("click", function () {
-        const modalElement = document.getElementById("socialMediaModal");
+        renderLinkModal(datalink);
 
+        const modalElement = document.getElementById("socialMediaModal");
         const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
 
         modal.show();
+    });
+
+    $(document).ready(async function () {
+        await getAllSocialMedia();
+        templateRenderSocialMedia();
     });
 </script>
 @endpush
