@@ -31,6 +31,12 @@ class EducationService
      */
     public function getEducationByUserProfileId(int $userProfileId)
     {
+        $userExists = UserProfile::where('id', $userProfileId)->exists();
+
+        if (!$userExists) {
+            throw new Exception('User not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
         return Education::with([
             'fieldOfStudy',
             'qualification',

@@ -55,6 +55,8 @@ class ProfileService
             'organizationUsers.role',
             'activeProgrammes',
             'activeProgrammes.organization',
+            'socialMediaLinks',
+            'socialMediaLinks.socialMedia',
         ])
             ->find($userProfileId);
 

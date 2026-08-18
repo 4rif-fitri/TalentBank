@@ -10,6 +10,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\SocialMediaLinkController;
 
 // auth routes
 Route::middleware('guest')->group(function () {
@@ -27,9 +28,6 @@ Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->
 Route::middleware('auth')->get('/', [internshipController::class, "index"])->name('home');
 
 Route::middleware('auth')->prefix('profile')->group(function () {
-    // page routes
-
-    // crud routes
     Route::get('/{id}', [ProfileController::class, 'getProfileDataByProfileIdJson'])->name('profile.getProfileDataByProfileIdJson');
     Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
     Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
@@ -38,9 +36,6 @@ Route::middleware('auth')->prefix('profile')->group(function () {
 });
 
 Route::middleware('auth')->prefix('organizations')->group(function () {
-    // page routes
-
-    // crud routes
     Route::get('/', [OrganizationController::class, 'getAllOrganizationsJson'])->name('organization.getAllOrganizationsJson');
     Route::get('/types', [OrganizationController::class, 'getAllOrganizationTypesJson'])->name('organization.getAllOrganizationTypesJson');
     Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategoriesJson'])->name('organization.getAllIndustryCategoriesJson');
@@ -50,9 +45,6 @@ Route::middleware('auth')->prefix('organizations')->group(function () {
 });
 
 Route::middleware('auth')->prefix('faculties')->group(function () {
-    // page routes
-
-    // crud routes
     Route::get('/', [FacultyController::class, 'getFacultiesByOrgIdJson'])->name('faculty.getFacultiesByOrgIdJson');
     Route::get('/{id}', [FacultyController::class, 'getFacultyByIdJson'])->name('faculty.getFacultyByIdJson');
     Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store');
@@ -60,18 +52,15 @@ Route::middleware('auth')->prefix('faculties')->group(function () {
 });
 
 Route::middleware('auth')->prefix('programmes')->group(function () {
-    // crud routes
     Route::get('/getProgrammesByUserIdJson/{userId}', [ProgrammeController::class, 'getProgrammesByUserIdJson'])->name('programme.getProgrammesByUserIdJson');
     Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId');
 });
 
 Route::middleware('auth')->prefix('semesters')->group(function () {
-    // crud routes
     Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults');
 });
 
 Route::middleware('auth')->prefix('education')->group(function () {
-    // crud routes
     Route::get('/getEducationByUserProfileId/{id}', [EducationController::class, 'getEducationByUserProfileId'])->name('education.getEducationByUserProfileId');
     Route::get('/getEducationById/{id}', [EducationController::class, 'getEducationById'])->name('education.getEducationById');
     Route::post('/store', [EducationController::class, 'store'])->name('education.store');
@@ -80,4 +69,11 @@ Route::middleware('auth')->prefix('education')->group(function () {
 
     Route::get('/getAllFieldOfStudies', [EducationController::class, 'getAllFieldOfStudies'])->name('education.getAllFieldOfStudies');
     Route::get('/getAllQualifications', [EducationController::class, 'getAllQualifications'])->name('education.getAllQualifications');
+});
+
+Route::middleware('auth')->prefix('social-media')->group(function () {
+    Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia');
+    Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store');
+    Route::put('/update/{id}', [SocialMediaLinkController::class, 'update'])->name('social-media.update');
+    Route::delete('/delete/{id}', [SocialMediaLinkController::class, 'delete'])->name('social-media.delete');
 });
