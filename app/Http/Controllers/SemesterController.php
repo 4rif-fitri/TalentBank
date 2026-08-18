@@ -11,41 +11,61 @@ use Illuminate\Http\Response;
 
 class SemesterController extends Controller
 {
-    private SemesterService $semesterService;
-
-    public function __construct(SemesterService $semesterService)
-    {
-        $this->semesterService = $semesterService;
+    public function __construct(
+        private readonly SemesterService $semesterService
+    ) {
     }
 
     /**
      * Handles request to upload results file
+     * 
      * @param Request $request
      * @param int $id
      * @return JsonResponse
      */
-    public function uploadResults(Request $request, int $id)
+    public function uploadResults(Request $request, int $id): JsonResponse
     {
-        try {
-            $validated = $request->validate([
-                'result_file' => ['required', 'mimes:pdf', 'max:2048'],
-                'title' => ['nullable', 'string', 'max:255'],
-                'description' => ['nullable', 'string'],
-            ]);
+        $validated = $request->validate([
+            'result_file' => ['required', 'mimes:pdf', 'max:2048'],
+            'title' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+        ]);
 
-            if (!$request->hasFile('result_file')) {
-                throw new Exception('A file must be uploaded.', Response::HTTP_BAD_REQUEST);
-            }
-
-            if (!isset($id)) {
-                throw new Exception('Semester ID is required.', Response::HTTP_BAD_REQUEST);
-            }
-
-            $this->semesterService->uploadResults($validated, $request->file('result_file'), $id);
-
-            return ApiResponse::success('File uploaded successfully.', null)->toJsonResponse();
-        } catch (Exception $e) {
-            return ApiResponse::error($e->getMessage(), ApiResponse::getValidatedStatusCode($e))->toJsonResponse();
+        if (!$request->hasFile('result_file')) {
+            throw new Exception('A file must be uploaded.', Response::HTTP_BAD_REQUEST);
         }
+
+        $userProfileId = session('user_profile_id');
+
+        $this->semesterService->uploadResults($validated, $request->file('result_file'), $id, $userProfileId);
+
+        return ApiResponse::success('Result file uploaded successfully.', null)->toJsonResponse();
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'education_id' => ['required', 'exists:education,id'],
+            'gpa' => ['required', 'numeric', 'between:0,4.00', 'decimal:0,2'],
+            'session' => ['required', 'string']
+        ]);
+
+        $semester = $this->semesterService->createSemester($validated);
+
+        return ApiResponse::success('Semester created successfully.', $semester, Response::HTTP_CREATED)->toJsonResponse();
+    }
+
+    public function update(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'gpa' => ['required', 'numeric', 'between:0,4.00', 'decimal:0,2'],
+            'session' => ['required', 'string']
+        ]);
+
+        $userProfileId = session('user_profile_id');
+
+        $this->semesterService->updateSemester($validated, $id, $userProfileId);
+
+        return ApiResponse::success('Semester updated successfully.', null)->toJsonResponse();
     }
 }

@@ -7,19 +7,29 @@ use App\Models\FieldOfStudy;
 use App\Models\Qualification;
 use App\Models\UserProfile;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class EducationService
 {
-    private MediaService $mediaService;
-
     /**
      * Create a new class instance.
      */
-    public function __construct(MediaService $mediaService)
+    public function __construct(
+        private readonly MediaService $mediaService
+    ) {
+    }
+
+    private function uploadImages(int $educationId, array $data, int $userProfileId): void
     {
-        $this->mediaService = $mediaService;
+        $data['source_name'] = 'education';
+        $data['source_id'] = $educationId;
+        $data['file_path'] = config('services.uploads_file_path.education');
+
+        if (isset($data['media'])) {
+            $this->mediaService->createMedia($data, $userProfileId);
+        }
     }
 
     /**
@@ -27,9 +37,9 @@ class EducationService
      * 
      * @param int $userProfileId
      * @throws Exception
-     * @return \Illuminate\Database\Eloquent\Collection<int, Education>|\Illuminate\Support\Collection<int, \stdClass>
+     * @return Collection<int, Education>|\Illuminate\Support\Collection<int, \stdClass>
      */
-    public function getEducationByUserProfileId(int $userProfileId)
+    public function getEducationByUserProfileId(int $userProfileId): Collection
     {
         $userExists = UserProfile::where('id', $userProfileId)->exists();
 
@@ -53,9 +63,9 @@ class EducationService
      * 
      * @param int $id
      * @throws Exception
-     * @return Education|\Illuminate\Database\Eloquent\Builder<Education>|\stdClass
+     * @return Education
      */
-    public function getEducationById(int $id)
+    public function getEducationById(int $id): Education
     {
         $education = Education::with([
             'fieldOfStudy',
@@ -79,10 +89,8 @@ class EducationService
      * @param array $data
      * @return Education
      */
-    public function createEducation(array $data)
+    public function createEducation(array $data, int $userProfileId): Education
     {
-        $userProfileId = session('user_profile_id');
-
         $education = DB::transaction(function () use ($data, $userProfileId) {
             $education = Education::create([
                 'user_profile_id' => $userProfileId,
@@ -97,11 +105,7 @@ class EducationService
                 'verification_status' => 'Pending',  // initially pending for admin to approve
             ]);
 
-            $data['source_name'] = 'education';
-            $data['source_id'] = $education->id;
-            $data['file_path'] = config('services.uploads_file_path.education');
-
-            $this->mediaService->createMedia($data);
+            $this->uploadImages($education->id, $data, $userProfileId);
 
             return $education;
         });
@@ -114,12 +118,10 @@ class EducationService
      * 
      * @param int $educationId
      * @param array $data
-     * @return bool|int
+     * @return bool
      */
-    public function updateEducation(int $educationId, array $data)
+    public function updateEducation(int $educationId, array $data, int $userProfileId): bool
     {
-        $userProfileId = session('user_profile_id');
-
         $education = Education::where([
             ['id', $educationId],
             ['user_profile_id', $userProfileId],
@@ -129,16 +131,23 @@ class EducationService
             throw new Exception('Education data not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $result = $education->update([
-            'programme_id' => $data['programme_id'],
-            'description' => $data['description'],
-            'field_of_study_id' => $data['field_of_study_id'],
-            'qualification_id' => $data['qualification_id'],
-            'cgpa' => $data['cgpa'],
-            'start_date' => $data['start_date'],
-            'end_date' => $data['end_date'],
-            'enrollment_status' => $data['enrollment_status'],
-        ]);
+        $result = DB::transaction(function () use ($data, $education, $userProfileId) {
+            $result = $education->update([
+                'programme_id' => $data['programme_id'],
+                'description' => $data['description'],
+                'field_of_study_id' => $data['field_of_study_id'],
+                'qualification_id' => $data['qualification_id'],
+                'cgpa' => $data['cgpa'],
+                'start_date' => $data['start_date'],
+                'end_date' => $data['end_date'],
+                'enrollment_status' => $data['enrollment_status'],
+            ]);
+
+            $this->uploadImages($education->id, $data, $userProfileId);
+
+            return $result;
+        });
+
 
         return $result;
     }
@@ -148,12 +157,10 @@ class EducationService
      * (any semesters and media (attached to semester) attached to it will be deleted as well)
      * 
      * @param int $educationId
-     * @return bool|int
+     * @return bool|
      */
-    public function deleteEducation(int $educationId)
+    public function deleteEducation(int $educationId, int $userProfileId): bool
     {
-        $userProfileId = session('user_profile_id');
-
         $education = Education::where([
             ['id', $educationId],
             ['user_profile_id', $userProfileId],
@@ -163,7 +170,13 @@ class EducationService
             throw new Exception('Education data not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $result = $education->delete();
+        $result = DB::transaction(function () use ($education) {
+            $this->mediaService->deleteMediaBySource('education', $education->id, config('services.uploads_file_path.education'));
+
+            $result = $education->delete();
+
+            return $result;
+        });
 
         return $result;
     }
@@ -171,9 +184,9 @@ class EducationService
     /**
      * Get all field of studies from the database
      * 
-     * @return \Illuminate\Database\Eloquent\Collection<int, FieldOfStudy>
+     * @return Collection<int, FieldOfStudy>
      */
-    public function getAllFieldOfStudies()
+    public function getAllFieldOfStudies(): Collection
     {
         return FieldOfStudy::get();
     }
@@ -181,9 +194,9 @@ class EducationService
     /**
      * Get all qualifications from the database
      * 
-     * @return \Illuminate\Database\Eloquent\Collection<int, Qualification>
+     * @return Collection<int, Qualification>
      */
-    public function getAllQualifications()
+    public function getAllQualifications(): Collection
     {
         return Qualification::get();
     }

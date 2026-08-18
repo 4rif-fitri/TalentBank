@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\profile;
 use App\Models\User;
 use App\Models\UserProfile;
 use Exception;
@@ -11,25 +10,11 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\ExpectationFailedException;
-use Symfony\Component\HttpFoundation\File\Exception\UploadException;
 
 class ProfileService
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    private function getProfileModel(int $profileId): UserProfile
     {
-        //
-    }
-
-    private function getProfileModel()
-    {
-        $profileId = session('user_profile_id');
-
         $profile = UserProfile::find($profileId);
 
         if (!isset($profile)) {
@@ -45,7 +30,7 @@ class ProfileService
      * @param   int $userProfileId
      * @return  UserProfile
      */
-    public function getProfileDataByProfileIdJson($userProfileId)
+    public function getProfileDataByProfileId(int $userProfileId): UserProfile
     {
         $profile = UserProfile::with([
             'organizationUsers' => function ($query) {
@@ -72,11 +57,12 @@ class ProfileService
      * Excluding password update.
      *
      * @param   array $data
+     * @param   int $profileId
      * @return  bool
      */
-    public function updateProfileData(array $data)
+    public function updateProfileData(array $data, int $profileId): bool
     {
-        $profile = $this->getProfileModel();
+        $profile = $this->getProfileModel($profileId);
 
         $isNameChanged = $data['name'] !== $profile->name;
         $isEmailChanged = $data['email'] !== $profile->email;
@@ -93,7 +79,7 @@ class ProfileService
                     $query->orWhere('phone_no', $data['phone_no']);
                 }
             })
-                ->where('id', '<>', session('user_profile_id'))
+                ->where('id', '<>', $profileId)
                 ->exists();
 
             if ($emailOrPhoneExists) {
@@ -129,13 +115,15 @@ class ProfileService
 
     /**
      * Update about field for user profile
+     * 
      * @param string $about
+     * @param int $profileId
      * @throws Exception
-     * @return bool|int
+     * @return bool
      */
-    public function updateAboutField(string $about)
+    public function updateAboutField(string $about, int $profileId): bool
     {
-        $profile = $this->getProfileModel();
+        $profile = $this->getProfileModel($profileId);
 
         $result = $profile->update(['about' => $about]);
 
@@ -148,27 +136,31 @@ class ProfileService
 
     /**
      * Upload profile image for user profile
+     * 
      * @param UploadedFile $profileImage
-     * @return bool|int
+     * @param int $profileId
+     * @return bool
      */
-    public function uploadProfileImage(UploadedFile $profileImage)
+    public function uploadProfileImage(UploadedFile $profileImage, int $profileId): bool
     {
-        return $this->uploadImage($profileImage, 'profile_image', config('services.uploads_file_path.profile_image'));
+        return $this->uploadImage($profileImage, 'profile_image', config('services.uploads_file_path.profile_image'), $profileId);
     }
 
     /**
      * Upload cover image for user profile
+     * 
      * @param UploadedFile $coverImage
-     * @return bool|int
+     * @param int $profileId
+     * @return bool
      */
-    public function uploadCoverImage(UploadedFile $coverImage)
+    public function uploadCoverImage(UploadedFile $coverImage, int $profileId): bool
     {
-        return $this->uploadImage($coverImage, 'cover_image', config('services.uploads_file_path.cover_image'));
+        return $this->uploadImage($coverImage, 'cover_image', config('services.uploads_file_path.cover_image'), $profileId);
     }
 
-    private function uploadImage(UploadedFile $image, string $column, string $imagePath)
+    private function uploadImage(UploadedFile $image, string $column, string $imagePath, int $profileId): bool
     {
-        $profile = $this->getProfileModel();
+        $profile = $this->getProfileModel($profileId);
 
         // delete existing image file
         if (isset($profile->{$column}) && File::exists($imagePath . $profile->{$column})) {
