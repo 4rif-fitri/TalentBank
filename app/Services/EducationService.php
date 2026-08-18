@@ -7,19 +7,18 @@ use App\Models\FieldOfStudy;
 use App\Models\Qualification;
 use App\Models\UserProfile;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class EducationService
 {
-    private MediaService $mediaService;
-
     /**
      * Create a new class instance.
      */
-    public function __construct(MediaService $mediaService)
-    {
-        $this->mediaService = $mediaService;
+    public function __construct(
+        private readonly MediaService $mediaService
+    ) {
     }
 
     /**
@@ -27,9 +26,9 @@ class EducationService
      * 
      * @param int $userProfileId
      * @throws Exception
-     * @return \Illuminate\Database\Eloquent\Collection<int, Education>|\Illuminate\Support\Collection<int, \stdClass>
+     * @return Collection<int, Education>|\Illuminate\Support\Collection<int, \stdClass>
      */
-    public function getEducationByUserProfileId(int $userProfileId)
+    public function getEducationByUserProfileId(int $userProfileId): Collection
     {
         $userExists = UserProfile::where('id', $userProfileId)->exists();
 
@@ -53,9 +52,9 @@ class EducationService
      * 
      * @param int $id
      * @throws Exception
-     * @return Education|\Illuminate\Database\Eloquent\Builder<Education>|\stdClass
+     * @return Education
      */
-    public function getEducationById(int $id)
+    public function getEducationById(int $id): Education
     {
         $education = Education::with([
             'fieldOfStudy',
@@ -79,10 +78,8 @@ class EducationService
      * @param array $data
      * @return Education
      */
-    public function createEducation(array $data)
+    public function createEducation(array $data, int $userProfileId): Education
     {
-        $userProfileId = session('user_profile_id');
-
         $education = DB::transaction(function () use ($data, $userProfileId) {
             $education = Education::create([
                 'user_profile_id' => $userProfileId,
@@ -101,7 +98,9 @@ class EducationService
             $data['source_id'] = $education->id;
             $data['file_path'] = config('services.uploads_file_path.education');
 
-            $this->mediaService->createMedia($data);
+            if (isset($data['media'])) {
+                $this->mediaService->createMedia($data, $userProfileId);
+            }
 
             return $education;
         });
@@ -114,12 +113,10 @@ class EducationService
      * 
      * @param int $educationId
      * @param array $data
-     * @return bool|int
+     * @return bool
      */
-    public function updateEducation(int $educationId, array $data)
+    public function updateEducation(int $educationId, array $data, int $userProfileId): bool
     {
-        $userProfileId = session('user_profile_id');
-
         $education = Education::where([
             ['id', $educationId],
             ['user_profile_id', $userProfileId],
@@ -148,12 +145,10 @@ class EducationService
      * (any semesters and media (attached to semester) attached to it will be deleted as well)
      * 
      * @param int $educationId
-     * @return bool|int
+     * @return bool|
      */
-    public function deleteEducation(int $educationId)
+    public function deleteEducation(int $educationId, int $userProfileId): bool
     {
-        $userProfileId = session('user_profile_id');
-
         $education = Education::where([
             ['id', $educationId],
             ['user_profile_id', $userProfileId],
@@ -171,9 +166,9 @@ class EducationService
     /**
      * Get all field of studies from the database
      * 
-     * @return \Illuminate\Database\Eloquent\Collection<int, FieldOfStudy>
+     * @return Collection<int, FieldOfStudy>
      */
-    public function getAllFieldOfStudies()
+    public function getAllFieldOfStudies(): Collection
     {
         return FieldOfStudy::get();
     }
@@ -181,9 +176,9 @@ class EducationService
     /**
      * Get all qualifications from the database
      * 
-     * @return \Illuminate\Database\Eloquent\Collection<int, Qualification>
+     * @return Collection<int, Qualification>
      */
-    public function getAllQualifications()
+    public function getAllQualifications(): Collection
     {
         return Qualification::get();
     }

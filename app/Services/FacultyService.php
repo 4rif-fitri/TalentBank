@@ -11,21 +11,13 @@ use Illuminate\Support\Collection;
 class FacultyService
 {
     /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
      * Get all faculties by organization ID.
      * 
      * @param int $organizationId
      * 
      * @return Collection
      */
-    public function getFacultiesByOrgId(int $organizationId)
+    public function getFacultiesByOrgId(int $organizationId): Collection
     {
         return Faculty::with('programmes')->where('organization_id', $organizationId)->get();
     }
@@ -37,7 +29,7 @@ class FacultyService
      * 
      * @return Faculty
      */
-    public function getFacultyById(int $facultyId)
+    public function getFacultyById(int $facultyId): Faculty
     {
         return Faculty::with('programmes')->find($facultyId);
     }
@@ -49,7 +41,7 @@ class FacultyService
      * 
      * @return Faculty
      */
-    public function createFaculty(array $data)
+    public function createFaculty(array $data): Faculty
     {
         $orgId = $data['organization_id'];
 
@@ -78,7 +70,7 @@ class FacultyService
      * 
      * @return bool
      */
-    public function updateFaculty(int $facultyId, array $data)
+    public function updateFaculty(int $facultyId, array $data): bool
     {
         $faculty = Faculty::find($facultyId);
 
