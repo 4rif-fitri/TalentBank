@@ -62,17 +62,19 @@
 
 @section('script')
 <script>
-    // $.ajax({
-    //     url: "{{ route('programme.getProgrammesByOrgId',['orgId' => 4])}}",
-    //     type: "GET",
-    //     dataType: "json",
-    //     success: function ({ data }) {
-    //         console.log(data);
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr);
-    //     }
-    // });
+    let data
+
+    $.ajax({
+        url: "{{ route('social-media.getAllSocialMedia') }}",
+        type: "GET",
+        dataType: "json",
+        success: function ({ data }) {
+            console.log(data);
+        },
+        error: function (xhr) {
+            console.error(xhr);
+        }
+    });
 
     function getProfileData() {
 
@@ -85,7 +87,7 @@
             dataType: "json",
             success: function ({ data }) {
                 console.log("DATA: ", data);
-
+                data = data
                 $("#name").text(data.name ?? "");
                 $("#headline").text(data.headline ?? "");
                 $("#aboutText").text(data.about ?? "");
@@ -126,6 +128,7 @@
                     $("#activeEducationList").append($element);
                 });
 
+                renderSocialMediaLinks(data.social_media_links);
             },
 
             error: function (xhr) {
