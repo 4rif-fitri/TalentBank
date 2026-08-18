@@ -91,7 +91,7 @@
                     $("#uni-name").text(data.active_programmes[0].organization.company_name ?? "").show();
                     $("#programme").text(data.active_programmes[0].programme_name ?? "").show();
                 } else {
-                    $("#programme, #uni-name").hide();
+                    $("#programme, #uni-name, #seeMoreActiveEducations").hide();
                 }
 
                 let coverImageUrl = "{{ asset('cover-image-url') }}/" + data.cover_image;

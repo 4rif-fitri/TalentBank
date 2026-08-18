@@ -6,7 +6,7 @@ class internshipController extends Controller
 {
     public function index()
     {
-        // return view("pages.index");
+        return view("pages.index");
     }
 
     public function invitations()

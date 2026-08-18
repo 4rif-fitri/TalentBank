@@ -110,7 +110,7 @@
 
                     profileModal.hide();
                     getProfileData()
-                    swalfire("Success", xhr.responseJSON?.message ?? response.message ?? "Profile updated successfully", "success")
+                    swalfire("Success", "Profile updated successfully", "success")
                 },
 
                 error: function (xhr) {

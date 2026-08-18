@@ -211,42 +211,7 @@
     let listOfQualifications = [];
     let listOfOrganizations = [];
 
-    function formatEducationDate(date) {
-        if (!date) return "";
-
-        const [year, month, day] = date.split("-");
-
-        // 01-01 dianggap user hanya masukkan tahun
-        if (month === "01" && day === "01") {
-            return year;
-        }
-
-        return new Date(`${year}-${month}-${day}`)
-            .toLocaleDateString("en-US", {
-                month: "long",
-                year: "numeric"
-            });
-    }
-
-    function setEducationDate(date, monthSelector, yearSelector) {
-        if (!date) {
-            $(monthSelector).val("");
-            $(yearSelector).val("");
-            return;
-        }
-
-        const [year, month, day] = date.split("-");
-
-        $(yearSelector).val(year);
-
-        if (month === "01" && day === "01") {
-            // Anggap tahun sahaja
-            $(monthSelector).val("");
-        } else {
-            $(monthSelector).val(month);
-        }
-    }
-    // Get
+    // Get Data from API
     function getAllOrganizations() {
 
         return $.ajax({
@@ -257,12 +222,7 @@
             success: function ({ data }) {
                 listOfOrganizations = data;
                 let $institution = $("#educationInstitution");
-
-                $institution.html(`
-                <option value="" selected disabled>
-                    Select Institution
-                </option>
-            `);
+                $institution.html(`<option value="" selected disabled>Select Institution</option>`);
 
                 data.forEach(organization => {
                     $institution.append(`
@@ -287,13 +247,9 @@
 
             success: function ({ data }) {
                 listOfFieldOfStudies = data;
-
-                $("#fieldOfStudy").html(`<option value="" disabled selected>Select Field of Study</option>
-            `);
+                $("#fieldOfStudy").html(`<option value="" disabled selected>Select Field of Study</option>`);
                 data.forEach(item => {
-                    $("#fieldOfStudy").append(`<option value="${item.id}">${item.name}</option>
-                `
-                    )
+                    $("#fieldOfStudy").append(`<option value="${item.id}">${item.name}</option>`)
                 });
             },
             error: function (xhr) {
@@ -354,12 +310,12 @@
                 $("#cgpaInput").val(data.cgpa);
                 $("#descriptionInput").val(data.description);
                 $("#enrollmentStatus").val(data.enrollment_status ?? "Active");
+
                 setEducationDate(
                     data.start_date,
                     "#startMonth",
                     "#startYear"
                 );
-
                 setEducationDate(
                     data.end_date,
                     "#endMonth",
@@ -387,13 +343,8 @@
     function getProgrammesByOrganizationId(organizationId, selectedProgrammeId = null) {
         let $programme = $("#educationProgramme");
 
-        $programme
-            .prop("disabled", true)
-            .html(`
-            <option value="">
-                Loading programmes...
-            </option>
-        `);
+        $programme.prop("disabled", true)
+            .html(`<option value="">Loading programmes...</option>`);
 
         let url = "{{ route('programme.getProgrammesByOrgId', ['orgId' => '__ID__']) }}";
         url = url.replace("__ID__", organizationId);
@@ -450,23 +401,82 @@
             }
         });
     }
-    // Get
+    // Get Data from API
+
+    function formatEducationDate(date) {
+        if (!date) return "";
+
+        let [year, month, day] = date.split("-");
+
+        // 01-01 dianggap user hanya masukkan tahun
+        if (month === "01" && day === "01") return year;
+
+        return new Date(`${year}-${month}-${day}`)
+            .toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric"
+            });
+    }
+
+    function setEducationDate(date, monthSelector, yearSelector) {
+        if (!date) {
+            $(monthSelector).val("");
+            $(yearSelector).val("");
+            return;
+        }
+
+        let [year, month, day] = date.split("-");
+
+        $(yearSelector).val(year);
+
+        if (month === "01" && day === "01") {
+            $(monthSelector).val("");
+        } else {
+            $(monthSelector).val(month);
+        }
+    }
+
+    function buildValidDate(month, year) {
+        if (!year) return null;
+        if (!month) return `${year}-01-01`;
+        return `${year}-${month}-01`;
+    }
 
     // Validate
-    function validateEducationDates() {
+    function isValidDates() {
+        let startMonth = $("#startMonth").val();
+        let startYear = $("#startYear").val();
 
-        let startDate = $("#dateStart").val();
-        let endDate = $("#dateEnd").val();
+        let endMonth = $("#endMonth").val();
+        let endYear = $("#endYear").val();
 
-        $("#dateStart, #dateEnd").removeClass("is-invalid");
+        $("#startMonth, #startYear, #endMonth, #endYear")
+            .removeClass("is-invalid");
 
-        if (!startDate) {
-            $("#dateStart").addClass("is-invalid");
+        if (!startYear) {
+            $("#startYear").addClass("is-invalid");
             return false;
         }
 
-        if (endDate && endDate < startDate) {
-            $("#dateEnd").addClass("is-invalid");
+        if (!endYear) {
+            $("#endYear").addClass("is-invalid");
+            return false;
+        }
+
+        let startDate = new Date(
+            Number(startYear),
+            Number(startMonth || 1) - 1,
+            1
+        );
+
+        let endDate = new Date(
+            Number(endYear),
+            Number(endMonth || 1) - 1,
+            1
+        );
+
+        if (endDate < startDate) {
+            $("#endMonth, #endYear").addClass("is-invalid");
             return false;
         }
 
@@ -477,29 +487,48 @@
     // Update
     function updateEducation(url, formData) {
 
+        formData.append("_method", "PUT");
+
         $.ajax({
             url: url,
-            type: "PUT",
+            type: "POST",
             data: formData,
+
+            processData: false,
+            contentType: false,
+
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
 
             success: function (response) {
-                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
-                swalfire("Success", response.message ?? "Education updated successfully", "success")
-                // $(document).trigger("education:updated");
+                bootstrap.Modal
+                    .getInstance(document.getElementById("educationModal"))
+                    ?.hide();
+
+                swalfire(
+                    "Success",
+                    response.message ?? "Education updated successfully.",
+                    "success"
+                );
+
+                $(document).trigger("education:updated");
             },
 
             error: function (xhr) {
                 console.error(xhr.responseJSON);
-                swalfire("Update Failed", xhr.responseJSON?.message ?? "Something went wrong", "error")
+
+                swalfire(
+                    "Update Failed",
+                    xhr.responseJSON?.message ?? "Something went wrong",
+                    "error"
+                );
             }
         });
     }
     // Update
 
-    // Create
+    // Create Education
     function createEducation(formData) {
 
         $.ajax({
@@ -515,7 +544,7 @@
             success: function (response) {
                 bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
                 swalfire("Success", response.message ?? "Education created successfully.", "success")
-                // $(document).trigger("education:updated");
+                $(document).trigger("education:updated");
             },
 
             error: function (xhr) {
@@ -524,29 +553,11 @@
             }
         });
     }
-    // Create
+    // Create Education
 
     // trigger
-    $(document).on("change", "#dateStart", function () {
-
-        let startDate = $(this).val();
-
-        if (!startDate) {
-            $("#dateEnd").removeAttr("min");
-            return;
-        }
-
-        $("#dateEnd").attr("min", startDate);
-        let endDate = $("#dateEnd").val();
-
-        if (endDate && endDate < startDate) {
-            $("#dateEnd").val("");
-        }
-    });
-
     $(document).on("click", ".btn-edit-education", function () {
         let eduId = $(this).data("id");
-        // console.log("Education ID:", eduId);
         getEducationDetail(eduId);
     });
 
@@ -591,20 +602,25 @@
     });
 
     $(document).on("click", "#addEducation", function () {
-        let modalEl = document.getElementById("educationModal");
-        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        let modal = bootstrap.Modal.getOrCreateInstance($("#educationModal"));
 
         $("#educationId").val("");
         $("#educationInstitution").val("");
-        $("#educationProgramme")
-            .prop("disabled", true)
+
+        $("#educationProgramme").prop("disabled", true)
             .html(`<option value="" selected disabled>Select Programme</option>`);
+
         $("#qualification").val("");
         $("#fieldOfStudy").val("");
         $("#cgpaInput").val("");
         $("#descriptionInput").val("");
-        $("#dateStart").val("");
-        $("#dateEnd").val("").removeAttr("min");
+
+        $("#startMonth").val("");
+        $("#startYear").val("");
+        $("#endMonth").val("");
+        $("#endYear").val("");
+
+        $("#startMonth, #startYear, #endMonth, #endYear").removeClass("is-invalid");
         $("#enrollmentStatus").val("Active");
         $("#educationModal .modal-title").text("Add Education");
         $("#btnDeleteEducation").hide();
@@ -615,57 +631,102 @@
 
     $(document).on("click", "#btnSaveEducation", function () {
 
-        const input = document.getElementById("mediaFileInput");
+        let educationId = $("#educationId").val();
+        let input = document.getElementById("mediaFileInput");
 
-        if (!$("#educationInstitution").val()) return;
+        if (!$("#educationInstitution").val()) {
+            swalfire(
+                "Validation Error",
+                "Please select an institution",
+                "error"
+            );
+            return;
+        }
 
         if (!$("#educationProgramme").val()) {
-            swalfire("Validation Error", "Please select a programme", "error");
+            swalfire(
+                "Validation Error",
+                "Please select a programme",
+                "error"
+            );
             return;
         }
 
         if (!$("#fieldOfStudy").val()) {
-            swalfire("Validation Error", "Please select a field of study", "error");
+            swalfire(
+                "Validation Error",
+                "Please select a field of study",
+                "error"
+            );
             return;
         }
 
         if (!$("#qualification").val()) {
-            swalfire("Validation Error", "Please select a qualification", "error");
+            swalfire(
+                "Validation Error",
+                "Please select a qualification",
+                "error"
+            );
             return;
         }
 
-        const formData = new FormData();
+        // validate start date and end date
+        if (!isValidDates()) {
+            swalfire(
+                "Validation Error",
+                "End date cannot be earlier than start date.",
+                "error"
+            );
+            return;
+        }
 
+        let startDate = buildValidDate(
+            $("#startMonth").val(),
+            $("#startYear").val()
+        );
+        let endDate = buildValidDate(
+            $("#endMonth").val(),
+            $("#endYear").val()
+        );
+
+        let formData = new FormData();
         formData.append("programme_id", $("#educationProgramme").val());
         formData.append("field_of_study_id", $("#fieldOfStudy").val());
         formData.append("qualification_id", $("#qualification").val());
         formData.append("cgpa", $("#cgpaInput").val() || "");
         formData.append("description", $("#descriptionInput").val());
-        formData.append("start_date", $("#dateStart").val() || "2026-05-01");
-        formData.append("end_date", $("#dateEnd").val() || "2026-05-05");
+        formData.append("start_date", startDate);
+        formData.append("end_date", endDate);
         formData.append("enrollment_status", $("#enrollmentStatus").val() || "Active");
 
-        if (input.files && input.files.length > 0) {
-            for (let i = 0; i < input.files.length; i++) {
-                formData.append(`media[${i}][file]`, input.files[i]);
-            }
+        $.each($("#mediaFileInput")[0].files, function (index, file) {
+            formData.append(`media[${index}][file]`, file);
+        });
+
+        if (educationId) {
+            let url = "{{ route('education.update', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", educationId);
+
+            updateEducation(url, formData);
+            return;
         }
 
         createEducation(formData);
     });
-
     $(document).on("change", "#educationInstitution", function () {
         let organizationId = $(this).val();
         if (!organizationId) return;
         getProgrammesByOrganizationId(organizationId);
     });
 
-    // init Get Data
+    // init Load Data from API
     $(document).ready(function () {
         getAllOrganizations();
         getAllFieldOfStudies();
         getAllQualifications();
     });
+    // init Load Data from API
+
     // trigger
 
 </script>

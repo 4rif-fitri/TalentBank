@@ -127,7 +127,7 @@
 
                 educationGroup.forEach(education => {
 
-                    console.table(education);
+                    // console.log(education);
 
                     let startDate = new Date(
                         education.start_date
@@ -144,7 +144,7 @@
 
                     let columnClass = itemsPerSlide === 1 ? "col-12" : "col-6";
                     let $column = $("<div>").addClass(columnClass);
-                        console.error(education);
+                        // console.error(education);
 
                     $column.html(`
                         <article
@@ -161,7 +161,7 @@
                                     ${education.programme?.organization?.company_name ?? ""}
                                 </p>
                                 <p class="mb-1">
-                                    ${education.field_of_study?.name ?? ""}
+                                    ${education.programme?.programme_name ?? ""}
                                 </p>
                                 <p class="text-muted mb-2">
                                     ${startDate} - ${endDate}
