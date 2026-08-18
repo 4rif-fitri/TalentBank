@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Models\profile;
 use App\Models\User;
@@ -55,6 +55,8 @@ class ProfileService
             'organizationUsers.role',
             'activeProgrammes',
             'activeProgrammes.organization',
+            'socialMediaLinks',
+            'socialMediaLinks.socialMedia',
         ])
             ->find($userProfileId);
 

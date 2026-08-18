@@ -10,6 +10,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\SocialMediaLinkController;
 
 // auth routes
 Route::middleware('guest')->group(function () {
@@ -80,12 +81,19 @@ Route::middleware('auth')->prefix('semesters')->group(function () {
 
 Route::middleware('auth')->prefix('education')->group(function () {
     // crud routes
-    Route::get('/getEducationByUserProfileId/{id}', [EducationController::class, 'getEducationByUserProfileId'])->name('education.getEducationByUserProfileId'); //+
-    Route::get('/getEducationById/{id}', [EducationController::class, 'getEducationById'])->name('education.getEducationById'); //+
-    Route::post('/store', [EducationController::class, 'store'])->name('education.store'); //+
-    Route::put('/update/{id}', [EducationController::class, 'update'])->name('education.update'); //+
-    Route::delete('/delete/{id}', [EducationController::class, 'delete'])->name('education.delete'); //+
+    Route::get('/getEducationByUserProfileId/{id}', [EducationController::class, 'getEducationByUserProfileId'])->name('education.getEducationByUserProfileId');
+    Route::get('/getEducationById/{id}', [EducationController::class, 'getEducationById'])->name('education.getEducationById');
+    Route::post('/store', [EducationController::class, 'store'])->name('education.store');
+    Route::put('/update/{id}', [EducationController::class, 'update'])->name('education.update');
+    Route::delete('/delete/{id}', [EducationController::class, 'delete'])->name('education.delete');
 
     Route::get('/getAllFieldOfStudies', [EducationController::class, 'getAllFieldOfStudies'])->name('education.getAllFieldOfStudies'); //+
     Route::get('/getAllQualifications', [EducationController::class, 'getAllQualifications'])->name('education.getAllQualifications'); //+
+});
+
+Route::middleware('auth')->prefix('social-media')->group(function () {
+    Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia');
+    Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store');
+    Route::put('/update/{id}', [SocialMediaLinkController::class, 'update'])->name('social-media.update');
+    Route::delete('/delete/{id}', [SocialMediaLinkController::class, 'delete'])->name('social-media.delete');
 });

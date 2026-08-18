@@ -43,4 +43,9 @@ class UserProfile extends Model
         return $this->hasManyThrough(Programme::class, Education::class, 'user_profile_id', 'id', 'id', 'programme_id')
             ->where('education.enrollment_status', 'Active');
     }
+
+    public function socialMediaLinks()
+    {
+        return $this->hasMany(SocialMediaLink::class, 'user_profile_id');
+    }
 }
