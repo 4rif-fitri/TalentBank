@@ -104,7 +104,7 @@
         }
 
         function templateResultArticle(semester, hasResult, resultButton) {
-            console.log(semester);
+            // console.log(semester);
 
             return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
@@ -112,16 +112,13 @@
                         <div>
                             <div
                                 class="d-flex flex-wrap align-items-center gap-2 mb-1">
-                                <p class="fw-bold mb-0">
-                                    Semester ${semester.semesterNumber}
-                                </p>
+                                <span class="fw-bold mb-0 mb-1 d-flex gap-2">
+                                    <p>Session</p>
+                                    <p class="session">${escapeHtml(semester.session ?? "-")}</p>
+                                </span>
                                 ${hasResult ? ` <span class="badge text-bg-success">Uploaded</span>` : ""}
                             </div>
-                            <span class="text-muted mb-1 d-flex gap-2">
-                                <p>Session</p>
-                                <p class="session">${escapeHtml(semester.session ?? "-")}</p>
-                            </span>
-                            <div class="d-flex flex-wrap gap-3 small">
+                            <div class="d-flex flex-wrap gap-3 small text-muted">
                                 <span class="d-flex gap-2">
                                     <strong>GPA:</strong>
                                     <p class="gpa">${escapeHtml(semester.gpa ?? "-")}</p>
@@ -149,7 +146,6 @@
                     class="btn btn-outline-primary btn-sm btn-view-result"
                     data-file-url="${escapeHtml(fileUrl)}"
                     data-session="${escapeHtml(semester.session ?? "")}"
-                    data-semester="${semester.semesterNumber}">
                     <i class="fa-regular fa-file-pdf me-1"></i>
                     View Result
                 </button>`
@@ -213,7 +209,6 @@
                             cgpa: education.cgpa,
                             enrollmentStatus: education.enrollment_status,
                             semesterId: semester.id,
-                            semesterNumber: index + 1,
                             session: semester.session,
                             gpa: semester.gpa,
                             media: semester.media

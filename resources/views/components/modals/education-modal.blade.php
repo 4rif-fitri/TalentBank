@@ -187,7 +187,9 @@
                         + Add Media
                     </label>
 
-                    <div id="mediaContainer" class="d-flex gap-2 flex-wrap mt-3"></div>
+                    <div id="mediaContainer" class="d-flex gap-2 flex-wrap mt-3">
+
+                    </div>
                 </div>
 
             </div>
@@ -211,7 +213,124 @@
     let listOfQualifications = [];
     let listOfOrganizations = [];
 
-    // Get Data from API
+    let existingEducationMedia = [];
+    let deletedEducationMediaIds = [];
+    let newEducationMedia = [];
+
+
+    function renderEducationMedia() {
+
+        let $container = $("#mediaContainer");
+        $container.empty();
+
+        let baseUrl = "{{ asset('EDUCATION_FILE_URL') }}";
+
+        // =========================
+        // EXISTING MEDIA DATABASE
+        // =========================
+        existingEducationMedia.forEach(media => {
+
+            // Kalau user dah tekan delete, jangan render
+            if (deletedEducationMediaIds.includes(media.id)) {
+                return;
+            }
+
+            let imageUrl = `${baseUrl}/${media.file_name}`;
+
+            $container.append(`
+            <div class="education-media-item">
+
+                <div
+                    class="position-relative"
+                    style="width:100px; height:75px;"
+                >
+
+                    <img
+                        src="${imageUrl}"
+                        class="rounded border"
+                        style="
+                            width:100%;
+                            height:100%;
+                            object-fit:cover;
+                        "
+                    >
+
+                    <button
+                        type="button"
+                        class="
+                            btn btn-danger btn-sm rounded-circle
+                            position-absolute top-0 end-0
+                            btn-remove-existing-media
+                        "
+                        data-id="${media.id}"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                </div>
+
+                <small
+                    class="d-block text-truncate mt-1"
+                    style="width:100px;"
+                >
+                    ${media.file_name}
+                </small>
+
+            </div>
+        `);
+        });
+
+
+        // =========================
+        // NEW MEDIA
+        // =========================
+        newEducationMedia.forEach((file, index) => {
+
+            let preview = URL.createObjectURL(file);
+
+            $container.append(`
+            <div class="education-media-item">
+
+                <div
+                    class="position-relative"
+                    style="width:100px; height:75px;"
+                >
+
+                    <img
+                        src="${preview}"
+                        class="rounded border"
+                        style="
+                            width:100%;
+                            height:100%;
+                            object-fit:cover;
+                        "
+                    >
+
+                    <button
+                        type="button"
+                        class="
+                            btn btn-danger btn-sm rounded-circle
+                            position-absolute top-0 end-0
+                            btn-remove-new-media
+                        "
+                        data-index="${index}"
+                    >
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+
+                </div>
+
+                <small
+                    class="d-block text-truncate mt-1"
+                    style="width:100px;"
+                >
+                    ${file.name}
+                </small>
+
+            </div>
+        `);
+        });
+    }// Get Data from API
     function getAllOrganizations() {
 
         return $.ajax({
@@ -302,7 +421,8 @@
             dataType: "json",
 
             success: function ({ data }) {
-                // console.log(data);
+
+                console.log(data);
 
                 $("#educationId").val(data.id);
                 $("#qualification").val(data.qualification_id);
@@ -311,11 +431,21 @@
                 $("#descriptionInput").val(data.description);
                 $("#enrollmentStatus").val(data.enrollment_status ?? "Active");
 
+                // MEDIA
+                existingEducationMedia = data.media ?? [];
+                deletedEducationMediaIds = [];
+                newEducationMedia = [];
+
+                $("#mediaFileInput").val("");
+
+                renderEducationMedia();
+
                 setEducationDate(
                     data.start_date,
                     "#startMonth",
                     "#startYear"
                 );
+
                 setEducationDate(
                     data.end_date,
                     "#endMonth",
@@ -323,10 +453,16 @@
                 );
 
                 let organizationId = data.programme?.organization?.id;
+
                 if (organizationId) {
                     $("#educationInstitution").val(organizationId);
-                    getProgrammesByOrganizationId(organizationId, data.programme_id);
+
+                    getProgrammesByOrganizationId(
+                        organizationId,
+                        data.programme_id
+                    );
                 }
+
                 $("#educationModal .modal-title").text("Edit Education");
                 $("#btnSaveEducation").text("Update");
                 $("#btnDeleteEducation").show();
@@ -339,6 +475,39 @@
             }
         });
     }
+    $(document).on("change", "#mediaFileInput", function () {
+
+        let files = Array.from(this.files);
+
+        files.forEach(file => {
+            newEducationMedia.push(file);
+        });
+
+        // clear supaya file sama pun boleh dipilih semula
+        $(this).val("");
+
+        renderEducationMedia();
+    });
+
+    $(document).on("click", ".btn-remove-existing-media", function () {
+
+        let mediaId = Number($(this).data("id"));
+
+        if (!deletedEducationMediaIds.includes(mediaId)) {
+            deletedEducationMediaIds.push(mediaId);
+        }
+
+        renderEducationMedia();
+    });
+
+    $(document).on("click", ".btn-remove-new-media", function () {
+
+        let index = Number($(this).data("index"));
+
+        newEducationMedia.splice(index, 1);
+
+        renderEducationMedia();
+    });
 
     function getProgrammesByOrganizationId(organizationId, selectedProgrammeId = null) {
         let $programme = $("#educationProgramme");
@@ -602,13 +771,28 @@
     });
 
     $(document).on("click", "#addEducation", function () {
-        let modal = bootstrap.Modal.getOrCreateInstance($("#educationModal"));
+
+        let modal = bootstrap.Modal.getOrCreateInstance(
+            $("#educationModal")[0]
+        );
+
+        existingEducationMedia = [];
+        deletedEducationMediaIds = [];
+        newEducationMedia = [];
+
+        $("#mediaFileInput").val("");
+        $("#mediaContainer").empty();
 
         $("#educationId").val("");
         $("#educationInstitution").val("");
 
-        $("#educationProgramme").prop("disabled", true)
-            .html(`<option value="" selected disabled>Select Programme</option>`);
+        $("#educationProgramme")
+            .prop("disabled", true)
+            .html(`
+            <option value="" selected disabled>
+                Select Programme
+            </option>
+        `);
 
         $("#qualification").val("");
         $("#fieldOfStudy").val("");
@@ -620,15 +804,14 @@
         $("#endMonth").val("");
         $("#endYear").val("");
 
-        $("#startMonth, #startYear, #endMonth, #endYear").removeClass("is-invalid");
         $("#enrollmentStatus").val("Active");
+
         $("#educationModal .modal-title").text("Add Education");
         $("#btnDeleteEducation").hide();
         $("#btnSaveEducation").text("Save");
 
         modal.show();
     });
-
     $(document).on("click", "#btnSaveEducation", function () {
 
         let educationId = $("#educationId").val();
@@ -699,17 +882,44 @@
         formData.append("end_date", endDate);
         formData.append("enrollment_status", $("#enrollmentStatus").val() || "Active");
 
-        $.each($("#mediaFileInput")[0].files, function (index, file) {
-            formData.append(`media[${index}][file]`, file);
+        // =========================
+        // NEW MEDIA
+        // =========================
+        newEducationMedia.forEach((file, index) => {
+            formData.append(
+                `media[${index}][file]`,
+                file
+            );
         });
 
+
+        // =========================
+        // DELETED EXISTING MEDIA
+        // =========================
+        deletedEducationMediaIds.forEach((mediaId, index) => {
+            formData.append(
+                `deleted_media_ids[${index}]`,
+                mediaId
+            );
+        });
+
+
         if (educationId) {
+
             let url = "{{ route('education.update', ['id' => '__ID__']) }}";
             url = url.replace("__ID__", educationId);
 
             updateEducation(url, formData);
             return;
         }
+
+        createEducation(formData);
+        let url = "{{ route('education.update', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", educationId);
+
+        updateEducation(url, formData);
+        return;
+    }
 
         createEducation(formData);
     });

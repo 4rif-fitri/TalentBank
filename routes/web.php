@@ -74,7 +74,7 @@ Route::middleware('auth')->prefix('semesters')->group(function () {
     // crud routes
     Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults'); //+
     Route::post('/store', [SemesterController::class, 'store'])->name('semester.store'); //+
-    Route::put('/update/{id}', [SemesterController::class, 'update'])->name('semester.update');
+    Route::put('/update/{id}', [SemesterController::class, 'update'])->name('semester.update'); //+
 });
 
 Route::middleware('auth')->prefix('education')->group(function () {

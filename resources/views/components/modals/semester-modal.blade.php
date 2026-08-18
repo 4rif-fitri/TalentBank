@@ -222,7 +222,7 @@
         let item = $(this).closest(".semester-result-item");
 
         let semesterId = $(this).data("id");
-        let educationId = $(tQhis).data("education-id");
+        let educationId = $(this).data("education-id");
         let programmeName = $(this).data("programme-name");
 
         let session = item.find(".session").text().trim();

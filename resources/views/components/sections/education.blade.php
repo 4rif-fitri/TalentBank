@@ -140,7 +140,6 @@
 
                 let baseUrl = "{{ URL::asset('EDUCATION_FILE_URL') }}";
                 let imageUrl = `${baseUrl}/${dt.file_name}`;
-                console.log(imageUrl);
 
                 // Kalau image ke-3 dan masih ada image lain
                 let remaining = media.length - 2;
