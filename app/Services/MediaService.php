@@ -6,6 +6,7 @@ use App\Models\Media;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
 
 class MediaService
 {
@@ -86,5 +87,41 @@ class MediaService
         $media = Media::create($insertRecord);
 
         return $media;
+    }
+
+    /**
+     * Deletes the media records and media files in uploads folder
+     * 
+     * @param string $sourceName
+     * @param int $sourceId
+     * @param string $filePath
+     * @throws Exception
+     * @return bool
+     */
+    public function deleteMediaBySource(string $sourceName, int $sourceId, string $filePath): bool
+    {
+        $media = Media::where([
+            'source_name' => $sourceName,
+            'source_id' => $sourceId
+        ])->get();
+
+        if ($media->isEmpty()) {
+            throw new Exception('No media found with given source name and source ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        // delete all the files associated with this media
+        foreach ($media as $m) {
+            if (File::exists($filePath . $m->file_name)) {
+                File::delete($filePath . $m->file_name);
+            }
+        }
+
+        // delete data from database after deleting the file in uploads folder
+        $result = $media = Media::where([
+            'source_name' => $sourceName,
+            'source_id' => $sourceId
+        ])->delete();
+
+        return $result;
     }
 }

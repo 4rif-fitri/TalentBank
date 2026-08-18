@@ -88,12 +88,20 @@ class OrganizationService
      * 
      * @param   array $data
      * @param   int $orgId
+     * @param   int $userProfileId
      * 
      * @return  bool
      */
-    public function updateOrganization(array $data, int $orgId): bool
+    public function updateOrganization(array $data, int $orgId, int $userProfileId): bool
     {
-        $organization = Organization::find($orgId);
+        $organization = Organization::where('id', $orgId)
+            ->whereHas('organizationUsers', function ($query) use ($userProfileId) {
+                $query->whereHas('role', function ($query) {
+                    $query->where('name', 'Organization Admin');
+                })
+                    ->where('user_profile_id', $userProfileId);
+            })
+            ->first();
 
         if (!isset($organization)) {
             throw new Exception('Organization not found with given ID.', Response::HTTP_NOT_FOUND);

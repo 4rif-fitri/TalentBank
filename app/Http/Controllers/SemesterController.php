@@ -39,6 +39,33 @@ class SemesterController extends Controller
 
         $this->semesterService->uploadResults($validated, $request->file('result_file'), $id, $userProfileId);
 
-        return ApiResponse::success('File uploaded successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Result file uploaded successfully.', null)->toJsonResponse();
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'education_id' => ['required', 'exists:education,id'],
+            'gpa' => ['required', 'numeric', 'between:0,4.00', 'decimal:0,2'],
+            'session' => ['required', 'string']
+        ]);
+
+        $semester = $this->semesterService->createSemester($validated);
+
+        return ApiResponse::success('Semester created successfully.', $semester, Response::HTTP_CREATED)->toJsonResponse();
+    }
+
+    public function update(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'gpa' => ['required', 'numeric', 'between:0,4.00', 'decimal:0,2'],
+            'session' => ['required', 'string']
+        ]);
+
+        $userProfileId = session('user_profile_id');
+
+        $this->semesterService->updateSemester($validated, $id, $userProfileId);
+
+        return ApiResponse::success('Semester updated successfully.', null)->toJsonResponse();
     }
 }

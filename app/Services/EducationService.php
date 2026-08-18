@@ -21,6 +21,17 @@ class EducationService
     ) {
     }
 
+    private function uploadImages(int $educationId, array $data, int $userProfileId): void
+    {
+        $data['source_name'] = 'education';
+        $data['source_id'] = $educationId;
+        $data['file_path'] = config('services.uploads_file_path.education');
+
+        if (isset($data['media'])) {
+            $this->mediaService->createMedia($data, $userProfileId);
+        }
+    }
+
     /**
      * Gets all education by user profile ID
      * 
@@ -94,13 +105,7 @@ class EducationService
                 'verification_status' => 'Pending',  // initially pending for admin to approve
             ]);
 
-            $data['source_name'] = 'education';
-            $data['source_id'] = $education->id;
-            $data['file_path'] = config('services.uploads_file_path.education');
-
-            if (isset($data['media'])) {
-                $this->mediaService->createMedia($data, $userProfileId);
-            }
+            $this->uploadImages($education->id, $data, $userProfileId);
 
             return $education;
         });
@@ -126,16 +131,23 @@ class EducationService
             throw new Exception('Education data not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $result = $education->update([
-            'programme_id' => $data['programme_id'],
-            'description' => $data['description'],
-            'field_of_study_id' => $data['field_of_study_id'],
-            'qualification_id' => $data['qualification_id'],
-            'cgpa' => $data['cgpa'],
-            'start_date' => $data['start_date'],
-            'end_date' => $data['end_date'],
-            'enrollment_status' => $data['enrollment_status'],
-        ]);
+        $result = DB::transaction(function () use ($data, $education, $userProfileId) {
+            $result = $education->update([
+                'programme_id' => $data['programme_id'],
+                'description' => $data['description'],
+                'field_of_study_id' => $data['field_of_study_id'],
+                'qualification_id' => $data['qualification_id'],
+                'cgpa' => $data['cgpa'],
+                'start_date' => $data['start_date'],
+                'end_date' => $data['end_date'],
+                'enrollment_status' => $data['enrollment_status'],
+            ]);
+
+            $this->uploadImages($education->id, $data, $userProfileId);
+
+            return $result;
+        });
+
 
         return $result;
     }
@@ -158,7 +170,13 @@ class EducationService
             throw new Exception('Education data not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $result = $education->delete();
+        $result = DB::transaction(function () use ($education) {
+            $this->mediaService->deleteMediaBySource('education', $education->id, config('services.uploads_file_path.education'));
+
+            $result = $education->delete();
+
+            return $result;
+        });
 
         return $result;
     }

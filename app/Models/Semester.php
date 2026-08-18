@@ -22,4 +22,9 @@ class Semester extends Model
     {
         return $this->morphOne(Media::class, 'source', 'source_name', 'source_id');
     }
+
+    public function education()
+    {
+        return $this->belongsTo(Education::class, 'education_id');
+    }
 }
