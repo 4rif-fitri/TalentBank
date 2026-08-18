@@ -910,16 +910,9 @@
             url = url.replace("__ID__", educationId);
 
             updateEducation(url, formData);
+
             return;
         }
-
-        createEducation(formData);
-        let url = "{{ route('education.update', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", educationId);
-
-        updateEducation(url, formData);
-        return;
-    }
 
         createEducation(formData);
     });
