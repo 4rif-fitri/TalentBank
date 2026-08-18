@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>JobTalent</title>
+    <title>TalentBank</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Parental Relationship Information Management" name="description" />
     <meta content="UTeM" name="author" />
@@ -11,48 +11,20 @@
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/JobTalent-logo-cropped-cropped.svg') }}">
     <!-- Web Application Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <!-- <link rel="manifest" href="/manifest.json"> -->
     @include('layouts.head')
-
 </head>
+<body>
+    @include('layouts.internship-sidebar')
 
-<body data-sidebar="dark">
-    @section('body')
-    @show
-    <div id="preloader">
-        <div id="status">
-            <div class="spinner-chase">
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-                <div class="chase-dot"></div>
-            </div>
-        </div>
-    </div>
-    <!-- Begin page -->
-    <div id="layout-wrapper">
-        @include('layouts.internship-topbar')
-        @include('layouts.internship-sidebar')
-        <!-- ============================================================== -->
-        <!-- Start right Content here -->
-        <!-- ============================================================== -->
-        <div class="main-content">
-            <div class="page-content">
-                <div class="container-fluid">
-                    @yield('content')
-                </div>
-                <!-- container-fluid -->
-            </div>
-            <!-- End Page-content -->
-        </div>
-        <!-- end main content-->
-    </div>
-    <!-- END layout-wrapper -->
+    @include('layouts.internship-topbar')
 
-    <!-- JAVASCRIPT -->
+    <main class="main-content">
+        @yield('content')
+    </main>
+
     @include('layouts.footer-script')
-</body>
 
+    @stack('scripts')
+</body>
 </html>

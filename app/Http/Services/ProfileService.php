@@ -70,8 +70,8 @@ class ProfileService
     /**
      * Update profile data of profile by profile ID.
      * Excluding password update.
-     * 
-     * @param   array $data 
+     *
+     * @param   array $data
      * @return  bool
      */
     public function updateProfileData(array $data)

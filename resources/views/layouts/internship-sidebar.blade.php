@@ -1,69 +1,28 @@
-<!-- ========== Left Sidebar Start ========== -->
-<div class="vertical-menu">
+<aside class="sidebar">
 
-    <div data-simplebar class="h-100">
-
-        <!--- Sidemenu -->
-        <div id="sidebar-menu">
-            <!-- Left Menu Start -->
-            <ul class="metismenu list-unstyled" id="side-menu">
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-dashboard"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-user"></i>
-                        <span>My Profile</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-file"></i>
-                        <span>Resume</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-email"></i>
-                        <span>Invitations</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-briefcase"></i>
-                        <span>Job Offers</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-comments"></i>
-                        <span>Messages</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-id-badge"></i>
-                        <span>Employment Status</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="" class="waves-effect">
-                        <i class="ti-settings"></i>
-                        <span>Settings</span>
-                    </a>
-                </li>
-            </ul>
-
-        </div>
+    <!-- LOGO -->
+    <div class="sidebar-logo d-flex justify-content-center">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>TalentBank</span>
     </div>
-</div>
+
+    <!-- MENU -->
+    <nav class="sidebar-menu">
+
+        <!-- Dashboard -->
+        <x-sidebar-link :route="route('home')" routeName="home" icon="fa-solid fa-gauge" label="Dashboard" />
+
+        <x-sidebar-link :route="route('profile.student')" routeName="profile.student" icon="fa-solid fa-user" label="My Profile" />
+
+        <x-sidebar-link :route="route('invitations')" routeName="invitations" icon="fa-solid fa-file" label="Invitations" />
+
+        <x-sidebar-link :route="route('interviews')" routeName="interviews" icon="fa-solid fa-envelope" label="Interviews" />
+
+        <x-sidebar-link :route="route('jobOffers')" routeName="jobOffers" icon="fa-solid fa-calendar-days" label="Job Offers" />
+
+        <x-sidebar-link :route="route('messages')" routeName="messages" icon="fa-solid fa-briefcase" label="Messages" />
+
+        <x-sidebar-link :route="route('settings')" routeName="settings" icon="fa-solid fa-message" label="Settings" />
+
+    </nav>
+</aside>
