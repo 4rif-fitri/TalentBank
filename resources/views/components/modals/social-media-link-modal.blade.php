@@ -35,7 +35,7 @@
             },
 
             success: function (response) {
-                console.log(response);
+                // console.log(response);
                 swalfire("Success", response.message ?? "Education deleted successfully.", "success")
             },
 
@@ -63,7 +63,7 @@
             },
             success: function (response) {
                 // renderLinkModal(id, link, $row)
-                console.log(response);
+                // console.log(response);
                 swalfire("Success", response.message ?? "Uploaded successfully", "success")
             },
 
@@ -193,10 +193,10 @@
 
         addLink(socialMediaId, link, $row)
 
-        console.log({
-            social_media_id: socialMediaId,
-            link: link
-        });
+        // console.log({
+        //     social_media_id: socialMediaId,
+        //     link: link
+        // });
     });
 
     $(document).on("click", ".btnAddSave", function(){

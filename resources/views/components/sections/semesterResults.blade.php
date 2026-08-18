@@ -104,8 +104,6 @@
         }
 
         function templateResultArticle(semester, hasResult, resultButton) {
-            console.log(semester);
-
             return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -191,7 +189,7 @@
 
         function renderSemesterResults(programmes) {
             let results = [];
-            console.log(programmes);
+            // console.log(programmes);
 
             programmes.forEach(function (programme) {
 
@@ -233,8 +231,8 @@
             let hasResult = media !== null;
             let resultButton;
 
-            console.log("SEMESTER:", semester);
-            console.log("MEDIA:", media);
+            // console.log("SEMESTER:", semester);
+            // console.log("MEDIA:", media);
 
             if (hasResult) {
                 let fileUrl = getMediaUrl(media);

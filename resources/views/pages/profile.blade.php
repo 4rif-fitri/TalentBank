@@ -139,7 +139,6 @@
 
     $("#profileImageInput").on("change", function () {
         let file = this.files[0];
-        console.log(file);
 
         if (fileCheck(file)) return;
 

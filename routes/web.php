@@ -73,7 +73,7 @@ Route::middleware('auth')->prefix('programmes')->group(function () {
 Route::middleware('auth')->prefix('semesters')->group(function () {
     // crud routes
     Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults'); //+
-    Route::post('/store', [SemesterController::class, 'store'])->name('semester.store');
+    Route::post('/store', [SemesterController::class, 'store'])->name('semester.store'); //+
     Route::put('/update/{id}', [SemesterController::class, 'update'])->name('semester.update');
 });
 
@@ -90,8 +90,8 @@ Route::middleware('auth')->prefix('education')->group(function () {
 });
 
 Route::middleware('auth')->prefix('social-media')->group(function () {
-    Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia'); //-
-    Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store'); //-
+    Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia');  //+
+    Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store');  //+
     Route::put('/update/{id}', [SocialMediaLinkController::class, 'update'])->name('social-media.update'); //-
     Route::delete('/delete/{id}', [SocialMediaLinkController::class, 'delete'])->name('social-media.delete'); //-
 });
