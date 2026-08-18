@@ -27,4 +27,9 @@ class Organization extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function organizationUsers()
+    {
+        return $this->hasMany(OrganizationUser::class, 'organization_id');
+    }
 }
