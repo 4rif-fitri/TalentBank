@@ -104,6 +104,8 @@
         }
 
         function templateResultArticle(semester, hasResult, resultButton) {
+            console.log(semester);
+
             return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -231,6 +233,9 @@
             let hasResult = media !== null;
             let resultButton;
 
+            console.log("SEMESTER:", semester);
+            console.log("MEDIA:", media);
+
             if (hasResult) {
                 let fileUrl = getMediaUrl(media);
 
@@ -252,17 +257,11 @@
         }
 
         function getMediaUrl(media) {
-            if (!media?.file_url) return null
+            if (!media?.file_name) return null;
 
-            // Kalau backend dah bagi full URL
-            if (media.file_url.startsWith("http://") || media.file_url.startsWith("https://")) {
-                return media.file_url;
-            }
-
-            let baseUrl = @json(url('/SEMESTER_RESULTS_FILE_URL/'));
-            let path = String(media.file_path ?? "").replace(/^\/+|\/+$/g, "");
-            let file = String(media.file_url).replace(/^\/+/g, "");
-            return path ? `${baseUrl}/${path}/${file}` : `${baseUrl}/${file}`;
+            let baseUrl = @json(url('/SEMESTER_RESULTS_FILE_URL'));
+            let fileName = String(media.file_name).replace(/^\/+/g, "");
+            return `${baseUrl}/${fileName}`;
         }
 
         function escapeHtml(value) {
