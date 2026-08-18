@@ -46,7 +46,7 @@ class SemesterController extends Controller
     {
         $validated = $request->validate([
             'education_id' => ['required', 'exists:education,id'],
-            'gpa' => ['required', 'numeric', 'between:0,4.00', 'decimal:2'],
+            'gpa' => ['required', 'numeric', 'between:0,4.00', 'decimal:0,2'],
             'session' => ['required', 'string']
         ]);
 
@@ -58,12 +58,14 @@ class SemesterController extends Controller
     public function update(Request $request, int $id)
     {
         $validated = $request->validate([
-            'gpa' => ['required', 'numeric', 'between:0,4.00', 'decimal:2'],
+            'gpa' => ['required', 'numeric', 'between:0,4.00', 'decimal:0,2'],
             'session' => ['required', 'string']
         ]);
 
-        $semester = $this->semesterService->createSemester($validated);
+        $userProfileId = session('user_profile_id');
 
-        return ApiResponse::success('Semester created successfully.', $semester, Response::HTTP_CREATED)->toJsonResponse();
+        $this->semesterService->updateSemester($validated, $id, $userProfileId);
+
+        return ApiResponse::success('Semester updated successfully.', null)->toJsonResponse();
     }
 }

@@ -80,21 +80,24 @@ class SemesterService
      * @param array $data
      * @param int $semesterId
      * @param int $userProfileId
-     * @return Semester
+     * @return bool
      */
-    public function updateSemester(array $data, int $semesterId, int $userProfileId): Semester
+    public function updateSemester(array $data, int $semesterId, int $userProfileId): bool
     {
         $semester = Semester::where('id', $semesterId)
             ->whereHas('education', function ($query) use ($userProfileId) {
                 $query->where('user_profile_id', $userProfileId);
-            });
+            })->first();
 
-        $semester = Semester::create([
-            'education_id' => $data['education_id'],
+        if (!isset($semester)) {
+            throw new Exception('No semester found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $result = $semester->update([
             'gpa' => $data['gpa'],
             'session' => $data['session']
         ]);
 
-        return $semester;
+        return $result;
     }
 }
