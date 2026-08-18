@@ -23,7 +23,7 @@
         Twitter
     </a>
 
-    <button class="btn badge text-bg-primary"
+    <button class="btn badge text-bg-primary" id="btnSocialMediaLink"
     data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="See More Social Media">
         <i class="fa-solid fa-pencil"></i>
         Edit
@@ -31,5 +31,10 @@
 </article>
 
 @push('scripts')
-    <script></script>
+    <script>
+        $("#btnSocialMediaLink").on("click", function(){
+            let modal = bootstrap.Modal.getOrCreateInstance($("#socialMediaModal"));
+            modal.show()
+        })
+    </script>
 @endpush

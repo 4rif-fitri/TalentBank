@@ -52,6 +52,12 @@
 
 <x-modals.pdf-preview-modal />
 
+<x-modals.social-media-link-modal />
+
+<x-modals.language-modal />
+
+<x-modals.skill-modal />
+
 @endsection
 
 @section('script')
