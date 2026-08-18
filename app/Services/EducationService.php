@@ -158,7 +158,13 @@ class EducationService
             throw new Exception('Education data not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $result = $education->delete();
+        $result = DB::transaction(function () use ($education) {
+            $this->mediaService->deleteMediaBySource('education', $education->id, config('services.uploads_file_path.education'));
+
+            $result = $education->delete();
+
+            return $result;
+        });
 
         return $result;
     }
