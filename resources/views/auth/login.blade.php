@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TalentBank</title>
-    <link rel="shortcut icon" href="{{ URL::asset('assets/images/logo/JobTalent-logo-cropped-cropped.svg') }}">
+    <link rel="shortcut icon" href="{{ URL::asset('assets/internship-assets/images/logoTalentBankWhite.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="{{ URL::asset('assets/libs/bootstrap5/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/login.css') }}">
@@ -14,10 +14,11 @@
 <body>
     <div class="card-container">
         <div class="card-content p-4">
-            <div class="d-flex justify-content-center">
-                <img class="w-50" src="{{ URL::asset('assets/images/profile/newLogo.png') }}" alt="">
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                <i class="fa-solid fa-graduation-cap fa-xl"></i>
+                <p class="fw-bolder h3 m-0">TalentBank</p>
             </div>
-            <h1 class="text-center">Welcome Back</h1>
+            <h3 class="text-center">Welcome Back</h3>
             <p class="text-center">Sign in to continue to TalentBank</p>
 
             <form action="{{ route('login') }}" method="POST">
@@ -35,9 +36,9 @@
                             aria-describedby="basic-addon-email">
 
                         @error('email')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
                         @enderror
                     </div>
                 </div>
@@ -54,9 +55,9 @@
                             aria-describedby="basic-addon-password">
 
                         @error('password')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
+                        <div class="invalid-feedback">
+                            {{ $message }}
+                        </div>
                         @enderror
                     </div>
                 </div>

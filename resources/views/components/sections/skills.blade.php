@@ -1,9 +1,9 @@
 <section id="skills" class="d-flex flex-column gap-1">
     <h3 class="fw-bold text-sm-center text-lg-start">Skills</h3>
     <div class="icon-container">
-        <a href="./skills.html" class="btn btn-secondary icon">
+        <button id="btnSkill" class="btn btn-secondary icon">
             <i class="fa-solid fa-pencil"></i>
-        </a>
+        </button>
     </div>
     <hr>
 
@@ -19,4 +19,10 @@
 </section>
 
 @push('scripts')
+<script>
+    $("#btnSkill").on("click", function () {
+        let modal = bootstrap.Modal.getOrCreateInstance($("#skillModal"));
+        modal.show()
+    })
+</script>
 @endpush

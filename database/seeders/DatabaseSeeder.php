@@ -32,6 +32,8 @@ class DatabaseSeeder extends Seeder
             MediaSeeder::class,
             SocialMediaSeeder::class,
             SocialMediaLinkSeeder::class,
+            LanguageSeeder::class,
+            UserLanguageSeeder::class,
         ]);
     }
 }

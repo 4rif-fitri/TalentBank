@@ -110,10 +110,12 @@
 
                     profileModal.hide();
                     getProfileData()
-                    swalfire("Success", xhr.responseJSON?.message ?? response.message ?? "Profile updated successfully", "success")
+                    swalfire("Success", "Profile updated successfully", "success")
                 },
 
                 error: function (xhr) {
+                    console.log(xhr);
+
                     console.error(xhr.responseJSON);
                     swalfire("Unable to edit profile", xhr.responseJSON?.message ?? "Unable to update profile", "error")
                 },

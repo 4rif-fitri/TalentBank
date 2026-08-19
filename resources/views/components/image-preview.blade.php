@@ -51,7 +51,7 @@
             $("#imagePreviewCarouselInner").append(`
 				<div class="carousel-item ${index === selectedIndex ? "active" : ""}">
 					<img src="${image}" class="d-block w-100"
-						style="max-height: 75vh; object-fit: contain;">
+						style="max-height: max-content; object-fit: contain;">
 
 					<div class="carousel-caption d-block bg-dark bg-opacity-75 rounded p-2">
 						<h5>${title}</h5>
