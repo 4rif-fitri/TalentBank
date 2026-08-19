@@ -1,35 +1,68 @@
 <article class="links">
-    <a class="badge text-bg-light d-flex align-items-center gap-1"
-        href="https://instagram.com/ariffitri" target="_blank" rel="noopener noreferrer">
-        <i class="fa-brands fa-instagram"></i>
-        Instagram
-    </a>
+    <div id="linksList" class="d-flex flex-wrap gap-2"></div>
 
-    <a class="badge text-bg-light d-flex align-items-center gap-1"
-        href="https://tiktok.com/@ariffitri" target="_blank" rel="noopener noreferrer">
-        <i class="fa-brands fa-tiktok"></i>
-        Tiktok
-    </a>
-
-    <a class="badge text-bg-light d-flex align-items-center gap-1"
-        href="https://github.com/4rif-fitri" target="_blank" rel="noopener noreferrer">
-        <i class="fa-brands fa-github"></i>
-        Github
-    </a>
-
-    <a class="badge text-bg-light d-flex align-items-center gap-1" href="https://x.com/ariffitri"
-        target="_blank" rel="noopener noreferrer">
-        <i class="fa-brands fa-x-twitter"></i>
-        Twitter
-    </a>
-
-    <button class="btn badge text-bg-primary"
-    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" data-bs-title="See More Social Media">
+    <button class="btn badge text-bg-primary" id="btnSocialMediaLink" data-bs-toggle="tooltip" data-bs-placement="top"
+        data-bs-custom-class="custom-tooltip" data-bs-title="See More Social Media">
         <i class="fa-solid fa-pencil"></i>
         Edit
     </button>
 </article>
 
 @push('scripts')
-    <script></script>
+<script>
+    let datalink = [];
+    let allSocialMedia = [];
+
+    function getAllSocialMedia() {
+        return $.ajax({
+            url: "{{ route('social-media.getAllSocialMedia') }}",
+            type: "GET",
+            dataType: "json"
+        }).done(function ({ data }) {
+            allSocialMedia = data;
+        }).fail(function (xhr) {
+            console.error(xhr);
+        });
+    }
+
+    function renderSocialMediaLinks(socialMediaLinks) {
+        $("#linksList").empty();
+
+        datalink = socialMediaLinks ?? [];
+
+        datalink.forEach(dt => {
+            const $a = $("<a>", {
+                class: "badge text-bg-light d-flex align-items-center gap-1",
+                href: dt.link,
+                target: "_blank",
+                rel: "noopener noreferrer"
+            });
+
+            const $icon = $("<i>", {
+                class: dt.social_media.icon_class_name
+            });
+
+            $a.append(
+                $icon,
+                dt.social_media.name
+            );
+
+            $("#linksList").append($a);
+        });
+    }
+
+    $("#btnSocialMediaLink").on("click", function () {
+        renderLinkModal(datalink);
+
+        const modalElement = document.getElementById("socialMediaModal");
+        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+
+        modal.show();
+    });
+
+    $(document).ready(async function () {
+        await getAllSocialMedia();
+        templateRenderSocialMedia();
+    });
+</script>
 @endpush

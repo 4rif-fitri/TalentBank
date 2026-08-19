@@ -18,7 +18,7 @@
                 Profile
             </a>
 
-            <form class="logout" action="{{ route("logout") }}" method="post">
+            <form class="logout" action="/logout" method="post">
                 @csrf
                 <i class="fa-solid fa-right-from-bracket"></i>
                 <button style="all: unset;" type="submit">Logout</button>

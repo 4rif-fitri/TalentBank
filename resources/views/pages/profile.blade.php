@@ -38,6 +38,8 @@
 
 <x-offcanvas />
 
+<x-modals.semester-modal />
+
 <x-modals.imagePreviewModal />
 
 <x-modals.active-educations-modal />
@@ -52,31 +54,32 @@
 
 <x-modals.pdf-preview-modal />
 
+<x-modals.social-media-link-modal />
+
+<x-modals.language-modal />
+
+<x-modals.skill-modal />
+
 @endsection
 
 @section('script')
 <script>
-    // $.ajax({
-    //     url: "{{ route('programme.getProgrammesByOrgId',['orgId' => 4])}}",
-    //     type: "GET",
-    //     dataType: "json",
-    //     success: function ({ data }) {
-    //         console.log(data);
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr);
-    //     }
-    // });
+    let data
+
+
 
     function getProfileData() {
 
+        let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+
         $.ajax({
-            url: "{{ route('profile.getProfileDataByProfileIdJson',['id' => auth()->id()])}}",
+            url: url,
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
-                console.log("DATA: ",data);
-
+                console.log("DATA: ", data);
+                data = data
                 $("#name").text(data.name ?? "");
                 $("#headline").text(data.headline ?? "");
                 $("#aboutText").text(data.about ?? "");
@@ -88,7 +91,7 @@
                     $("#uni-name").text(data.active_programmes[0].organization.company_name ?? "").show();
                     $("#programme").text(data.active_programmes[0].programme_name ?? "").show();
                 } else {
-                    $("#programme, #uni-name").hide();
+                    $("#programme, #uni-name, #seeMoreActiveEducations").hide();
                 }
 
                 let coverImageUrl = "{{ asset('cover-image-url') }}/" + data.cover_image;
@@ -116,7 +119,8 @@
 
                     $("#activeEducationList").append($element);
                 });
-
+                getAllSocialMedia()
+                renderSocialMediaLinks(data.social_media_links);
             },
 
             error: function (xhr) {
@@ -135,7 +139,6 @@
 
     $("#profileImageInput").on("change", function () {
         let file = this.files[0];
-        console.log(file);
 
         if (fileCheck(file)) return;
 

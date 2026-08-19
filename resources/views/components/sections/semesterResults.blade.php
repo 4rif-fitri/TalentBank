@@ -3,10 +3,16 @@
         <h3 class="fw-bold mb-0">
             Semester Results
         </h3>
-        <button class="btn btn-primary" id="addResult" type="button">
-            <i class="fa-solid fa-plus me-1"></i>
-            Add Result
-        </button>
+        <div>
+            <button class="btn btn-primary" id="addSemester" type="button">
+                <i class="fa-solid fa-plus me-1"></i>
+                Add Semester
+            </button>
+            <button class="btn btn-primary" id="addResult" type="button">
+                <i class="fa-solid fa-plus me-1"></i>
+                Add Result
+            </button>
+        </div>
     </div>
     <hr>
     <div id="semesterResultList">
@@ -98,51 +104,54 @@
         }
 
         function templateResultArticle(semester, hasResult, resultButton) {
-            return  `
+            // console.log(semester);
+
+            return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
                         <div>
                             <div
                                 class="d-flex flex-wrap align-items-center gap-2 mb-1">
-                                <p class="fw-bold mb-0">
-                                    Semester ${semester.semesterNumber}
-                                </p>
+                                <span class="fw-bold mb-0 mb-1 d-flex gap-2">
+                                    <p>Session</p>
+                                    <p class="session">${escapeHtml(semester.session ?? "-")}</p>
+                                </span>
                                 ${hasResult ? ` <span class="badge text-bg-success">Uploaded</span>` : ""}
                             </div>
-                            <p class="text-muted mb-1">
-                                Session
-                                ${escapeHtml(semester.session ?? "-")}
-                            </p>
-                            <div class="d-flex flex-wrap gap-3 small ">
-                                <span>
+                            <div class="d-flex flex-wrap gap-3 small text-muted">
+                                <span class="d-flex gap-2">
                                     <strong>GPA:</strong>
-                                    ${escapeHtml(semester.gpa ?? "-")}
-                                </span>
-                                <span>
-                                    <strong>CGPA:</strong>
-                                    ${escapeHtml(semester.cgpa ?? "-")}
+                                    <p class="gpa">${escapeHtml(semester.gpa ?? "-")}</p>
                                 </span>
                             </div>
                         </div>
-                        <div>${resultButton}</div>
+                        <div class="d-flex align-items-center gap-2">
+                            <div>${resultButton}</div>
+                            <button
+                                class="btn text-secondary icon border-1 btnEditSemester"
+                                data-id="${semester.semesterId}"
+                                data-education-id="${semester.educationId}"
+                                data-programme-name="${escapeHtml(semester.programmeName ?? "-")}">
+                                <i class="fa-solid fa-pencil"></i>
+                            </button>
+                        </div>
                     </div>
                 </article>
                 `
         }
 
-        function templateButtonViewResult(fileUrl, semester){
+        function templateButtonViewResult(fileUrl, semester) {
             return `
                 <button type="button"
                     class="btn btn-outline-primary btn-sm btn-view-result"
                     data-file-url="${escapeHtml(fileUrl)}"
                     data-session="${escapeHtml(semester.session ?? "")}"
-                    data-semester="${semester.semesterNumber}">
                     <i class="fa-regular fa-file-pdf me-1"></i>
                     View Result
                 </button>`
         }
 
-        function templateBadgeResultUploaded(){
+        function templateBadgeResultUploaded() {
             return `<span class="badge text-bg-success">Result Uploaded</span>`;
         }
 
@@ -155,8 +164,11 @@
 
             $("#semesterResultList").html(templateLoading());
 
+            let url = "{{ route('programme.getProgrammesByUserProfileId', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+
             $.ajax({
-                url: "{{ route('programme.getProgrammesByUserIdJson',['userId' => auth() -> id()])}}",
+                url: url,
                 type: "GET",
                 dataType: "json",
 
@@ -180,6 +192,7 @@
 
         function renderSemesterResults(programmes) {
             let results = [];
+            // console.log(programmes);
 
             programmes.forEach(function (programme) {
 
@@ -196,7 +209,6 @@
                             cgpa: education.cgpa,
                             enrollmentStatus: education.enrollment_status,
                             semesterId: semester.id,
-                            semesterNumber: index + 1,
                             session: semester.session,
                             gpa: semester.gpa,
                             media: semester.media
@@ -221,6 +233,9 @@
             let hasResult = media !== null;
             let resultButton;
 
+            // console.log("SEMESTER:", semester);
+            // console.log("MEDIA:", media);
+
             if (hasResult) {
                 let fileUrl = getMediaUrl(media);
 
@@ -242,17 +257,11 @@
         }
 
         function getMediaUrl(media) {
-            if (!media?.file_url) return null
+            if (!media?.file_name) return null;
 
-            // Kalau backend dah bagi full URL
-            if (media.file_url.startsWith("http://") || media.file_url.startsWith("https://")) {
-                return media.file_url;
-            }
-
-            let baseUrl = @json(url('/SEMESTER_RESULTS_FILE_URL/'));
-            let path = String(media.file_path ?? "").replace(/^\/+|\/+$/g, "");
-            let file = String(media.file_url).replace(/^\/+/g, "");
-            return path ? `${baseUrl}/${path}/${file}` : `${baseUrl}/${file}`;
+            let baseUrl = @json(url('/SEMESTER_RESULTS_FILE_URL'));
+            let fileName = String(media.file_name).replace(/^\/+/g, "");
+            return `${baseUrl}/${fileName}`;
         }
 
         function escapeHtml(value) {
