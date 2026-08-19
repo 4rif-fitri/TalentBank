@@ -128,14 +128,12 @@
         }
         // Get Data
 
-        function tem(media) {
+        function tem(media, educationId) {
             if (!media || media.length === 0) {
                 return "";
             }
 
             let html = "";
-
-            // Maximum 3 thumbnail
             let visibleMedia = media.slice(0, 3);
 
             visibleMedia.forEach((dt, index) => {
@@ -143,33 +141,45 @@
                 let baseUrl = "{{ URL::asset('EDUCATION_FILE_URL') }}";
                 let imageUrl = `${baseUrl}/${dt.file_name}`;
 
-                // Kalau image ke-3 dan masih ada image lain
                 let remaining = media.length - 2;
 
                 if (index === 2 && media.length > 3) {
 
                     html += `
-                        <div
-                            class="image rounded-1 m-1 d-flex justify-content-center align-items-center"
-                            style="background-image: url('${imageUrl}'); filter: brightness(.5); cursor: pointer;"
-                            data-bs-toggle="modal"
-                            data-bs-target="#imagePreviewModal"
-                            data-slide-index="${index}">
-                            <h4 class="text-white m-0">+${remaining}</h4>
-                        </div>`;
+                <div
+                    class="image rounded-1 m-1 d-flex justify-content-center align-items-center education-preview-image"
+                    style="
+                        background-image: url('${imageUrl}');
+                        filter: brightness(.5);
+                        cursor: pointer;
+                    "
+                    data-education-id="${educationId}"
+                    data-slide-index="${index}">
+
+                    <h4 class="text-white m-0">
+                        +${remaining}
+                    </h4>
+                </div>
+            `;
+
                 } else {
+
                     html += `
-                    <div class="image rounded-1 m-1"
-                        style="background-image: url('${imageUrl}');cursor: pointer;"
-                        data-bs-toggle="modal"
-                        data-bs-target="#imagePreviewModal"
-                        data-slide-index="${index}">
-                    </div>`;
+                <div
+                    class="image rounded-1 m-1 education-preview-image"
+                    style="
+                        background-image: url('${imageUrl}');
+                        cursor: pointer;
+                    "
+                    data-education-id="${educationId}"
+                    data-slide-index="${index}">
+                </div>
+            `;
                 }
             });
+
             return html;
         }
-
         // Render
         function renderCardEducation(data, $educationList) {
             $educationList.empty();
@@ -257,7 +267,7 @@
                                 </div>
                             </div>
                             <div class="images d-flex flex-wrap">
-                                ${tem(education.media)}
+                               ${tem(education.media, education.id)}
                             </div>
 
                         </article>
@@ -358,6 +368,87 @@
         });
         // trigger
     })
+    function renderEducationImagePreview(media, selectedIndex = 0) {
 
+        let $carouselInner = $("#imagePreviewCarouselInner");
+
+        $carouselInner.empty();
+
+        let baseUrl = "{{ URL::asset('EDUCATION_FILE_URL') }}";
+
+        media.forEach((dt, index) => {
+
+            let imageUrl = `${baseUrl}/${dt.file_name}`;
+
+            $carouselInner.append(`
+            <div class="carousel-item ${index === selectedIndex ? "active" : ""}">
+
+                <img
+                    src="${imageUrl}"
+                    class="d-block w-100"
+                    alt="${dt.title ?? dt.file_name}"
+                    style="
+                        height: max-content;
+                        object-fit: contain;
+                    "
+                >
+
+                ${dt.title || dt.description
+                    ? `
+                            <div
+                                class="carousel-caption d-block
+                                       bg-dark bg-opacity-75
+                                       rounded p-2">
+
+                                ${dt.title
+                        ? `<h5>${dt.title}</h5>`
+                        : ""
+                    }
+
+                                ${dt.description
+                        ? `<p class="d-none d-md-block mb-0">
+                                            ${dt.description}
+                                           </p>`
+                        : ""
+                    }
+
+                            </div>
+                        `
+                    : ""
+                }
+
+            </div>
+        `);
+        });
+    }
+
+    $(document).on("click", ".education-preview-image", function () {
+
+        let educationId = Number($(this).data("education-id"));
+        let slideIndex = Number($(this).data("slide-index"));
+
+        let education = educationData.find(
+            item => Number(item.id) === educationId
+        );
+
+        if (!education || !education.media?.length) {
+            return;
+        }
+
+        renderEducationImagePreview(
+            education.media,
+            slideIndex
+        );
+
+        $("#imagePreviewModalTitle").text(
+            education.programme?.programme_name ?? "Education Media"
+        );
+
+        let modalEl = document.getElementById("imagePreviewModal");
+
+        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        modal.show();
+    });
 </script>
 @endpush

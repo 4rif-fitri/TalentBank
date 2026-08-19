@@ -19,12 +19,13 @@ p {
     grid-template-columns: 3fr 1fr;
     width: 100%;
     border-radius: 14px;
+    padding: 0.5rem;
 }
 
 .user-card-left,
 .user-card-right {
     width: 100%;
-    padding: 0.5rem 0.3rem;
+    padding: 0 0.5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -33,6 +34,7 @@ p {
 .user-card-left>*,
 .user-card-right>* {
     background-color: var(--color-white);
+    border-radius: var(--radius-md);
 }
 
 .user-card-header {
@@ -282,3 +284,19 @@ a {
 /* @view-transition {
     navigation: auto;
 } */
+
+.horizontal-nav {
+    overflow-x: auto;
+    white-space: nowrap;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.horizontal-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.horizontal-nav>* {
+    flex-shrink: 0;
+}
