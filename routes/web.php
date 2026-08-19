@@ -72,7 +72,7 @@ Route::middleware('auth')->group(function () {
 | Here is where you can register API routes for your application.
 |
 */
-Route::middleware('auth')->prefix('api')->group(function () {
+Route::middleware(['auth', 'throttle:api'])->prefix('api')->group(function () {
 
     Route::prefix('profile')->group(function () {
         // crud routes
@@ -90,15 +90,15 @@ Route::middleware('auth')->prefix('api')->group(function () {
         Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategories'])->name('organization.getAllIndustryCategories'); //-
         Route::get('/industry-sectors', [OrganizationController::class, 'getAllIndustrySectors'])->name('organization.getAllIndustrySectors'); //-
         Route::post('/store', [OrganizationController::class, 'store'])->name('organization.store'); //-
-        Route::put('/update/{orgId}', [OrganizationController::class, 'update'])->name('organization.update'); //-
+        Route::middleware('checkRole:Organization Admin')->put('/update/{orgId}', [OrganizationController::class, 'update'])->name('organization.update'); //-
     });
 
     Route::prefix('faculties')->group(function () {
         // crud routes
         Route::get('/org/{id}', [FacultyController::class, 'getFacultiesByOrgId'])->name('faculty.getFacultiesByOrgId'); //-
         Route::get('/{id}', [FacultyController::class, 'getFacultyById'])->name('faculty.getFacultyById');//-
-        Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store'); //-
-        Route::put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update'); //-
+        Route::middleware('checkRole:Organization Admin')->post('/store', [FacultyController::class, 'store'])->name('faculty.store'); //-
+        Route::middleware('checkRole:Organization Admin')->put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update'); //-
     });
 
     Route::prefix('programmes')->group(function () {
