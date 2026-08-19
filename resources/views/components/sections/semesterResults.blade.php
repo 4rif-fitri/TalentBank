@@ -113,7 +113,7 @@
                             <div
                                 class="d-flex flex-wrap align-items-center gap-2 mb-1">
                                 <span class="fw-bold mb-0 mb-1 d-flex gap-2">
-                                    <p>Session</p>
+                                    <p>Semester</p>
                                     <p class="session">${escapeHtml(semester.session ?? "-")}</p>
                                 </span>
                                 ${hasResult ? ` <span class="badge text-bg-success">Uploaded</span>` : ""}
