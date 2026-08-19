@@ -56,7 +56,7 @@
 
 <x-modals.social-media-link-modal />
 
-<x-modals.language-modal />
+<x-modals.languages-modal />
 
 <x-modals.skill-modal />
 
@@ -64,9 +64,39 @@
 
 @section('script')
 <script>
-    let data
+    let profileData = null;
+    function renderLanguages(userLanguages = []) {
+        let $container = $("#languageList");
 
+        $container.empty();
 
+        if (!userLanguages.length) {
+            $container.html(`
+            <p class="text-secondary mb-0">
+                No languages added.
+            </p>
+        `);
+
+            return;
+        }
+
+        userLanguages.forEach(item => {
+            $container.append(`
+            <article class="language-item mb-2"
+                     data-id="${item.id}">
+
+                <p class="fw-bold mb-0">
+                    ${item.language?.language_name ?? ""}
+                </p>
+
+                <p class="text-secondary mb-0">
+                    ${item.proficiency_level ?? ""}
+                </p>
+
+            </article>
+        `);
+        });
+    }
 
     function getProfileData() {
 
@@ -78,8 +108,8 @@
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
+                profileData = data
                 console.log("DATA: ", data);
-                data = data
                 $("#name").text(data.name ?? "");
                 $("#headline").text(data.headline ?? "");
                 $("#aboutText").text(data.about ?? "");
@@ -100,7 +130,6 @@
                 let profileImageUrl = "{{ asset('profile-image-url') }}/" + data.profile_image;
                 $("#profileImage, #profileBtn").css("background-image", `url("${profileImageUrl}")`);
 
-                let activeEducationsModalBody = document.getElementById("activeEducationsModalBody")
                 data.active_programmes.forEach(data => {
 
                     let $element = $("<div>").addClass("alert alert-primary d-flex gap-2").attr("role", "button");
@@ -121,6 +150,7 @@
                 });
                 getAllSocialMedia()
                 renderSocialMediaLinks(data.social_media_links);
+                renderLanguages(data.user_languages ?? []);
             },
 
             error: function (xhr) {
