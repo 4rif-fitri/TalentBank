@@ -33,6 +33,11 @@ class UserProfile extends Model
         return $this->belongsToMany(Organization::class, 'organization_user', 'user_profile_id', 'organization_id');
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'organization_users', 'user_profile_id', 'role_id');
+    }
+
     public function organizationUsers()
     {
         return $this->hasMany(OrganizationUser::class, 'user_profile_id');
