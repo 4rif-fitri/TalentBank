@@ -2,9 +2,15 @@
 
 namespace App\Providers;
 
+use App\Http\Helpers\ApiResponse;
 use App\Models\Education;
 use App\Models\Semester;
+use Exception;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,5 +37,13 @@ class AppServiceProvider extends ServiceProvider
             'honors_award' => Semester::class,
             'certification' => Semester::class,
         ]);
+
+        RateLimiter::for('api', function (Request $request) {
+            return Limit::perMinute(60)
+                ->by($request->user()->id ?: $request->ip())  // limit by user. If no user, limit by IP
+                ->response(function () {
+                    throw new Exception('Too many requests.', Response::HTTP_TOO_MANY_REQUESTS);
+                });
+        });
     }
 }

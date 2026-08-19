@@ -70,7 +70,7 @@ class RegisterController extends Controller
     protected function registered(Request $request, $user)
     {
         $profileId = UserProfile::where('user_id', $user->id)->firstOrFail()->id;
-        session(['user_profile_id' => $profileId]);
+        session(['user_profile_id' => $profileId, 'roles' => []]);
         return redirect()->intended($this->redirectPath());
     }
 }
