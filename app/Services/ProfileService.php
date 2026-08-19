@@ -38,10 +38,9 @@ class ProfileService
             },
             'organizationUsers.organization',
             'organizationUsers.role',
-            'activeProgrammes',
             'activeProgrammes.organization',
-            'socialMediaLinks',
             'socialMediaLinks.socialMedia',
+            'userLanguages.language',
         ])
             ->find($userProfileId);
 

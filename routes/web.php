@@ -11,6 +11,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\SocialMediaLinkController;
+use App\Http\Controllers\UserLanguageController;
 
 // auth routes
 Route::middleware('guest')->group(function () {
@@ -90,8 +91,15 @@ Route::middleware('auth')->prefix('education')->group(function () {
 });
 
 Route::middleware('auth')->prefix('social-media')->group(function () {
-    Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia');  //+
-    Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store');  //+
-    Route::put('/update/{id}', [SocialMediaLinkController::class, 'update'])->name('social-media.update'); //-
-    Route::delete('/delete/{id}', [SocialMediaLinkController::class, 'delete'])->name('social-media.delete'); //-
+    Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia');
+    Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store');
+    Route::put('/update/{id}', [SocialMediaLinkController::class, 'update'])->name('social-media.update');
+    Route::delete('/delete/{id}', [SocialMediaLinkController::class, 'delete'])->name('social-media.delete');
+});
+
+Route::middleware('auth')->prefix('languages')->group(function () {
+    Route::get('/', [UserLanguageController::class, 'getAllLanguages'])->name('languages.getAllLanguages');
+    Route::post('/store', [UserLanguageController::class, 'store'])->name('languages.store');
+    Route::put('/update/{id}', [UserLanguageController::class, 'update'])->name('languages.update');
+    Route::delete('/delete/{id}', [UserLanguageController::class, 'delete'])->name('languages.delete');
 });

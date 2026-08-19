@@ -53,4 +53,9 @@ class UserProfile extends Model
     {
         return $this->hasMany(SocialMediaLink::class, 'user_profile_id');
     }
+
+    public function userLanguages()
+    {
+        return $this->hasMany(UserLanguage::class, 'user_profile_id');
+    }
 }
