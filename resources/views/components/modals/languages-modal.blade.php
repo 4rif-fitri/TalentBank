@@ -284,10 +284,6 @@
         renderLanguageModal();
     });
 
-    $(document).on("click", "#btnAddLanguage", function () {
-        $("#userLanguageList").append(createLanguageRow());
-    });
-
     $(document).on("click", ".btn-delete-language", function () {
         let $row = $(this).closest(".language-row");
         let id = $row.data("id");
