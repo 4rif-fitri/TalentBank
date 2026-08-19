@@ -36,7 +36,7 @@ Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->
 Route::middleware('auth')->prefix('profile')->group(function () {
     // page routes
     Route::get('/student', [internshipController::class, "profile"])->name('profile.student'); //+
-    Route::get('/education', [internshipController::class, "education"])->name('profile.education');//+
+    Route::get('/education', [internshipController::class, "education"])->name('profile.education'); //+
     Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience'); //+
 
     // crud routes
@@ -60,7 +60,7 @@ Route::middleware('auth')->prefix('organizations')->group(function () {
 Route::middleware('auth')->prefix('faculties')->group(function () {
     // crud routes
     Route::get('/org/{id}', [FacultyController::class, 'getFacultiesByOrgId'])->name('faculty.getFacultiesByOrgId'); //-
-    Route::get('/{id}', [FacultyController::class, 'getFacultyById'])->name('faculty.getFacultyById');//-
+    Route::get('/{id}', [FacultyController::class, 'getFacultyById'])->name('faculty.getFacultyById'); //-
     Route::post('/store', [FacultyController::class, 'store'])->name('faculty.store'); //-
     Route::put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update'); //-
 });
@@ -74,17 +74,17 @@ Route::middleware('auth')->prefix('programmes')->group(function () {
 Route::middleware('auth')->prefix('semesters')->group(function () {
     // crud routes
     Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults'); //+
-    Route::post('/store', [SemesterController::class, 'store'])->name('semester.store');
-    Route::put('/update/{id}', [SemesterController::class, 'update'])->name('semester.update');
+    Route::post('/store', [SemesterController::class, 'store'])->name('semester.store'); //+
+    Route::put('/update/{id}', [SemesterController::class, 'update'])->name('semester.update'); //+
 });
 
 Route::middleware('auth')->prefix('education')->group(function () {
     // crud routes
-    Route::get('/getEducationByUserProfileId/{id}', [EducationController::class, 'getEducationByUserProfileId'])->name('education.getEducationByUserProfileId');
-    Route::get('/getEducationById/{id}', [EducationController::class, 'getEducationById'])->name('education.getEducationById');
-    Route::post('/store', [EducationController::class, 'store'])->name('education.store');
-    Route::put('/update/{id}', [EducationController::class, 'update'])->name('education.update');
-    Route::delete('/delete/{id}', [EducationController::class, 'delete'])->name('education.delete');
+    Route::get('/getEducationByUserProfileId/{id}', [EducationController::class, 'getEducationByUserProfileId'])->name('education.getEducationByUserProfileId'); //+
+    Route::get('/getEducationById/{id}', [EducationController::class, 'getEducationById'])->name('education.getEducationById'); //+
+    Route::post('/store', [EducationController::class, 'store'])->name('education.store'); //+
+    Route::put('/update/{id}', [EducationController::class, 'update'])->name('education.update'); //+
+    Route::delete('/delete/{id}', [EducationController::class, 'delete'])->name('education.delete'); //+
 
     Route::get('/getAllFieldOfStudies', [EducationController::class, 'getAllFieldOfStudies'])->name('education.getAllFieldOfStudies'); //+
     Route::get('/getAllQualifications', [EducationController::class, 'getAllQualifications'])->name('education.getAllQualifications'); //+

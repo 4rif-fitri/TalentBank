@@ -163,31 +163,32 @@
                 </div>
 
                 <!-- Skills -->
-                <!-- <div class="mb-3">
-                    <label class="form-label">Skill</label>
-                    <div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label fw-bold">Skill</label>
                         <button id="addSkill" type="button" class="btn btn-outline-primary btn-sm">+ Add
                             Skill</button>
-                        <div class="mt-2" id="skillContainer">
-
-                        </div>
                     </div>
-                </div> -->
+                    <div class="mt-2" id="skillContainer">
+
+                    </div>
+                </div>
 
                 <!-- Media -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Media</label>
-                    <p class="text-muted small mb-2">
-                        Add media like images, documents or presentations.
-                    </p>
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label fw-bold">Media</label>
 
-                    <input type="file" id="mediaFileInput" accept="image/*" multiple hidden>
+                        <input type="file" id="mediaFileInput" accept="image/*" multiple hidden>
 
-                    <label for="mediaFileInput" id="addMedia" class="btn btn-outline-primary btn-sm">
-                        + Add Media
-                    </label>
+                        <label for="mediaFileInput" id="addMedia" class="btn btn-outline-primary btn-sm">
+                            + Add Media
+                        </label>
+                    </div>
 
-                    <div id="mediaContainer" class="d-flex gap-2 flex-wrap mt-3"></div>
+                    <div id="mediaContainer" class="d-flex gap-2 flex-wrap mt-3">
+
+                    </div>
                 </div>
 
             </div>
@@ -210,59 +211,88 @@
     let listOfFieldOfStudies = [];
     let listOfQualifications = [];
     let listOfOrganizations = [];
+    let listOfSkills = [];
 
-    function formatEducationDate(date) {
-        if (!date) return "";
+    let existingEducationMedia = [];
+    let deletedEducationMediaIds = [];
+    let newEducationMedia = [];
 
-        const [year, month, day] = date.split("-");
 
-        // 01-01 dianggap user hanya masukkan tahun
-        if (month === "01" && day === "01") {
-            return year;
-        }
+    function renderEducationMedia() {
 
-        return new Date(`${year}-${month}-${day}`)
-            .toLocaleDateString("en-US", {
-                month: "long",
-                year: "numeric"
-            });
+        let $container = $("#mediaContainer");
+        $container.empty();
+
+        let baseUrl = "{{ asset('EDUCATION_FILE_URL') }}";
+
+        existingEducationMedia.forEach(media => {
+            // Kalau user dah tekan delete, jangan render
+            if (deletedEducationMediaIds.includes(media.id)) {
+                return;
+            }
+
+            let imageUrl = `${baseUrl}/${media.file_name}`;
+
+            $container.append(`
+            <div class="education-media-item">
+
+                <div class="position-relative"
+                     style="width:100px; height:75px;">
+                    <img src="${imageUrl}"
+                         class="rounded border"
+                         style="width:100%; height:100%; object-fit:cover;">
+                    <button type="button"
+                            class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 btn-remove-existing-media"
+                            data-id="${media.id}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <small class="d-block text-truncate mt-1"
+                       style="width:100px;">
+                    ${media.file_name}
+                </small>
+
+            </div>`);
+        });
+
+
+        newEducationMedia.forEach((file, index) => {
+            let preview = URL.createObjectURL(file);
+
+            $container.append(`
+            <div class="education-media-item">
+                <div class="position-relative"
+                     style="width:100px; height:75px;">
+                    <img src="${preview}"
+                         class="rounded border"
+                         style="width:100%;height:100%;object-fit:cover;">
+                    <button type="button"
+                            class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 btn-remove-new-media"
+                            data-index="${index}">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <small class="d-block text-truncate mt-1"
+                       style="width:100px;">
+                    ${file.name}
+                </small>
+
+            </div>
+        `);
+        });
     }
-
-    function setEducationDate(date, monthSelector, yearSelector) {
-        if (!date) {
-            $(monthSelector).val("");
-            $(yearSelector).val("");
-            return;
-        }
-
-        const [year, month, day] = date.split("-");
-
-        $(yearSelector).val(year);
-
-        if (month === "01" && day === "01") {
-            // Anggap tahun sahaja
-            $(monthSelector).val("");
-        } else {
-            $(monthSelector).val(month);
-        }
-    }
-    // Get
+    // Get Data from API
     function getAllOrganizations() {
 
         return $.ajax({
-            url: "{{ route('organization.getAllOrganizationsJson') }}",
+            url: "{{ route('organization.getAllOrganizations') }}",
             type: "GET",
             dataType: "json",
 
             success: function ({ data }) {
                 listOfOrganizations = data;
                 let $institution = $("#educationInstitution");
-
-                $institution.html(`
-                <option value="" selected disabled>
-                    Select Institution
-                </option>
-            `);
+                $institution.html(`<option value="" selected disabled>Select Institution</option>`);
 
                 data.forEach(organization => {
                     $institution.append(`
@@ -287,13 +317,9 @@
 
             success: function ({ data }) {
                 listOfFieldOfStudies = data;
-
-                $("#fieldOfStudy").html(`<option value="" disabled selected>Select Field of Study</option>
-            `);
+                $("#fieldOfStudy").html(`<option value="" disabled selected>Select Field of Study</option>`);
                 data.forEach(item => {
-                    $("#fieldOfStudy").append(`<option value="${item.id}">${item.name}</option>
-                `
-                    )
+                    $("#fieldOfStudy").append(`<option value="${item.id}">${item.name}</option>`)
                 });
             },
             error: function (xhr) {
@@ -346,14 +372,36 @@
             dataType: "json",
 
             success: function ({ data }) {
-                // console.log(data);
+
+                console.log(data);
 
                 $("#educationId").val(data.id);
                 $("#qualification").val(data.qualification_id);
                 $("#fieldOfStudy").val(data.field_of_study_id);
                 $("#cgpaInput").val(data.cgpa);
                 $("#descriptionInput").val(data.description);
-                $("#enrollmentStatus").val(data.enrollment_status ?? "Active");
+                $("#enrollmentStatus").val(
+                    data.enrollment_status ?? "Active"
+                );
+
+                // SKILLS
+                $("#skillContainer").empty();
+
+                (data.skills ?? []).forEach(skill => {
+                    $("#skillContainer").append(
+                        createSkillRow(skill.id)
+                    );
+                });
+
+                // MEDIA
+                existingEducationMedia = data.media ?? [];
+                deletedEducationMediaIds = [];
+                newEducationMedia = [];
+
+                $("#mediaFileInput").val("");
+
+                renderEducationMedia();
+
                 setEducationDate(
                     data.start_date,
                     "#startMonth",
@@ -367,33 +415,91 @@
                 );
 
                 let organizationId = data.programme?.organization?.id;
+
                 if (organizationId) {
                     $("#educationInstitution").val(organizationId);
-                    getProgrammesByOrganizationId(organizationId, data.programme_id);
+
+                    getProgrammesByOrganizationId(
+                        organizationId,
+                        data.programme_id
+                    );
                 }
+
                 $("#educationModal .modal-title").text("Edit Education");
                 $("#btnSaveEducation").text("Update");
                 $("#btnDeleteEducation").show();
 
                 modal.show();
             },
-
             error: function (xhr) {
                 console.error(xhr.responseJSON);
             }
         });
     }
 
+    function getAllSkills() {
+        listOfSkills = [
+            {
+                "id": 1,
+                "skill_name": "Laravel",
+                "skill_category": "Web Development",
+                "icon_url": "laravel.png"
+            },
+            {
+                "id": 2,
+                "skill_name": "JavaScript",
+                "skill_category": "Programming Language",
+                "icon_url": "javascript.png"
+            },
+            {
+                "id": 3,
+                "skill_name": "MySQL",
+                "skill_category": "Database",
+                "icon_url": "mysql.png"
+            }
+        ]
+    }
+
+
+    $(document).on("change", "#mediaFileInput", function () {
+
+        let files = Array.from(this.files);
+
+        files.forEach(file => {
+            newEducationMedia.push(file);
+        });
+
+        // clear supaya file sama pun boleh dipilih semula
+        $(this).val("");
+
+        renderEducationMedia();
+    });
+
+    $(document).on("click", ".btn-remove-existing-media", function () {
+
+        let mediaId = Number($(this).data("id"));
+
+        if (!deletedEducationMediaIds.includes(mediaId)) {
+            deletedEducationMediaIds.push(mediaId);
+        }
+
+        renderEducationMedia();
+    });
+
+    $(document).on("click", ".btn-remove-new-media", function () {
+
+        let index = Number($(this).data("index"));
+
+        newEducationMedia.splice(index, 1);
+
+        renderEducationMedia();
+    });
+
     function getProgrammesByOrganizationId(organizationId, selectedProgrammeId = null) {
         let $programme = $("#educationProgramme");
 
-        $programme
-            .prop("disabled", true)
-            .html(`
-            <option value="">
-                Loading programmes...
-            </option>
-        `);
+        $programme.prop("disabled", true)
+            .html(`<option value="">Loading programmes...</option>`);
 
         let url = "{{ route('programme.getProgrammesByOrgId', ['orgId' => '__ID__']) }}";
         url = url.replace("__ID__", organizationId);
@@ -450,23 +556,82 @@
             }
         });
     }
-    // Get
+    // Get Data from API
+
+    function formatEducationDate(date) {
+        if (!date) return "";
+
+        let [year, month, day] = date.split("-");
+
+        // 01-01 dianggap user hanya masukkan tahun
+        if (month === "01" && day === "01") return year;
+
+        return new Date(`${year}-${month}-${day}`)
+            .toLocaleDateString("en-US", {
+                month: "long",
+                year: "numeric"
+            });
+    }
+
+    function setEducationDate(date, monthSelector, yearSelector) {
+        if (!date) {
+            $(monthSelector).val("");
+            $(yearSelector).val("");
+            return;
+        }
+
+        let [year, month, day] = date.split("-");
+
+        $(yearSelector).val(year);
+
+        if (month === "01" && day === "01") {
+            $(monthSelector).val("");
+        } else {
+            $(monthSelector).val(month);
+        }
+    }
+
+    function buildValidDate(month, year) {
+        if (!year) return null;
+        if (!month) return `${year}-01-01`;
+        return `${year}-${month}-01`;
+    }
 
     // Validate
-    function validateEducationDates() {
+    function isValidDates() {
+        let startMonth = $("#startMonth").val();
+        let startYear = $("#startYear").val();
 
-        let startDate = $("#dateStart").val();
-        let endDate = $("#dateEnd").val();
+        let endMonth = $("#endMonth").val();
+        let endYear = $("#endYear").val();
 
-        $("#dateStart, #dateEnd").removeClass("is-invalid");
+        $("#startMonth, #startYear, #endMonth, #endYear")
+            .removeClass("is-invalid");
 
-        if (!startDate) {
-            $("#dateStart").addClass("is-invalid");
+        if (!startYear) {
+            $("#startYear").addClass("is-invalid");
             return false;
         }
 
-        if (endDate && endDate < startDate) {
-            $("#dateEnd").addClass("is-invalid");
+        if (!endYear) {
+            $("#endYear").addClass("is-invalid");
+            return false;
+        }
+
+        let startDate = new Date(
+            Number(startYear),
+            Number(startMonth || 1) - 1,
+            1
+        );
+
+        let endDate = new Date(
+            Number(endYear),
+            Number(endMonth || 1) - 1,
+            1
+        );
+
+        if (endDate < startDate) {
+            $("#endMonth, #endYear").addClass("is-invalid");
             return false;
         }
 
@@ -477,29 +642,113 @@
     // Update
     function updateEducation(url, formData) {
 
+        formData.append("_method", "PUT");
+
         $.ajax({
             url: url,
-            type: "PUT",
+            type: "POST",
             data: formData,
+
+            processData: false,
+            contentType: false,
+
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
 
             success: function (response) {
-                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
-                swalfire("Success", response.message ?? "Education updated successfully", "success")
-                // $(document).trigger("education:updated");
+                bootstrap.Modal
+                    .getInstance(document.getElementById("educationModal"))
+                    ?.hide();
+
+                swalfire(
+                    "Success",
+                    response.message ?? "Education updated successfully.",
+                    "success"
+                );
+
+                $(document).trigger("education:updated");
             },
 
             error: function (xhr) {
                 console.error(xhr.responseJSON);
-                swalfire("Update Failed", xhr.responseJSON?.message ?? "Something went wrong", "error")
+
+                swalfire(
+                    "Update Failed",
+                    xhr.responseJSON?.message ?? "Something went wrong",
+                    "error"
+                );
             }
         });
     }
     // Update
+    function validateEducationSkills() {
 
-    // Create
+        let selectedSkillIds = [];
+        let isValid = true;
+
+        $(".skill-row").each(function () {
+
+            let $select = $(this).find(".skill-select");
+            let skillId = $select.val();
+
+            $select.removeClass("is-invalid");
+
+            if (!skillId) {
+                $select.addClass("is-invalid");
+                isValid = false;
+                return;
+            }
+
+            if (selectedSkillIds.includes(skillId)) {
+                $select.addClass("is-invalid");
+                isValid = false;
+                return;
+            }
+
+            selectedSkillIds.push(skillId);
+        });
+
+        return isValid;
+    }
+    function createSkillRow(selectedSkillId = "") {
+
+        let skillOptions = `
+        <option value="" disabled ${!selectedSkillId ? "selected" : ""}>
+            Select Skill
+        </option>
+    `;
+
+        listOfSkills.forEach(skill => {
+
+            let selected =
+                String(skill.id) === String(selectedSkillId)
+                    ? "selected"
+                    : "";
+
+            skillOptions += `
+            <option value="${skill.id}" ${selected}>
+                ${skill.skill_name}
+            </option>
+        `;
+        });
+
+        return `
+        <div class="input-group skill-row mb-2">
+
+            <select class="form-select form-select-sm skill-select" required>
+                ${skillOptions}
+            </select>
+
+            <button type="button"
+                    class="btn btn-outline-danger remove-skill">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+
+        </div>
+    `;
+    }
+    // Create Education
     function createEducation(formData) {
 
         $.ajax({
@@ -515,7 +764,7 @@
             success: function (response) {
                 bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
                 swalfire("Success", response.message ?? "Education created successfully.", "success")
-                // $(document).trigger("education:updated");
+                $(document).trigger("education:updated");
             },
 
             error: function (xhr) {
@@ -524,29 +773,11 @@
             }
         });
     }
-    // Create
+    // Create Education
 
     // trigger
-    $(document).on("change", "#dateStart", function () {
-
-        let startDate = $(this).val();
-
-        if (!startDate) {
-            $("#dateEnd").removeAttr("min");
-            return;
-        }
-
-        $("#dateEnd").attr("min", startDate);
-        let endDate = $("#dateEnd").val();
-
-        if (endDate && endDate < startDate) {
-            $("#dateEnd").val("");
-        }
-    });
-
     $(document).on("click", ".btn-edit-education", function () {
         let eduId = $(this).data("id");
-        // console.log("Education ID:", eduId);
         getEducationDetail(eduId);
     });
 
@@ -591,21 +822,43 @@
     });
 
     $(document).on("click", "#addEducation", function () {
-        let modalEl = document.getElementById("educationModal");
-        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
+        let modal = bootstrap.Modal.getOrCreateInstance(
+            $("#educationModal")[0]
+        );
+
+        existingEducationMedia = [];
+        deletedEducationMediaIds = [];
+        newEducationMedia = [];
+
+        $("#mediaFileInput").val("");
+        $("#mediaContainer").empty();
+        $("#skillContainer").empty();
         $("#educationId").val("");
         $("#educationInstitution").val("");
+
+        $("#skillContainer").empty().append(createSkillRow());
+
         $("#educationProgramme")
             .prop("disabled", true)
-            .html(`<option value="" selected disabled>Select Programme</option>`);
+            .html(`
+            <option value="" selected disabled>
+                Select Programme
+            </option>
+        `);
+
         $("#qualification").val("");
         $("#fieldOfStudy").val("");
         $("#cgpaInput").val("");
         $("#descriptionInput").val("");
-        $("#dateStart").val("");
-        $("#dateEnd").val("").removeAttr("min");
+
+        $("#startMonth").val("");
+        $("#startYear").val("");
+        $("#endMonth").val("");
+        $("#endYear").val("");
+
         $("#enrollmentStatus").val("Active");
+
         $("#educationModal .modal-title").text("Add Education");
         $("#btnDeleteEducation").hide();
         $("#btnSaveEducation").text("Save");
@@ -615,40 +868,106 @@
 
     $(document).on("click", "#btnSaveEducation", function () {
 
-        const input = document.getElementById("mediaFileInput");
+        let educationId = $("#educationId").val();
+        let input = document.getElementById("mediaFileInput");
 
-        if (!$("#educationInstitution").val()) return;
+        if (!$("#educationInstitution").val()) {
+            swalfire(
+                "Validation Error",
+                "Please select an institution",
+                "error"
+            );
+            return;
+        }
 
         if (!$("#educationProgramme").val()) {
-            swalfire("Validation Error", "Please select a programme", "error");
+            swalfire(
+                "Validation Error",
+                "Please select a programme",
+                "error"
+            );
             return;
         }
 
         if (!$("#fieldOfStudy").val()) {
-            swalfire("Validation Error", "Please select a field of study", "error");
+            swalfire(
+                "Validation Error",
+                "Please select a field of study",
+                "error"
+            );
             return;
         }
 
         if (!$("#qualification").val()) {
-            swalfire("Validation Error", "Please select a qualification", "error");
+            swalfire(
+                "Validation Error",
+                "Please select a qualification",
+                "error"
+            );
             return;
         }
 
-        const formData = new FormData();
+        // validate start date and end date
+        if (!isValidDates()) {
+            swalfire(
+                "Validation Error",
+                "End date cannot be earlier than start date.",
+                "error"
+            );
+            return;
+        }
 
+        if (!validateEducationSkills()) {
+            swalfire(
+                "Validation Error",
+                "Please complete all skills and do not select duplicate skills.",
+                "error"
+            );
+
+            return;
+        }
+
+        let startDate = buildValidDate(
+            $("#startMonth").val(),
+            $("#startYear").val()
+        );
+        let endDate = buildValidDate(
+            $("#endMonth").val(),
+            $("#endYear").val()
+        );
+
+        let formData = new FormData();
         formData.append("programme_id", $("#educationProgramme").val());
         formData.append("field_of_study_id", $("#fieldOfStudy").val());
         formData.append("qualification_id", $("#qualification").val());
         formData.append("cgpa", $("#cgpaInput").val() || "");
         formData.append("description", $("#descriptionInput").val());
-        formData.append("start_date", $("#dateStart").val() || "2026-05-01");
-        formData.append("end_date", $("#dateEnd").val() || "2026-05-05");
+        formData.append("start_date", startDate);
+        formData.append("end_date", endDate);
         formData.append("enrollment_status", $("#enrollmentStatus").val() || "Active");
 
-        if (input.files && input.files.length > 0) {
-            for (let i = 0; i < input.files.length; i++) {
-                formData.append(`media[${i}][file]`, input.files[i]);
-            }
+        $(".skill-select").each(function (index) {
+            let skillId = $(this).val();
+            formData.append(`skill_ids[${index}]`, skillId);
+        });
+
+        newEducationMedia.forEach((file, index) => {
+            formData.append(`media[${index}][file]`, file);
+        });
+
+        deletedEducationMediaIds.forEach((mediaId, index) => {
+            formData.append(`deleted_media_ids[${index}]`, mediaId);
+        });
+
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
+
+        if (educationId) {
+            let url = "{{ route('education.update', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", educationId);
+            updateEducation(url, formData);
+            return;
         }
 
         createEducation(formData);
@@ -659,14 +978,21 @@
         if (!organizationId) return;
         getProgrammesByOrganizationId(organizationId);
     });
+    // trigger
 
-    // init Get Data
+    // init Load Data from API
     $(document).ready(function () {
         getAllOrganizations();
         getAllFieldOfStudies();
         getAllQualifications();
+        getAllSkills();
     });
-    // trigger
-
+    // init Load Data from API
+    $(document).on("click", "#addSkill", function () {
+        $("#skillContainer").append(createSkillRow());
+    });
+    $(document).on("click", ".remove-skill", function () {
+        $(this).closest(".skill-row").remove();
+    });
 </script>
 @endpush
