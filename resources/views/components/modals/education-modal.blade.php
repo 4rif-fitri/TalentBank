@@ -225,11 +225,7 @@
 
         let baseUrl = "{{ asset('EDUCATION_FILE_URL') }}";
 
-        // =========================
-        // EXISTING MEDIA DATABASE
-        // =========================
         existingEducationMedia.forEach(media => {
-
             // Kalau user dah tekan delete, jangan render
             if (deletedEducationMediaIds.includes(media.id)) {
                 return;
@@ -240,97 +236,52 @@
             $container.append(`
             <div class="education-media-item">
 
-                <div
-                    class="position-relative"
-                    style="width:100px; height:75px;"
-                >
-
-                    <img
-                        src="${imageUrl}"
-                        class="rounded border"
-                        style="
-                            width:100%;
-                            height:100%;
-                            object-fit:cover;
-                        "
-                    >
-
-                    <button
-                        type="button"
-                        class="
-                            btn btn-danger btn-sm rounded-circle
-                            position-absolute top-0 end-0
-                            btn-remove-existing-media
-                        "
-                        data-id="${media.id}"
-                    >
+                <div class="position-relative"
+                     style="width:100px; height:75px;">
+                    <img src="${imageUrl}"
+                         class="rounded border"
+                         style="width:100%; height:100%; object-fit:cover;">
+                    <button type="button"
+                            class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 btn-remove-existing-media"
+                            data-id="${media.id}">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-
                 </div>
-
-                <small
-                    class="d-block text-truncate mt-1"
-                    style="width:100px;"
-                >
+                <small class="d-block text-truncate mt-1"
+                       style="width:100px;">
                     ${media.file_name}
                 </small>
 
-            </div>
-        `);
+            </div>`);
         });
 
 
-        // =========================
-        // NEW MEDIA
-        // =========================
         newEducationMedia.forEach((file, index) => {
-
             let preview = URL.createObjectURL(file);
 
             $container.append(`
             <div class="education-media-item">
-
-                <div
-                    class="position-relative"
-                    style="width:100px; height:75px;"
-                >
-
-                    <img
-                        src="${preview}"
-                        class="rounded border"
-                        style="
-                            width:100%;
-                            height:100%;
-                            object-fit:cover;
-                        "
-                    >
-
-                    <button
-                        type="button"
-                        class="
-                            btn btn-danger btn-sm rounded-circle
-                            position-absolute top-0 end-0
-                            btn-remove-new-media
-                        "
-                        data-index="${index}"
-                    >
+                <div class="position-relative"
+                     style="width:100px; height:75px;">
+                    <img src="${preview}"
+                         class="rounded border"
+                         style="width:100%;height:100%;object-fit:cover;">
+                    <button type="button"
+                            class="btn btn-danger btn-sm rounded-circle position-absolute top-0 end-0 btn-remove-new-media"
+                            data-index="${index}">
                         <i class="fa-solid fa-xmark"></i>
                     </button>
-
                 </div>
-
-                <small
-                    class="d-block text-truncate mt-1"
-                    style="width:100px;"
-                >
+                <small class="d-block text-truncate mt-1"
+                       style="width:100px;">
                     ${file.name}
                 </small>
 
             </div>
         `);
         });
-    }// Get Data from API
+    }
+    // Get Data from API
     function getAllOrganizations() {
 
         return $.ajax({
@@ -475,6 +426,7 @@
             }
         });
     }
+
     $(document).on("change", "#mediaFileInput", function () {
 
         let files = Array.from(this.files);
@@ -882,35 +834,22 @@
         formData.append("end_date", endDate);
         formData.append("enrollment_status", $("#enrollmentStatus").val() || "Active");
 
-        // =========================
-        // NEW MEDIA
-        // =========================
         newEducationMedia.forEach((file, index) => {
-            formData.append(
-                `media[${index}][file]`,
-                file
-            );
+            formData.append(`media[${index}][file]`, file);
         });
 
-
-        // =========================
-        // DELETED EXISTING MEDIA
-        // =========================
         deletedEducationMediaIds.forEach((mediaId, index) => {
-            formData.append(
-                `deleted_media_ids[${index}]`,
-                mediaId
-            );
+            formData.append(`deleted_media_ids[${index}]`, mediaId);
         });
 
+        for (let [key, value] of formData.entries()) {
+            console.log(key, value);
+        }
 
         if (educationId) {
-
             let url = "{{ route('education.update', ['id' => '__ID__']) }}";
             url = url.replace("__ID__", educationId);
-
             updateEducation(url, formData);
-
             return;
         }
 
