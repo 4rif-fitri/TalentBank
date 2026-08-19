@@ -2,6 +2,7 @@
 
 use App\Http\Helpers\ApiResponse;
 use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\CheckRoleMiddleware;
 use App\Http\Middleware\GuestMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -17,7 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'auth' => AuthMiddleware::class,
-            'guest' => GuestMiddleware::class
+            'guest' => GuestMiddleware::class,
+            'checkRole' => CheckRoleMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
