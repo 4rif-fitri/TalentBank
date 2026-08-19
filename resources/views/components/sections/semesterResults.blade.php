@@ -104,7 +104,7 @@
         }
 
         function templateResultArticle(semester, hasResult, resultButton) {
-            // console.log(semester);
+            console.log(semester);
 
             return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
