@@ -163,29 +163,28 @@
                 </div>
 
                 <!-- Skills -->
-                <!-- <div class="mb-3">
-                    <label class="form-label">Skill</label>
-                    <div>
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label fw-bold">Skill</label>
                         <button id="addSkill" type="button" class="btn btn-outline-primary btn-sm">+ Add
                             Skill</button>
-                        <div class="mt-2" id="skillContainer">
-
-                        </div>
                     </div>
-                </div> -->
+                    <div class="mt-2" id="skillContainer">
+
+                    </div>
+                </div>
 
                 <!-- Media -->
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Media</label>
-                    <p class="text-muted small mb-2">
-                        Add media like images, documents or presentations.
-                    </p>
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label fw-bold">Media</label>
 
-                    <input type="file" id="mediaFileInput" accept="image/*" multiple hidden>
+                        <input type="file" id="mediaFileInput" accept="image/*" multiple hidden>
 
-                    <label for="mediaFileInput" id="addMedia" class="btn btn-outline-primary btn-sm">
-                        + Add Media
-                    </label>
+                        <label for="mediaFileInput" id="addMedia" class="btn btn-outline-primary btn-sm">
+                            + Add Media
+                        </label>
+                    </div>
 
                     <div id="mediaContainer" class="d-flex gap-2 flex-wrap mt-3">
 
@@ -212,6 +211,7 @@
     let listOfFieldOfStudies = [];
     let listOfQualifications = [];
     let listOfOrganizations = [];
+    let listOfSkills = [];
 
     let existingEducationMedia = [];
     let deletedEducationMediaIds = [];
@@ -380,7 +380,18 @@
                 $("#fieldOfStudy").val(data.field_of_study_id);
                 $("#cgpaInput").val(data.cgpa);
                 $("#descriptionInput").val(data.description);
-                $("#enrollmentStatus").val(data.enrollment_status ?? "Active");
+                $("#enrollmentStatus").val(
+                    data.enrollment_status ?? "Active"
+                );
+
+                // SKILLS
+                $("#skillContainer").empty();
+
+                (data.skills ?? []).forEach(skill => {
+                    $("#skillContainer").append(
+                        createSkillRow(skill.id)
+                    );
+                });
 
                 // MEDIA
                 existingEducationMedia = data.media ?? [];
@@ -420,12 +431,35 @@
 
                 modal.show();
             },
-
             error: function (xhr) {
                 console.error(xhr.responseJSON);
             }
         });
     }
+
+    function getAllSkills() {
+        listOfSkills = [
+            {
+                "id": 1,
+                "skill_name": "Laravel",
+                "skill_category": "Web Development",
+                "icon_url": "laravel.png"
+            },
+            {
+                "id": 2,
+                "skill_name": "JavaScript",
+                "skill_category": "Programming Language",
+                "icon_url": "javascript.png"
+            },
+            {
+                "id": 3,
+                "skill_name": "MySQL",
+                "skill_category": "Database",
+                "icon_url": "mysql.png"
+            }
+        ]
+    }
+
 
     $(document).on("change", "#mediaFileInput", function () {
 
@@ -648,7 +682,72 @@
         });
     }
     // Update
+    function validateEducationSkills() {
 
+        let selectedSkillIds = [];
+        let isValid = true;
+
+        $(".skill-row").each(function () {
+
+            let $select = $(this).find(".skill-select");
+            let skillId = $select.val();
+
+            $select.removeClass("is-invalid");
+
+            if (!skillId) {
+                $select.addClass("is-invalid");
+                isValid = false;
+                return;
+            }
+
+            if (selectedSkillIds.includes(skillId)) {
+                $select.addClass("is-invalid");
+                isValid = false;
+                return;
+            }
+
+            selectedSkillIds.push(skillId);
+        });
+
+        return isValid;
+    }
+    function createSkillRow(selectedSkillId = "") {
+
+        let skillOptions = `
+        <option value="" disabled ${!selectedSkillId ? "selected" : ""}>
+            Select Skill
+        </option>
+    `;
+
+        listOfSkills.forEach(skill => {
+
+            let selected =
+                String(skill.id) === String(selectedSkillId)
+                    ? "selected"
+                    : "";
+
+            skillOptions += `
+            <option value="${skill.id}" ${selected}>
+                ${skill.skill_name}
+            </option>
+        `;
+        });
+
+        return `
+        <div class="input-group skill-row mb-2">
+
+            <select class="form-select form-select-sm skill-select" required>
+                ${skillOptions}
+            </select>
+
+            <button type="button"
+                    class="btn btn-outline-danger remove-skill">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+
+        </div>
+    `;
+    }
     // Create Education
     function createEducation(formData) {
 
@@ -734,9 +833,11 @@
 
         $("#mediaFileInput").val("");
         $("#mediaContainer").empty();
-
+        $("#skillContainer").empty();
         $("#educationId").val("");
         $("#educationInstitution").val("");
+
+        $("#skillContainer").empty().append(createSkillRow());
 
         $("#educationProgramme")
             .prop("disabled", true)
@@ -764,6 +865,7 @@
 
         modal.show();
     });
+
     $(document).on("click", "#btnSaveEducation", function () {
 
         let educationId = $("#educationId").val();
@@ -815,6 +917,16 @@
             return;
         }
 
+        if (!validateEducationSkills()) {
+            swalfire(
+                "Validation Error",
+                "Please complete all skills and do not select duplicate skills.",
+                "error"
+            );
+
+            return;
+        }
+
         let startDate = buildValidDate(
             $("#startMonth").val(),
             $("#startYear").val()
@@ -833,6 +945,11 @@
         formData.append("start_date", startDate);
         formData.append("end_date", endDate);
         formData.append("enrollment_status", $("#enrollmentStatus").val() || "Active");
+
+        $(".skill-select").each(function (index) {
+            let skillId = $(this).val();
+            formData.append(`skill_ids[${index}]`, skillId);
+        });
 
         newEducationMedia.forEach((file, index) => {
             formData.append(`media[${index}][file]`, file);
@@ -868,9 +985,14 @@
         getAllOrganizations();
         getAllFieldOfStudies();
         getAllQualifications();
+        getAllSkills();
     });
     // init Load Data from API
-
-
+    $(document).on("click", "#addSkill", function () {
+        $("#skillContainer").append(createSkillRow());
+    });
+    $(document).on("click", ".remove-skill", function () {
+        $(this).closest(".skill-row").remove();
+    });
 </script>
 @endpush
