@@ -28,7 +28,9 @@ class EducationController extends Controller
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],
             'enrollment_status' => ['required', 'string', Rule::in(AppConstants::ENROLLMENT_STATUS)],
-            'media' => ['nullable']
+            'media' => ['nullable', 'array'],
+            'deleted_media_ids' => ['nullable', 'array'],
+            'deleted_media_ids.*' => ['integer', 'exists:media,id']
         ]);
     }
 
