@@ -124,4 +124,36 @@ class MediaService
 
         return $result;
     }
+
+    /**
+     * Deletes media records in database and uploads folder
+     * 
+     * @param array $mediaIds
+     * @param int $userProfileId
+     * @param string $filePath
+     * @throws Exception
+     * @return bool
+     */
+    public function deleteMediaByIds(array $mediaIds, int $userProfileId, string $filePath): bool
+    {
+        if (empty($mediaIds)) {
+            return true;
+        }
+
+        $media = Media::whereIn('id', $mediaIds)->where('uploaded_by_user_id', $userProfileId)->get();
+
+        if ($media->count() == 0) {
+            throw new Exception('No media found with given ID/IDs.', Response::HTTP_NOT_FOUND);
+        }
+
+        $result = Media::whereIn('id', $mediaIds)->where('uploaded_by_user_id', $userProfileId)->delete();
+
+        foreach ($media as $m) {
+            if (File::exists($filePath . $m->file_name)) {
+                File::delete($filePath . $m->file_name);
+            }
+        }
+
+        return $result;
+    }
 }
