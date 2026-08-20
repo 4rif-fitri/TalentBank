@@ -33,26 +33,22 @@ class ProfileService
      */
     public function getProfileDataByProfileId(int $userProfileId): UserProfile
     {
-        $profile = Cache::remember('profile_' . $userProfileId, 1800, function () use ($userProfileId) {
-            $profile = UserProfile::with([
-                'organizationUsers' => function ($query) {
-                    $query->where('status', 1);
-                },
-                'organizationUsers.organization',
-                'organizationUsers.role',
-                'activeProgrammes.organization',
-                'socialMediaLinks.socialMedia',
-                'userLanguages.language',
-                'skills'
-            ])
-                ->find($userProfileId);
+        $profile = UserProfile::with([
+            'organizationUsers' => function ($query) {
+                $query->where('status', 1);
+            },
+            'organizationUsers.organization',
+            'organizationUsers.role',
+            'activeProgrammes.organization',
+            'socialMediaLinks.socialMedia',
+            'userLanguages.language',
+            'skills'
+        ])
+            ->find($userProfileId);
 
-            if (!isset($profile)) {
-                throw new Exception('Profile not found with given ID.', Response::HTTP_NOT_FOUND);
-            }
-
-            return $profile;
-        });
+        if (!isset($profile)) {
+            throw new Exception('Profile not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
 
         return $profile;
     }
@@ -110,6 +106,8 @@ class ProfileService
 
             return $result;
         });
+
+        Cache::forget('profile_' . $profileId);
 
         if (!$result) {
             throw new Exception('Failed to update profile.', Response::HTTP_BAD_REQUEST);
