@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\AppConstants;
 use App\Http\Helpers\ApiResponse;
 use App\Services\EducationService;
 use Illuminate\Http\JsonResponse;
@@ -26,7 +27,7 @@ class EducationController extends Controller
             'cgpa' => ['nullable', 'numeric', 'between:0,4.00', 'decimal:0,2'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],
-            'enrollment_status' => ['required', 'string', Rule::in(['Active', 'Graduated', 'Deferred', 'Withdrawn'])],
+            'enrollment_status' => ['required', 'string', Rule::in(AppConstants::ENROLLMENT_STATUS)],
             'media' => ['nullable']
         ]);
     }

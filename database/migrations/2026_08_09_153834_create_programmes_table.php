@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\AppConstants;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('faculty_id')->constrained('faculties')->onDelete('restrict');
             $table->string('programme_name');
             $table->string('programme_code');
-            $table->enum('programme_level', ['Diploma', 'Bachelor', 'Master', 'Doctor of Philosophy']);
+            $table->enum('programme_level', AppConstants::PROGRAMME_LEVEL);
             $table->integer('duration_years', false, true);
             $table->boolean('status');
             $table->foreignId('organization_id')->constrained('organizations')->onDelete('restrict');

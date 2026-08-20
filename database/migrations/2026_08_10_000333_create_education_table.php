@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\AppConstants;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,8 +21,8 @@ return new class extends Migration {
             $table->decimal('cgpa', 3, 2)->nullable();
             $table->date('start_date');
             $table->date('end_date');
-            $table->enum('enrollment_status', ['Active', 'Graduated', 'Deferred', 'Withdrawn']);
-            $table->enum('verification_status', ['Pending', 'Verified', 'Rejected']);
+            $table->enum('enrollment_status', AppConstants::ENROLLMENT_STATUS);
+            $table->enum('verification_status', AppConstants::VERIFICATION_STATUS);
         });
     }
 

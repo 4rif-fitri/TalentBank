@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\AppConstants;
 use App\Models\Enrollment;
 use App\Models\Programme;
 use App\Models\User;
@@ -29,8 +30,8 @@ class EnrollmentFactory extends Factory
             'intake_year' => $this->faker->year(),
             'graduation_year' => $this->faker->year(),
             'cgpa' => $this->faker->randomFloat(2, 0, 4.0),
-            'enrollment_status' => $this->faker->randomElement(['Active', 'Graduated', 'Deferred', 'Withdrawn']),
-            'verification_status' => $this->faker->randomElement(['Pending', 'Verified', 'Rejected']),
+            'enrollment_status' => $this->faker->randomElement(AppConstants::ENROLLMENT_STATUS),
+            'verification_status' => $this->faker->randomElement(VERIFICATION_STATUS),
         ];
     }
 }
