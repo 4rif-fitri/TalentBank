@@ -23,7 +23,7 @@ class UserLanguageFactory extends Factory
         return [
             'user_profile_id' => UserProfile::inRandomOrder()->first()->id,
             'language_id' => Language::inRandomOrder()->first()->id,
-            'proficiency_level' => fake()->randomElement(AppConstants::PROFICIENCY_LEVEL)
+            'proficiency_level' => fake()->randomElement(AppConstants::PROFICIENCY_LEVELS)
         ];
     }
 }
