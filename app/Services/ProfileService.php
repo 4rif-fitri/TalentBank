@@ -41,6 +41,7 @@ class ProfileService
             'activeProgrammes.organization',
             'socialMediaLinks.socialMedia',
             'userLanguages.language',
+            'skills'
         ])
             ->find($userProfileId);
 

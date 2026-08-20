@@ -11,11 +11,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('user_languages', function (Blueprint $table) {
+        Schema::create('user_skills', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_profile_id')->constrained('user_profiles')->onDelete('cascade');
-            $table->foreignId('language_id')->constrained('languages')->onDelete('restrict');
-            $table->enum('proficiency_level', AppConstants::PROFICIENCY_LEVEL);
+            $table->morphs('source');
+            $table->foreignId('skill_id')->constrained('skills')->onDelete('restrict');
         });
     }
 
@@ -24,6 +23,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_languages');
+        Schema::dropIfExists('user_skills');
     }
 };

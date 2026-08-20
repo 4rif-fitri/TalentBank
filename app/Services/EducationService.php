@@ -52,7 +52,8 @@ class EducationService
             'qualification',
             'programme',
             'programme.organization',
-            'media'
+            'media',
+            'skills'
         ])
             ->where('user_profile_id', $userProfileId)
             ->get();
