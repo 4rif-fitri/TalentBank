@@ -24,7 +24,7 @@ class ProgrammeFactory extends Factory
             'faculty_id' => Faculty::inRandomOrder()->first()->id,
             'programme_name' => $this->faker->word(),
             'programme_code' => $this->faker->numerify("########"),
-            'programme_level' => $this->faker->randomElement(AppConstants::PROGRAMME_LEVEL),
+            'programme_level' => $this->faker->randomElement(AppConstants::PROGRAMME_LEVELS),
             'duration_years' => $this->faker->randomDigitNotZero(),
             'status' => $this->faker->boolean(),
             'organization_id' => Organization::inRandomOrder()->first()->id,

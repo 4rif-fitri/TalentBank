@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('faculty_id')->constrained('faculties')->onDelete('restrict');
             $table->string('programme_name');
             $table->string('programme_code');
-            $table->enum('programme_level', AppConstants::PROGRAMME_LEVEL);
+            $table->enum('programme_level', AppConstants::PROGRAMME_LEVELS);
             $table->integer('duration_years', false, true);
             $table->boolean('status');
             $table->foreignId('organization_id')->constrained('organizations')->onDelete('restrict');

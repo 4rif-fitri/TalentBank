@@ -21,7 +21,7 @@ class UserLanguageController extends Controller
     {
         return $request->validate([
             'language_id' => ['required', 'exists:languages,id'],
-            'proficiency_level' => ['required', Rule::in(AppConstants::PROFICIENCY_LEVEL)]
+            'proficiency_level' => ['required', Rule::in(AppConstants::PROFICIENCY_LEVELS)]
         ]);
         ;
     }
