@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_profile_id')->constrained('user_profiles')->onDelete('cascade');
             $table->foreignId('language_id')->constrained('languages')->onDelete('restrict');
-            $table->enum('proficiency_level', AppConstants::PROFICIENCY_LEVEL);
+            $table->enum('proficiency_level', AppConstants::PROFICIENCY_LEVELS);
         });
     }
 

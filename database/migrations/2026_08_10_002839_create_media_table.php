@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\AppConstants;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('uploaded_by_user_id')->constrained('user_profiles', 'id')->onDelete('cascade');
             $table->string('source_name');
             $table->integer('source_id')->unsigned();
-            $table->enum('media_type', ['image', 'video', 'pdf', 'document']);
+            $table->enum('media_type', AppConstants::MEDIA_TYPES);
             $table->string('file_name');
             $table->string('title')->nullable();
             $table->text('description')->nullable();
