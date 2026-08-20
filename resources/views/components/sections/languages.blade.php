@@ -6,16 +6,11 @@
         </button>
     </div>
     <hr>
+    <div id="languageList">
 
-    <article class="m-1">
-        <p class="fw-bold">Bahasa Melayu</p>
-        <p>Native</p>
-    </article>
 
-    <article class="m-1">
-        <p class="fw-bold">English</p>
-        <p> Professional working proficiency</p>
-    </article>
+
+    </div>
 </section>
 
 @push('scripts')
