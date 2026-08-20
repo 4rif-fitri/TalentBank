@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\AppConstants;
 use App\Http\Helpers\ApiResponse;
 use App\Services\UserLanguageService;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +21,7 @@ class UserLanguageController extends Controller
     {
         return $request->validate([
             'language_id' => ['required', 'exists:languages,id'],
-            'proficiency_level' => ['required', Rule::in(['Beginner', 'Elementary', 'Intermediate', 'Advanced'])]
+            'proficiency_level' => ['required', Rule::in(AppConstants::PROFICIENCY_LEVEL)]
         ]);
         ;
     }

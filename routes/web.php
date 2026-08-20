@@ -10,6 +10,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SocialMediaLinkController;
 use App\Http\Controllers\UserLanguageController;
 
@@ -139,6 +140,11 @@ Route::middleware(['auth', 'throttle:api'])->prefix('api')->group(function () {
         Route::put('/update/{id}', [UserLanguageController::class, 'update'])->name('languages.update');//+
         Route::delete('/delete/{id}', [UserLanguageController::class, 'delete'])->name('languages.delete');//+
     });
+
+    Route::prefix('skills')->group(function () {
+        Route::get('/', [SkillController::class, 'getAllSkills'])->name('skills.getAllSkills');
+        Route::post('/store', [SkillController::class, 'store'])->name('skills.store');
+        Route::put('/update/{id}', [SkillController::class, 'update'])->name('skills.update');
+        Route::delete('/delete/{id}', [SkillController::class, 'delete'])->name('skills.delete');
+    });
 });
-
-

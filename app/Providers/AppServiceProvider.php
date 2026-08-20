@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\Helpers\ApiResponse;
 use App\Models\Education;
 use App\Models\Semester;
+use App\Models\UserProfile;
 use Exception;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -36,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
             'project' => Semester::class,
             'honors_award' => Semester::class,
             'certification' => Semester::class,
+            'user_profile' => UserProfile::class
         ]);
 
         RateLimiter::for('api', function (Request $request) {
