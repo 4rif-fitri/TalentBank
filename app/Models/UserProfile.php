@@ -58,4 +58,9 @@ class UserProfile extends Model
     {
         return $this->hasMany(UserLanguage::class, 'user_profile_id');
     }
+
+    public function skills()
+    {
+        return $this->morphToMany(Skill::class, 'source', 'user_skills');
+    }
 }

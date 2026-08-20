@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\AppConstants;
 use App\Models\Faculty;
 use App\Models\Organization;
 use App\Models\Programme;
@@ -23,7 +24,7 @@ class ProgrammeFactory extends Factory
             'faculty_id' => Faculty::inRandomOrder()->first()->id,
             'programme_name' => $this->faker->word(),
             'programme_code' => $this->faker->numerify("########"),
-            'programme_level' => $this->faker->randomElement(['Diploma', 'Bachelor', 'Master', 'Doctor of Philosophy']),
+            'programme_level' => $this->faker->randomElement(AppConstants::PROGRAMME_LEVEL),
             'duration_years' => $this->faker->randomDigitNotZero(),
             'status' => $this->faker->boolean(),
             'organization_id' => Organization::inRandomOrder()->first()->id,

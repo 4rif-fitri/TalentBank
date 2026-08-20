@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\AppConstants;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,8 +22,8 @@ return new class extends Migration {
             $table->string('phone_no')->nullable();
             $table->string('profile_image')->nullable();
             $table->string('cover_image')->nullable();
-            $table->enum('profile_visibility', ['Public', 'Recruiter', 'Private'])->default('Public');
-            $table->enum('employment_status', ['Open to Work', 'Open to Internship', 'Employed', 'Not Looking'])->default('Open to Work');
+            $table->enum('profile_visibility', AppConstants::PROFILE_VISIBILITY)->default('Public');
+            $table->enum('employment_status', AppConstants::EMPLOYMENT_STATUS)->default('Open to Work');
             $table->timestamps();
         });
     }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\AppConstants;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -32,8 +33,8 @@ class UserProfileFactory extends Factory
             'phone_no' => fake()->phoneNumber(),
             'profile_image' => 'default.png',
             'cover_image' => 'default.png',
-            'profile_visibility' => fake()->randomElement(['Public', 'Recruiter', 'Private']),
-            'employment_status' => fake()->randomElement(['Open to Work', 'Open to Internship', 'Employed', 'Not Looking']),
+            'profile_visibility' => fake()->randomElement(AppConstants::PROFILE_VISIBILITY),
+            'employment_status' => fake()->randomElement(AppConstants::EMPLOYMENT_STATUS),
         ];
     }
 }

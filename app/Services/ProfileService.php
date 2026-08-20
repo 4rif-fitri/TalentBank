@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
@@ -32,21 +33,26 @@ class ProfileService
      */
     public function getProfileDataByProfileId(int $userProfileId): UserProfile
     {
-        $profile = UserProfile::with([
-            'organizationUsers' => function ($query) {
-                $query->where('status', 1);
-            },
-            'organizationUsers.organization',
-            'organizationUsers.role',
-            'activeProgrammes.organization',
-            'socialMediaLinks.socialMedia',
-            'userLanguages.language',
-        ])
-            ->find($userProfileId);
+        $profile = Cache::remember('profile_' . $userProfileId, 1800, function () use ($userProfileId) {
+            $profile = UserProfile::with([
+                'organizationUsers' => function ($query) {
+                    $query->where('status', 1);
+                },
+                'organizationUsers.organization',
+                'organizationUsers.role',
+                'activeProgrammes.organization',
+                'socialMediaLinks.socialMedia',
+                'userLanguages.language',
+                'skills'
+            ])
+                ->find($userProfileId);
 
-        if (!isset($profile)) {
-            throw new Exception('Profile not found with given ID.', Response::HTTP_NOT_FOUND);
-        }
+            if (!isset($profile)) {
+                throw new Exception('Profile not found with given ID.', Response::HTTP_NOT_FOUND);
+            }
+
+            return $profile;
+        });
 
         return $profile;
     }

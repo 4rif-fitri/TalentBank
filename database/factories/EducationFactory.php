@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\AppConstants;
 use App\Models\Education;
 use App\Models\FieldOfStudy;
 use App\Models\Programme;
@@ -30,8 +31,8 @@ class EducationFactory extends Factory
             'cgpa' => fake()->randomFloat(2, 2.00, 4.00),
             'start_date' => now()->subMonth()->format('Y-m-d'),
             'end_date' => now()->format('Y-m-d'),
-            'enrollment_status' => fake()->randomElement(['Active', 'Graduated', 'Deferred', 'Withdrawn']),
-            'verification_status' => fake()->randomElement(['Pending', 'Verified', 'Rejected']),
+            'enrollment_status' => fake()->randomElement(AppConstants::ENROLLMENT_STATUS),
+            'verification_status' => fake()->randomElement(VERIFICATION_STATUS),
         ];
     }
 }

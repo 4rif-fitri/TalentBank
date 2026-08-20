@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Constants\AppConstants;
 use App\Models\Language;
 use App\Models\UserLanguage;
 use App\Models\UserProfile;
@@ -22,7 +23,7 @@ class UserLanguageFactory extends Factory
         return [
             'user_profile_id' => UserProfile::inRandomOrder()->first()->id,
             'language_id' => Language::inRandomOrder()->first()->id,
-            'proficiency_level' => fake()->randomElement(['Beginner', 'Elementary', 'Intermediate', 'Advanced'])
+            'proficiency_level' => fake()->randomElement(AppConstants::PROFICIENCY_LEVEL)
         ];
     }
 }

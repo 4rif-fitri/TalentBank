@@ -49,4 +49,9 @@ class Education extends Model
     {
         return $this->morphMany(Media::class, 'source', 'source_name', 'source_id');
     }
+
+    public function skills()
+    {
+        return $this->morphToMany(Skill::class, 'source', 'user_skills');
+    }
 }
