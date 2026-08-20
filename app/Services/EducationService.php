@@ -30,6 +30,10 @@ class EducationService
         if (isset($data['media'])) {
             $this->mediaService->createMedia($data, $userProfileId);
         }
+
+        if (isset($data['deleted_media_ids'])) {
+            $this->mediaService->deleteMediaByIds($data['deleted_media_ids'], $userProfileId, config('services.uploads_file_path.education'));
+        }
     }
 
     /**
