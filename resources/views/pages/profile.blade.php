@@ -108,20 +108,6 @@
             type: "GET",
             dataType: "json",
             success: function ({ data }) {
-
-                data.user_skills = [
-                    {
-                        id: 10,
-                        skill_id: 1,
-                        proficiency_level: "Expert",
-
-                        skill: {
-                            id: 1,
-                            skill_name: "Laravel"
-                        }
-                    }
-                ];
-
                 profileData = data
 
                 console.log("DATA: ", data);

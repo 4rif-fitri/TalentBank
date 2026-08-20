@@ -32,7 +32,7 @@ class EducationFactory extends Factory
             'start_date' => now()->subMonth()->format('Y-m-d'),
             'end_date' => now()->format('Y-m-d'),
             'enrollment_status' => fake()->randomElement(AppConstants::ENROLLMENT_STATUS),
-            'verification_status' => fake()->randomElement(VERIFICATION_STATUS),
+            'verification_status' => fake()->randomElement(AppConstants::VERIFICATION_STATUS),
         ];
     }
 }
