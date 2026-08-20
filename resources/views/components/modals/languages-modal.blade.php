@@ -132,7 +132,7 @@
                 </option>`;
         });
 
-        let proficiencies = ["Beginner", "Intermediate", "Advanced", "Fluent", "Native"];
+        let proficiencies = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
 
         let proficiencyOptions = `
             <option value="" disabled

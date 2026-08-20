@@ -163,10 +163,11 @@
 
                     $("#activeEducationList").append($element);
                 });
+
                 getAllSocialMedia()
                 renderSocialMediaLinks(data.social_media_links);
                 renderLanguages(data.user_languages ?? []);
-                // renderSkills(data.user_skills ?? []);
+                renderSkills(data.skills ?? []);
             },
 
             error: function (xhr) {
