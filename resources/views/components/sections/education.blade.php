@@ -195,7 +195,7 @@
                 let $row = $("<div>").addClass("row g-3 px-3");
 
                 educationGroup.forEach(education => {
-                    console.log({ education });
+                    // console.log({ education });
 
                     let startDate = convertDateTostring(education.start_date)
                     let endDate = convertDateTostring(education.end_date)

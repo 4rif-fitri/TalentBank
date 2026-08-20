@@ -167,7 +167,6 @@
                 getAllSocialMedia()
                 renderSocialMediaLinks(data.social_media_links);
                 renderLanguages(data.user_languages ?? []);
-                renderSkills(data.skills ?? []);
             },
 
             error: function (xhr) {

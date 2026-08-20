@@ -37,7 +37,7 @@
 
             success: function (response) {
                 allLanguages = response.data ?? response;
-                console.log("ALL LANGUAGES:", allLanguages);
+                // console.log("ALL LANGUAGES:", allLanguages);
             },
 
             error: function (xhr) {
@@ -69,6 +69,8 @@
             dataType: "json",
 
             success: function ({ data }) {
+                console.log("Data", data);
+
                 profileData = data;
                 renderLanguages(data.user_languages ?? []);
                 renderLanguageModal();
@@ -85,7 +87,6 @@
             item => String(item.id) === String(selectedLanguageId)
         );
 
-        // EXISTING ITEM - DISPLAY MODE
         if (userLanguageId && !editMode) {
 
             return `
@@ -132,7 +133,7 @@
                 </option>`;
         });
 
-        let proficiencies = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+        let proficiencies = @json(\App\Constants\AppConstants:: PROFICIENCY_LEVELS);
 
         let proficiencyOptions = `
             <option value="" disabled
@@ -175,6 +176,7 @@
     }
 
     function createLanguage(languageId, proficiency) {
+        console.log({ languageId, proficiency });
 
         $.ajax({
             url: "{{ route('languages.store') }}",
