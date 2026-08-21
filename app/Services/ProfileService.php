@@ -166,7 +166,7 @@ class ProfileService
         $profile = $this->getProfileModel($profileId);
 
         // delete existing image file
-        if (isset($profile->{$column}) && File::exists($imagePath . $profile->{$column})) {
+        if (isset($profile->{$column})) {
             File::delete($imagePath . $profile->{$column});
         }
 

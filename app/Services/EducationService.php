@@ -5,15 +5,16 @@ namespace App\Services;
 use App\Models\Education;
 use App\Models\FieldOfStudy;
 use App\Models\Qualification;
-use App\Models\UserProfile;
-use App\Models\UserSkill;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class EducationService
 {
+    private const CACHE_TIME_HOURS = 1;
+
     /**
      * Create a new class instance.
      */
@@ -212,7 +213,9 @@ class EducationService
      */
     public function getAllFieldOfStudies(): Collection
     {
-        return FieldOfStudy::get();
+        return Cache::remember('field_of_studies', self::CACHE_TIME_HOURS, function () {
+            return FieldOfStudy::get();
+        });
     }
 
     /**
@@ -222,6 +225,8 @@ class EducationService
      */
     public function getAllQualifications(): Collection
     {
-        return Qualification::get();
+        return Cache::remember('qualifications', self::CACHE_TIME_HOURS, function () {
+            return Qualification::get();
+        });
     }
 }

@@ -52,6 +52,7 @@ class Education extends Model
 
     public function skills()
     {
-        return $this->morphToMany(Skill::class, 'source', 'user_skills');
+        return $this->morphToMany(Skill::class, 'source', 'user_skills')
+            ->withPivot('id');
     }
 }
