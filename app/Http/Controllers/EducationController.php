@@ -28,9 +28,18 @@ class EducationController extends Controller
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],
             'enrollment_status' => ['required', 'string', Rule::in(AppConstants::ENROLLMENT_STATUS)],
+
+            // media related validation
             'media' => ['nullable', 'array'],
             'deleted_media_ids' => ['nullable', 'array'],
-            'deleted_media_ids.*' => ['integer', 'exists:media,id']
+            'deleted_media_ids.*' => ['integer', 'exists:media,id'],
+
+            // skills related validation
+            'new_skill_ids' => ['nullable', 'array'],
+            'new_skill_ids.*' => ['integer', 'exists:skills,id'],
+            'updated_user_skills' => ['nullable', 'array'],
+            'deleted_user_skill_ids' => ['nullable', 'array'],
+            'deleted_user_skill_ids.*' => ['integer', 'exists:user_skills,id'],
         ]);
     }
 

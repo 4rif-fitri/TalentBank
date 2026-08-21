@@ -7,9 +7,12 @@ use App\Models\UserLanguage;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class UserLanguageService
 {
+    private const CACHE_TIME_HOURS = 1;
+
     private function checkUserLanguageExists(int $languageId, int $userProfileId, ?int $userLanguageId = null): void
     {
         $userLanguageExists = UserLanguage::where([
@@ -47,7 +50,9 @@ class UserLanguageService
      */
     public function getAllLanguages(): Collection
     {
-        return Language::all();
+        return Cache::remember('languages', now()->addHours(self::CACHE_TIME_HOURS), function () {
+            return Language::all();
+        });
     }
 
     /**

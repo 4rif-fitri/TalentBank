@@ -7,9 +7,12 @@ use App\Models\SocialMediaLink;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class SocialMediaLinkService
 {
+    private const CACHE_TIME_HOURS = 1;
+
     private function getSocialMediaLinkModelById(int $linkId, int $userProfileId): SocialMediaLink
     {
         $socialMediaLink = SocialMediaLink::where([
@@ -47,7 +50,9 @@ class SocialMediaLinkService
      */
     public function getAllSocialMedia(): Collection
     {
-        return SocialMedia::all();
+        return Cache::remember('social_media', now()->addHours(self::CACHE_TIME_HOURS), function () {
+            return SocialMedia::all();
+        });
     }
 
     /**

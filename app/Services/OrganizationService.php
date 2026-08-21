@@ -11,10 +11,13 @@ use App\Models\Role;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class OrganizationService
 {
+    private const CACHE_TIME_HOURS = 1;
+
     /**
      * Get all organizations
      * 
@@ -142,7 +145,9 @@ class OrganizationService
      */
     public function getAllOrganizationTypes(): Collection
     {
-        return OrganizationType::all();
+        return Cache::remember('organization_types', now()->addHours(self::CACHE_TIME_HOURS), function () {
+            return OrganizationType::all();
+        });
     }
 
     /**
@@ -152,7 +157,9 @@ class OrganizationService
      */
     public function getAllIndustryCategories(): Collection
     {
-        return IndustryCategory::all();
+        return Cache::remember('industry_categories', now()->addHours(self::CACHE_TIME_HOURS), function () {
+            return IndustryCategory::all();
+        });
     }
 
     /**
@@ -162,6 +169,8 @@ class OrganizationService
      */
     public function getAllIndustrySectors(): Collection
     {
-        return IndustrySector::all();
+        return Cache::remember('industry_sectors', now()->addHours(self::CACHE_TIME_HOURS), function () {
+            return IndustrySector::all();
+        });
     }
 }
