@@ -68,9 +68,9 @@ class FacultyService
      * @param int $facultyId
      * @param array $data
      * 
-     * @return bool
+     * @return Faculty
      */
-    public function updateFaculty(int $facultyId, array $data): bool
+    public function updateFaculty(int $facultyId, array $data): Faculty
     {
         $faculty = Faculty::find($facultyId);
 
@@ -78,11 +78,11 @@ class FacultyService
             throw new Exception('Faculty not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $result = $faculty->update([
+        $faculty->update([
             'faculty_name' => $data['faculty_name'],
             'faculty_code' => $data['faculty_code']
         ]);
 
-        return $result;
+        return $faculty;
     }
 }

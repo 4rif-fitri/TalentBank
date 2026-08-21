@@ -75,9 +75,9 @@ class SkillController extends Controller
 
         $userProfileId = session('user_profile_id');
 
-        $this->skillService->updateUserSkill($validated, $id, $userProfileId);
+        $userSkill = $this->skillService->updateUserSkill($validated, $id, $userProfileId);
 
-        return ApiResponse::success('User skill updated successfully.', null)->toJsonResponse();
+        return ApiResponse::success('User skill updated successfully.', $userSkill)->toJsonResponse();
     }
 
     /**

@@ -97,9 +97,9 @@ class EducationController extends Controller
         $validated = $this->validateEducationFields($request);
         $userProfileId = session('user_profile_id');
 
-        $this->educationService->updateEducation($id, $validated, $userProfileId);
+        $education = $this->educationService->updateEducation($id, $validated, $userProfileId);
 
-        return ApiResponse::success('Education updated successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Education updated successfully.', $education)->toJsonResponse();
     }
 
     /**

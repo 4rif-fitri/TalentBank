@@ -21,7 +21,7 @@ class SocialMediaLinkService
         ])->first();
 
         if (!isset($socialMediaLink)) {
-            throw new Exception('Social media link not found with given ID.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Social media link not found or access unauthorized.', Response::HTTP_NOT_FOUND);
         }
 
         return $socialMediaLink;
@@ -82,20 +82,20 @@ class SocialMediaLinkService
      * @param int $linkId
      * @param int $userProfileId
      * @throws Exception
-     * @return bool|int
+     * @return SocialMediaLink
      */
-    public function updateSocialMediaLink(array $data, int $linkId, int $userProfileId): bool
+    public function updateSocialMediaLink(array $data, int $linkId, int $userProfileId): SocialMediaLink
     {
         $socialMediaLink = $this->getSocialMediaLinkModelById($linkId, $userProfileId);
 
         $this->checkSocialMediaLinkExists($data['social_media_id'], $userProfileId, $linkId);
 
-        $result = $socialMediaLink->update([
+        $socialMediaLink->update([
             'social_media_id' => $data['social_media_id'],
             'link' => $data['link'],
         ]);
 
-        return $result;
+        return $socialMediaLink->load('socialMedia');
     }
 
     /**

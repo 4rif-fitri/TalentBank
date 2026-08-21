@@ -123,9 +123,9 @@ class EducationService
      * 
      * @param int $educationId
      * @param array $data
-     * @return bool
+     * @return Education
      */
-    public function updateEducation(int $educationId, array $data, int $userProfileId): bool
+    public function updateEducation(int $educationId, array $data, int $userProfileId): Education
     {
         $education = Education::where([
             ['id', $educationId],
@@ -133,10 +133,10 @@ class EducationService
         ])->first();
 
         if (!isset($education)) {
-            throw new Exception('Education data not found with given ID.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Education data not found or access unauthorized.', Response::HTTP_FORBIDDEN);
         }
 
-        $result = DB::transaction(function () use ($data, $education, $userProfileId) {
+        DB::transaction(function () use ($data, $education, $userProfileId) {
             // update education
             $result = $education->update([
                 'programme_id' => $data['programme_id'],
@@ -164,12 +164,15 @@ class EducationService
             if (!empty($data['deleted_user_skill_ids'])) {
                 $this->skillService->deleteUserSkillsByIds($data['deleted_user_skill_ids'], $userProfileId);
             }
-
-            return $result;
         });
 
-
-        return $result;
+        return $education->load([
+            'fieldOfStudy',
+            'qualification',
+            'programme.organization',
+            'media',
+            'skills'
+        ]);
     }
 
     /**
@@ -188,7 +191,7 @@ class EducationService
             ])->first();
 
         if (!isset($education)) {
-            throw new Exception('Education data not found with given ID.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Education data not found or access unauthorized.', Response::HTTP_NOT_FOUND);
         }
 
         $result = DB::transaction(function () use ($education) {

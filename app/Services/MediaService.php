@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Media;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
@@ -57,7 +58,7 @@ class MediaService
      * @param array $data
      * @return Media|bool
      */
-    public function createMedia(array $data, int $userProfileId): Media|bool
+    public function createMedia(array $data, int $userProfileId): Media|Collection
     {
         if (isset($data['media']) && is_array($data['media'])) {
             // if multiple medias were sent
@@ -74,7 +75,11 @@ class MediaService
                 $insertRecord[] = $this->moveFileGetInsertRecord($media, $data['file_path'], $file, $userProfileId);
             }
 
-            return Media::insert($insertRecord);
+            Media::insert($insertRecord);
+
+            $filenames = array_column($insertRecord, 'file_name');
+
+            $media = Media::whereIn('file_name', $filenames)->get();
         } else {
             // if only one media was sent
             $file = $data['file'];
@@ -82,9 +87,9 @@ class MediaService
             $this->validateFileType($file);
 
             $insertRecord = $this->moveFileGetInsertRecord($data, $data['file_path'], $file, $userProfileId);
-        }
 
-        $media = Media::create($insertRecord);
+            $media = Media::create($insertRecord);
+        }
 
         return $media;
     }
@@ -106,7 +111,6 @@ class MediaService
         ])->get();
 
         if ($media->isEmpty()) {
-            // throw new Exception('No media found with given source name and source ID.', Response::HTTP_NOT_FOUND);
             return true;
         }
 
