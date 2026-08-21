@@ -7,6 +7,7 @@ use App\Models\UserSkill;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use \Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Cache;
 
 class SkillService
@@ -15,7 +16,7 @@ class SkillService
 
     private function verifySkillOwnership(UserSkill|Collection $userSkills, int $userProfileId): void
     {
-        $userSkills = $userSkills instanceof Collection ? $userSkills : collect([$userSkills]);
+        $userSkills = $userSkills instanceof Collection ? $userSkills : new EloquentCollection([$userSkills]);
         $userSkills->loadMissing('source');
 
         // get the user profile ID
