@@ -56,7 +56,7 @@
 
                 allSkills = data ?? [];
 
-                console.log("ALL SKILLS:", allSkills);
+                // console.log("ALL SKILLS:", allSkills);
             },
 
             error: function (xhr) {
@@ -693,12 +693,6 @@
             },
 
             success: function (response) {
-
-                console.log(
-                    "UPDATE SKILL RESPONSE:",
-                    response
-                );
-
                 let selectedSkill = allSkills.find(
                     skill =>
                         Number(skill.id) === Number(skillId)
