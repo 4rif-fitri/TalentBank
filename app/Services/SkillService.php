@@ -7,9 +7,12 @@ use App\Models\UserSkill;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class SkillService
 {
+    private const CACHE_TIME_HOURS = 1;
+
     private function verifySkillOwnership(UserSkill|Collection $userSkills, int $userProfileId): void
     {
         $userSkills = $userSkills instanceof Collection ? $userSkills : collect([$userSkills]);
@@ -72,7 +75,9 @@ class SkillService
      */
     public function getAllSkills(): Collection
     {
-        return Skill::all();
+        return Cache::remember('skills', now()->addHours(self::CACHE_TIME_HOURS), function () {
+            return Skill::all();
+        });
     }
 
     /**
