@@ -112,9 +112,8 @@ class MediaService
 
         // delete all the files associated with this media
         foreach ($media as $m) {
-            if (File::exists($filePath . $m->file_name)) {
-                File::delete($filePath . $m->file_name);
-            }
+            $path = $filePath . $m->file_name;
+            File::delete($path);
         }
 
         // delete data from database after deleting the file in uploads folder
@@ -128,6 +127,7 @@ class MediaService
 
     /**
      * Deletes media records in database and uploads folder
+     * (meant to be used by other services to delete media data upon source deletion)
      * 
      * @param array $mediaIds
      * @param int $userProfileId
@@ -144,15 +144,14 @@ class MediaService
         $media = Media::whereIn('id', $mediaIds)->where('uploaded_by_user_id', $userProfileId)->get();
 
         if ($media->count() == 0) {
-            throw new Exception('No media found with given ID/IDs.', Response::HTTP_NOT_FOUND);
+            return true;
         }
 
-        $result = Media::whereIn('id', $mediaIds)->where('uploaded_by_user_id', $userProfileId)->delete();
+        $result = Media::whereIn('id', $media->pluck('id'))->delete();
 
         foreach ($media as $m) {
-            if (File::exists($filePath . $m->file_name)) {
-                File::delete($filePath . $m->file_name);
-            }
+            $path = $filePath . $m->file_name;
+            File::delete($path);
         }
 
         return $result;
