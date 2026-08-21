@@ -65,9 +65,9 @@ class SocialMediaLinkController extends Controller
         $validated = $this->validateRequest($request);
         $userProfileId = session('user_profile_id');
 
-        $this->socialMediaLinkService->updateSocialMediaLink($validated, $id, $userProfileId);
+        $socialMediaLink = $this->socialMediaLinkService->updateSocialMediaLink($validated, $id, $userProfileId);
 
-        return ApiResponse::success('Social media link updated successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Social media link updated successfully.', $socialMediaLink)->toJsonResponse();
     }
 
     /**

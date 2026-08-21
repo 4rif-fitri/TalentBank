@@ -79,9 +79,9 @@ class OrganizationController extends Controller
         $validated = $this->validateOrganizationData($request);
         $userProfileId = session('user_profile_id');
 
-        $this->organizationService->updateOrganization($validated, $orgId, $userProfileId);
+        $organization = $this->organizationService->updateOrganization($validated, $orgId, $userProfileId);
 
-        return ApiResponse::success('Organization updated successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Organization updated successfully.', $organization)->toJsonResponse();
     }
 
     /**

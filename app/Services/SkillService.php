@@ -142,9 +142,9 @@ class SkillService
      * @param array $data
      * @param int $userSkillId
      * @param int $userProfileId
-     * @return bool
+     * @return UserSkill
      */
-    public function updateUserSkill(array $data, int $userSkillId, int $userProfileId): bool
+    public function updateUserSkill(array $data, int $userSkillId, int $userProfileId): UserSkill
     {
         // get user skill model
         $userSkill = $this->getUserSkillModelById($userSkillId, $data['source_type'], $data['source_id'], $userProfileId);
@@ -153,11 +153,11 @@ class SkillService
         $this->checkUserSkillsExists($data['skill_id'], $data['source_type'], $data['source_id'], $userSkillId);
 
         // update user skill
-        $result = $userSkill->update([
+        $userSkill->update([
             'skill_id' => $data['skill_id'],
         ]);
 
-        return $result;
+        return $userSkill->load('skill');
     }
 
     /**
@@ -166,12 +166,12 @@ class SkillService
      * 
      * @param array $data
      * @param int $userProfileId
-     * @return bool|int
+     * @return Collection
      */
-    public function updateUserSkills(array $data, int $userProfileId, string $sourceType, int $sourceId): bool
+    public function updateUserSkills(array $data, int $userProfileId, string $sourceType, int $sourceId): Collection
     {
         if (empty($data)) {
-            return true;
+            return collect([]);
         }
 
         $updateRecord = [];
@@ -196,7 +196,7 @@ class SkillService
         // update records
         UserSkill::upsert($updateRecord, ['id'], ['skill_id']);
 
-        return true;
+        return UserSkill::with('source')->whereIn('id', $userSkillIds)->get();
     }
 
     /**

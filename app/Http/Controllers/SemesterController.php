@@ -37,9 +37,9 @@ class SemesterController extends Controller
 
         $userProfileId = session('user_profile_id');
 
-        $this->semesterService->uploadResults($validated, $request->file('result_file'), $id, $userProfileId);
+        $resultFile = $this->semesterService->uploadResults($validated, $request->file('result_file'), $id, $userProfileId);
 
-        return ApiResponse::success('Result file uploaded successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Result file uploaded successfully.', $resultFile)->toJsonResponse();
     }
 
     public function store(Request $request)
@@ -64,8 +64,8 @@ class SemesterController extends Controller
 
         $userProfileId = session('user_profile_id');
 
-        $this->semesterService->updateSemester($validated, $id, $userProfileId);
+        $semester = $this->semesterService->updateSemester($validated, $id, $userProfileId);
 
-        return ApiResponse::success('Semester updated successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Semester updated successfully.', $semester)->toJsonResponse();
     }
 }

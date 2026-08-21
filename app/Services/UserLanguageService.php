@@ -37,7 +37,7 @@ class UserLanguageService
         ])->first();
 
         if (!isset($userLanguage)) {
-            throw new Exception('Language not found in profile.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Language not found or access unauthorized.', Response::HTTP_NOT_FOUND);
         }
 
         return $userLanguage;
@@ -84,9 +84,9 @@ class UserLanguageService
      * @param array $data
      * @param int $userLanguageId
      * @param int $userProfileId
-     * @return bool
+     * @return UserLanguage
      */
-    public function updateUserLanguage(array $data, int $userLanguageId, int $userProfileId): bool
+    public function updateUserLanguage(array $data, int $userLanguageId, int $userProfileId): UserLanguage
     {
         // get user language model
         $userLanguage = $this->getUserLanguageModel($userLanguageId, $userProfileId);
@@ -95,12 +95,12 @@ class UserLanguageService
         $this->checkUserLanguageExists($data['language_id'], $userProfileId, $userLanguageId);
 
         // update language
-        $result = $userLanguage->update([
+        $userLanguage->update([
             'language_id' => $data['language_id'],
             'proficiency_level' => $data['proficiency_level']
         ]);
 
-        return $result;
+        return $userLanguage->load('language');
     }
 
     /**

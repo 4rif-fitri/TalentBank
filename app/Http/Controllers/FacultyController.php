@@ -78,8 +78,8 @@ class FacultyController extends Controller
             'faculty_code' => ['required', 'string'],
         ]);
 
-        $this->facultyService->updateFaculty($id, $validated);
+        $faculty = $this->facultyService->updateFaculty($id, $validated);
 
-        return ApiResponse::success('Faculty updated successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Faculty updated successfully.', $faculty)->toJsonResponse();
     }
 }

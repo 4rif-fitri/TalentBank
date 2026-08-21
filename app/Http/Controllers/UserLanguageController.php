@@ -68,9 +68,9 @@ class UserLanguageController extends Controller
 
         $userProfileId = session('user_profile_id');
 
-        $this->userLanguageService->updateUserLanguage($validated, $id, $userProfileId);
+        $userLanguage = $this->userLanguageService->updateUserLanguage($validated, $id, $userProfileId);
 
-        return ApiResponse::success('Language updated successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Language updated successfully.', $userLanguage)->toJsonResponse();
     }
 
     /**
