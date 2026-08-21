@@ -8,7 +8,6 @@ use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 
@@ -59,9 +58,9 @@ class ProfileService
      *
      * @param   array $data
      * @param   int $profileId
-     * @return  bool
+     * @return  UserProfile
      */
-    public function updateProfileData(array $data, int $profileId): bool
+    public function updateProfileData(array $data, int $profileId): UserProfile
     {
         $profile = $this->getProfileModel($profileId);
 
@@ -88,8 +87,8 @@ class ProfileService
             }
         }
 
-        $result = DB::transaction(function () use ($data, $isEmailChanged, $isNameChanged, $profile) {
-            $result = $profile->update([
+        DB::transaction(function () use ($data, $isEmailChanged, $isNameChanged, $profile) {
+            $profile->update([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'headline' => $data['headline'],
@@ -103,17 +102,9 @@ class ProfileService
                     'email' => $data['email']
                 ]);
             }
-
-            return $result;
         });
 
-        Cache::forget('profile_' . $profileId);
-
-        if (!$result) {
-            throw new Exception('Failed to update profile.', Response::HTTP_BAD_REQUEST);
-        }
-
-        return $result;
+        return $profile;
     }
 
     /**
@@ -122,9 +113,9 @@ class ProfileService
      * @param string $about
      * @param int $profileId
      * @throws Exception
-     * @return bool
+     * @return UserProfile
      */
-    public function updateAboutField(string $about, int $profileId): bool
+    public function updateAboutField(string $about, int $profileId): UserProfile
     {
         $profile = $this->getProfileModel($profileId);
 
@@ -134,7 +125,7 @@ class ProfileService
             throw new Exception('Failed to update about field.', Response::HTTP_BAD_REQUEST);
         }
 
-        return $result;
+        return $profile;
     }
 
     /**
@@ -142,9 +133,9 @@ class ProfileService
      * 
      * @param UploadedFile $profileImage
      * @param int $profileId
-     * @return bool
+     * @return UserProfile
      */
-    public function uploadProfileImage(UploadedFile $profileImage, int $profileId): bool
+    public function uploadProfileImage(UploadedFile $profileImage, int $profileId): UserProfile
     {
         return $this->uploadImage($profileImage, 'profile_image', config('services.uploads_file_path.profile_image'), $profileId);
     }
@@ -154,14 +145,14 @@ class ProfileService
      * 
      * @param UploadedFile $coverImage
      * @param int $profileId
-     * @return bool
+     * @return UserProfile
      */
-    public function uploadCoverImage(UploadedFile $coverImage, int $profileId): bool
+    public function uploadCoverImage(UploadedFile $coverImage, int $profileId): UserProfile
     {
         return $this->uploadImage($coverImage, 'cover_image', config('services.uploads_file_path.cover_image'), $profileId);
     }
 
-    private function uploadImage(UploadedFile $image, string $column, string $imagePath, int $profileId): bool
+    private function uploadImage(UploadedFile $image, string $column, string $imagePath, int $profileId): UserProfile
     {
         $profile = $this->getProfileModel($profileId);
 
@@ -173,8 +164,8 @@ class ProfileService
         $filename = uniqid($column . '_') . '_' . str_replace(' ', '-', $image->getClientOriginalName());
         $image->move($imagePath, $filename);
 
-        $results = $profile->update([$column => $filename]);
+        $profile->update([$column => $filename]);
 
-        return $results;
+        return $profile;
     }
 }

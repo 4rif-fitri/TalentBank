@@ -93,9 +93,9 @@ class OrganizationService
      * @param   int $orgId
      * @param   int $userProfileId
      * 
-     * @return  bool
+     * @return  Organization
      */
-    public function updateOrganization(array $data, int $orgId, int $userProfileId): bool
+    public function updateOrganization(array $data, int $orgId, int $userProfileId): Organization
     {
         $organization = Organization::where('id', $orgId)
             ->whereHas('organizationUsers', function ($query) use ($userProfileId) {
@@ -107,7 +107,7 @@ class OrganizationService
             ->first();
 
         if (!isset($organization)) {
-            throw new Exception('Organization not found with given ID.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Organization not found or access unauthorized.', Response::HTTP_FORBIDDEN);
         }
 
         $ssmNumberExists = Organization::where([
@@ -119,7 +119,7 @@ class OrganizationService
             throw new Exception('SSM number already taken.', Response::HTTP_CONFLICT);
         }
 
-        $updated = $organization->update([
+        $organization->update([
             'company_name' => $data['company_name'],
             'ssm_number' => $data['ssm_number'],
             'industry_category_id' => $data['industry_category_id'],
@@ -135,7 +135,7 @@ class OrganizationService
             'organization_type_id' => $data['organization_type_id'],
         ]);
 
-        return $updated;
+        return $organization;
     }
 
     /**

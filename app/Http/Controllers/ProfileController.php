@@ -46,9 +46,9 @@ class ProfileController extends Controller
 
         $profileId = session('user_profile_id');
 
-        $this->profileService->updateProfileData($validated, $profileId);
+        $profile = $this->profileService->updateProfileData($validated, $profileId);
 
-        return ApiResponse::success('Profile updated successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Profile updated successfully.', $profile)->toJsonResponse();
     }
 
     /**
@@ -64,9 +64,9 @@ class ProfileController extends Controller
 
         $profileId = session('user_profile_id');
 
-        $this->profileService->updateAboutField($validated['about'], $profileId);
+        $profile = $this->profileService->updateAboutField($validated['about'], $profileId);
 
-        return ApiResponse::success('About saved successfully.', null)->toJsonResponse();
+        return ApiResponse::success('About saved successfully.', $profile)->toJsonResponse();
     }
 
     /**
@@ -83,9 +83,9 @@ class ProfileController extends Controller
         $file = $request->file('profile_image');
         $profileId = session('user_profile_id');
 
-        $this->profileService->uploadProfileImage($file, $profileId);
+        $profile = $this->profileService->uploadProfileImage($file, $profileId);
 
-        return ApiResponse::success('Profile image uploaded successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Profile image uploaded successfully.', $profile)->toJsonResponse();
     }
 
     /**
@@ -102,8 +102,8 @@ class ProfileController extends Controller
         $file = $request->file('cover_image');
         $profileId = session('user_profile_id');
 
-        $this->profileService->uploadCoverImage($file, $profileId);
+        $profile = $this->profileService->uploadCoverImage($file, $profileId);
 
-        return ApiResponse::success('Cover image uploaded successfully.', null)->toJsonResponse();
+        return ApiResponse::success('Cover image uploaded successfully.', $profile)->toJsonResponse();
     }
 }
