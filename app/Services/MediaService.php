@@ -106,7 +106,8 @@ class MediaService
         ])->get();
 
         if ($media->isEmpty()) {
-            throw new Exception('No media found with given source name and source ID.', Response::HTTP_NOT_FOUND);
+            // throw new Exception('No media found with given source name and source ID.', Response::HTTP_NOT_FOUND);
+            return true;
         }
 
         // delete all the files associated with this media

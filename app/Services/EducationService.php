@@ -6,6 +6,7 @@ use App\Models\Education;
 use App\Models\FieldOfStudy;
 use App\Models\Qualification;
 use App\Models\UserProfile;
+use App\Models\UserSkill;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
@@ -17,7 +18,8 @@ class EducationService
      * Create a new class instance.
      */
     public function __construct(
-        private readonly MediaService $mediaService
+        private readonly MediaService $mediaService,
+        private readonly SkillService $skillService
     ) {
     }
 
@@ -45,12 +47,6 @@ class EducationService
      */
     public function getEducationByUserProfileId(int $userProfileId): Collection
     {
-        $userExists = UserProfile::where('id', $userProfileId)->exists();
-
-        if (!$userExists) {
-            throw new Exception('User not found with given ID.', Response::HTTP_NOT_FOUND);
-        }
-
         return Education::with([
             'fieldOfStudy',
             'qualification',
@@ -77,7 +73,8 @@ class EducationService
             'qualification',
             'programme',
             'programme.organization',
-            'media'
+            'media',
+            'skills'
         ])
             ->find($id);
 
@@ -112,6 +109,8 @@ class EducationService
 
             $this->uploadImages($education->id, $data, $userProfileId);
 
+            $this->skillService->createUserSkills($data['new_skill_ids'], 'education', $education->id);
+
             return $education;
         });
 
@@ -137,6 +136,7 @@ class EducationService
         }
 
         $result = DB::transaction(function () use ($data, $education, $userProfileId) {
+            // update education
             $result = $education->update([
                 'programme_id' => $data['programme_id'],
                 'description' => $data['description'],
@@ -148,7 +148,21 @@ class EducationService
                 'enrollment_status' => $data['enrollment_status'],
             ]);
 
+            // update images
             $this->uploadImages($education->id, $data, $userProfileId);
+
+            // update skills
+            if (!empty($data['new_skill_ids'])) {
+                $this->skillService->createUserSkills($data['new_skill_ids'], 'education', $education->id);
+            }
+
+            if (!empty($data['updated_user_skills'])) {
+                $this->skillService->updateUserSkills($data['updated_user_skills'], $userProfileId, 'education', $education->id);
+            }
+
+            if (!empty($data['deleted_user_skill_ids'])) {
+                $this->skillService->deleteUserSkillsByIds($data['deleted_user_skill_ids'], $userProfileId);
+            }
 
             return $result;
         });
@@ -166,17 +180,22 @@ class EducationService
      */
     public function deleteEducation(int $educationId, int $userProfileId): bool
     {
-        $education = Education::where([
-            ['id', $educationId],
-            ['user_profile_id', $userProfileId],
-        ])->first();
+        $education = Education::with('skills')
+            ->where([
+                ['id', $educationId],
+                ['user_profile_id', $userProfileId],
+            ])->first();
 
         if (!isset($education)) {
             throw new Exception('Education data not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
         $result = DB::transaction(function () use ($education) {
+            // delete media before deleting education (prevent orphaned data and files)
             $this->mediaService->deleteMediaBySource('education', $education->id, config('services.uploads_file_path.education'));
+
+            // delete skills before deleting education (prevent orphaned data)
+            $this->skillService->deleteUserSkillsBySource('education', $education->id);
 
             $result = $education->delete();
 
