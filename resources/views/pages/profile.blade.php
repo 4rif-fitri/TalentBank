@@ -110,7 +110,7 @@
             success: function ({ data }) {
                 profileData = data
 
-                console.log("DATA: ", data);
+                console.log("DATA:", data);
                 $("#name").text(data.name ?? "");
                 $("#headline").text(data.headline ?? "");
                 $("#aboutText").text(data.about ?? "");
@@ -153,6 +153,10 @@
                 getAllSocialMedia()
                 renderSocialMediaLinks(data.social_media_links);
                 renderLanguages(data.user_languages ?? []);
+                // let skillsFilter = data.skills.filter(dt => dt.pivot.source_type == "user_profile")
+                // console.log(data.skills);
+
+                renderProfileSkills(data.skills)
             },
 
             error: function (xhr) {

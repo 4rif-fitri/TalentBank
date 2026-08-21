@@ -25,6 +25,7 @@ use App\Http\Controllers\UserLanguageController;
 | such as login, registration, password resets, and session management.
 |
 */
+
 Route::middleware('guest')->group(function () {
     // page routes
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginPage'); //+
@@ -58,7 +59,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('profile')->group(function () {
         Route::get('/student', [internshipController::class, "profile"])->name('profile.student'); //+
-        Route::get('/education', [internshipController::class, "education"])->name('profile.education');//+
+        Route::get('/education', [internshipController::class, "education"])->name('profile.education'); //+
         Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience'); //+
     });
 });
@@ -97,7 +98,7 @@ Route::middleware(['auth', 'throttle:api'])->prefix('api')->group(function () {
     Route::prefix('faculties')->group(function () {
         // crud routes
         Route::get('/org/{id}', [FacultyController::class, 'getFacultiesByOrgId'])->name('faculty.getFacultiesByOrgId'); //-
-        Route::get('/{id}', [FacultyController::class, 'getFacultyById'])->name('faculty.getFacultyById');//-
+        Route::get('/{id}', [FacultyController::class, 'getFacultyById'])->name('faculty.getFacultyById'); //-
         Route::middleware('checkRole:Organization Admin')->post('/store', [FacultyController::class, 'store'])->name('faculty.store'); //-
         Route::middleware('checkRole:Organization Admin')->put('/update/{id}', [FacultyController::class, 'update'])->name('faculty.update'); //-
     });
@@ -121,30 +122,30 @@ Route::middleware(['auth', 'throttle:api'])->prefix('api')->group(function () {
         Route::get('/getEducationById/{id}', [EducationController::class, 'getEducationById'])->name('education.getEducationById'); //+
         Route::post('/store', [EducationController::class, 'store'])->name('education.store'); //+
         Route::put('/update/{id}', [EducationController::class, 'update'])->name('education.update'); //+
-        Route::delete('/delete/{id}', [EducationController::class, 'delete'])->name('education.delete');//+
+        Route::delete('/delete/{id}', [EducationController::class, 'delete'])->name('education.delete'); //+
 
         Route::get('/getAllFieldOfStudies', [EducationController::class, 'getAllFieldOfStudies'])->name('education.getAllFieldOfStudies'); //+
         Route::get('/getAllQualifications', [EducationController::class, 'getAllQualifications'])->name('education.getAllQualifications'); //+
     });
 
     Route::prefix('social-media')->group(function () {
-        Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia');//+
-        Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store');//+
-        Route::put('/update/{id}', [SocialMediaLinkController::class, 'update'])->name('social-media.update');//+
-        Route::delete('/delete/{id}', [SocialMediaLinkController::class, 'delete'])->name('social-media.delete');//+
+        Route::get('/', [SocialMediaLinkController::class, 'getAllSocialMedia'])->name('social-media.getAllSocialMedia'); //+
+        Route::post('/store', [SocialMediaLinkController::class, 'store'])->name('social-media.store'); //+
+        Route::put('/update/{id}', [SocialMediaLinkController::class, 'update'])->name('social-media.update'); //+
+        Route::delete('/delete/{id}', [SocialMediaLinkController::class, 'delete'])->name('social-media.delete'); //+
     });
 
     Route::prefix('languages')->group(function () {
-        Route::get('/', [UserLanguageController::class, 'getAllLanguages'])->name('languages.getAllLanguages');//+
-        Route::post('/store', [UserLanguageController::class, 'store'])->name('languages.store');//+
-        Route::put('/update/{id}', [UserLanguageController::class, 'update'])->name('languages.update');//+
-        Route::delete('/delete/{id}', [UserLanguageController::class, 'delete'])->name('languages.delete');//+
+        Route::get('/', [UserLanguageController::class, 'getAllLanguages'])->name('languages.getAllLanguages'); //+
+        Route::post('/store', [UserLanguageController::class, 'store'])->name('languages.store'); //+
+        Route::put('/update/{id}', [UserLanguageController::class, 'update'])->name('languages.update'); //+
+        Route::delete('/delete/{id}', [UserLanguageController::class, 'delete'])->name('languages.delete'); //+
     });
 
     Route::prefix('skills')->group(function () {
         Route::get('/', [SkillController::class, 'getAllSkills'])->name('skills.getAllSkills');
         Route::post('/store', [SkillController::class, 'store'])->name('skills.store');
         Route::put('/update/{id}', [SkillController::class, 'update'])->name('skills.update');
-        Route::delete('/delete/{id}', [SkillController::class, 'delete'])->name('skills.delete');
+        Route::delete('/delete/{id}', [SkillController::class, 'delete'])->name('skills.delete'); //+
     });
 });
