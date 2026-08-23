@@ -37,7 +37,7 @@
 
             success: function (response) {
                 allLanguages = response.data ?? response;
-                console.log("ALL LANGUAGES:", allLanguages);
+                // console.log("ALL LANGUAGES:", allLanguages);
             },
 
             error: function (xhr) {
@@ -69,6 +69,8 @@
             dataType: "json",
 
             success: function ({ data }) {
+                console.log("Data", data);
+
                 profileData = data;
                 renderLanguages(data.user_languages ?? []);
                 renderLanguageModal();
@@ -85,7 +87,6 @@
             item => String(item.id) === String(selectedLanguageId)
         );
 
-        // EXISTING ITEM - DISPLAY MODE
         if (userLanguageId && !editMode) {
 
             return `
@@ -132,7 +133,7 @@
                 </option>`;
         });
 
-        let proficiencies = ["Beginner", "Intermediate", "Advanced", "Fluent", "Native"];
+        let proficiencies = @json(\App\Constants\AppConstants:: PROFICIENCY_LEVELS);
 
         let proficiencyOptions = `
             <option value="" disabled
@@ -175,6 +176,7 @@
     }
 
     function createLanguage(languageId, proficiency) {
+        console.log({ languageId, proficiency });
 
         $.ajax({
             url: "{{ route('languages.store') }}",
@@ -217,8 +219,10 @@
             },
 
             success: function (response) {
+                console.log(response);
+
                 swalfire("Success", response.message ?? "Language updated successfully.", "success");
-                refreshProfileLanguages();
+                // refreshProfileLanguages();
             },
 
             error: function (xhr) {
@@ -259,8 +263,10 @@
             },
 
             success: function (response) {
+                console.log(response);
+
                 swalfire("Success", response.message ?? "Language deleted successfully.", "success");
-                refreshProfileLanguages();
+                // refreshProfileLanguages();
             },
 
             error: function (xhr) {
@@ -282,10 +288,6 @@
 
     $(document).on("click", ".btn-cancel-language", function () {
         renderLanguageModal();
-    });
-
-    $(document).on("click", "#btnAddLanguage", function () {
-        $("#userLanguageList").append(createLanguageRow());
     });
 
     $(document).on("click", ".btn-delete-language", function () {

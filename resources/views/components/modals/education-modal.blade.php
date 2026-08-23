@@ -217,7 +217,6 @@
     let deletedEducationMediaIds = [];
     let newEducationMedia = [];
 
-
     function renderEducationMedia() {
 
         let $container = $("#mediaContainer");
@@ -438,26 +437,36 @@
     }
 
     function getAllSkills() {
-        listOfSkills = [
-            {
-                "id": 1,
-                "skill_name": "Laravel",
-                "skill_category": "Web Development",
-                "icon_url": "laravel.png"
+        listOfSkills
+
+        $.ajax({
+            url: "{{ route('skills.getAllSkills') }}",
+            type: "GET",
+            dataType: "json",
+
+            success: function ({ data }) {
+                listOfSkills = data;
+
+                $("#qualification").html(`
+                    <option value="" disabled selected>
+                        Select Qualification
+                    </option>
+                `);
+
+                data.forEach(item => {
+                    $("#qualification").append(`
+                        <option value="${item.id}">
+                            ${item.name}
+                        </option>
+                    `);
+                });
             },
-            {
-                "id": 2,
-                "skill_name": "JavaScript",
-                "skill_category": "Programming Language",
-                "icon_url": "javascript.png"
-            },
-            {
-                "id": 3,
-                "skill_name": "MySQL",
-                "skill_category": "Database",
-                "icon_url": "mysql.png"
+
+            error: function (xhr) {
+                console.error(xhr);
             }
-        ]
+        });
+
     }
 
 

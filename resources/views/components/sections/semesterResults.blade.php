@@ -104,8 +104,6 @@
         }
 
         function templateResultArticle(semester, hasResult, resultButton) {
-            // console.log(semester);
-
             return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
                     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -113,7 +111,7 @@
                             <div
                                 class="d-flex flex-wrap align-items-center gap-2 mb-1">
                                 <span class="fw-bold mb-0 mb-1 d-flex gap-2">
-                                    <p>Session</p>
+                                    <p>Semester</p>
                                     <p class="session">${escapeHtml(semester.session ?? "-")}</p>
                                 </span>
                                 ${hasResult ? ` <span class="badge text-bg-success">Uploaded</span>` : ""}

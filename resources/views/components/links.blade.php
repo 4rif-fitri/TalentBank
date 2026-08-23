@@ -60,9 +60,9 @@
         modal.show();
     });
 
-    $(document).ready(async function () {
-        await getAllSocialMedia();
-        templateRenderSocialMedia();
-    });
+    // $(document).ready(async function () {
+    //     await getAllSocialMedia();
+    //     templateRenderSocialMedia();
+    // });
 </script>
 @endpush
