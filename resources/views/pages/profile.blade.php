@@ -25,11 +25,11 @@
 
 <x-modals.active-educations-modal />
 
-<x-modals.editProfileModal />
+<x-modals.profile-modal />
 
-<x-modals.editAboutModal />
+<x-modals.about-modal />
 
-<x-modals.edit-contact-information-modal />
+<x-modals.contact-information-modal />
 
 
 @endsection

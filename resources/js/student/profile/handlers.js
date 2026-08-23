@@ -10,7 +10,8 @@ import {
     renderCoverImages,
     renderProfileImages,
     renderBasicProfile,
-    renderContactProfile
+    renderContactProfile,
+    renderAbout
 } from './renderer.js';
 
 import { salert } from '../../utils/alert.js';
@@ -170,7 +171,7 @@ export async function handleUpdateAbout(){
             ...response.data
         };
 
-        renderBasicProfile(profileState.data);
+        renderAbout(profileState.data);
         hideModal('editAboutModal');
         salert('Success', 'About updated successfully', 'success');
 
