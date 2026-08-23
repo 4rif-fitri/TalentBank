@@ -21,7 +21,7 @@ import { validateLenghtText, checkFormData } from "../../utils/validation.js"
 
 // ==== GET ====
 function getProfileFormData() {
-    const formData = new FormData();
+    let formData = new FormData();
     formData.append('name', $('#profileNameInput').val());
     formData.append('location', $('#locationInput').val());
     formData.append('headline', $('#profileHeadlineInput').val());
@@ -36,7 +36,7 @@ function getProfileFormData() {
 // ==== SHOW ====
 export function showProfileEditModal() {
 
-    const profile = profileState.data;
+    let profile = profileState.data;
 
     if (!profile) {
         console.error('Profile data not available');
@@ -57,7 +57,7 @@ export function showActiveEducationModal() {
 }
 
 export function showAboutModal() {
-    const profile = profileState.data;
+    let profile = profileState.data;
 
     if (!profile) {
         console.error('Profile data not available');
@@ -69,7 +69,7 @@ export function showAboutModal() {
 }
 
 export function showContactModal() {
-    const profile = profileState.data;
+    let profile = profileState.data;
 
     if (!profile) {
         console.error('Profile data not available');
@@ -81,13 +81,25 @@ export function showContactModal() {
 
     showModal('editContactInformationModal');
 }
+
+export function showLinksSocialMediaModal(){
+    let profile = profileState.data;
+
+    if (!profile) {
+        console.error('Profile data not available');
+        return;
+    }
+
+    showModal('socialMediaModal');
+}
+
 // ==== SHOW ====
 
 // ==== HANDLE ====
 function handleProfileValidationError(error) {
 
     if (error?.responseJSON?.errors) {
-        const errors = error.responseJSON.errors;
+        let errors = error.responseJSON.errors;
         console.error('Validation errors:', errors);
         return;
     }
@@ -98,7 +110,7 @@ function handleProfileValidationError(error) {
 export async function handleUploadProfileImage(event) {
 
     try {
-        const response = await saveProfileImage(event);
+        let response = await saveProfileImage(event);
         if (!response) return
 
         renderProfileImages(response.data);
@@ -111,7 +123,7 @@ export async function handleUploadProfileImage(event) {
 
 export async function handleUploadCoverImage(event) {
     try {
-        const response = await saveCoverImage(event);
+        let response = await saveCoverImage(event);
         if (!response) return;
 
         renderCoverImages(response.data);
@@ -123,10 +135,10 @@ export async function handleUploadCoverImage(event) {
 }
 
 export async function handleProfileEditSubmit() {
-    const formData = getProfileFormData();
+    let formData = getProfileFormData();
 
     try {
-        const response = await saveProfile(formData);
+        let response = await saveProfile(formData);
         if (!response) return;
 
         //akan overwrite data yang perlu je
@@ -162,7 +174,7 @@ export async function handleUpdateAbout(){
     checkFormData(formData)
 
     try {
-        const response = await saveAbout(formData);
+        let response = await saveAbout(formData);
         if (!response) return;
 
         //akan overwrite data yang perlu je
@@ -181,10 +193,10 @@ export async function handleUpdateAbout(){
 }
 
 export async function handleUpdateContact() {
-    const formData = getProfileFormData();
+    let formData = getProfileFormData();
 
     try {
-        const response = await saveProfile(formData);
+        let response = await saveProfile(formData);
         if (!response) return;
 
         //akan overwrite data yang perlu je

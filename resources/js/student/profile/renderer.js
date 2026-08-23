@@ -4,6 +4,10 @@
 
 import { profileState } from './state.js';
 import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
+import {
+    templateSocialMediaRow,
+    templateBadgeSocialMedia
+ } from '../../templates/socialMedia/template'
 import { getValidImageUrl } from "../../utils/validation.js"
 
 export function renderProfile() {
@@ -18,6 +22,7 @@ export function renderProfile() {
     renderCoverImages(data)
     renderActiveEducation(data.active_programmes ?? []);
     renderModalActiveEducations(data.active_programmes ?? []);
+    renderListLinkSocialMedia(data.social_media_links ?? [])
 }
 
 export function renderAbout(data){
@@ -79,4 +84,18 @@ export function renderModalActiveEducations(programmes) {
     programmes.forEach(programme => {
         $container.append(activeEducationsAlert(programme));
     });
+}
+
+export function renderListLinkSocialMedia(links){
+    $("#linksList").empty();
+
+    links.forEach(link => {
+        $("#linksList").append(templateBadgeSocialMedia(link))
+    })
+
+    $("#socialMediaList").empty()
+    links.forEach(link => {
+        $("#socialMediaList").append(templateSocialMediaRow(link.id, link.social_media.id, link.social_media.name, link.social_media.icon_class_name,link.link))
+    })
+
 }

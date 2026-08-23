@@ -31,9 +31,11 @@
 
 <x-modals.contact-information-modal />
 
+<x-modals.social-media-link-modal />
+
 
 @endsection
 
 @section('script')
-@vite('resources/js/student/index.js')
+    @vite('resources/js/student/index.js')
 @endsection

@@ -19,3 +19,13 @@ export function checkFormData(formData){
 export function validateLenghtText(text,limit){
     return text.lenght >= limit
 }
+
+export function isValidUrl(link) {
+    try {
+        const url = new URL(link);
+
+        return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+        return false;
+    }
+}
