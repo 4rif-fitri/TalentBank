@@ -12,8 +12,6 @@ export function languagesStore(formData) {
         url: `${window.appConfig.routes.languages.languagesStore}`,
         type: "POST",
         data: formData,
-        processData: false,
-        contentType: false,
         headers: {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
         },

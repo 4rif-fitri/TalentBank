@@ -6,13 +6,15 @@ import {
     saveAbout,
     createLink,
     deleteLink,
-    updateLink
+    updateLink,
+    addLanguage
 } from './service.js';
 
 import {
     templateSocialMediaRow,
     templateBadgeSocialMedia,
-    templateEditSocialMedia
+    templateEditSocialMedia,
+
 } from '../../templates/socialMedia/template.js';
 
 import {
@@ -21,8 +23,12 @@ import {
     renderBasicProfile,
     renderContactProfile,
     renderAbout,
-    renderAddLink
+    renderAddLink,
+    renderLanguageOptions,
+    renderProficiencyOptions
 } from './renderer.js';
+
+import { templateLanguagesAddRow, templateLanguagesRow, templateLanguages } from "../../templates/languageTemplate.js"
 
 import { salert } from '../../utils/alert.js';
 import {showModal,hideModal} from '../../utils/modal.js';
@@ -399,7 +405,46 @@ export async function handleUpdateLink(){
     }
 }
 
+export function handleAddLanguage(){
+    let languageOptions = renderLanguageOptions()
+    let proficiencieOptions = renderProficiencyOptions()
 
+    $("#userLanguageList").prepend(templateLanguagesAddRow(languageOptions, proficiencieOptions))
+
+}
+
+export async function handleSaveAddLanguage() {
+    let $row = $(this).closest(".language-row");
+    let languageId = $row.find(".language-select").val();
+    let languageName = $row.find(".language-select option:selected").text();
+    let proficiency = $row.find(".language-proficiency").val();
+
+    // console.log({languageId,languageName,proficiency});
+
+    if (!languageId) {
+        salert("Validation Error", "Please select a language.", "error");
+        return;
+    }
+
+    if (!proficiency) {
+        salert("Validation Error", "Please select proficiency.", "error");
+        return;
+    }
+
+    try {
+        let response = await addLanguage(languageId, proficiency);
+        response.data.language = {
+            language_name: languageName
+        };
+
+        $("#languageList").append(templateLanguages(response.data))
+        $row.replaceWith(templateLanguagesRow(response.data));
+
+        salert("Success", response.message ?? "Language added successfully.", "success");
+    } catch (xhr) {
+        salert("Create Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
+    }
+}
 
 // ==== HANDLE ====
 

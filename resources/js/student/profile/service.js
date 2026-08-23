@@ -16,6 +16,10 @@ import {
     update
 } from '../../api/socialMedia.js';
 
+import {
+    languagesStore
+}from "../../api/language.js"
+
 import { uploadImage } from '../../utils/upload.js';
 
 export function saveProfile(formData) {
@@ -43,4 +47,11 @@ export function deleteLink(id) {
 }
 export function updateLink(id, formData) {
     return update(id,formData)
+}
+
+export function addLanguage(languageId, proficiency) {
+    let formData = new FormData()
+    formData.append("language_id",languageId)
+    formData.append("proficiency_level",proficiency)
+    return languagesStore(formData)
 }

@@ -5,6 +5,7 @@
 <script>
     window.appConfig = {
         userId: @json(session('user_profile_id')),
+        proficiencies: @json(\App\Constants\AppConstants::PROFICIENCY_LEVELS),
         assets: {
             coverImage: "{{ asset('cover-image-url') }}",
             profileImage: "{{ asset('profile-image-url') }}"
@@ -34,9 +35,9 @@
             },
             languages:{
                 getAllLanguages: "{{ route('languages.getAllLanguages') }}",
-                languagesStore: "{{ route('languages.getAllLanguages') }}",
-                languagesUpdate: "{{ route('languages.getAllLanguages',['id' => '__ID__']) }}",
-                languagesDelete: "{{ route('languages.getAllLanguages',['id' => '__ID__']) }}",
+                languagesStore: "{{ route('languages.store') }}",
+                languagesUpdate: "{{ route('languages.update',['id' => '__ID__']) }}",
+                languagesDelete: "{{ route('languages.delete',['id' => '__ID__']) }}",
             },
             skills:{
                 getAllSkills: "{{ route('skills.getAllSkills') }}",

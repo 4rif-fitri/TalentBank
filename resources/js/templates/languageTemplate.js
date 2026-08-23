@@ -15,15 +15,19 @@ export function templateLanguages(language){
         `
 }
 export function templateLanguagesRow(language) {
+    console.log({ language });
+
     return `
         <div class="language-row alert alert-light d-flex align-items-center gap-3"
                 data-id="${language.id}"
                 data-language-id="${language.language_id}"
-                data-proficiency="${language.proficiency_level}">
+                data-language-id="${language.language_id}"
+                data-proficiency="${language.proficiency_level}"
+                >
 
             <div class="d-flex flex-column flex-grow-1 gap-1">
 
-                <p class="h6 fw-bold mb-0">
+                <p class="h6 fw-bold mb-0 languageName">
                     ${language.language.language_name}
                 </p>
                 <p class="mb-0 text-secondary">
@@ -41,4 +45,31 @@ export function templateLanguagesRow(language) {
             </button>
         </div>
     `
+}
+
+export function templatelanguageOptions(language){
+    return `<option value="${language.id}">${language.language_name}</option>`
+}
+
+export function templateProficiencyOptions(proficiency) {
+    return `<option value="${proficiency}">${proficiency}</option>`
+}
+
+export function templateLanguagesAddRow(languageOptions, proficiencyOptions) {
+    return `
+        <div class="language-row alert alert-light d-flex align-items-center gap-3">
+
+            <div class="d-flex flex-column flex-grow-1 gap-2">
+                <select class="form-select form-select-sm language-select">
+                    ${languageOptions}
+                </select>
+                <select class="form-select form-select-sm language-proficiency">
+                    ${proficiencyOptions}
+                </select>
+            </div>
+            <button type="button"
+                    class="btn btn-link p-0 text-success btn-save-language">
+                    <i class="fa-solid fa-floppy-disk fa-xl"></i>
+            </button>
+        `
 }

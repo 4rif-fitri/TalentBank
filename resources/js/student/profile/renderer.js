@@ -8,11 +8,12 @@ import {
     templatAddLink
     } from '../../templates/socialMedia/template'
 import {
-        templateLanguages,      templateLanguagesRow
+        templateLanguages,          templateLanguagesRow,
+        templatelanguageOptions,    templateProficiencyOptions
     } from "../../templates/languageTemplate.js"
 // <=== Template ===>
 
-import { profileState } from './state.js';
+import { profileState, languages } from './state.js';
 import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
 import { getValidImageUrl } from "../../utils/validation.js"
 
@@ -123,3 +124,19 @@ export function renderLanguages(languages){
         $("#userLanguageList").append(templateLanguagesRow(language));
     });
 }
+
+export function renderLanguageOptions(){
+    let html = "<option value='' selected disable>Select Language</option>"
+    languages.data.forEach(language => html += templatelanguageOptions(language))
+    return html
+}
+
+export function renderProficiencyOptions() {
+    let html = "<option value='' selected disable>Select Proficiency</option>"
+    let proficiencies = window.appConfig.proficiencies
+    proficiencies.forEach(proficiency => html += templateProficiencyOptions(proficiency));
+    return html
+}
+
+
+
