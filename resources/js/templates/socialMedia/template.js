@@ -103,3 +103,36 @@ export function templatAddLink(){
         </div>
     `
 }
+
+export function templateEditSocialMedia(socialMediaId, currentName, currentLink) {
+    return `
+        <div class="input-group flex-grow-1">
+
+            <button
+                class="btn btn-outline-secondary dropdown-toggle"
+                type="button"
+                data-bs-toggle="dropdown"
+                data-id="${socialMediaId}"
+            >
+                ${currentName}
+            </button>
+
+            <ul class="dropdown-menu">
+                ${templateRenderSocialMedia()}
+            </ul>
+
+            <input
+                type="url"
+                class="form-control"
+                value="${currentLink}"
+            >
+
+        </div>
+
+        <div class="btnUpdateLink">
+            <i
+                class="fa-solid fa-floppy-disk fa-lg text-success"
+                style="cursor:pointer;">
+            </i>
+        </div>`
+}
