@@ -21,6 +21,7 @@
 
 <x-modals.active-educations-modal />
 
+<x-modals.editProfileModal />
 
 @endsection
 

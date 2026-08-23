@@ -12,8 +12,13 @@ export function updateProfile(data) {
 
     return $.ajax({
         url: window.appConfig.routes.profile.update,
-        type: 'PUT',
-        data: data
+        type: 'POST',
+        data: data,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
     });
 }
 

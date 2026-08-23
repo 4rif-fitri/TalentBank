@@ -21,6 +21,7 @@ async function loadProfile() {
     try {
         const response = await getProfile(profileId);
         profileState.data = response.data;
+        console.log("Data", profileState.data);
         renderProfile();
 
     } catch (error) {
@@ -28,6 +29,5 @@ async function loadProfile() {
 
     } finally {
         profileState.loading = false;
-
     }
 }

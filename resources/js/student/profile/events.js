@@ -1,35 +1,18 @@
-import { uploadProfileImage, uploadCoverImage } from "../../api/profile"
-import { uploadImage } from "../../utils/upload.js"
-import { renderCoverImages, renderProfileImages } from "./renderer.js"
-import { alertSuccess } from "../../utils/alert"
+import {
+    handleUploadProfileImage,
+    handleUploadCoverImage,
+    handleProfileEditSubmit,
+    showProfileEditModal,
+    showActiveEducationModal
+} from './handlers.js';
+
+import {hideModal} from '../../utils/modal.js';
 
 export function initProfileEvents() {
-    $(document).on('hide.bs.modal', ".modal", hideModal)
-    $(document).on('click', '#seeMoreActiveEducations', showActiveEducationModal);
-    $(document).on('change', '#profileImageInput', handleUploadProfileImage);
-    $(document).on('change', '#coverImageInput', handleUploadCoverImage);
-}
-
-function hideModal(){
-    $(document.activeElement).blur();
-}
-
-function showActiveEducationModal() {
-    let activeEducationsModalEl = document.getElementById('activeEducationsModal');
-    let activeEducationsModal = bootstrap.Modal.getOrCreateInstance(activeEducationsModalEl);
-    activeEducationsModal.show()
-}
-
-async function handleUploadProfileImage(event) {
-    const response = await uploadImage(event,'profile_image',uploadProfileImage);
-    if (!response) return;
-    alertSuccess("Success", "Profile image uploaded successfully","success")
-    renderProfileImages(response.data);
-}
-
-async function handleUploadCoverImage(event) {
-    const response = await uploadImage(event, 'cover_image', uploadCoverImage);
-    if (!response) return;
-    alertSuccess("Success", "Cover image uploaded successfully", "success")
-    renderCoverImages(response.data);
+    $(document).on('hide.bs.modal','.modal',hideModal);
+    $(document).on('change','#profileImageInput',handleUploadProfileImage);
+    $(document).on('change','#coverImageInput',handleUploadCoverImage);
+    $(document).on('click','#seeMoreActiveEducations',showActiveEducationModal);
+    $(document).on('click','#btnEditProfile',showProfileEditModal);
+    $(document).on('click','#btnSaveProfile',handleProfileEditSubmit);
 }

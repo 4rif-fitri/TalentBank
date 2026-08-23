@@ -11,3 +11,7 @@ export function getValidImageUrl(url, fallback) {
         img.src = url;
     });
 }
+
+export function checkFormData(formData){
+    console.log(Object.fromEntries(formData));
+}
