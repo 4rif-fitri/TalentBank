@@ -52,6 +52,9 @@ export function uploadCoverImage(formData) {
         type: 'POST',
         data: formData,
         processData: false,
-        contentType: false
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
     });
 }

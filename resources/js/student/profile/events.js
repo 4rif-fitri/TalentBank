@@ -1,5 +1,7 @@
 import { uploadProfileImage, uploadCoverImage } from "../../api/profile"
-import { validateFileImage } from "../../utils/validation"
+import { uploadImage } from "../../utils/upload.js"
+import { renderCoverImages, renderProfileImages } from "./renderer.js"
+import { alertSuccess } from "../../utils/alert"
 
 export function initProfileEvents() {
     $(document).on('click', '#seeMoreActiveEducations', showActiveEducationModal);
@@ -11,18 +13,16 @@ function showActiveEducationModal() {
     $('#activeEducationModal').modal('show');
 }
 
-async function handleUploadProfileImage(event){
-    let file = event.target.files[0]
-    if (validateFileImage(file)) return
-
-    let formData = new FormData()
-    formData.append("profile_image", file)
-
-    let response = await uploadProfileImage(formData);
-    console.log(response);
-
+async function handleUploadProfileImage(event) {
+    const response = await uploadImage(event,'profile_image',uploadProfileImage);
+    if (!response) return;
+    alertSuccess("Success", "Profile image uploaded successfully","success")
+    renderProfileImages(response.data);
 }
 
-function handleUploadCoverImage() {
-
+async function handleUploadCoverImage(event) {
+    const response = await uploadImage(event, 'cover_image', uploadCoverImage);
+    if (!response) return;
+    alertSuccess("Success", "Cover image uploaded successfully", "success")
+    renderCoverImages(response.data);
 }

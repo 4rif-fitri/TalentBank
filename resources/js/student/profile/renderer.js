@@ -9,21 +9,21 @@ export function renderProfile() {
 
     renderBasicProfile(data);
     renderProfileImages(data);
+    renderCoverImages(data)
     renderActiveEducation(data.active_programmes ?? []);
     renderModalActiveEducations(data.active_programmes ?? []);
 }
-
-export async function renderProfileImages(data) {
-
+export async function renderCoverImages(data) {
     let defaultCover = `${window.appConfig.assets.coverImage}/default.png`;
-    let defaultProfile = `${window.appConfig.assets.profileImage}/default.png`;
     let coverUrl = `${window.appConfig.assets.coverImage}/${data.cover_image || 'default.png'}`;
-    let profileUrl = `${window.appConfig.assets.profileImage}/${data.profile_image || 'default.png'}`;
-
     let validCoverUrl = await getValidImageUrl(coverUrl,defaultCover);
-    let validProfileUrl = await getValidImageUrl(profileUrl,defaultProfile);
-
     $('#coverImage').css('background-image',`url("${validCoverUrl}")`);
+
+}
+export async function renderProfileImages(data) {
+    let defaultProfile = `${window.appConfig.assets.profileImage}/default.png`;
+    let profileUrl = `${window.appConfig.assets.profileImage}/${data.profile_image || 'default.png'}`;
+    let validProfileUrl = await getValidImageUrl(profileUrl,defaultProfile);
     $('#profileImage').css('background-image',`url("${validProfileUrl}")`);
 }
 
