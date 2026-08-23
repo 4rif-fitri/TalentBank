@@ -1,3 +1,8 @@
+// get... save... update... delete... create... upload...
+// getProfile()         saveProfile()       updateProfile()     deleteProfile()
+// saveProfileImage()   saveCoverImage()
+// createEducation()    updateEducation()   deleteEducation()
+
 import {
     updateProfile,
     uploadProfileImage,

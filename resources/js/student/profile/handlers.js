@@ -1,3 +1,4 @@
+// handle... / show...
 import {
     saveProfile,
     saveProfileImage,
@@ -11,12 +12,7 @@ import {
 } from './renderer.js';
 
 import { alertSuccess } from '../../utils/alert.js';
-
-import {
-    showModal,
-    hideModal
-} from '../../utils/modal.js';
-
+import {showModal,hideModal} from '../../utils/modal.js';
 import { profileState } from './state.js';
 
 
@@ -54,6 +50,7 @@ export async function handleProfileEditSubmit() {
         const response = await saveProfile(formData);
         if (!response) return;
 
+        //akan overwrite data yang perlu je
         profileState.data = {
             ...profileState.data,
             ...response.data

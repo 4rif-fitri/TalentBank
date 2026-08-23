@@ -1,3 +1,7 @@
+// render + UI target
+// renderBasicProfile()
+// renderProfileImages()
+
 import { profileState } from './state.js';
 import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
 import { getValidImageUrl } from "../../utils/validation.js"
