@@ -3,21 +3,29 @@ import {
     saveProfile,
     saveProfileImage,
     saveCoverImage,
-    saveAbout
+    saveAbout,
+    createLink
+
 } from './service.js';
+
+import {
+    templateSocialMediaRow,
+    templateBadgeSocialMedia
+} from '../../templates/socialMedia/template.js';
 
 import {
     renderCoverImages,
     renderProfileImages,
     renderBasicProfile,
     renderContactProfile,
-    renderAbout
+    renderAbout,
+    renderAddLink
 } from './renderer.js';
 
 import { salert } from '../../utils/alert.js';
 import {showModal,hideModal} from '../../utils/modal.js';
 import { profileState } from './state.js';
-import { validateLenghtText, checkFormData } from "../../utils/validation.js"
+import { validateLenghtText, checkFormData, isValidUrl } from "../../utils/validation.js"
 
 // ==== GET ====
 function getProfileFormData() {
@@ -213,6 +221,82 @@ export async function handleUpdateContact() {
         console.error('Failed to update profile:', error);
         handleProfileValidationError(error);
     }
+}
+
+export function handleAddRowSocialMediaLink(){
+    renderAddLink()
+}
+
+export function handleCencelAddLink(){
+    $(this).parent().remove()
+}
+
+export async function handleAddLink(){
+    let $row = $(this).closest(".social-media-row");
+    let $dropdown = $row.find(".dropdown-toggle");
+
+    let socialMediaId = $row.find(".dropdown-toggle").attr("data-id");
+    let link = $row.find('input[type="url"]').val().trim();
+
+    if (!socialMediaId) {
+        salert("Validation Error","Please select a social media platform.","warning");
+        return;
+    }
+
+    if (!isValidUrl(link)) {
+        salert("Validation Error","Please enter a valid URL.","warning");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("social_media_id", socialMediaId);
+    formData.append("link", link);
+
+    let platformName = $dropdown.text().trim();
+    let platformIcon = $dropdown.find("i").attr("class");
+
+    try {
+        let response = await createLink(formData);
+        if (!response) return;
+        console.log(response);
+        let linkId = response.data?.id;
+
+        //akan overwrite data yang perlu je
+        // profileState.data = {
+        //     ...profileState.data,
+        //     ...response.data
+        // };
+
+        $row.replaceWith(
+            templateSocialMediaRow(linkId, socialMediaId,platformName,platformIcon,link)
+        );
+
+        let theLink = {
+            link,
+            social_media:{
+                icon_class_name: platformIcon,
+                name:platformName
+            }
+        }
+        $("#linksList").append(templateBadgeSocialMedia(theLink))
+
+        salert("Success",response.message ?? "Social media link added successfully.","success");
+
+    } catch (xhr) {
+        salert("Add Failed",xhr.responseJSON?.message ?? "Something went wrong.","error");
+    }
+}
+
+export function handleSelectSocialMedia(){
+    const id = $(this).data("id");
+    const name = $(this).data("name");
+    const icon = $(this).data("icon");
+
+    const $inputGroup = $(this).closest(".input-group");
+    const $dropdownButton = $inputGroup.find(".dropdown-toggle");
+
+    $dropdownButton.attr("data-id", id)
+        .html(`<i class="${icon} me-1"></i>${name}`);
 }
 
 // ==== HANDLE ====

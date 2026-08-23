@@ -1,11 +1,13 @@
 import { getProfile } from '../../api/profile.js';
+import { getAllSocialMedia } from '../../api/socialMedia.js';
 import { renderProfile } from './renderer.js';
 import { initProfileEvents } from './events.js';
-import { profileState } from './state.js';
+import { profileState, socialMedia } from './state.js';
 
 export function initProfile() {
-    initProfileEvents();
     loadProfile();
+    loadSocialMedia()
+    initProfileEvents();
 }
 
 async function loadProfile() {
@@ -31,3 +33,21 @@ async function loadProfile() {
         profileState.loading = false;
     }
 }
+
+async function loadSocialMedia(){
+
+    socialMedia.loading = true;
+
+    try {
+        const response = await getAllSocialMedia();
+        socialMedia.data = response.data;
+        console.log("Data", socialMedia.data);
+
+    } catch (error) {
+        console.error('Failed to load Social Media:', error);
+
+    } finally {
+        socialMedia.loading = false;
+    }
+}
+

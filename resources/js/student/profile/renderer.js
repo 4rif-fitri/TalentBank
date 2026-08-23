@@ -6,7 +6,8 @@ import { profileState } from './state.js';
 import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
 import {
     templateSocialMediaRow,
-    templateBadgeSocialMedia
+    templateBadgeSocialMedia,
+    templatAddLink
  } from '../../templates/socialMedia/template'
 import { getValidImageUrl } from "../../utils/validation.js"
 
@@ -97,5 +98,10 @@ export function renderListLinkSocialMedia(links){
     links.forEach(link => {
         $("#socialMediaList").append(templateSocialMediaRow(link.id, link.social_media.id, link.social_media.name, link.social_media.icon_class_name,link.link))
     })
+
+}
+
+export function renderAddLink(){
+    $("#socialMediaList").prepend(templatAddLink())
 
 }

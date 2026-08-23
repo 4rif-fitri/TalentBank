@@ -10,7 +10,11 @@ import {
     handleUpdateAbout,
     showContactModal,
     handleUpdateContact,
-    showLinksSocialMediaModal
+    showLinksSocialMediaModal,
+    handleAddRowSocialMediaLink,
+    handleCencelAddLink,
+    handleAddLink,
+    handleSelectSocialMedia
 } from './handlers.js';
 
 import { hideModalAlert } from '../../utils/modal.js';
@@ -28,5 +32,11 @@ export function initProfileEvents() {
     $(document).on('click', '#btnEditContactInformation', showContactModal);
     $(document).on('click', '#btnSaveContact', handleUpdateContact);
     $(document).on('click', '#btnSocialMediaLink', showLinksSocialMediaModal);
+    $(document).on('click', '#addlink', handleAddRowSocialMediaLink);
+
+    $(document).on('click', '.btnCancelAdd', handleCencelAddLink);
+    $(document).on('click', '.btnAddSave', handleAddLink);
+    $(document).on('click', '.social-media-option', handleSelectSocialMedia);
+
 
 }

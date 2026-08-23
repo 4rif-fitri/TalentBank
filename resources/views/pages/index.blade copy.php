@@ -82,6 +82,7 @@
                         link
                     )
                 );
+
                 getProfileData();
                 swalfire(
                     "Success",

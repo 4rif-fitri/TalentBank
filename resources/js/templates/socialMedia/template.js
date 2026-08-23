@@ -1,4 +1,8 @@
+import { socialMedia } from "../../student/profile/state.js"
+
 export function templateBadgeSocialMedia(link){
+    console.log(link);
+
     return `
         <a class="badge text-bg-light d-flex align-items-center gap-1"
             href=${link.link} target="_blank" rel="noopener noreferrer">
@@ -36,8 +40,9 @@ export function templateSocialMediaRow(linkId, socialMediaId, name, icon, link) 
         </div>`;
 }
 
-export function templateRenderSocialMedia(allSocialMedia) {
-    return allSocialMedia.map(socialMedia => {
+export function templateRenderSocialMedia() {
+
+    return socialMedia.data.map(socialMedia => {
         return `
             <li class="dropdown-item">
                 <button class="dropdown-item social-media-option"
@@ -50,4 +55,52 @@ export function templateRenderSocialMedia(allSocialMedia) {
                 </button>
             </li>`;
     }).join("");
+}
+
+export function templatAddLink(){
+    return `
+        <div class="alert alert-light d-flex align-items-center gap-4 social-media-row" role="alert">
+
+            <div class="input-group flex-grow-1">
+
+                <button
+                    class="btn btn-outline-secondary dropdown-toggle"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                >
+                    <i class="fa-brands me-1"></i>
+                    Select Here
+                </button>
+
+                <ul class="dropdown-menu">
+                    ${templateRenderSocialMedia()}
+                </ul>
+
+                <input
+                    type="url"
+                    class="form-control"
+                    placeholder="https://"
+                >
+
+            </div>
+
+            <!-- SAVE -->
+            <div class="d-flex ratio-1x1 btnAddSave">
+                <i
+                    class="fa-solid fa-floppy-disk fa-lg text-success"
+                    style="cursor:pointer;">
+                </i>
+            </div>
+
+            <!-- CANCEL -->
+            <div class="d-flex ratio-1x1 btnCancelAdd">
+                <i
+                    class="fa-solid fa-trash fa-lg text-danger"
+                    style="cursor:pointer;">
+                </i>
+            </div>
+
+        </div>
+    `
 }
