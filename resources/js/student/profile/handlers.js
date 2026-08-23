@@ -11,7 +11,7 @@ import {
     renderBasicProfile
 } from './renderer.js';
 
-import { alertSuccess } from '../../utils/alert.js';
+import { salert } from '../../utils/alert.js';
 import {showModal,hideModal} from '../../utils/modal.js';
 import { profileState } from './state.js';
 
@@ -23,7 +23,7 @@ export async function handleUploadProfileImage(event) {
         if (!response) return
 
         renderProfileImages(response.data);
-        alertSuccess('Success','Profile image uploaded successfully','success');
+        salert('Success','Profile image uploaded successfully','success');
 
     } catch (error) {
         console.error('Failed to upload profile image:',error);
@@ -36,7 +36,7 @@ export async function handleUploadCoverImage(event) {
         if (!response) return;
 
         renderCoverImages(response.data);
-        alertSuccess('Success','Cover image uploaded successfully','success');
+        salert('Success','Cover image uploaded successfully','success');
 
     } catch (error) {
         console.error('Failed to upload cover image:',error);
@@ -58,7 +58,7 @@ export async function handleProfileEditSubmit() {
 
         renderBasicProfile(profileState.data);
         hideModal('editProfileModal');
-        alertSuccess('Success','Profile updated successfully','success');
+        salert('Success','Profile updated successfully','success');
 
     } catch (error) {
         console.error('Failed to update profile:',error);
