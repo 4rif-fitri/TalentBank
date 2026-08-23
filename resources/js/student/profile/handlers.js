@@ -7,7 +7,8 @@ import {
     createLink,
     deleteLink,
     updateLink,
-    addLanguage
+    addLanguage,
+    deleteLanguage
 } from './service.js';
 
 import {
@@ -444,6 +445,42 @@ export async function handleSaveAddLanguage() {
     } catch (xhr) {
         salert("Create Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
     }
+}
+
+export  function handleDeleteLanguage(){
+    let $row = $(this).closest(".language-row");
+    let id = $row.data("id");
+
+    if (!id) {
+        $row.remove();
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Language?",
+        text: "This language will be removed.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        confirmButtonColor: "#dc3545"
+
+    }).then(async result => {
+
+        if (!result.isConfirmed) return;
+
+        try {
+            let response = await deleteLanguage(id);
+            if (!response) return;
+            console.log(response);
+            let theBadge = $("#languageList").find(`.language-item[data-id='${id}']`);
+            theBadge.remove();
+            $row.remove();
+
+            salert("Success", response.message ?? "Language deleted successfully.", "success");
+        } catch (xhr) {
+            salert("Delete Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
+        }
+    });
 }
 
 // ==== HANDLE ====

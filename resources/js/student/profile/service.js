@@ -17,7 +17,8 @@ import {
 } from '../../api/socialMedia.js';
 
 import {
-    languagesStore
+    languagesStore,
+    languagesDelete
 }from "../../api/language.js"
 
 import { uploadImage } from '../../utils/upload.js';
@@ -54,4 +55,7 @@ export function addLanguage(languageId, proficiency) {
     formData.append("language_id",languageId)
     formData.append("proficiency_level",proficiency)
     return languagesStore(formData)
+}
+export function deleteLanguage(id) {
+    return languagesDelete(id)
 }

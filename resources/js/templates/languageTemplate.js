@@ -21,7 +21,6 @@ export function templateLanguagesRow(language) {
         <div class="language-row alert alert-light d-flex align-items-center gap-3"
                 data-id="${language.id}"
                 data-language-id="${language.language_id}"
-                data-language-id="${language.language_id}"
                 data-proficiency="${language.proficiency_level}"
                 >
 

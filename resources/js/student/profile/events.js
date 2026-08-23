@@ -10,7 +10,7 @@ import {
     handleSelectSocialMedia,    handleDeleteLink,
     handleEditLink,             handleUpdateLink,
     showLanguageMediaModal,     handleAddLanguage,
-    handleSaveAddLanguage
+    handleSaveAddLanguage,      handleDeleteLanguage
 } from './handlers.js';
 
 import { hideModalAlert } from '../../utils/modal.js';
@@ -40,6 +40,7 @@ export function initProfileEvents() {
     $(document).on('click', '#btnLanguageLink', showLanguageMediaModal);
     $(document).on('click', '#btnAddLanguage', handleAddLanguage);
     $(document).on('click', '.btn-save-language', handleSaveAddLanguage);
+    $(document).on('click', '.btn-delete-language', handleDeleteLanguage);
 
 
 
