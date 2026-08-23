@@ -66,12 +66,6 @@
 @endsection
 
 @section('script')
-<script type="module">
-    import {
-        apiClient
-    } from "{{ asset('js/apiClient.js') }}";
-</script>
-
 <!-- <script>
     let profileData = null;
     function renderLanguages(userLanguages = []) {

@@ -5,6 +5,7 @@
 <script>
     window.appConfig = {
         userId: @json(session('user_profile_id')),
+        proficiencies: @json(\App\Constants\AppConstants::PROFICIENCY_LEVELS),
         assets: {
             coverImage: "{{ asset('cover-image-url') }}",
             profileImage: "{{ asset('profile-image-url') }}"
@@ -22,6 +23,39 @@
                 store: "{{ route('social-media.store') }}",
                 update: "{{ route('social-media.update', ['id' => '__ID__']) }}",
                 delete: "{{ route('social-media.delete', ['id' => '__ID__']) }}",
+            },
+            education:{
+                getEducationByUserProfileId: "{{ route('education.getEducationByUserProfileId',['id' => '__ID__']) }}",
+                getEducationById: "{{ route('education.getEducationById', ['id' => '__ID__']) }}",
+                educationStore:  "{{ route('education.store') }}",
+                educationUpdate: "{{ route('education.update', ['id' => '__ID__']) }}",
+                educationDelete: "{{ route('education.delete', ['id' => '__ID__']) }}",
+                getAllFieldOfStudies: "{{ route('education.getAllFieldOfStudies') }}",
+                getAllQualifications: "{{ route('education.getAllQualifications') }}",
+            },
+            languages:{
+                getAllLanguages: "{{ route('languages.getAllLanguages') }}",
+                languagesStore: "{{ route('languages.store') }}",
+                languagesUpdate: "{{ route('languages.update',['id' => '__ID__']) }}",
+                languagesDelete: "{{ route('languages.delete',['id' => '__ID__']) }}",
+            },
+            skills:{
+                getAllSkills: "{{ route('skills.getAllSkills') }}",
+                skillsStore: "{{ route('skills.store') }}",
+                skillsUpdate: "{{ route('skills.update',['id' => '__ID__']) }}",
+                skillsDelete: "{{ route('skills.delete',['id' => '__ID__']) }}",
+            },
+            semesters:{
+                uploadResults: "{{ route('semester.uploadResults',['id' => '__ID__']) }}",
+                semesterStore: "{{ route('semester.store') }}",
+                semesterUpdate: "{{ route('semester.update',['id' => '__ID__']) }}",
+
+            },
+            programmes:{
+                getProgrammesByUserProfileId: "{{ route('programme.getProgrammesByUserProfileId',['id' => '__ID__']) }}",
+            },
+            organizations:{
+                getAllOrganizations: "{{ route('organization.getAllOrganizations') }}",
             }
         },
 

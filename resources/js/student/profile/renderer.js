@@ -2,18 +2,23 @@
 // renderBasicProfile()
 // renderProfileImages()
 
-import { profileState } from './state.js';
-import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
+// <=== Template ===>
 import {
-    templateSocialMediaRow,
-    templateBadgeSocialMedia,
+    templateSocialMediaRow,     templateBadgeSocialMedia,
     templatAddLink
- } from '../../templates/socialMedia/template'
+    } from '../../templates/socialMedia/template'
+import {
+        templateLanguages,          templateLanguagesRow,
+        templatelanguageOptions,    templateProficiencyOptions
+    } from "../../templates/languageTemplate.js"
+// <=== Template ===>
+
+import { profileState, languages } from './state.js';
+import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
 import { getValidImageUrl } from "../../utils/validation.js"
 
 export function renderProfile() {
     let data = profileState.data;
-
     if (!data) return
 
     renderBasicProfile(data);
@@ -21,6 +26,7 @@ export function renderProfile() {
     renderContactProfile(data)
     renderProfileImages(data);
     renderCoverImages(data)
+    renderLanguages(data.user_languages ?? [])
     renderActiveEducation(data.active_programmes ?? []);
     renderModalActiveEducations(data.active_programmes ?? []);
     renderListLinkSocialMedia(data.social_media_links ?? [])
@@ -89,12 +95,12 @@ export function renderModalActiveEducations(programmes) {
 
 export function renderListLinkSocialMedia(links){
     $("#linksList").empty();
+    $("#socialMediaList").empty()
 
     links.forEach(link => {
         $("#linksList").append(templateBadgeSocialMedia(link))
     })
 
-    $("#socialMediaList").empty()
     links.forEach(link => {
         $("#socialMediaList").append(templateSocialMediaRow(link.id, link.social_media.id, link.social_media.name, link.social_media.icon_class_name,link.link))
     })
@@ -103,5 +109,34 @@ export function renderListLinkSocialMedia(links){
 
 export function renderAddLink(){
     $("#socialMediaList").prepend(templatAddLink())
-
 }
+
+export function renderLanguages(languages){
+    $("#languageList").empty()
+    $("#userLanguageList").empty()
+
+    languages.forEach(language => {
+        $("#languageList").append(templateLanguages(language));
+    });
+
+    languages.forEach(language => {
+        console.log(language);
+        $("#userLanguageList").append(templateLanguagesRow(language));
+    });
+}
+
+export function renderLanguageOptions(){
+    let html = "<option value='' selected disable>Select Language</option>"
+    languages.data.forEach(language => html += templatelanguageOptions(language))
+    return html
+}
+
+export function renderProficiencyOptions() {
+    let html = "<option value='' selected disable>Select Proficiency</option>"
+    let proficiencies = window.appConfig.proficiencies
+    proficiencies.forEach(proficiency => html += templateProficiencyOptions(proficiency));
+    return html
+}
+
+
+
