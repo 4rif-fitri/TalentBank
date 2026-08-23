@@ -11,7 +11,8 @@ import {
 } from '../../api/profile.js';
 
 import {
-    store
+    store,
+    remove
 } from '../../api/socialMedia.js';
 
 import { uploadImage } from '../../utils/upload.js';
@@ -34,4 +35,8 @@ export function saveAbout(formData) {
 
 export function createLink(formData) {
     return store(formData)
+}
+
+export function deleteLink(id) {
+    return remove(id)
 }

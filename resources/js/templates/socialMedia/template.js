@@ -1,11 +1,10 @@
 import { socialMedia } from "../../student/profile/state.js"
 
 export function templateBadgeSocialMedia(link){
-    console.log(link);
-
     return `
         <a class="badge text-bg-light d-flex align-items-center gap-1"
-            href=${link.link} target="_blank" rel="noopener noreferrer">
+            href=${link.link} target="_blank" rel="noopener noreferrer"
+            data-id=${link.id}>
             <i class="${link.social_media.icon_class_name}"></i>
             ${link.social_media.name}
         </a>

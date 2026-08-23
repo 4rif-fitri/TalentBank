@@ -14,7 +14,8 @@ import {
     handleAddRowSocialMediaLink,
     handleCencelAddLink,
     handleAddLink,
-    handleSelectSocialMedia
+    handleSelectSocialMedia,
+    handleDeleteLink
 } from './handlers.js';
 
 import { hideModalAlert } from '../../utils/modal.js';
@@ -36,6 +37,7 @@ export function initProfileEvents() {
 
     $(document).on('click', '.btnCancelAdd', handleCencelAddLink);
     $(document).on('click', '.btnAddSave', handleAddLink);
+    $(document).on('click', '.btnDeleteLink', handleDeleteLink);
     $(document).on('click', '.social-media-option', handleSelectSocialMedia);
 
 

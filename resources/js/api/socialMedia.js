@@ -20,3 +20,16 @@ export function store(formData) {
         },
     });
 }
+
+export function remove(id){
+    let url = `${window.appConfig.routes.socialMedia.delete}`
+    url = url.replace("__ID__", id);
+
+    return $.ajax({
+        url: url,
+        type: "DELETE",
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+    });
+}

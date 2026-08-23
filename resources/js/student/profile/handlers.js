@@ -4,7 +4,8 @@ import {
     saveProfileImage,
     saveCoverImage,
     saveAbout,
-    createLink
+    createLink,
+    deleteLink
 
 } from './service.js';
 
@@ -261,12 +262,6 @@ export async function handleAddLink(){
         console.log(response);
         let linkId = response.data?.id;
 
-        //akan overwrite data yang perlu je
-        // profileState.data = {
-        //     ...profileState.data,
-        //     ...response.data
-        // };
-
         $row.replaceWith(
             templateSocialMediaRow(linkId, socialMediaId,platformName,platformIcon,link)
         );
@@ -285,6 +280,40 @@ export async function handleAddLink(){
     } catch (xhr) {
         salert("Add Failed",xhr.responseJSON?.message ?? "Something went wrong.","error");
     }
+}
+
+export function handleDeleteLink() {
+    let $row = $(this).closest(".social-media-row");
+    let id = $row.data("id");
+
+    console.log({ $row ,id});
+    Swal.fire({
+        title: "Delete Link?",
+        text: "This social media link will be permanently deleted.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#dc3545"
+
+    }).then( async result => {
+
+        if (!result.isConfirmed) {
+            return;
+        }
+        try {
+            let response = await deleteLink(id);
+            if (!response) return;
+            // console.log(response);
+            let theBadge = $("#linksList").find(`.badge[data-id='${id}']`);
+            theBadge.remove();
+            $row.remove();
+
+            salert('Success', 'contact updated successfully', 'success');
+        } catch (xhr) {
+            salert("Delete Failed",xhr.responseJSON?.message ?? "Something went wrong.","error");
+        }
+    });
 }
 
 export function handleSelectSocialMedia(){
