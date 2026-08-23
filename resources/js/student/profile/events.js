@@ -4,13 +4,20 @@ import { renderCoverImages, renderProfileImages } from "./renderer.js"
 import { alertSuccess } from "../../utils/alert"
 
 export function initProfileEvents() {
+    $(document).on('hide.bs.modal', ".modal", hideModal)
     $(document).on('click', '#seeMoreActiveEducations', showActiveEducationModal);
     $(document).on('change', '#profileImageInput', handleUploadProfileImage);
     $(document).on('change', '#coverImageInput', handleUploadCoverImage);
 }
 
+function hideModal(){
+    $(document.activeElement).blur();
+}
+
 function showActiveEducationModal() {
-    $('#activeEducationModal').modal('show');
+    let activeEducationsModalEl = document.getElementById('activeEducationsModal');
+    let activeEducationsModal = bootstrap.Modal.getOrCreateInstance(activeEducationsModalEl);
+    activeEducationsModal.show()
 }
 
 async function handleUploadProfileImage(event) {
