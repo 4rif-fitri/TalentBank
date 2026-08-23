@@ -1,8 +1,9 @@
 import { profileState } from './state.js';
 import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
+import { getValidImageUrl } from "../../utils/validation.js"
 
 export function renderProfile() {
-    const data = profileState.data;
+    let data = profileState.data;
 
     if (!data) return
 
@@ -12,17 +13,18 @@ export function renderProfile() {
     renderModalActiveEducations(data.active_programmes ?? []);
 }
 
-export function renderProfileImages(data) {
+export async function renderProfileImages(data) {
 
-    if (data.cover_image) {
-        const coverImageUrl = `${window.appConfig.assets.coverImage}/${data.cover_image}`;
-        $('#coverImage').css('background-image',`url("${coverImageUrl}")`);
-    }
+    let defaultCover = `${window.appConfig.assets.coverImage}/default.png`;
+    let defaultProfile = `${window.appConfig.assets.profileImage}/default.png`;
+    let coverUrl = `${window.appConfig.assets.coverImage}/${data.cover_image || 'default.png'}`;
+    let profileUrl = `${window.appConfig.assets.profileImage}/${data.profile_image || 'default.png'}`;
 
-    if (data.profile_image) {
-        const profileImageUrl = `${window.appConfig.assets.profileImage}/${data.profile_image}`;
-        $('#profileImage, #profileBtn').css('background-image',`url("${profileImageUrl}")`);
-    }
+    let validCoverUrl = await getValidImageUrl(coverUrl,defaultCover);
+    let validProfileUrl = await getValidImageUrl(profileUrl,defaultProfile);
+
+    $('#coverImage').css('background-image',`url("${validCoverUrl}")`);
+    $('#profileImage').css('background-image',`url("${validProfileUrl}")`);
 }
 
 export function renderBasicProfile(data) {
@@ -35,7 +37,7 @@ export function renderBasicProfile(data) {
 export function renderActiveEducation(programmes) {
 
     if (programmes.length > 0) {
-        const programme = programmes[0];
+        let programme = programmes[0];
         $('#uni-name').text(programme.organization?.company_name ?? '').show();
         $('#programme').text(programme.programme_name ?? '').show();
 
@@ -47,7 +49,7 @@ export function renderActiveEducation(programmes) {
 
 export function renderModalActiveEducations(programmes) {
 
-    const $container = $('#activeEducationList');
+    let $container = $('#activeEducationList');
 
     $container.empty();
 

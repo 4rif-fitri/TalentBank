@@ -1,3 +1,4 @@
+// get profile data
 export function getProfile(profileId) {
 
     return $.ajax({
@@ -6,7 +7,7 @@ export function getProfile(profileId) {
     });
 }
 
-
+// update profile
 export function updateProfile(data) {
 
     return $.ajax({
@@ -16,7 +17,7 @@ export function updateProfile(data) {
     });
 }
 
-
+// update about
 export function updateAbout(about) {
 
     return $.ajax({
@@ -28,7 +29,7 @@ export function updateAbout(about) {
     });
 }
 
-
+// upload photo profile image
 export function uploadProfileImage(formData) {
 
     return $.ajax({
@@ -36,11 +37,14 @@ export function uploadProfileImage(formData) {
         type: 'POST',
         data: formData,
         processData: false,
-        contentType: false
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        }
     });
 }
 
-
+// upload cover image
 export function uploadCoverImage(formData) {
 
     return $.ajax({
