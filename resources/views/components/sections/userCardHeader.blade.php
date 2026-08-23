@@ -69,7 +69,7 @@
                 </p>
             </article>
 
-            <x-links />
+            <!-- <x-links /> -->
 
         </div>
 
@@ -97,7 +97,7 @@
         </div>
     </div>
 
-    <nav class="horizontal-nav d-flex flex-wrap px-3">
+    <!-- <nav class="horizontal-nav d-flex flex-wrap px-3">
         <x-button-horizontal-nav target="main" class="active">
             Main
         </x-button-horizontal-nav>
@@ -125,9 +125,6 @@
         <x-button-horizontal-nav target="certifications">
             Certifications
         </x-button-horizontal-nav>
-    </nav>
+    </nav> -->
 
 </section>
-
-@push('scripts')
-@endpush

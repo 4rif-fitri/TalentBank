@@ -219,8 +219,10 @@
             },
 
             success: function (response) {
+                console.log(response);
+
                 swalfire("Success", response.message ?? "Language updated successfully.", "success");
-                refreshProfileLanguages();
+                // refreshProfileLanguages();
             },
 
             error: function (xhr) {
@@ -261,8 +263,10 @@
             },
 
             success: function (response) {
+                console.log(response);
+
                 swalfire("Success", response.message ?? "Language deleted successfully.", "success");
-                refreshProfileLanguages();
+                // refreshProfileLanguages();
             },
 
             error: function (xhr) {
