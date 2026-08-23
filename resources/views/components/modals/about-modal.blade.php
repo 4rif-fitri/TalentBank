@@ -18,8 +18,7 @@
                 <div id="aboutFields">
                     <div class="mb-3">
                         <label for="aboutInput" class="form-label">About</label>
-                        <textarea class="form-control" name="about" id="aboutInput" rows="6"
-                            maxlength="255"></textarea>
+                        <textarea class="form-control" name="about" id="aboutInput" rows="6" maxlength="255"></textarea>
                         <div class="text-end text-muted small mt-1">
                             <span id="aboutCount">0</span>/255
                         </div>

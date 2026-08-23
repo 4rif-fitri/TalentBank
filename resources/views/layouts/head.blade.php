@@ -16,8 +16,15 @@
                 updateAbout: "{{ route('update.updateAboutField') }}",
                 uploadProfileImage: "{{ route('update.uploadProfileImage') }}",
                 uploadCoverImage: "{{ route('update.uploadCoverImage') }}"
+            },
+            socialMedia: {
+                getAllSocialMedia: "{{ route('social-media.getAllSocialMedia') }}",
+                store: "{{ route('social-media.store') }}",
+                update: "{{ route('social-media.update', ['id' => '__ID__']) }}",
+                delete: "{{ route('social-media.delete', ['id' => '__ID__']) }}",
             }
-        }
+        },
+
     };
 </script>
 

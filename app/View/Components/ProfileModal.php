@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class EditContactInformationModal extends Component
+class ProfileModal extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class EditContactInformationModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.edit-contact-information-modal');
+        return view('components.profile-modal');
     }
 }

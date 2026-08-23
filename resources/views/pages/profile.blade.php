@@ -17,6 +17,7 @@
 
     <div class="user-card-right">
 
+        <x-sections.contact-information />
 
     </div>
 
@@ -24,12 +25,17 @@
 
 <x-modals.active-educations-modal />
 
-<x-modals.editProfileModal />
+<x-modals.profile-modal />
 
-<x-modals.editAboutModal />
+<x-modals.about-modal />
+
+<x-modals.contact-information-modal />
+
+<x-modals.social-media-link-modal />
+
 
 @endsection
 
 @section('script')
-@vite('resources/js/student/index.js')
+    @vite('resources/js/student/index.js')
 @endsection

@@ -69,7 +69,7 @@
                 </p>
             </article>
 
-            <!-- <x-links /> -->
+            <x-links />
 
         </div>
 

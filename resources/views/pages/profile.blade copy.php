@@ -27,7 +27,8 @@
 
     <div class="user-card-right">
 
-        <!-- <x-sections.contact-information />
+        <!--
+        <x-sections.contact-information />
 
         <x-sections.languages />
 

@@ -9,12 +9,12 @@
 
     <article class="m-1 d-flex align-items-center gap-2">
         <i class="fa-regular fa-envelope"></i>
-        <p id="email">email@gmail.com</p>
+        <p id="email"></p>
     </article>
 
     <article class="m-1 d-flex align-items-center gap-2">
         <i class="fa-solid fa-phone"></i>
-        <p id="phoneNo">0197231577</p>
+        <p id="phoneNo"></p>
     </article>
 </section>
 

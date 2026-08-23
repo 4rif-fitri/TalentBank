@@ -3,25 +3,123 @@ import {
     saveProfile,
     saveProfileImage,
     saveCoverImage,
-    saveAbout
+    saveAbout,
+    createLink,
+    deleteLink
+
 } from './service.js';
+
+import {
+    templateSocialMediaRow,
+    templateBadgeSocialMedia
+} from '../../templates/socialMedia/template.js';
 
 import {
     renderCoverImages,
     renderProfileImages,
-    renderBasicProfile
+    renderBasicProfile,
+    renderContactProfile,
+    renderAbout,
+    renderAddLink
 } from './renderer.js';
 
 import { salert } from '../../utils/alert.js';
 import {showModal,hideModal} from '../../utils/modal.js';
 import { profileState } from './state.js';
-import { validateLenghtText, checkFormData } from "../../utils/validation.js"
+import { validateLenghtText, checkFormData, isValidUrl } from "../../utils/validation.js"
 
+// ==== GET ====
+function getProfileFormData() {
+    let formData = new FormData();
+    formData.append('name', $('#profileNameInput').val());
+    formData.append('location', $('#locationInput').val());
+    formData.append('headline', $('#profileHeadlineInput').val());
+    formData.append('email', $('#contactEmailInput').val());
+    formData.append('phone_no', $('#contactPhoneNoInput').val());
+    formData.append('_method', 'PUT');
+
+    return formData;
+}
+// ==== GET ====
+
+// ==== SHOW ====
+export function showProfileEditModal() {
+
+    let profile = profileState.data;
+
+    if (!profile) {
+        console.error('Profile data not available');
+        return;
+    }
+
+    showModal('editProfileModal');
+
+    $('#profileNameInput').val(profile.name ?? '');
+    $('#locationInput').val(profile.location ?? '');
+    $('#profileHeadlineInput').val(profile.headline ?? '');
+    $('#profileEmailInput').val(profile.email ?? '');
+    $('#profilePhoneNoInput').val(profile.phone_no ?? '');
+}
+
+export function showActiveEducationModal() {
+    showModal('activeEducationsModal');
+}
+
+export function showAboutModal() {
+    let profile = profileState.data;
+
+    if (!profile) {
+        console.error('Profile data not available');
+        return;
+    }
+    $("#aboutInput").val(profile.about ?? '');
+    $("#aboutCount").text($("#aboutInput").val().length);
+    showModal('editAboutModal');
+}
+
+export function showContactModal() {
+    let profile = profileState.data;
+
+    if (!profile) {
+        console.error('Profile data not available');
+        return;
+    }
+
+    $("#contactEmailInput").val(profile.email)
+    $("#contactPhoneNoInput").val(profile.phone_no)
+
+    showModal('editContactInformationModal');
+}
+
+export function showLinksSocialMediaModal(){
+    let profile = profileState.data;
+
+    if (!profile) {
+        console.error('Profile data not available');
+        return;
+    }
+
+    showModal('socialMediaModal');
+}
+
+// ==== SHOW ====
+
+// ==== HANDLE ====
+function handleProfileValidationError(error) {
+
+    if (error?.responseJSON?.errors) {
+        let errors = error.responseJSON.errors;
+        console.error('Validation errors:', errors);
+        return;
+    }
+
+    console.error('Unexpected profile error:', error);
+}
 
 export async function handleUploadProfileImage(event) {
 
     try {
-        const response = await saveProfileImage(event);
+        let response = await saveProfileImage(event);
         if (!response) return
 
         renderProfileImages(response.data);
@@ -34,7 +132,7 @@ export async function handleUploadProfileImage(event) {
 
 export async function handleUploadCoverImage(event) {
     try {
-        const response = await saveCoverImage(event);
+        let response = await saveCoverImage(event);
         if (!response) return;
 
         renderCoverImages(response.data);
@@ -46,10 +144,10 @@ export async function handleUploadCoverImage(event) {
 }
 
 export async function handleProfileEditSubmit() {
-    const formData = getProfileFormData();
+    let formData = getProfileFormData();
 
     try {
-        const response = await saveProfile(formData);
+        let response = await saveProfile(formData);
         if (!response) return;
 
         //akan overwrite data yang perlu je
@@ -85,7 +183,7 @@ export async function handleUpdateAbout(){
     checkFormData(formData)
 
     try {
-        const response = await saveAbout(formData);
+        let response = await saveAbout(formData);
         if (!response) return;
 
         //akan overwrite data yang perlu je
@@ -94,7 +192,7 @@ export async function handleUpdateAbout(){
             ...response.data
         };
 
-        renderBasicProfile(profileState.data);
+        renderAbout(profileState.data);
         hideModal('editAboutModal');
         salert('Success', 'About updated successfully', 'success');
 
@@ -103,59 +201,135 @@ export async function handleUpdateAbout(){
     }
 }
 
-function getProfileFormData() {
-    const formData = new FormData();
-    formData.append('name',$('#profileNameInput').val());
-    formData.append('location',$('#locationInput').val());
-    formData.append('headline',$('#profileHeadlineInput').val());
-    formData.append('email',$('#profileEmailInput').val());
-    formData.append('phone_no',$('#profilePhoneNoInput').val());
-    formData.append('_method','PUT');
+export async function handleUpdateContact() {
+    let formData = getProfileFormData();
 
-    return formData;
+    try {
+        let response = await saveProfile(formData);
+        if (!response) return;
+
+        //akan overwrite data yang perlu je
+        profileState.data = {
+            ...profileState.data,
+            ...response.data
+        };
+
+        renderContactProfile(profileState.data);
+        hideModal('editContactInformationModal');
+        salert('Success', 'contact updated successfully', 'success');
+
+    } catch (error) {
+        console.error('Failed to update profile:', error);
+        handleProfileValidationError(error);
+    }
 }
 
-export function showProfileEditModal() {
+export function handleAddRowSocialMediaLink(){
+    renderAddLink()
+}
 
-    const profile = profileState.data;
+export function handleCencelAddLink(){
+    $(this).parent().remove()
+}
 
-    if (!profile) {
-        console.error('Profile data not available');
+export async function handleAddLink(){
+    let $row = $(this).closest(".social-media-row");
+    let $dropdown = $row.find(".dropdown-toggle");
+
+    let socialMediaId = $row.find(".dropdown-toggle").attr("data-id");
+    let link = $row.find('input[type="url"]').val().trim();
+
+    if (!socialMediaId) {
+        salert("Validation Error","Please select a social media platform.","warning");
         return;
     }
 
-    showModal('editProfileModal');
-
-    $('#profileNameInput').val(profile.name ?? '');
-    $('#locationInput').val(profile.location ?? '');
-    $('#profileHeadlineInput').val(profile.headline ?? '');
-    $('#profileEmailInput').val(profile.email ?? '');
-    $('#profilePhoneNoInput').val(profile.phone_no ?? '');
-}
-
-export function showActiveEducationModal() {
-    showModal('activeEducationsModal');
-}
-
-export function showAboutModal(){
-    const profile = profileState.data;
-
-    if (!profile) {
-        console.error('Profile data not available');
-        return;
-    }
-    $("#aboutInput").val(profile.about ?? '');
-    $("#aboutCount").text($("#aboutInput").val().length);
-    showModal('editAboutModal');
-}
-
-function handleProfileValidationError(error) {
-
-    if (error?.responseJSON?.errors) {
-        const errors = error.responseJSON.errors;
-        console.error('Validation errors:', errors);
+    if (!isValidUrl(link)) {
+        salert("Validation Error","Please enter a valid URL.","warning");
         return;
     }
 
-    console.error('Unexpected profile error:',error);
+    let formData = new FormData();
+    formData.append("social_media_id", socialMediaId);
+    formData.append("link", link);
+
+    let platformName = $dropdown.text().trim();
+    let platformIcon = $dropdown.find("i").attr("class");
+
+    try {
+        let response = await createLink(formData);
+        if (!response) return;
+        console.log(response);
+        let linkId = response.data?.id;
+
+        $row.replaceWith(
+            templateSocialMediaRow(linkId, socialMediaId,platformName,platformIcon,link)
+        );
+
+        let theLink = {
+            link,
+            social_media:{
+                icon_class_name: platformIcon,
+                name:platformName
+            }
+        }
+        $("#linksList").append(templateBadgeSocialMedia(theLink))
+
+        salert("Success",response.message ?? "Social media link added successfully.","success");
+
+    } catch (xhr) {
+        salert("Add Failed",xhr.responseJSON?.message ?? "Something went wrong.","error");
+    }
 }
+
+export function handleDeleteLink() {
+    let $row = $(this).closest(".social-media-row");
+    let id = $row.data("id");
+
+    console.log({ $row ,id});
+    Swal.fire({
+        title: "Delete Link?",
+        text: "This social media link will be permanently deleted.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#dc3545"
+
+    }).then( async result => {
+
+        if (!result.isConfirmed) {
+            return;
+        }
+        try {
+            let response = await deleteLink(id);
+            if (!response) return;
+            // console.log(response);
+            let theBadge = $("#linksList").find(`.badge[data-id='${id}']`);
+            theBadge.remove();
+            $row.remove();
+
+            salert('Success', 'contact updated successfully', 'success');
+        } catch (xhr) {
+            salert("Delete Failed",xhr.responseJSON?.message ?? "Something went wrong.","error");
+        }
+    });
+}
+
+export function handleSelectSocialMedia(){
+    const id = $(this).data("id");
+    const name = $(this).data("name");
+    const icon = $(this).data("icon");
+
+    const $inputGroup = $(this).closest(".input-group");
+    const $dropdownButton = $inputGroup.find(".dropdown-toggle");
+
+    $dropdownButton.attr("data-id", id)
+        .html(`<i class="${icon} me-1"></i>${name}`);
+}
+
+// ==== HANDLE ====
+
+
+
+

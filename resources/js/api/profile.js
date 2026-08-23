@@ -17,7 +17,7 @@ export function updateProfile(data) {
         processData: false,
         contentType: false,
         headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
         }
     });
 }
@@ -32,7 +32,7 @@ export function updateAbout(data) {
         processData: false,
         contentType: false,
         headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
         }
     });
 }
@@ -47,7 +47,7 @@ export function uploadProfileImage(formData) {
         processData: false,
         contentType: false,
         headers: {
-            'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
         }
     });
 }
@@ -62,7 +62,7 @@ export function uploadCoverImage(formData) {
         processData: false,
         contentType: false,
         headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
         }
     });
 }

@@ -7,8 +7,13 @@ import {
     updateProfile,
     uploadProfileImage,
     uploadCoverImage,
-    updateAbout
+    updateAbout,
 } from '../../api/profile.js';
+
+import {
+    store,
+    remove
+} from '../../api/socialMedia.js';
 
 import { uploadImage } from '../../utils/upload.js';
 
@@ -26,4 +31,12 @@ export function saveCoverImage(event) {
 
 export function saveAbout(formData) {
     return updateAbout(formData)
+}
+
+export function createLink(formData) {
+    return store(formData)
+}
+
+export function deleteLink(id) {
+    return remove(id)
 }

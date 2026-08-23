@@ -4,6 +4,11 @@
 
 import { profileState } from './state.js';
 import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
+import {
+    templateSocialMediaRow,
+    templateBadgeSocialMedia,
+    templatAddLink
+ } from '../../templates/socialMedia/template'
 import { getValidImageUrl } from "../../utils/validation.js"
 
 export function renderProfile() {
@@ -13,10 +18,12 @@ export function renderProfile() {
 
     renderBasicProfile(data);
     renderAbout(data);
+    renderContactProfile(data)
     renderProfileImages(data);
     renderCoverImages(data)
     renderActiveEducation(data.active_programmes ?? []);
     renderModalActiveEducations(data.active_programmes ?? []);
+    renderListLinkSocialMedia(data.social_media_links ?? [])
 }
 
 export function renderAbout(data){
@@ -42,6 +49,18 @@ export function renderBasicProfile(data) {
     $("#name").text(data.name ?? "");
     $("#headline").text(data.headline ?? "");
     $("#profileLocation").text(data.location ?? "");
+
+    $("#profileNameInput").val(data.name ?? "");
+    $("#locationInput").val(data.headline ?? "");
+    $("#profileHeadlineInput").val(data.location ?? "");
+}
+
+export function renderContactProfile(data) {
+    $("#email").text(data.email ?? "");
+    $("#phoneNo").text(data.phone_no ?? "");
+
+    $("#contactEmailInput").val(data.email ?? "");
+    $("#contactPhoneNoInput").val(data.phone_no ?? "");
 }
 
 export function renderActiveEducation(programmes) {
@@ -66,4 +85,23 @@ export function renderModalActiveEducations(programmes) {
     programmes.forEach(programme => {
         $container.append(activeEducationsAlert(programme));
     });
+}
+
+export function renderListLinkSocialMedia(links){
+    $("#linksList").empty();
+
+    links.forEach(link => {
+        $("#linksList").append(templateBadgeSocialMedia(link))
+    })
+
+    $("#socialMediaList").empty()
+    links.forEach(link => {
+        $("#socialMediaList").append(templateSocialMediaRow(link.id, link.social_media.id, link.social_media.name, link.social_media.icon_class_name,link.link))
+    })
+
+}
+
+export function renderAddLink(){
+    $("#socialMediaList").prepend(templatAddLink())
+
 }
