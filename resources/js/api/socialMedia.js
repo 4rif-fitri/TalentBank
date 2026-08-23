@@ -33,3 +33,19 @@ export function remove(id){
         },
     });
 }
+
+export function update(id,formData) {
+    let url = `${window.appConfig.routes.socialMedia.update}`
+    url = url.replace("__ID__", id);
+
+    return $.ajax({
+        url,
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+    });
+}

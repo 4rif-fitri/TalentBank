@@ -5,13 +5,14 @@ import {
     saveCoverImage,
     saveAbout,
     createLink,
-    deleteLink
-
+    deleteLink,
+    updateLink
 } from './service.js';
 
 import {
     templateSocialMediaRow,
-    templateBadgeSocialMedia
+    templateBadgeSocialMedia,
+    templateEditSocialMedia
 } from '../../templates/socialMedia/template.js';
 
 import {
@@ -326,6 +327,72 @@ export function handleSelectSocialMedia(){
 
     $dropdownButton.attr("data-id", id)
         .html(`<i class="${icon} me-1"></i>${name}`);
+}
+
+export function handleEditLink(){
+    let $row = $(this).closest(".social-media-row");
+    let id = $row.data("id");
+    let socialMediaId = $row.data("social-media-id");
+
+    let currentName = $row.find(".social-media-name").text().trim();
+    let currentLink = $row.find(".social-media-link").attr("href");
+
+    $row.html(templateEditSocialMedia(socialMediaId, currentName, currentLink))
+}
+
+export async function handleUpdateLink(){
+    let $row = $(this).closest(".social-media-row");
+    let id = $row.data("id");
+
+    let socialMediaId = $row.find(".dropdown-toggle").attr("data-id");
+
+    let link = $row.find('input[type="url"]').val().trim();
+    $row.attr("data-social-media-id", socialMediaId)
+        .data("social-media-id", Number(socialMediaId));
+
+    if (!socialMediaId) {
+        salert("Validation Error","Please select social media.","warning");
+        return;
+    }
+    if (!isValidUrl(link)) {
+        salert("Validation Error","Please enter a valid URL.","warning");
+        return;
+    }
+
+    let formData = new FormData();
+    formData.append("social_media_id", socialMediaId);
+    formData.append("link", link);
+    formData.append("_method", "PUT");
+
+    try {
+        let response = await updateLink(id, formData);
+        if (!response) return;
+        let data = response.data;
+
+        // Guna .html() untuk "replace" semua isi dalam badge
+        let theBadge = $("#linksList").find(`.badge[data-id='${data.id}']`);
+        theBadge.html(`<i class="${data.social_media.icon_class_name}"></i> ${data.social_media.name}`);
+
+        $row.parent().prepend(templateSocialMediaRow(data.id, data.social_media.id, data.social_media.name, data.social_media.icon_class_name, data.link));
+        $row.remove();
+
+        salert(
+            "Success",
+            response.message ??
+            "Social media link updated successfully.",
+            "success"
+        );
+
+    } catch (xhr) {
+        console.error(xhr);
+
+        salert(
+            "Update Failed",
+            xhr.responseJSON?.message ??
+            "Something went wrong.",
+            "error"
+        );
+    }
 }
 
 // ==== HANDLE ====

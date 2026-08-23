@@ -12,7 +12,8 @@ import {
 
 import {
     store,
-    remove
+    remove,
+    update
 } from '../../api/socialMedia.js';
 
 import { uploadImage } from '../../utils/upload.js';
@@ -39,4 +40,7 @@ export function createLink(formData) {
 
 export function deleteLink(id) {
     return remove(id)
+}
+export function updateLink(id, formData) {
+    return update(id,formData)
 }
