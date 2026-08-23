@@ -8,9 +8,11 @@
 
         <!-- <x-sections.userCardHeader /> -->
 
-        <!-- <div id="mainTabContent">
+        <!--
+        <div id="mainTabContent">
             <x-sections.about />
-        </div> -->
+        </div>
+         -->
 
         <!-- <div id="resultTabContent" class="d-none">
             <x-sections.semesterResults />

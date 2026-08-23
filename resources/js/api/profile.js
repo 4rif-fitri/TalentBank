@@ -23,13 +23,16 @@ export function updateProfile(data) {
 }
 
 // update about
-export function updateAbout(about) {
+export function updateAbout(data) {
 
     return $.ajax({
         url: window.appConfig.routes.profile.updateAbout,
-        type: 'PUT',
-        data: {
-            about: about
+        type: 'POST',
+        data: data,
+        processData: false,
+        contentType: false,
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
         }
     });
 }

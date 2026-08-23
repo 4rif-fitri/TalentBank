@@ -6,13 +6,14 @@
 import {
     updateProfile,
     uploadProfileImage,
-    uploadCoverImage
+    uploadCoverImage,
+    updateAbout
 } from '../../api/profile.js';
 
 import { uploadImage } from '../../utils/upload.js';
 
 export function saveProfile(formData) {
-    return updateProfile( formData);
+    return updateProfile(formData);
 }
 
 export function saveProfileImage(event) {
@@ -21,4 +22,8 @@ export function saveProfileImage(event) {
 
 export function saveCoverImage(event) {
     return uploadImage(event,'cover_image',uploadCoverImage);
+}
+
+export function saveAbout(formData) {
+    return updateAbout(formData)
 }

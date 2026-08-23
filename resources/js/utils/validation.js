@@ -15,3 +15,7 @@ export function getValidImageUrl(url, fallback) {
 export function checkFormData(formData){
     console.log(Object.fromEntries(formData));
 }
+
+export function validateLenghtText(text,limit){
+    return text.lenght >= limit
+}

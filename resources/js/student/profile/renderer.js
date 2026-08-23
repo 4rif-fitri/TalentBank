@@ -12,11 +12,17 @@ export function renderProfile() {
     if (!data) return
 
     renderBasicProfile(data);
+    renderAbout(data);
     renderProfileImages(data);
     renderCoverImages(data)
     renderActiveEducation(data.active_programmes ?? []);
     renderModalActiveEducations(data.active_programmes ?? []);
 }
+
+export function renderAbout(data){
+    $("#aboutText").text(data.about ?? "");
+}
+
 export async function renderCoverImages(data) {
     let defaultCover = `${window.appConfig.assets.coverImage}/default.png`;
     let coverUrl = `${window.appConfig.assets.coverImage}/${data.cover_image || 'default.png'}`;
@@ -24,6 +30,7 @@ export async function renderCoverImages(data) {
     $('#coverImage').css('background-image',`url("${validCoverUrl}")`);
 
 }
+
 export async function renderProfileImages(data) {
     let defaultProfile = `${window.appConfig.assets.profileImage}/default.png`;
     let profileUrl = `${window.appConfig.assets.profileImage}/${data.profile_image || 'default.png'}`;
@@ -34,7 +41,6 @@ export async function renderProfileImages(data) {
 export function renderBasicProfile(data) {
     $("#name").text(data.name ?? "");
     $("#headline").text(data.headline ?? "");
-    $("#aboutText").text(data.about ?? "");
     $("#profileLocation").text(data.location ?? "");
 }
 

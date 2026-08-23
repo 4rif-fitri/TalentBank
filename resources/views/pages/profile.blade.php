@@ -8,6 +8,9 @@
 
         <x-sections.userCardHeader />
 
+        <div id="mainTabContent">
+            <x-sections.about />
+        </div>
 
     </div>
 
@@ -22,6 +25,8 @@
 <x-modals.active-educations-modal />
 
 <x-modals.editProfileModal />
+
+<x-modals.editAboutModal />
 
 @endsection
 
