@@ -10,10 +10,10 @@ import {
     templatAddLink
  } from '../../templates/socialMedia/template'
 import { getValidImageUrl } from "../../utils/validation.js"
+import { templateLanguages } from "../../templates/languageTemplate.js"
 
 export function renderProfile() {
     let data = profileState.data;
-
     if (!data) return
 
     renderBasicProfile(data);
@@ -21,6 +21,7 @@ export function renderProfile() {
     renderContactProfile(data)
     renderProfileImages(data);
     renderCoverImages(data)
+    renderLanguages(data.user_languages ?? [])
     renderActiveEducation(data.active_programmes ?? []);
     renderModalActiveEducations(data.active_programmes ?? []);
     renderListLinkSocialMedia(data.social_media_links ?? [])
@@ -89,12 +90,12 @@ export function renderModalActiveEducations(programmes) {
 
 export function renderListLinkSocialMedia(links){
     $("#linksList").empty();
+    $("#socialMediaList").empty()
 
     links.forEach(link => {
         $("#linksList").append(templateBadgeSocialMedia(link))
     })
 
-    $("#socialMediaList").empty()
     links.forEach(link => {
         $("#socialMediaList").append(templateSocialMediaRow(link.id, link.social_media.id, link.social_media.name, link.social_media.icon_class_name,link.link))
     })
@@ -103,5 +104,11 @@ export function renderListLinkSocialMedia(links){
 
 export function renderAddLink(){
     $("#socialMediaList").prepend(templatAddLink())
+}
 
+export function renderLanguages(languages){
+    $("#languageList").empty()
+    languages.forEach(language => {
+        $("#languageList").append(templateLanguages(language));
+    });
 }

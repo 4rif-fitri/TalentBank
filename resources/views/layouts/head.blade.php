@@ -22,6 +22,21 @@
                 store: "{{ route('social-media.store') }}",
                 update: "{{ route('social-media.update', ['id' => '__ID__']) }}",
                 delete: "{{ route('social-media.delete', ['id' => '__ID__']) }}",
+            },
+            education:{
+                getEducationByUserProfileId: "{{ route('education.getEducationByUserProfileId',['id' => '__ID__']) }}",
+                getEducationById: "{{ route('education.getEducationById', ['id' => '__ID__']) }}",
+                educationStore:  "{{ route('education.store') }}",
+                educationUpdate: "{{ route('education.update', ['id' => '__ID__']) }}",
+                educationDelete: "{{ route('education.delete', ['id' => '__ID__']) }}",
+                getAllFieldOfStudies: "{{ route('education.getAllFieldOfStudies') }}",
+                getAllQualifications: "{{ route('education.getAllQualifications') }}",
+            },
+            languages:{
+                getAllLanguages: "{{ route('languages.getAllLanguages') }}",
+                languagesStore: "{{ route('languages.getAllLanguages') }}",
+                languagesUpdate: "{{ route('languages.getAllLanguages',['id' => '__ID__']) }}",
+                languagesDelete: "{{ route('languages.getAllLanguages',['id' => '__ID__']) }}",
             }
         },
 

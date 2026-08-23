@@ -1,23 +1,15 @@
 // init...Events
 import {
-    handleUploadProfileImage,
-    handleUploadCoverImage,
-    handleProfileEditSubmit,
-    showProfileEditModal,
-    showActiveEducationModal,
-    showAboutModal,
-    handleInputAbout,
-    handleUpdateAbout,
-    showContactModal,
-    handleUpdateContact,
-    showLinksSocialMediaModal,
-    handleAddRowSocialMediaLink,
-    handleCencelAddLink,
-    handleAddLink,
-    handleSelectSocialMedia,
-    handleDeleteLink,
-    handleEditLink,
-    handleUpdateLink
+    handleUploadProfileImage,   handleUploadCoverImage,
+    handleProfileEditSubmit,    showProfileEditModal,
+    showActiveEducationModal,   showAboutModal,
+    handleInputAbout,           handleUpdateAbout,
+    showContactModal,           handleUpdateContact,
+    showLinksSocialMediaModal,  handleAddRowSocialMediaLink,
+    handleCencelAddLink,        handleAddLink,
+    handleSelectSocialMedia,    handleDeleteLink,
+    handleEditLink,             handleUpdateLink,
+    showLanguageMediaModal,
 } from './handlers.js';
 
 import { hideModalAlert } from '../../utils/modal.js';
@@ -43,6 +35,8 @@ export function initProfileEvents() {
     $(document).on('click', '.btnEditLink', handleEditLink);
     $(document).on('click', '.btnUpdateLink', handleUpdateLink);
     $(document).on('click', '.social-media-option', handleSelectSocialMedia);
+
+    $(document).on('click', '#btnLanguageLink', showLanguageMediaModal);
 
 
 }

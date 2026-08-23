@@ -16,23 +16,18 @@
 
 
     <div class="user-card-right">
-
         <x-sections.contact-information />
-
+        <x-sections.languages />
     </div>
 
 </div>
 
 <x-modals.active-educations-modal />
-
 <x-modals.profile-modal />
-
 <x-modals.about-modal />
-
 <x-modals.contact-information-modal />
-
 <x-modals.social-media-link-modal />
-
+<x-modals.languages-modal />
 
 @endsection
 

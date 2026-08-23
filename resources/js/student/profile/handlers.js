@@ -103,6 +103,9 @@ export function showLinksSocialMediaModal(){
     showModal('socialMediaModal');
 }
 
+export async function showLanguageMediaModal() {
+    showModal('languageModal');
+}
 // ==== SHOW ====
 
 // ==== HANDLE ====
@@ -139,8 +142,9 @@ export async function handleUploadCoverImage(event) {
         renderCoverImages(response.data);
         salert('Success','Cover image uploaded successfully','success');
 
-    } catch (error) {
-        console.error('Failed to upload cover image:',error);
+    } catch (xhr) {
+        salert("Error", xhr.responseJSON.message, "error")
+        console.error('Failed to upload cover image:', xhr);
     }
 }
 
@@ -394,6 +398,8 @@ export async function handleUpdateLink(){
         );
     }
 }
+
+
 
 // ==== HANDLE ====
 

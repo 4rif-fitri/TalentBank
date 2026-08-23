@@ -6,18 +6,8 @@
         </button>
     </div>
     <hr>
-    <div id="languageList">
 
-
-
-    </div>
+    <div id="languageList"></div>
 </section>
 
-@push('scripts')
-<script>
-    $("#btnLanguageLink").on("click", function () {
-        let modal = bootstrap.Modal.getOrCreateInstance($("#languageModal"));
-        modal.show()
-    })
-</script>
-@endpush
+
