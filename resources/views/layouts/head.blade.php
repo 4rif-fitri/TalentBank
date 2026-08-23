@@ -37,6 +37,24 @@
                 languagesStore: "{{ route('languages.getAllLanguages') }}",
                 languagesUpdate: "{{ route('languages.getAllLanguages',['id' => '__ID__']) }}",
                 languagesDelete: "{{ route('languages.getAllLanguages',['id' => '__ID__']) }}",
+            },
+            skills:{
+                getAllSkills: "{{ route('skills.getAllSkills') }}",
+                skillsStore: "{{ route('skills.store') }}",
+                skillsUpdate: "{{ route('skills.update',['id' => '__ID__']) }}",
+                skillsDelete: "{{ route('skills.delete',['id' => '__ID__']) }}",
+            },
+            semesters:{
+                uploadResults: "{{ route('semester.uploadResults',['id' => '__ID__']) }}",
+                semesterStore: "{{ route('semester.store') }}",
+                semesterUpdate: "{{ route('semester.update',['id' => '__ID__']) }}",
+
+            },
+            programmes:{
+                getProgrammesByUserProfileId: "{{ route('programme.getProgrammesByUserProfileId',['id' => '__ID__']) }}",
+            },
+            organizations:{
+                getAllOrganizations: "{{ route('organization.getAllOrganizations') }}",
             }
         },
 

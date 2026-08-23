@@ -1,6 +1,5 @@
 import { getProfile } from '../../api/profile.js';
 import { getAllSocialMedia } from '../../api/socialMedia.js';
-import { getAllanguages } from "../../api/education.js"
 import { renderProfile } from './renderer.js';
 import { initProfileEvents } from './events.js';
 import { profileState, socialMedia, languages } from './state.js';
@@ -58,17 +57,17 @@ async function loadAllanguages() {
 
     languages.loading = true;
 
-    try {
-        const response = await getAllanguages();
-        languages.data = response.data;
-        console.log("Data", languages.data);
+    // try {
+    //     const response = await getAllanguages();
+    //     languages.data = response.data;
+    //     console.log("Data", languages.data);
 
-    } catch (error) {
-        console.error('Failed to load All languages:', error);
+    // } catch (error) {
+    //     console.error('Failed to load All languages:', error);
 
-    } finally {
-        languages.loading = false;
-    }
+    // } finally {
+    //     languages.loading = false;
+    // }
 }
 
 
