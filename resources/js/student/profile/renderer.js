@@ -2,15 +2,19 @@
 // renderBasicProfile()
 // renderProfileImages()
 
+// <=== Template ===>
+import {
+    templateSocialMediaRow,     templateBadgeSocialMedia,
+    templatAddLink
+    } from '../../templates/socialMedia/template'
+import {
+        templateLanguages,      templateLanguagesRow
+    } from "../../templates/languageTemplate.js"
+// <=== Template ===>
+
 import { profileState } from './state.js';
 import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
-import {
-    templateSocialMediaRow,
-    templateBadgeSocialMedia,
-    templatAddLink
- } from '../../templates/socialMedia/template'
 import { getValidImageUrl } from "../../utils/validation.js"
-import { templateLanguages } from "../../templates/languageTemplate.js"
 
 export function renderProfile() {
     let data = profileState.data;
@@ -108,7 +112,14 @@ export function renderAddLink(){
 
 export function renderLanguages(languages){
     $("#languageList").empty()
+    $("#userLanguageList").empty()
+
     languages.forEach(language => {
         $("#languageList").append(templateLanguages(language));
+    });
+
+    languages.forEach(language => {
+        console.log(language);
+        $("#userLanguageList").append(templateLanguagesRow(language));
     });
 }
