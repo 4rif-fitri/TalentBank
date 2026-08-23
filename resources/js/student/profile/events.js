@@ -7,7 +7,9 @@ import {
     showActiveEducationModal,
     showAboutModal,
     handleInputAbout,
-    handleUpdateAbout
+    handleUpdateAbout,
+    showContactModal,
+    handleUpdateContact
 } from './handlers.js';
 
 import { hideModalAlert } from '../../utils/modal.js';
@@ -22,4 +24,7 @@ export function initProfileEvents() {
     $(document).on('click', '#btnEditAbout', showAboutModal);
     $(document).on('input', '#aboutInput', handleInputAbout);
     $(document).on('click', '#btnSaveAbout', handleUpdateAbout);
+    $(document).on('click', '#btnEditContactInformation', showContactModal);
+    $(document).on('click', '#btnSaveContact', handleUpdateContact);
+
 }

@@ -13,6 +13,7 @@ export function renderProfile() {
 
     renderBasicProfile(data);
     renderAbout(data);
+    renderContactProfile(data)
     renderProfileImages(data);
     renderCoverImages(data)
     renderActiveEducation(data.active_programmes ?? []);
@@ -42,6 +43,18 @@ export function renderBasicProfile(data) {
     $("#name").text(data.name ?? "");
     $("#headline").text(data.headline ?? "");
     $("#profileLocation").text(data.location ?? "");
+
+    $("#profileNameInput").val(data.name ?? "");
+    $("#locationInput").val(data.headline ?? "");
+    $("#profileHeadlineInput").val(data.location ?? "");
+}
+
+export function renderContactProfile(data) {
+    $("#email").text(data.email ?? "");
+    $("#phoneNo").text(data.phone_no ?? "");
+
+    $("#contactEmailInput").val(data.email ?? "");
+    $("#contactPhoneNoInput").val(data.phone_no ?? "");
 }
 
 export function renderActiveEducation(programmes) {

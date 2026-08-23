@@ -17,6 +17,7 @@
 
     <div class="user-card-right">
 
+        <x-sections.contact-information />
 
     </div>
 
@@ -27,6 +28,9 @@
 <x-modals.editProfileModal />
 
 <x-modals.editAboutModal />
+
+<x-modals.edit-contact-information-modal />
+
 
 @endsection
 
