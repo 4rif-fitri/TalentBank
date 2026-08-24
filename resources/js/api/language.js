@@ -1,4 +1,4 @@
-export function getAllLanguages(profileId) {
+export function getAllLanguages() {
 
     return $.ajax({
         url: `${window.appConfig.routes.languages.getAllLanguages}`,

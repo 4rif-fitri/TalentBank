@@ -18,7 +18,8 @@ import {
 
 import {
     languagesStore,
-    languagesDelete
+    languagesDelete,
+    languagesUpdate
 }from "../../api/language.js"
 
 import { uploadImage } from '../../utils/upload.js';
@@ -58,4 +59,10 @@ export function addLanguage(languageId, proficiency) {
 }
 export function deleteLanguage(id) {
     return languagesDelete(id)
+}
+export function updateLanguage(id, language_id, proficiency_level) {
+    let formData = new FormData()
+    formData.append("language_id")
+    formData.append("proficiency_level")
+    return languagesUpdate(id, formData)
 }

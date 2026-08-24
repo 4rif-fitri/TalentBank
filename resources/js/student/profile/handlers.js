@@ -483,6 +483,10 @@ export  function handleDeleteLanguage(){
     });
 }
 
+export function handleEditLanguage(){
+
+}
+
 // ==== HANDLE ====
 
 
