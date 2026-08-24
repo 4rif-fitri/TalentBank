@@ -62,7 +62,8 @@ export function deleteLanguage(id) {
 }
 export function updateLanguage(id, language_id, proficiency_level) {
     let formData = new FormData()
-    formData.append("language_id")
-    formData.append("proficiency_level")
+    formData.append("language_id", language_id)
+    formData.append("proficiency_level", proficiency_level)
+    formData.append("_method", "PUT");
     return languagesUpdate(id, formData)
 }

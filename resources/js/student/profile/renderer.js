@@ -120,7 +120,6 @@ export function renderLanguages(languages){
     });
 
     languages.forEach(language => {
-        console.log(language);
         $("#userLanguageList").append(templateLanguagesRow(language));
     });
 }

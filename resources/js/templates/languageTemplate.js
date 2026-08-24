@@ -3,11 +3,11 @@ export function templateLanguages(language){
         <article class="language-item mb-2"
                 data-id="${language.id}">
 
-            <p class="h5 fw-bold mb-0">
+            <p class="h5 fw-bold mb-0 languageName">
                 ${language.language?.language_name ?? ""}
             </p>
 
-            <p class="text-secondary mb-0">
+            <p class="text-secondary mb-0 languageProficiency">
                 ${language.proficiency_level ?? ""}
             </p>
 
@@ -15,8 +15,6 @@ export function templateLanguages(language){
         `
 }
 export function templateLanguagesRow(language) {
-    console.log({ language });
-
     return `
         <div class="language-row alert alert-light d-flex align-items-center gap-3"
                 data-id="${language.id}"
@@ -29,7 +27,7 @@ export function templateLanguagesRow(language) {
                 <p class="h6 fw-bold mb-0 languageName">
                     ${language.language.language_name}
                 </p>
-                <p class="mb-0 text-secondary">
+                <p class="mb-0 text-secondary languageProficiency">
                     ${language.proficiency_level}
                 </p>
             </div>
@@ -46,12 +44,12 @@ export function templateLanguagesRow(language) {
     `
 }
 
-export function templatelanguageOptions(language){
-    return `<option value="${language.id}">${language.language_name}</option>`
+export function templatelanguageOptions(language, languageId = ""){
+    return `<option value="${language.id}" ${languageId == language.id ? "selected" : ""}>${language.language_name}</option>`
 }
 
-export function templateProficiencyOptions(proficiency) {
-    return `<option value="${proficiency}">${proficiency}</option>`
+export function templateProficiencyOptions(proficiency, theProficiency) {
+    return `<option value="${proficiency}" ${proficiency == theProficiency ? "selected" : ""}>${proficiency}</option>`
 }
 
 export function templateLanguagesAddRow(languageOptions, proficiencyOptions) {
@@ -71,4 +69,34 @@ export function templateLanguagesAddRow(languageOptions, proficiencyOptions) {
                     <i class="fa-solid fa-floppy-disk fa-xl"></i>
             </button>
         `
+}
+export function templateLanguagesUpdateRow(languageOptions,proficiencyOptions,id,languageId = "",proficiency = "") {
+    return `
+        <div
+            data-id="${id}"
+            data-language-id="${languageId}"
+            data-proficiency="${proficiency}"
+            class="language-row alert alert-light d-flex align-items-center gap-3"
+        >
+
+            <div class="d-flex flex-column flex-grow-1 gap-2">
+
+                <select class="form-select form-select-sm language-select">
+                    ${languageOptions}
+                </select>
+
+                <select class="form-select form-select-sm language-proficiency">
+                    ${proficiencyOptions}
+                </select>
+
+            </div>
+
+            <button
+                type="button"
+                class="btn btn-link p-0 text-success btn-update-language"
+            >
+                <i class="fa-solid fa-floppy-disk fa-xl"></i>
+            </button>
+        </div>
+    `;
 }

@@ -1,14 +1,10 @@
 // handle... / show...
 import {
-    saveProfile,
-    saveProfileImage,
-    saveCoverImage,
-    saveAbout,
-    createLink,
-    deleteLink,
-    updateLink,
-    addLanguage,
-    deleteLanguage
+    saveProfile,saveProfileImage,
+    saveCoverImage,saveAbout,
+    createLink,deleteLink,
+    updateLink,addLanguage,
+    deleteLanguage, updateLanguage
 } from './service.js';
 
 import {
@@ -19,21 +15,19 @@ import {
 } from '../../templates/socialMedia/template.js';
 
 import {
-    renderCoverImages,
-    renderProfileImages,
-    renderBasicProfile,
-    renderContactProfile,
-    renderAbout,
-    renderAddLink,
-    renderLanguageOptions,
-    renderProficiencyOptions
+    renderCoverImages,renderProfileImages,
+    renderBasicProfile,renderContactProfile,
+    renderAbout,renderAddLink,
+    renderLanguageOptions,renderProficiencyOptions
 } from './renderer.js';
 
-import { templateLanguagesAddRow, templateLanguagesRow, templateLanguages } from "../../templates/languageTemplate.js"
+import {templateLanguagesAddRow,templateLanguagesRow,
+        templateLanguages,templatelanguageOptions,
+        templateProficiencyOptions,templateLanguagesUpdateRow } from "../../templates/languageTemplate.js"
 
 import { salert } from '../../utils/alert.js';
 import {showModal,hideModal} from '../../utils/modal.js';
-import { profileState } from './state.js';
+import { profileState, languages } from './state.js';
 import { validateLenghtText, checkFormData, isValidUrl } from "../../utils/validation.js"
 
 // ==== GET ====
@@ -484,7 +478,61 @@ export  function handleDeleteLanguage(){
 }
 
 export function handleEditLanguage(){
+    let $row = $(this).closest(".language-row");
+    let id = $row.data("id");
+    let languageId = $row.data("language-id");
+    let theProficiency = $row.data("proficiency");
 
+    let languagesOptions = ""
+    languages.data.forEach(language => languagesOptions += templatelanguageOptions(language, languageId))
+    console.log(languagesOptions);
+
+    let proficiencyOptions = ""
+    let proficiencies = window.appConfig.proficiencies
+    proficiencies.forEach(proficiency => proficiencyOptions += templateProficiencyOptions(proficiency, theProficiency))
+    console.log(proficiencyOptions);
+
+    $row.replaceWith(
+        templateLanguagesUpdateRow(languagesOptions, proficiencyOptions, id)
+    );
+}
+
+export async function handleUpdateLanguage() {
+    let $row = $(this).closest(".language-row");
+    let id = $row.data("id");
+    let languageId = $row.find(".language-select").val();
+    let proficiency = $row.find(".language-proficiency").val();
+
+    console.log({id,languageId,proficiency});
+
+    if (!languageId) {
+        salert("Validation Error","Please select a language.","error");
+        return;
+    }
+
+    if (!proficiency) {
+        salert("Validation Error","Please select proficiency.","error");
+        return;
+    }
+
+    try {
+        let response = await updateLanguage(id,parseInt(languageId),proficiency);
+        if (!response) return;
+        console.log(response);
+
+        let data = response.data;
+        $row.replaceWith(templateLanguagesRow(data));
+
+        let languageRow = $("#languageList").find(`.language-item[data-id="${data.id}"]`);
+        languageRow.find(".languageName").text(data.language.language_name)
+        languageRow.find(".languageProficiency").text(data.proficiency_level)
+
+        salert("Success",response.message ?? "Language updated successfully.","success");
+
+    } catch (xhr) {
+        console.error(xhr);
+        salert("Update Failed",xhr.responseJSON?.message ?? "Something went wrong.","error");
+    }
 }
 
 // ==== HANDLE ====
