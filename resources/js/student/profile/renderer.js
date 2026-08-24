@@ -4,13 +4,19 @@
 
 // <=== Template ===>
 import {
-    templateSocialMediaRow,     templateBadgeSocialMedia,
+    templateSocialMediaRow,
+    templateBadgeSocialMedia,
     templatAddLink
-    } from '../../templates/socialMedia/template'
+} from '../../templates/socialMedia/template'
 import {
-        templateLanguages,          templateLanguagesRow,
-        templatelanguageOptions,    templateProficiencyOptions
-    } from "../../templates/languageTemplate.js"
+    templateLanguages,
+    templateLanguagesRow,
+    templatelanguageOptions,
+    templateProficiencyOptions
+} from "../../templates/languageTemplate.js"
+import {
+    templateRowSkillList
+} from "../../templates/skillTemplate.js"
 // <=== Template ===>
 
 import { profileState, languages } from './state.js';
@@ -27,6 +33,7 @@ export function renderProfile() {
     renderProfileImages(data);
     renderCoverImages(data)
     renderLanguages(data.user_languages ?? [])
+    renderSkills(data.skills ?? [])
     renderActiveEducation(data.active_programmes ?? []);
     renderModalActiveEducations(data.active_programmes ?? []);
     renderListLinkSocialMedia(data.social_media_links ?? [])
@@ -137,5 +144,13 @@ export function renderProficiencyOptions() {
     return html
 }
 
+export function renderSkills(skills){
+    let $skillList = $("#skillList");
+    $skillList.empty();
 
+    skills.forEach(skill => {
+        $skillList.append(templateRowSkillList(skill))
+    })
+
+}
 

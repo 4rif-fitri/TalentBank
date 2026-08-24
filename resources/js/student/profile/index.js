@@ -2,15 +2,17 @@
 import { getProfile } from '../../api/profile.js';
 import { getAllSocialMedia } from '../../api/socialMedia.js';
 import { getAllLanguages } from "../../api/language.js"
+import { getAllSkills } from "../../api/skill.js"
 // <==== API ====>
 import { renderProfile } from './renderer.js';
 import { initProfileEvents } from './events.js';
-import { profileState, socialMedia, languages } from './state.js';
+import { profileState, socialMedia, languages, skills } from './state.js';
 
 export function initProfile() {
     loadProfile()
     loadAllSocialMedia()
     loadAllanguages()
+    loadAllSkills()
     initProfileEvents();
 }
 
@@ -62,7 +64,7 @@ async function loadAllanguages() {
     try {
         const response = await getAllLanguages();
         languages.data = response.data;
-        console.log("Data", languages.data);
+        // console.log("Data", languages.data);
 
     } catch (error) {
         console.error('Failed to load All languages:', error);
@@ -72,4 +74,18 @@ async function loadAllanguages() {
     }
 }
 
+async function loadAllSkills() {
+    skills.loading = true;
 
+    try {
+        const response = await getAllSkills();
+        skills.data = response.data;
+        console.log("Data", skills.data);
+
+    } catch (error) {
+        console.error('Failed to load All skills:', error);
+
+    } finally {
+        skills.loading = false;
+    }
+}

@@ -10,6 +10,6 @@
         </div>
     </div>
     <hr>
-    <div id="profileSkillList" class="d-flex flex-wrap gap-2"></div>
+    <div id="skillList" class="d-flex flex-wrap gap-2"></div>
 </section>
 
