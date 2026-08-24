@@ -18,7 +18,7 @@ import {
     renderCoverImages,renderProfileImages,
     renderBasicProfile,renderContactProfile,
     renderAbout,renderAddLink,
-    renderLanguageOptions,renderProficiencyOptions
+    renderLanguageOptions,renderProficiencyOptions,
 } from './renderer.js';
 
 import {templateLanguagesAddRow,templateLanguagesRow,

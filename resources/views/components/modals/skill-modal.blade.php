@@ -10,7 +10,9 @@
             </div>
 
             <div class="modal-body">
-                <div class="d-flex justify-content-end mb-3"></div>
+                <div id="skillListModal" class="mb-2">
+
+                </div>
             </div>
 
             <div class="modal-footer">

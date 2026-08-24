@@ -15,7 +15,8 @@ import {
     templateProficiencyOptions
 } from "../../templates/languageTemplate.js"
 import {
-    templateRowSkillList
+    templateRowSkillList,
+    templateRowSkillModal
 } from "../../templates/skillTemplate.js"
 // <=== Template ===>
 
@@ -147,10 +148,16 @@ export function renderProficiencyOptions() {
 export function renderSkills(skills){
     let $skillList = $("#skillList");
     $skillList.empty();
+    $("#skillListModal").empty();
 
     skills.forEach(skill => {
         $skillList.append(templateRowSkillList(skill))
     })
+    let $skillListModal = $("#skillListModal");
 
+    skills.forEach(skill => {
+        $("#skillListModal").append(templateRowSkillModal(skill))
+    })
 }
+
 
