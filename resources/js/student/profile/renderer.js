@@ -7,22 +7,22 @@ import {
     templateSocialMediaRow,
     templateBadgeSocialMedia,
     templatAddLink
-} from '../../templates/socialMedia/template'
+} from '../../templates/profile/socialMediaTemplate.js'
 import {
     templateLanguages,
     templateLanguagesRow,
     templatelanguageOptions,
     templateProficiencyOptions
-} from "../../templates/languageTemplate.js"
+} from "../../templates/profile/languageTemplate.js"
 import {
     templateRowSkillList,
     templateRowSkillModal,
     templateSkillOption
-} from "../../templates/skillTemplate.js"
+} from "../../templates/profile/skillTemplate.js"
 // <=== Template ===>
 
 import { profileState, languages, skills } from './state.js';
-import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
+import { educationTemplate } from '../../templates/profile/educationTemplate.js'
 import { getValidImageUrl } from "../../utils/validation.js"
 
 export function renderProfile() {
@@ -98,7 +98,7 @@ export function renderModalActiveEducations(programmes) {
     $container.empty();
 
     programmes.forEach(programme => {
-        $container.append(activeEducationsAlert(programme));
+        $container.append(educationTemplate(programme));
     });
 }
 

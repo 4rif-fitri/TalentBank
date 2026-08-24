@@ -1,4 +1,4 @@
-export function activeEducationsAlert(programme){
+export function educationTemplate(programme){
     return ` <div class="alert alert-primary d-flex gap-2" role="button"
                   data-programme-id="${programme.id}">
 

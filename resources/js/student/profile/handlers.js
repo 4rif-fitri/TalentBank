@@ -20,7 +20,7 @@ import {
     templateBadgeSocialMedia,
     templateEditSocialMedia,
 
-} from '../../templates/socialMedia/template.js';
+} from '../../templates/profile/socialMediaTemplate.js';
 
 import {
     renderCoverImages,renderProfileImages,
@@ -35,7 +35,7 @@ import {
     templateLanguagesAddRow,templateLanguagesRow,
     templateLanguages,templatelanguageOptions,
     templateProficiencyOptions,templateLanguagesUpdateRow,
-} from "../../templates/languageTemplate.js"
+} from "../../templates/profile/languageTemplate.js"
 
 import {
     templateRowSkillAdd,
@@ -43,7 +43,7 @@ import {
     templateRowSkillList,
     templateSkillOption,
     templateRowSkillUpdate
-} from "../../templates/skillTemplate.js"
+} from "../../templates/profile/skillTemplate.js"
 
 import { salert } from '../../utils/alert.js';
 import {showModal,hideModal} from '../../utils/modal.js';
