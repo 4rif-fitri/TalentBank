@@ -1,27 +1,31 @@
+function getUserSkillId(skill) {
+    return skill.user_skill_id ??
+        skill.pivot?.id ??
+        "";
+}
+
 export function templateRowSkillList(skill) {
+
+    const userSkillId = getUserSkillId(skill);
 
     return `
         <div
             class="badge rounded-pill bg-light text-dark border d-flex justify-content-between align-items-center gap-2 px-3 py-2"
             data-skill-id="${skill.id}"
-            data-user-skill-id="${skill.user_skill_id ?? ""}"
+            data-user-skill-id="${userSkillId}"
         >
-
             <i class="${skill.icon_class_name ?? "fa-solid fa-code"} fa-xl"></i>
 
             <span class="h6 d-flex justify-content-center align-items-center mb-0 fw-bold">
                 ${skill.skill_name ?? ""}
             </span>
-
         </div>
     `;
 }
+
 export function templateRowSkillModal(skill) {
 
-    const userSkillId =
-        skill.user_skill_id ??
-        skill.pivot?.id ??
-        "";
+    const userSkillId = getUserSkillId(skill);
 
     return `
         <div
@@ -90,27 +94,23 @@ export function templateSkillOption(skill, selectedSkillId = "") {
     `;
 }
 export function templateRowSkillAdd(skillOptions) {
-    return `    <div class="skill-input-row border rounded p-3 d-flex align-items-center gap-2">
-                    <select class="form-select skill-select">
-                        <option value="">Select Skill</option>
-                        ${skillOptions}
-                    </select>
-                    <button type="button" class="btn btn-primary btn-save-new-skill">
-                        <i class="fa-solid fa-check"></i>
-                    </button>
-                    <button type="button" class="btn btn-outline-danger btn-cencel-addSkill">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>
+    return `
+        <div class="skill-input-row border rounded p-3 d-flex align-items-center gap-2">
+            <select class="form-select skill-select">
+                <option value="">Select Skill</option>
+                    ${skillOptions}
+                </select>
+                <button type="button" class="btn btn-primary btn-save-new-skill">
+                    <i class="fa-solid fa-check"></i>
+                </button>
+            <button type="button" class="btn btn-outline-danger btn-cencel-addSkill">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
     `
 }
 
-export function templateRowSkillUpdate(
-    skillOptions,
-    skillId,
-    userSkillId
-) {
-
+export function templateRowSkillUpdate(skillOptions,skillId,userSkillId) {
     return `
         <div
             class="skill-input-row border rounded p-3 d-flex align-items-center gap-2"
