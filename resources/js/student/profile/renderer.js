@@ -16,11 +16,12 @@ import {
 } from "../../templates/languageTemplate.js"
 import {
     templateRowSkillList,
-    templateRowSkillModal
+    templateRowSkillModal,
+    templateSkillOption
 } from "../../templates/skillTemplate.js"
 // <=== Template ===>
 
-import { profileState, languages } from './state.js';
+import { profileState, languages, skills } from './state.js';
 import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
 import { getValidImageUrl } from "../../utils/validation.js"
 
@@ -146,18 +147,23 @@ export function renderProficiencyOptions() {
 }
 
 export function renderSkills(skills){
-    let $skillList = $("#skillList");
-    $skillList.empty();
+    $("#skillList").empty();
     $("#skillListModal").empty();
 
     skills.forEach(skill => {
-        $skillList.append(templateRowSkillList(skill))
+        $("#skillList").append(templateRowSkillList(skill))
     })
-    let $skillListModal = $("#skillListModal");
 
     skills.forEach(skill => {
         $("#skillListModal").append(templateRowSkillModal(skill))
     })
 }
 
-
+export function renderSkillOptions() {
+    let options = ""
+    let skill = skills.data
+    skill.forEach(skill => {
+        options += templateSkillOption(skill)
+    })
+    return options
+}

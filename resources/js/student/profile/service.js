@@ -71,7 +71,7 @@ export function deleteLanguage(id) {
     return languagesDelete(id)
 }
 
-export function storeSkills(source_type, profisource_idciency, skill_id) {
+export function storeSkills(source_type, source_id, skill_id) {
     let formData = new FormData()
     formData.append("source_type", source_type)
     formData.append("source_id", source_id)
@@ -86,6 +86,6 @@ export function updateSkills(id, source_type, source_id, skill_id) {
     formData.append("_method", "PUT");
     return skillsUpdate(id, formData)
 }
-export function deleteSkills(id) {
+export function deleteSkill(id) {
     return skillsDelete(id)
 }

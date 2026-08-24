@@ -16,7 +16,7 @@ export function initProfile() {
     initProfileEvents();
 }
 
-async function loadProfile() {
+export async function loadProfile() {
     const profileId = window.appConfig.userId;
 
     if (!profileId) {

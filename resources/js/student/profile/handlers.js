@@ -1,10 +1,17 @@
 // handle... / show...
+
+import {
+    loadProfile,
+} from "./index.js"
+
 import {
     saveProfile,saveProfileImage,
     saveCoverImage,saveAbout,
     createLink,deleteLink,
     updateLink,addLanguage,
-    deleteLanguage, updateLanguage
+    deleteLanguage, updateLanguage,
+    storeSkills,
+    deleteSkill
 } from './service.js';
 
 import {
@@ -18,16 +25,26 @@ import {
     renderCoverImages,renderProfileImages,
     renderBasicProfile,renderContactProfile,
     renderAbout,renderAddLink,
-    renderLanguageOptions,renderProficiencyOptions,
+    renderLanguageOptions,
+    renderProficiencyOptions,
+    renderSkillOptions
 } from './renderer.js';
 
 import {templateLanguagesAddRow,templateLanguagesRow,
         templateLanguages,templatelanguageOptions,
-        templateProficiencyOptions,templateLanguagesUpdateRow } from "../../templates/languageTemplate.js"
+        templateProficiencyOptions,
+        templateLanguagesUpdateRow,
+} from "../../templates/languageTemplate.js"
+
+import {
+    templateRowSkillAdd,
+    templateRowSkillModal,
+    templateRowSkillList
+} from "../../templates/skillTemplate.js"
 
 import { salert } from '../../utils/alert.js';
 import {showModal,hideModal} from '../../utils/modal.js';
-import { profileState, languages } from './state.js';
+import { profileState, languages, skills } from './state.js';
 import { validateLenghtText, checkFormData, isValidUrl } from "../../utils/validation.js"
 
 // ==== GET ====
@@ -497,7 +514,13 @@ export function handleEditLanguage(){
     console.log(proficiencyOptions);
 
     $row.replaceWith(
-        templateLanguagesUpdateRow(languagesOptions, proficiencyOptions, id)
+        templateLanguagesUpdateRow(
+            languagesOptions,
+            proficiencyOptions,
+            id,
+            languageId,
+            theProficiency
+        )
     );
 }
 
@@ -539,6 +562,148 @@ export async function handleUpdateLanguage() {
     }
 }
 
+export function handleAddSkill() {
+    let $container = $("#skillListModal")
+    $container.prepend(templateRowSkillAdd(renderSkillOptions()))
+}
+
+export async function handleSaveNewSkill() {
+
+    let $button = $(this);
+    let $row = $button.closest(".skill-input-row");
+
+    let skillId = $row.find(".skill-select").val();
+
+    if (!skillId) {
+        salert(
+            "Validation Error",
+            "Please select a skill first",
+            "error"
+        );
+        return;
+    }
+
+    try {
+
+        let response = await storeSkills(
+            "user_profile",
+            window.appConfig.userId,
+            skillId
+        );
+
+        if (!response) return;
+
+        let userSkill = response.data;
+
+        let skill = skills.data.find(
+            skill => Number(skill.id) === Number(userSkill.skill_id)
+        );
+
+        if (!skill) {
+            console.error(
+                "Skill not found:",
+                userSkill.skill_id
+            );
+            return;
+        }
+
+        let skillData = {
+            ...skill,
+            user_skill_id: userSkill.id
+        };
+
+        $("#skillListModal").prepend(
+            templateRowSkillModal(skillData)
+        );
+
+        $row.remove();
+
+        $("#profileSkillList").append(templateRowSkillList(skillData));
+        salert(
+            "Success",
+            response.message ?? "Skill added successfully.",
+            "success"
+        );
+
+    } catch (xhr) {
+
+        console.error(xhr);
+
+        salert(
+            "Failed",
+            xhr.responseJSON?.message ??
+            "Failed to add skill.",
+            "error"
+        );
+    }
+}
+
+export function handleEditSkill() {
+
+    let $row = $(this).closest(".skill-item");
+
+    let skillId = $row.data("skill-id");
+    let userSkillId = $row.data("user-skill-id");
+
+    let skillOptions = skills.data
+        .map(skill =>
+            templateSkillOption(skill, skillId)
+        )
+        .join("");
+
+    $row.replaceWith(
+        templateRowSkillUpdate(
+            skillOptions,
+            skillId,
+            userSkillId
+        )
+    );
+}
+
+export function handleDeleteSkill() {
+    let $row = $(this).closest(".skill-item");
+    let userSkillId = $row.data("user-skill-id");
+
+    if (!userSkillId) {
+        console.error("Missing user_skill_id");
+        return;
+    }
+
+    Swal.fire({
+        title: "Delete Skill?",
+        text: "This skill will be removed from your profile.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        confirmButtonColor: "#dc3545"
+
+    }).then(async result => {
+        if (!result.isConfirmed) return;
+
+        try {
+            let response = await deleteSkill(userSkillId);
+            if (!response) return;
+
+            // Remove modal row
+            $row.remove();
+
+            // Remove profile badge
+            // $("#skillList").find(`[data-user-skill-id="${userSkillId}"]`).remove();
+            $("#skillListModal").find(`[data-user-skill-id="${userSkillId}"]`).remove();
+            loadProfile()
+            salert("Success",response.message ?? "Skill removed successfully.","success");
+
+        } catch (xhr) {
+            console.error(xhr);
+            salert("Delete Failed",xhr.responseJSON?.message ??"Failed to remove skill.","error");
+        }
+    });
+}
+
+export function handleCencelAddSkill(){
+    $(this).parent().remove()
+}
 // ==== HANDLE ====
 
 
