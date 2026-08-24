@@ -13,7 +13,7 @@
         </div>
 
         <div id="resultTabContent" class="d-none">
-            <x-sections.semesterResults />
+            <x-sections.education-result />
         </div>
 
     </div>
@@ -32,6 +32,9 @@
 <x-modals.social-media-link-modal />
 <x-modals.languages-modal />
 <x-modals.skill-modal />
+
+<x-modals.result-modal />
+<x-modals.semester-modal />
 
 @endsection
 

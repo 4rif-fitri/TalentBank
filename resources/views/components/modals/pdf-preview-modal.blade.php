@@ -48,165 +48,49 @@
 
 <script>
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
+document.addEventListener("DOMContentLoaded",function () {
+    const modalEl = document.getElementById("pdfPreviewModal");
 
-            const modalEl =
-                document.getElementById(
-                    "pdfPreviewModal"
-                );
+    if (!modalEl) return;
 
+    $(document).on("click",".btn-view-result",function () {
+        const fileUrl = $(this).attr("data-file-url");
+        const session = $(this).attr("data-session");
+        const semester = $(this).attr("data-semester");
 
-            if (!modalEl) {
-                return;
-            }
-
-
-
-            // ==========================================
-            // VIEW RESULT
-            // ==========================================
-
-            $(document)
-                .on(
-                    "click",
-                    ".btn-view-result",
-                    function () {
-
-                        const fileUrl =
-                            $(this)
-                                .attr("data-file-url");
-
-
-                        const session =
-                            $(this)
-                                .attr("data-session");
-
-
-                        const semester =
-                            $(this)
-                                .attr("data-semester");
-
-
-                        if (!fileUrl) {
-                            swalfire("PDF Not Found", "Semester result file could not be found", "error")
-                            return;
-                        }
-
-
-                        const pdfModal =
-                            bootstrap.Modal
-                                .getOrCreateInstance(
-                                    modalEl
-                                );
-
-
-                        $("#pdfPreviewModalLabel")
-                            .text(
-                                `Semester ${semester} Result`
-                            );
-
-                        // Reset preview
-                        $("#pdfPreviewFrame")
-                            .attr("src", "")
-                            .addClass("d-none");
-
-
-                        $("#pdfPreviewLoading")
-                            .removeClass("d-none");
-
-
-                        $("#openPdfNewTab")
-                            .attr(
-                                "href",
-                                fileUrl
-                            );
-
-
-                        // Show modal
-                        pdfModal.show();
-
-
-                        // Load PDF
-                        $("#pdfPreviewFrame")
-                            .attr(
-                                "src",
-                                fileUrl
-                            );
-
-                    }
-                );
-
-
-
-            // ==========================================
-            // PDF LOADED
-            // ==========================================
-
-            $("#pdfPreviewFrame")
-                .on(
-                    "load",
-                    function () {
-
-                        const src =
-                            $(this)
-                                .attr("src");
-
-
-                        if (!src) {
-                            return;
-                        }
-
-
-                        $("#pdfPreviewLoading")
-                            .addClass("d-none");
-
-
-                        $(this)
-                            .removeClass("d-none");
-
-                    }
-                );
-
-
-
-            // ==========================================
-            // MODAL CLOSED
-            // ==========================================
-
-            modalEl.addEventListener(
-                "hidden.bs.modal",
-                function () {
-
-                    $("#pdfPreviewFrame")
-                        .attr("src", "")
-                        .addClass("d-none");
-
-
-                    $("#pdfPreviewLoading")
-                        .removeClass("d-none");
-
-
-                    $("#openPdfNewTab")
-                        .attr(
-                            "href",
-                            "#"
-                        );
-
-
-                    $("#pdfPreviewModalLabel")
-                        .text(
-                            "Semester Result"
-                        );
-
-
-                }
-            );
-
+        if (!fileUrl) {
+            swalfire("PDF Not Found", "Semester result file could not be found", "error")
+            return;
         }
-    );
 
+        const pdfModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        $("#pdfPreviewModalLabel").text(`Semester ${semester} Result`);
+        $("#pdfPreviewFrame").attr("src", "").addClass("d-none");
+        $("#pdfPreviewLoading").removeClass("d-none");
+        $("#openPdfNewTab").attr("href",fileUrl);
+
+        pdfModal.show();
+        $("#pdfPreviewFrame").attr("src",fileUrl);
+
+    });
+
+    $("#pdfPreviewFrame").on("load",function () {
+        const src = $(this).attr("src");
+        if (!src) return;
+
+        $("#pdfPreviewLoading").addClass("d-none");
+        $(this).removeClass("d-none");
+
+    });
+
+    modalEl.addEventListener("hidden.bs.modal",function () {
+        $("#pdfPreviewFrame").attr("src", "").addClass("d-none");
+        $("#pdfPreviewLoading").removeClass("d-none");
+        $("#openPdfNewTab").attr("href","#");
+        $("#pdfPreviewModalLabel").text("Semester Result");
+    });
+
+});
 </script>
-
 @endpush
