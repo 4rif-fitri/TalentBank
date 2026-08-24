@@ -107,6 +107,10 @@ export function showLinksSocialMediaModal(){
 export async function showLanguageMediaModal() {
     showModal('languageModal');
 }
+
+export async function showSkillModal() {
+    showModal('skillModal');
+}
 // ==== SHOW ====
 
 // ==== HANDLE ====

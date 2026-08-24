@@ -10,6 +10,3 @@
         </button>
     </div>
 </section>
-
-@push('scripts')
-@endpush

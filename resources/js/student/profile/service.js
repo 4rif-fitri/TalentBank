@@ -22,6 +22,10 @@ import {
     languagesUpdate
 }from "../../api/language.js"
 
+import {
+    skillsStore, skillsUpdate, skillsDelete
+} from "../../api/skill.js"
+
 import { uploadImage } from '../../utils/upload.js';
 
 export function saveProfile(formData) {
@@ -43,7 +47,6 @@ export function saveAbout(formData) {
 export function createLink(formData) {
     return store(formData)
 }
-
 export function deleteLink(id) {
     return remove(id)
 }
@@ -57,13 +60,32 @@ export function addLanguage(languageId, proficiency) {
     formData.append("proficiency_level",proficiency)
     return languagesStore(formData)
 }
-export function deleteLanguage(id) {
-    return languagesDelete(id)
-}
 export function updateLanguage(id, language_id, proficiency_level) {
     let formData = new FormData()
     formData.append("language_id", language_id)
     formData.append("proficiency_level", proficiency_level)
     formData.append("_method", "PUT");
     return languagesUpdate(id, formData)
+}
+export function deleteLanguage(id) {
+    return languagesDelete(id)
+}
+
+export function storeSkills(source_type, profisource_idciency, skill_id) {
+    let formData = new FormData()
+    formData.append("source_type", source_type)
+    formData.append("source_id", source_id)
+    formData.append("skill_id", skill_id)
+    return skillsStore(formData)
+}
+export function updateSkills(id, source_type, source_id, skill_id) {
+    let formData = new FormData()
+    formData.append("source_type", source_type)
+    formData.append("source_id", source_id)
+    formData.append("skill_id", skill_id)
+    formData.append("_method", "PUT");
+    return skillsUpdate(id, formData)
+}
+export function deleteSkills(id) {
+    return skillsDelete(id)
 }
