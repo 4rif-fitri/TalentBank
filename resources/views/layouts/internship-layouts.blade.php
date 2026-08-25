@@ -27,6 +27,12 @@
     @include('layouts.footer-script')
 
     @stack('scripts')
+    <script>
+        function swalfire(title, text, icon){
+            Swal.fire({ title, text, icon });
+
+        }
+    </script>
 </body>
 
 </html>

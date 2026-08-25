@@ -4,22 +4,24 @@
 // createEducation()    updateEducation()   deleteEducation()
 
 import {
-    updateProfile,
-    uploadProfileImage,
-    uploadCoverImage,
-    updateAbout,
+    updateProfile,uploadProfileImage,uploadCoverImage,updateAbout,
 } from '../../api/profile.js';
-
 import {
-    store,
-    remove,
-    update
+    store,remove,update
 } from '../../api/socialMedia.js';
+import {
+    languagesStore,languagesDelete,languagesUpdate
+}from "../../api/language.js"
 
 import {
-    languagesStore,
-    languagesDelete
-}from "../../api/language.js"
+    skillsStore, skillsUpdate, skillsDelete
+} from "../../api/skill.js"
+import {
+    getAllFieldOfStudies, getAllQualifications,
+    getEducationByUserProfileId, getEducationById,
+    educationStore, educationUpdate,
+    educationDelete
+} from "../../api/education.js"
 
 import { uploadImage } from '../../utils/upload.js';
 
@@ -42,7 +44,6 @@ export function saveAbout(formData) {
 export function createLink(formData) {
     return store(formData)
 }
-
 export function deleteLink(id) {
     return remove(id)
 }
@@ -56,6 +57,54 @@ export function addLanguage(languageId, proficiency) {
     formData.append("proficiency_level",proficiency)
     return languagesStore(formData)
 }
+export function updateLanguage(id, language_id, proficiency_level) {
+    let formData = new FormData()
+    formData.append("language_id", language_id)
+    formData.append("proficiency_level", proficiency_level)
+    formData.append("_method", "PUT");
+    return languagesUpdate(id, formData)
+}
 export function deleteLanguage(id) {
     return languagesDelete(id)
+}
+
+export function storeSkills(source_type, source_id, skill_id) {
+    let formData = new FormData()
+    formData.append("source_type", source_type)
+    formData.append("source_id", source_id)
+    formData.append("skill_id", skill_id)
+    return skillsStore(formData)
+}
+export function updateSkills(id, source_type, source_id, skill_id) {
+    let formData = new FormData()
+    formData.append("source_type", source_type)
+    formData.append("source_id", source_id)
+    formData.append("skill_id", skill_id)
+    formData.append("_method", "PUT");
+    return skillsUpdate(id, formData)
+}
+export function deleteSkill(id) {
+    return skillsDelete(id)
+}
+
+export function fecthAllFieldOfStudies() {
+    return getAllFieldOfStudies(id)
+}
+export function fecthAllQualifications() {
+    return getAllQualifications(id)
+}
+export function fecthEducationByUserProfileId(id){
+    return getEducationByUserProfileId(id)
+}
+export function fecthEducationById(id){
+    return getEducationById(id)
+}
+export function storeEducation(formData) {
+    return educationStore(formData)
+}
+export function updateEducation(id, formData) {
+    return educationUpdate(id, formData)
+}
+export function deleteEducation(id) {
+    return educationDelete(id)
 }

@@ -1,15 +1,15 @@
-export function getAllLanguages() {
+export function getAllSkills() {
 
     return $.ajax({
-        url: `${window.appConfig.routes.languages.getAllLanguages}`,
+        url: `${window.appConfig.routes.skills.getAllSkills}`,
         type: 'GET',
     });
 }
 
-export function languagesStore(formData) {
+export function skillsStore(formData) {
 
     return $.ajax({
-        url: `${window.appConfig.routes.languages.languagesStore}`,
+        url: `${window.appConfig.routes.skills.skillsStore}`,
         type: "POST",
         data: formData,
         headers: {
@@ -18,8 +18,8 @@ export function languagesStore(formData) {
     });
 }
 
-export function languagesUpdate(id, formData) {
-    let url = `${window.appConfig.routes.languages.languagesUpdate}`
+export function skillsUpdate(id, formData) {
+    let url = `${window.appConfig.routes.skills.skillsUpdate}`
     url = url.replace("__ID__", id);
 
     return $.ajax({
@@ -34,8 +34,8 @@ export function languagesUpdate(id, formData) {
     });
 }
 
-export function languagesDelete (id) {
-    let url = `${window.appConfig.routes.languages.languagesDelete}`
+export function skillsDelete(id) {
+    let url = `${window.appConfig.routes.skills.skillsDelete}`
     url = url.replace("__ID__", id);
 
     return $.ajax({

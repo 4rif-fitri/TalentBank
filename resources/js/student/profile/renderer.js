@@ -4,17 +4,29 @@
 
 // <=== Template ===>
 import {
-    templateSocialMediaRow,     templateBadgeSocialMedia,
+    templateSocialMediaRow,
+    templateBadgeSocialMedia,
     templatAddLink
-    } from '../../templates/socialMedia/template'
+} from '../../templates/profile/socialMediaTemplate.js'
 import {
-        templateLanguages,          templateLanguagesRow,
-        templatelanguageOptions,    templateProficiencyOptions
-    } from "../../templates/languageTemplate.js"
+    templateLanguages,
+    templateLanguagesRow,
+    templatelanguageOptions,
+    templateProficiencyOptions
+} from "../../templates/profile/languageTemplate.js"
+import {
+    templateRowSkillList,
+    templateRowSkillModal,
+    templateSkillOption
+} from "../../templates/profile/skillTemplate.js"
+import{
+    templateLoadingEducation,
+    templateEmptyEducation
+}from "../../templates/profile/educationTemplate.js"
 // <=== Template ===>
 
-import { profileState, languages } from './state.js';
-import { activeEducationsAlert } from '../../templates/education/activeEducationsAlert.js'
+import { profileState, languages, skills } from './state.js';
+import { educationTemplate } from '../../templates/profile/educationTemplate.js'
 import { getValidImageUrl } from "../../utils/validation.js"
 
 export function renderProfile() {
@@ -27,6 +39,7 @@ export function renderProfile() {
     renderProfileImages(data);
     renderCoverImages(data)
     renderLanguages(data.user_languages ?? [])
+    renderSkills(data.skills ?? [])
     renderActiveEducation(data.active_programmes ?? []);
     renderModalActiveEducations(data.active_programmes ?? []);
     renderListLinkSocialMedia(data.social_media_links ?? [])
@@ -38,7 +51,7 @@ export function renderAbout(data){
 
 export async function renderCoverImages(data) {
     let defaultCover = `${window.appConfig.assets.coverImage}/default.png`;
-    let coverUrl = `${window.appConfig.assets.coverImage}/${data.cover_image || 'default.png'}`;
+    let coverUrl = `${window.appConfig.coverImageUrl}/${data.cover_image || 'default.png'}`;
     let validCoverUrl = await getValidImageUrl(coverUrl,defaultCover);
     $('#coverImage').css('background-image',`url("${validCoverUrl}")`);
 
@@ -46,7 +59,7 @@ export async function renderCoverImages(data) {
 
 export async function renderProfileImages(data) {
     let defaultProfile = `${window.appConfig.assets.profileImage}/default.png`;
-    let profileUrl = `${window.appConfig.assets.profileImage}/${data.profile_image || 'default.png'}`;
+    let profileUrl = `${window.appConfig.profileImageUrl}/${data.profile_image || 'default.png'}`;
     let validProfileUrl = await getValidImageUrl(profileUrl,defaultProfile);
     $('#profileImage').css('background-image',`url("${validProfileUrl}")`);
 }
@@ -89,7 +102,7 @@ export function renderModalActiveEducations(programmes) {
     $container.empty();
 
     programmes.forEach(programme => {
-        $container.append(activeEducationsAlert(programme));
+        $container.append(educationTemplate(programme));
     });
 }
 
@@ -120,7 +133,6 @@ export function renderLanguages(languages){
     });
 
     languages.forEach(language => {
-        console.log(language);
         $("#userLanguageList").append(templateLanguagesRow(language));
     });
 }
@@ -138,5 +150,48 @@ export function renderProficiencyOptions() {
     return html
 }
 
+export function renderSkills(skills){
+    $("#skillList").empty();
+    $("#skillListModal").empty();
+
+    skills.forEach(skill => {
+        $("#skillList").append(templateRowSkillList(skill))
+    })
+
+    skills.forEach(skill => {
+        $("#skillListModal").append(templateRowSkillModal(skill))
+    })
+}
+
+export function renderSkillOptions() {
+    let options = ""
+    let skill = skills.data
+    skill.forEach(skill => {
+        options += templateSkillOption(skill)
+    })
+    return options
+}
+
+export function renderLoading(){
+    $("#educationIndicators").hide();
+    $("#educationList").html(templateLoadingEducation())
+}
+
+export function renderEmptyCardEducation(){
+    $("#educationIndicators").hide();
+    $("#educationList").html(templateEmptyEducation())
+}
+
+export function renderBadgeEducationSkill() {
+
+}
+function getEducationItemsPerSlide() {
+    return $("#educationCarousel").width() < 1000 ? 1 : 2;
+}
+export function renderCardEducation(data){
+    $("#educationList").empty();
+    let itemsPerSlide = getEducationItemsPerSlide();
+            let totalSlides = Math.ceil(data.length / itemsPerSlide);
 
 
+}
