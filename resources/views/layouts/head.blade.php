@@ -5,11 +5,11 @@
 <script>
     window.appConfig = {
         userId: @json(session('user_profile_id')),
-        proficiencies: @json(\App\Constants\AppConstants::PROFICIENCY_LEVELS),
-        semesterResultsFileUrl : "{{ asset(env('SEMESTER_RESULTS_FILE_URL')) }}",
-        coverImageUrl : "{{ asset(env('COVER_IMAGE_URL')) }}",
-        profileImageUrl : "{{ asset(env('PROFILE_IMAGE_URL')) }}",
-        educationFileUrl : "{{ asset(env('EDUCATION_FILE_URL')) }}",
+        proficiencies: @json(\App\Constants\AppConstants:: PROFICIENCY_LEVELS),
+        semesterResultsFileUrl: "{{ asset(env('SEMESTER_RESULTS_FILE_URL')) }}",
+        coverImageUrl: "{{ asset(env('COVER_IMAGE_URL')) }}",
+        profileImageUrl: "{{ asset(env('PROFILE_IMAGE_URL')) }}",
+        educationFileUrl: "{{ asset(env('EDUCATION_FILE_URL')) }}",
         assets: {
             coverImage: "{{ asset('cover-image-url') }}",
             profileImage: "{{ asset('profile-image-url') }}"
@@ -28,37 +28,37 @@
                 update: "{{ route('social-media.update', ['id' => '__ID__']) }}",
                 delete: "{{ route('social-media.delete', ['id' => '__ID__']) }}",
             },
-            education:{
+            education: {
                 getEducationByUserProfileId: "{{ route('education.getEducationByUserProfileId',['id' => '__ID__']) }}",
                 getEducationById: "{{ route('education.getEducationById', ['id' => '__ID__']) }}",
-                educationStore:  "{{ route('education.store') }}",
+                educationStore: "{{ route('education.store') }}",
                 educationUpdate: "{{ route('education.update', ['id' => '__ID__']) }}",
                 educationDelete: "{{ route('education.delete', ['id' => '__ID__']) }}",
                 getAllFieldOfStudies: "{{ route('education.getAllFieldOfStudies') }}",
                 getAllQualifications: "{{ route('education.getAllQualifications') }}",
             },
-            languages:{
+            languages: {
                 getAllLanguages: "{{ route('languages.getAllLanguages') }}",
                 languagesStore: "{{ route('languages.store') }}",
                 languagesUpdate: "{{ route('languages.update',['id' => '__ID__']) }}",
                 languagesDelete: "{{ route('languages.delete',['id' => '__ID__']) }}",
             },
-            skills:{
+            skills: {
                 getAllSkills: "{{ route('skills.getAllSkills') }}",
                 skillsStore: "{{ route('skills.store') }}",
                 skillsUpdate: "{{ route('skills.update',['id' => '__ID__']) }}",
                 skillsDelete: "{{ route('skills.delete',['id' => '__ID__']) }}",
             },
-            semesters:{
+            semesters: {
                 uploadResults: "{{ route('semester.uploadResults',['id' => '__ID__']) }}",
                 semesterStore: "{{ route('semester.store') }}",
                 semesterUpdate: "{{ route('semester.update',['id' => '__ID__']) }}",
 
             },
-            programmes:{
+            programmes: {
                 getProgrammesByUserProfileId: "{{ route('programme.getProgrammesByUserProfileId',['id' => '__ID__']) }}",
             },
-            organizations:{
+            organizations: {
                 getAllOrganizations: "{{ route('organization.getAllOrganizations') }}",
             }
         },
@@ -75,5 +75,6 @@
 <!-- TalentBank Custom CSS -->
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/layout/newLayout.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/style.css') }}">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 @yield('css')

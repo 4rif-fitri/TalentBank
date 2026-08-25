@@ -56,6 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/jobOffers', [internshipController::class, "jobOffers"])->name('jobOffers'); //+
     Route::get('/messages', [internshipController::class, "messages"])->name('messages'); //+
     Route::get('/settings', [internshipController::class, "settings"])->name('settings'); //+
+    Route::get('/shortlist', [internshipController::class, "shortlists"])->name('shortlists'); //+
+    Route::get('/talents', [internshipController::class, "talents"])->name('talents'); //+
 
     Route::prefix('profile')->group(function () {
         Route::get('/student', [internshipController::class, "profile"])->name('profile.student'); //+

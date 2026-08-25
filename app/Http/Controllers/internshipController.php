@@ -39,4 +39,14 @@ class internshipController extends Controller
     {
         return view("pages.settings");
     }
+
+    public function Shortlists()
+    {
+        return view("pages.shortlists");
+    }
+
+    public function talents()
+    {
+        return view("pages.talents");
+    }
 }
