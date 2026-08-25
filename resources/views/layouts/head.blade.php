@@ -6,6 +6,10 @@
     window.appConfig = {
         userId: @json(session('user_profile_id')),
         proficiencies: @json(\App\Constants\AppConstants::PROFICIENCY_LEVELS),
+        semesterResultsFileUrl : "{{ asset(env('SEMESTER_RESULTS_FILE_URL')) }}",
+        coverImageUrl : "{{ asset(env('COVER_IMAGE_URL')) }}",
+        profileImageUrl : "{{ asset(env('PROFILE_IMAGE_URL')) }}",
+        educationFileUrl : "{{ asset(env('EDUCATION_FILE_URL')) }}",
         assets: {
             coverImage: "{{ asset('cover-image-url') }}",
             profileImage: "{{ asset('profile-image-url') }}"

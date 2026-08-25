@@ -15,7 +15,8 @@ import {
     showSkillModal,             handleAddSkill,
     handleEditSkill,            handleSaveNewSkill,
     handleDeleteSkill,          handleCencelAddSkill,
-    handleCencelUpdateSkill,    handleUpdateSkill
+    handleCencelUpdateSkill,    handleUpdateSkill,
+    handleProfileTab
 } from './handlers.js';
 
 import { hideModalAlert } from '../../utils/modal.js';
@@ -71,5 +72,9 @@ export function initProfileEvents() {
     $(document).on('click', '.btn-cancel-update-skill', handleCencelUpdateSkill);
     $(document).on('click', '.btn-update-skill', handleUpdateSkill);
     // <=== Skill ===>
+
+    // <=== Tab ===>
+    $(document).on('click', '.profile-tab', handleProfileTab);
+    // <=== Tab ===>
 
 }

@@ -1,9 +1,4 @@
 // handle... / show...
-
-import {
-    loadProfile,
-} from "./index.js"
-
 import {
     saveProfile,saveProfileImage,
     saveCoverImage,saveAbout,
@@ -12,7 +7,8 @@ import {
     deleteLanguage, updateLanguage,
     storeSkills,
     deleteSkill,
-    updateSkills
+    updateSkills,
+    fecthEducationByUserProfileId
 } from './service.js';
 
 import {
@@ -28,7 +24,10 @@ import {
     renderAbout,renderAddLink,
     renderLanguageOptions,
     renderProficiencyOptions,
-    renderSkillOptions
+    renderSkillOptions,
+    renderLoading,
+    renderEmptyCardEducation,
+    renderCardEducation
 } from './renderer.js';
 
 import {
@@ -848,6 +847,56 @@ export async function handleUpdateSkill() {
         );
     }
 }
+
+export function handleProfileTab(){
+    $(".profile-tab").removeClass("active");
+    $(this).addClass("active");
+    let target = $(this).data("target");
+    // console.log(target);
+
+    if (target === "main") {
+        $("#mainTabContent").removeClass("d-none");
+        $("#resultTabContent").addClass("d-none");
+        $("#educationsTabContent").addClass("d-none");
+    }
+
+    if (target === "result") {
+        $("#mainTabContent").addClass("d-none");
+        $("#resultTabContent").removeClass("d-none");
+        $("#educationsTabContent").addClass("d-none");
+    }
+
+    if (target === "education") {
+        $("#mainTabContent").addClass("d-none");
+        $("#resultTabContent").addClass("d-none");
+        $("#educationsTabContent").removeClass("d-none");
+        // handleLoadEducations()
+    }
+}
+
+export async function handleLoadEducations(){
+    let $educationList = $("#educationList");
+    renderLoading()
+
+    try {
+        let response = await fecthEducationByUserProfileId(window.appConfig.userId)
+        if (!response) return
+        console.log(response);
+
+        let data = response.data
+
+        if (data.length === 0) {
+            renderEmptyCardEducation();
+            return;
+        }
+
+        renderCardEducation(data);
+
+    } catch (xhr) {
+        console.error(xhr);
+    }
+}
+
 // ==== HANDLE ====
 
 

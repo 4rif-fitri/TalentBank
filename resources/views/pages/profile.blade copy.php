@@ -39,7 +39,8 @@
 </div>
 
 
-<!-- <x-offcanvas />
+<!--
+<x-offcanvas />
 
 <x-modals.semester-modal />
 
@@ -61,7 +62,8 @@
 
 <x-modals.languages-modal />
 
-<x-modals.skill-modal /> -->
+<x-modals.skill-modal />
+-->
 
 @endsection
 

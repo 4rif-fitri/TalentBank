@@ -19,6 +19,10 @@ import {
     templateRowSkillModal,
     templateSkillOption
 } from "../../templates/profile/skillTemplate.js"
+import{
+    templateLoadingEducation,
+    templateEmptyEducation
+}from "../../templates/profile/educationTemplate.js"
 // <=== Template ===>
 
 import { profileState, languages, skills } from './state.js';
@@ -47,7 +51,7 @@ export function renderAbout(data){
 
 export async function renderCoverImages(data) {
     let defaultCover = `${window.appConfig.assets.coverImage}/default.png`;
-    let coverUrl = `${window.appConfig.assets.coverImage}/${data.cover_image || 'default.png'}`;
+    let coverUrl = `${window.appConfig.coverImageUrl}/${data.cover_image || 'default.png'}`;
     let validCoverUrl = await getValidImageUrl(coverUrl,defaultCover);
     $('#coverImage').css('background-image',`url("${validCoverUrl}")`);
 
@@ -55,7 +59,7 @@ export async function renderCoverImages(data) {
 
 export async function renderProfileImages(data) {
     let defaultProfile = `${window.appConfig.assets.profileImage}/default.png`;
-    let profileUrl = `${window.appConfig.assets.profileImage}/${data.profile_image || 'default.png'}`;
+    let profileUrl = `${window.appConfig.profileImageUrl}/${data.profile_image || 'default.png'}`;
     let validProfileUrl = await getValidImageUrl(profileUrl,defaultProfile);
     $('#profileImage').css('background-image',`url("${validProfileUrl}")`);
 }
@@ -166,4 +170,28 @@ export function renderSkillOptions() {
         options += templateSkillOption(skill)
     })
     return options
+}
+
+export function renderLoading(){
+    $("#educationIndicators").hide();
+    $("#educationList").html(templateLoadingEducation())
+}
+
+export function renderEmptyCardEducation(){
+    $("#educationIndicators").hide();
+    $("#educationList").html(templateEmptyEducation())
+}
+
+export function renderBadgeEducationSkill() {
+
+}
+function getEducationItemsPerSlide() {
+    return $("#educationCarousel").width() < 1000 ? 1 : 2;
+}
+export function renderCardEducation(data){
+    $("#educationList").empty();
+    let itemsPerSlide = getEducationItemsPerSlide();
+            let totalSlides = Math.ceil(data.length / itemsPerSlide);
+
+
 }

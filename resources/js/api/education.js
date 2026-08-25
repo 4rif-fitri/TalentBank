@@ -71,6 +71,7 @@ export function getAllFieldOfStudies() {
         dataType: "json",
     });
 }
+
 export function getAllQualifications() {
 
     return $.ajax({

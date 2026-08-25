@@ -1,0 +1,378 @@
+@push('scripts')
+<script>
+    let educationData = [];
+
+    $(document).ready(function () {
+        let months = [
+            "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+        ];
+
+        function convertDateTostring(date) {
+            let datee = date.split("-");
+
+            if (datee[1] === datee[2]) {
+                return datee[0];
+            }
+
+            return `${months[Number(datee[1]) - 1]} ${datee[0]}`;
+        }
+
+        function renderEducationIndicators(totalSlides) {
+            let $indicators = $("#educationIndicators");
+            $indicators.empty();
+            if (totalSlides <= 1) {
+                $indicators.hide();
+                return;
+            }
+
+            $indicators.show();
+            for (let i = 0; i < totalSlides; i++) {
+
+                let $dot = $("<button>").attr({
+                    type: "button",
+                    "data-bs-target": "#educationCarousel",
+                    "data-bs-slide-to": i,
+                    "aria-label": `Slide ${i + 1}`
+                });
+
+                if (i === 0)
+                    $dot.addClass("active").attr("aria-current", "true");
+
+                $indicators.append($dot);
+            }
+        }
+
+        // Get Data
+        function getEducationItemsPerSlide() {
+            return $("#educationCarousel").width() < 1000 ? 1 : 2;
+        }
+        // Get Data
+
+        function tem(media, educationId) {
+            if (!media || media.length === 0) {
+                return "";
+            }
+
+            let html = "";
+            let visibleMedia = media.slice(0, 3);
+
+            visibleMedia.forEach((dt, index) => {
+
+                let baseUrl = "{{ URL::asset('EDUCATION_FILE_URL') }}";
+                let imageUrl = `${baseUrl}/${dt.file_name}`;
+
+                let remaining = media.length - 2;
+
+                if (index === 2 && media.length > 3) {
+
+                    html += `
+                <div
+                    class="image rounded-1 m-1 d-flex justify-content-center align-items-center education-preview-image"
+                    style="
+                        background-image: url('${imageUrl}');
+                        filter: brightness(.5);
+                        cursor: pointer;
+                    "
+                    data-education-id="${educationId}"
+                    data-slide-index="${index}">
+
+                    <h4 class="text-white m-0">
+                        +${remaining}
+                    </h4>
+                </div>
+            `;
+
+                } else {
+
+                    html += `
+                <div
+                    class="image rounded-1 m-1 education-preview-image"
+                    style="
+                        background-image: url('${imageUrl}');
+                        cursor: pointer;
+                    "
+                    data-education-id="${educationId}"
+                    data-slide-index="${index}">
+                </div>
+            `;
+                }
+            });
+
+            return html;
+        }
+        // Render
+
+        function asd(skills) {
+            let html
+            skills.forEach(data => {
+                html += `
+                    <div class="badge text-bg-secondary m-1">
+                        ${data.skill_name}
+                    </div>
+                `
+            })
+            return html
+        }
+
+        function renderCardEducation(data, $educationList) {
+            $educationList.empty();
+            let itemsPerSlide = getEducationItemsPerSlide();
+
+            let totalSlides = Math.ceil(data.length / itemsPerSlide);
+
+            renderEducationIndicators(totalSlides);
+            for (let i = 0; i < data.length; i += itemsPerSlide) {
+
+                let educationGroup = data.slice(i, i + itemsPerSlide);
+                let $carouselItem = $("<div>").addClass("carousel-item").toggleClass("active", i === 0);
+                let $row = $("<div>").addClass("row g-3 px-3");
+
+                educationGroup.forEach(education => {
+                    console.log({ education });
+
+                    let startDate = convertDateTostring(education.start_date)
+                    let endDate = convertDateTostring(education.end_date)
+
+                    let columnClass = itemsPerSlide === 1 ? "col-12" : "col-6";
+                    let $column = $("<div>").addClass(columnClass);
+
+                    $column.html(`
+                        <article
+                            class="education-item h-100 border rounded-3 p-3 position-relative">
+
+                            <button type="button"
+                                class="btn btn-secondary icon btn-edit-education position-absolute top-0 end-0 m-2"
+                                data-id="${education.id}">
+                                <i class="fa-solid fa-pencil"></i>
+                            </button>
+
+                            <div class="pe-4">
+                                <p class="h5 fw-bold mb-2">
+                                    ${education.programme?.organization?.company_name ?? ""}
+                                </p>
+
+                                <p class="mb-1">
+                                    ${education.programme?.programme_name ?? ""}
+                                </p>
+
+                                <p class="text-muted mb-2">
+                                    ${startDate} - ${endDate}
+                                </p>
+
+                                <p class="mb-2">
+                                    Grade: ${education.cgpa ?? "-"}
+                                </p>
+
+                                <p class="mb-2">
+                                    ${education.description ?? ""}
+                                </p>
+
+								<div class="skills d-flex flex-wrap align-items-center">
+                                    ${asd(education.skills ?? "")}
+								</div>
+
+                                <div class="d-flex gap-2 flex-wrap">
+
+                                    ${education.enrollment_status ? `
+                                        <span class="badge text-bg-primary">
+                                            ${education.enrollment_status}
+                                        </span>
+                                    ` : ""}
+
+                                    ${education.verification_status ? `
+                                        <span class="badge text-bg-success">
+                                            ${education.verification_status}
+                                        </span>
+                                    ` : ""}
+
+                                </div>
+                            </div>
+                            <div class="images d-flex flex-wrap">
+                               ${tem(education.media, education.id)}
+                            </div>
+
+                        </article>
+                    `);
+                    $row.append($column);
+                });
+
+                $carouselItem.append($row);
+                $educationList.append($carouselItem);
+            }
+        }
+
+        function renderEmptyCardEducation($educationList) {
+            $("#educationIndicators").hide();
+
+            $educationList.html(`
+                <div class="carousel-item active">
+                    <p class="text-muted text-center py-5 mb-0">
+                    No education added yet</p>
+                </div>`);
+        }
+
+        function renderLoading($educationList) {
+            $("#educationIndicators").hide();
+
+            $educationList.html(`
+                <div class="carousel-item active">
+                    <div class="py-5 text-center">
+                        <div
+                            class="spinner-border"
+                            role="status">
+                        </div>
+                        <p class="text-muted mt-2 mb-0">
+                            Loading education...
+                        </p>
+                    </div>
+                </div>
+            `);
+        }
+        // Render
+
+        // Load
+        function loadEducations() {
+            let $educationList = $("#educationList");
+            renderLoading($educationList);
+
+            let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+
+                success: function ({ data }) {
+                    // console.log(data);
+
+                    if (!data || data.length === 0) {
+                        educationData = [];
+                        renderEmptyCardEducation($educationList);
+                        return;
+                    }
+
+                    educationData = data;
+                    renderCardEducation(educationData, $educationList);
+                },
+
+                error: function (xhr) {
+                    console.error(xhr);
+                }
+            });
+        }
+        // Load
+
+        // trigger
+        $(".profile-tab[data-target='education']").on("click", function () {
+            loadEducations();
+        });
+
+        let resizeTimer;
+        let currentItemsPerSlide = getEducationItemsPerSlide();
+        $(window).on("resize", function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                let newItemsPerSlide = getEducationItemsPerSlide();
+
+                if (newItemsPerSlide === currentItemsPerSlide) return;
+                currentItemsPerSlide = newItemsPerSlide;
+
+                if (educationData.length === 0) return;
+
+                renderCardEducation(educationData, $("#educationList"));
+            }, 200);
+        });
+
+        $(document).on("education:updated", async function () {
+            await loadEducations();
+        });
+        // trigger
+    })
+
+    function renderEducationImagePreview(media, selectedIndex = 0) {
+
+        let $carouselInner = $("#imagePreviewCarouselInner");
+
+        $carouselInner.empty();
+
+        let baseUrl = "{{ URL::asset('EDUCATION_FILE_URL') }}";
+
+        media.forEach((dt, index) => {
+
+            let imageUrl = `${baseUrl}/${dt.file_name}`;
+
+            $carouselInner.append(`
+            <div class="carousel-item ${index === selectedIndex ? "active" : ""}">
+
+                <img
+                    src="${imageUrl}"
+                    class="d-block w-100"
+                    alt="${dt.title ?? dt.file_name}"
+                    style="
+                        height: max-content;
+                        object-fit: contain;
+                    "
+                >
+
+                ${dt.title || dt.description
+                    ? `
+                            <div
+                                class="carousel-caption d-block
+                                       bg-dark bg-opacity-75
+                                       rounded p-2">
+
+                                ${dt.title
+                        ? `<h5>${dt.title}</h5>`
+                        : ""
+                    }
+
+                                ${dt.description
+                        ? `<p class="d-none d-md-block mb-0">
+                                            ${dt.description}
+                                           </p>`
+                        : ""
+                    }
+
+                            </div>
+                        `
+                    : ""
+                }
+
+            </div>
+        `);
+        });
+    }
+
+    $(document).on("click", ".education-preview-image", function () {
+
+        let educationId = Number($(this).data("education-id"));
+        let slideIndex = Number($(this).data("slide-index"));
+
+        let education = educationData.find(
+            item => Number(item.id) === educationId
+        );
+
+        if (!education || !education.media?.length) {
+            return;
+        }
+
+        renderEducationImagePreview(
+            education.media,
+            slideIndex
+        );
+
+        $("#imagePreviewModalTitle").text(
+            education.programme?.programme_name ?? "Education Media"
+        );
+
+        let modalEl = document.getElementById("imagePreviewModal");
+
+        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+
+        modal.show();
+    });
+</script>
+@endpush
+<x-modals.education-modal />

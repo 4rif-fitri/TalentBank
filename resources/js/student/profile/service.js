@@ -4,27 +4,24 @@
 // createEducation()    updateEducation()   deleteEducation()
 
 import {
-    updateProfile,
-    uploadProfileImage,
-    uploadCoverImage,
-    updateAbout,
+    updateProfile,uploadProfileImage,uploadCoverImage,updateAbout,
 } from '../../api/profile.js';
-
 import {
-    store,
-    remove,
-    update
+    store,remove,update
 } from '../../api/socialMedia.js';
-
 import {
-    languagesStore,
-    languagesDelete,
-    languagesUpdate
+    languagesStore,languagesDelete,languagesUpdate
 }from "../../api/language.js"
 
 import {
     skillsStore, skillsUpdate, skillsDelete
 } from "../../api/skill.js"
+import {
+    getAllFieldOfStudies, getAllQualifications,
+    getEducationByUserProfileId, getEducationById,
+    educationStore, educationUpdate,
+    educationDelete
+} from "../../api/education.js"
 
 import { uploadImage } from '../../utils/upload.js';
 
@@ -88,4 +85,26 @@ export function updateSkills(id, source_type, source_id, skill_id) {
 }
 export function deleteSkill(id) {
     return skillsDelete(id)
+}
+
+export function fecthAllFieldOfStudies() {
+    return getAllFieldOfStudies(id)
+}
+export function fecthAllQualifications() {
+    return getAllQualifications(id)
+}
+export function fecthEducationByUserProfileId(id){
+    return getEducationByUserProfileId(id)
+}
+export function fecthEducationById(id){
+    return getEducationById(id)
+}
+export function storeEducation(formData) {
+    return educationStore(formData)
+}
+export function updateEducation(id, formData) {
+    return educationUpdate(id, formData)
+}
+export function deleteEducation(id) {
+    return educationDelete(id)
 }
