@@ -58,6 +58,18 @@
             overflow: hidden;
         }
     }
+
+    .shortlist-item.active {
+        border: 1px solid #5267c4 !important;
+    }
+
+    .shortlist-item.active {
+        color: #5267c4;
+
+        small {
+            color: #5267c4 !important;
+        }
+    }
 </style>
 @endsection
 
@@ -82,7 +94,8 @@
                 </button>
             </div>
 
-            <div class="d-flex justify-content-center align-items-center gap-3 shortlist-item mb-2 p-3 border rounded">
+            <div
+                class="active d-flex justify-content-center align-items-center gap-3 shortlist-item mb-2 p-3 border rounded">
                 <div role="button" class="d-flex align-items-center gap-3">
                     <i class="fa-regular fa-folder fa-xl"></i>
                     <div class="flex-grow-1">
@@ -184,9 +197,9 @@
                     <hr>
                     <table class="table table-bordered text-center">
                         <thead>
-                            <tr>
+                            <tr class="table-primary">
                                 <th scope="col">Candidate</th>
-                                <th scope="col" class="d-none d-md-inline-block border-0">Skills</th>
+                                <th scope="col" class="d-none d-md-block border-0">Skills</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Actions</th>
                             </tr>
@@ -200,7 +213,7 @@
                                         <p class="text-muted text-start">(UTEM)</p>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-inline-block">
+                                <td class="d-none d-md-block">
                                     <div class="badge border text-black">
                                         <i class="fa-brands fa-laravel fa-lg"></i>
                                         laravel
@@ -260,7 +273,7 @@
                                         <p class="text-muted text-start">(UTEM)</p>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-inline-block">
+                                <td class="d-none d-md-block">
                                     <div class="badge border text-black">
                                         <i class="fa-brands fa-laravel fa-lg"></i>
                                         laravel
@@ -319,7 +332,7 @@
                                         <p class="text-muted text-start">(UTEM)</p>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-inline-block">
+                                <td class="d-none d-md-block">
                                     <div class="badge border text-black">
                                         <i class="fa-brands fa-laravel fa-lg"></i>
                                         laravel
@@ -380,7 +393,7 @@
                                         <p class="text-muted text-start">(UTEM)</p>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-inline-block">
+                                <td class="d-none d-md-block">
                                     <div class="badge border text-black">
                                         <i class="fa-brands fa-laravel fa-lg"></i>
                                         laravel
@@ -441,7 +454,7 @@
                                         <p class="text-muted text-start">(UTEM)</p>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-inline-block">
+                                <td class="d-none d-md-block">
                                     <div class="badge border text-black">
                                         <i class="fa-brands fa-laravel fa-lg"></i>
                                         laravel
@@ -502,7 +515,7 @@
                                         <p class="text-muted text-start">(UTEM)</p>
                                     </div>
                                 </td>
-                                <td class="d-none d-md-inline-block">
+                                <td class="d-none d-md-block">
                                     <div class="badge border text-black">
                                         <i class="fa-brands fa-laravel fa-lg"></i>
                                         laravel
@@ -541,7 +554,6 @@
 </div>
 
 <div class="filter-overlay" onclick="toggleFilter()"></div>
-
 @endsection
 
 @section('script')

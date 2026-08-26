@@ -155,6 +155,11 @@
             </div>
 
             <div class="mb-3">
+                <label class="form-label text-muted small fw-bold" id="searchName">Name</label>
+                <input type="email" class="form-control" id="searchName" placeholder="Name">
+            </div>
+
+            <div class="mb-3">
                 <label class="form-label text-muted small fw-bold">University</label>
                 <select id="selectUniversiti" class="form-select select2-skills" multiple="multiple"
                     data-placeholder="Select or type skills...">
@@ -166,7 +171,6 @@
 
             <div class="mb-3">
                 <label class="form-label text-muted small fw-bold">Skill</label>
-                <!-- Guna class custom 'select2-skills' untuk diaktifkan dalam JS nanti -->
                 <select id="selectSkill" class="form-select select2-skills" multiple="multiple"
                     data-placeholder="Select or type skills...">
                     <option value="1">React</option>
@@ -180,7 +184,6 @@
 
             <div class="mb-3">
                 <label class="form-label text-muted small fw-bold">Language</label>
-                <!-- Guna class custom 'select2-skills' untuk diaktifkan dalam JS nanti -->
                 <select id="selectLanguage" class="form-select select2-skills" multiple="multiple"
                     data-placeholder="Select or type skills...">
                     <option value="1">Malay</option>
@@ -192,7 +195,6 @@
 
             <div class="mb-3">
                 <label class="form-label text-muted small fw-bold">Qualifications</label>
-                <!-- Guna class custom 'select2-skills' untuk diaktifkan dalam JS nanti -->
                 <select id="selectQualifications" class="form-select select2-skills" multiple="multiple"
                     data-placeholder="Select or type skills...">
                     <option value="Degree">Degree</option>
@@ -201,7 +203,6 @@
                 </select>
             </div>
 
-            <!-- Toggle Switch -->
             <div class="form-check form-switch mt-4">
                 <input class="form-check-input" type="checkbox" id="verifiedSwitch" checked>
                 <label class="form-check-label text-muted small fw-bold" for="verifiedSwitch">University
@@ -212,9 +213,7 @@
         </aside>
 
         <div class="results-panel flex-grow-1">
-            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-                <span class="fw-bold">324 students found</span>
-            </div>
+
 
             <div class="row g-3">
 
@@ -471,17 +470,19 @@
                 </div>
             </div>
 
-            <nav aria-label="..." class="mt-2 d-flex justify-content-center">
-                <ul class="pagination">
-                    <li class="page-item"><a href="#" class="page-link">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item active">
-                        <a class="page-link" href="#" aria-current="page">2</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                </ul>
-            </nav>
+            <div class="mt-2 d-flex justify-content-between align-items-center">
+                <span class="fw-bold">1000 students found</span>
+                <nav aria-label="..." class="">
+                    <ul class="pagination">
+                        <li class="page-item"><a href="#" class="page-link">Previous</a></li>
+                        <li class="page-item"><a class="page-link active" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item"><a class="page-link" href="#">4</a></li>
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
         </div>
     </div>
 </div>
@@ -506,25 +507,14 @@
         });
 
         $(document).on("click", "#btnFilter", function () {
-
             let formData = new FormData();
-
-            // University
             let universities = $("#selectUniversiti").val() || [];
-
-            // Skill
             let skills = $("#selectSkill").val() || [];
-
-            // Language
             let languages = $("#selectLanguage").val() || [];
-
-            // Qualification
             let qualifications = $("#selectQualifications").val() || [];
-
-            // Verified
             let verified = $("#verifiedSwitch").is(":checked");
+            let name = $("#searchName").val() || [];
 
-            // Append array values
             universities.forEach(function (value) {
                 formData.append("universities[]", value);
             });
@@ -550,9 +540,7 @@
                 qualifications,
                 verified
             });
-
         });
-
     });
 </script>
 @endsection
