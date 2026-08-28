@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Helpers\ApiResponse;
+use App\Helpers\ApiResponse;
+use App\Http\Middleware\AjaxMiddleware;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CheckRoleMiddleware;
 use App\Http\Middleware\GuestMiddleware;
@@ -20,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => AuthMiddleware::class,
             'guest' => GuestMiddleware::class,
             'checkRole' => CheckRoleMiddleware::class,
+            'ajax' => AjaxMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

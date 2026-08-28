@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Helpers\ApiResponse;
+use App\Helpers\ApiResponse;
 use App\Services\SocialMediaLinkService;
 use Exception;
 use Illuminate\Http\JsonResponse;

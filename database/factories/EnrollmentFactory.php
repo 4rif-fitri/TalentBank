@@ -31,7 +31,7 @@ class EnrollmentFactory extends Factory
             'graduation_year' => $this->faker->year(),
             'cgpa' => $this->faker->randomFloat(2, 0, 4.0),
             'enrollment_status' => $this->faker->randomElement(AppConstants::ENROLLMENT_STATUS),
-            'verification_status' => $this->faker->randomElement(VERIFICATION_STATUS),
+            'verification_status' => $this->faker->randomElement(AppConstants::VERIFICATION_STATUS),
         ];
     }
 }
