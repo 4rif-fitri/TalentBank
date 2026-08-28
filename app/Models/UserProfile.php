@@ -35,7 +35,8 @@ class UserProfile extends Model
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'organization_users', 'user_profile_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'organization_users', 'user_profile_id', 'role_id')
+            ->wherePivot('status', 1);
     }
 
     public function organizationUsers()

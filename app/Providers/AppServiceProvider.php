@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Helpers\ApiResponse;
 use App\Models\Education;
 use App\Models\Semester;
 use App\Models\UserProfile;
