@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
         ]);
 
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)
+            return Limit::perMinute(300)
                 ->by($request->user()->id ?: $request->ip())  // limit by user. If no user, limit by IP
                 ->response(function () {
                     throw new Exception('Too many requests.', Response::HTTP_TOO_MANY_REQUESTS);

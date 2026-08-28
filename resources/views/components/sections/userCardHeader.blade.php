@@ -128,6 +128,3 @@
     </nav>
 
 </section>
-
-@push('scripts')
-@endpush

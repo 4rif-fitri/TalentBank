@@ -1,28 +1,15 @@
 <section id="skills" class="d-flex flex-column gap-1">
-    <h3 class="fw-bold text-sm-center text-lg-start">Skills</h3>
-    <div class="icon-container">
-        <button id="btnSkill" class="btn btn-secondary icon">
-            <i class="fa-solid fa-pencil"></i>
-        </button>
+    <div class="d-flex justify-content-between align-items-center">
+        <h3 class="fw-bold text-sm-center text-lg-start mb-0">
+            Skills
+        </h3>
+        <div class="icon-container">
+            <button id="btnSkill" type="button" class="btn btn-secondary icon" title="Edit Skills">
+                <i class="fa-solid fa-pencil"></i>
+            </button>
+        </div>
     </div>
     <hr>
-
-    <article class="m-1">
-        <p class="fw-bold">Database</p>
-        <p>Advanced</p>
-    </article>
-
-    <article class="m-1">
-        <p class="fw-bold">HTML</p>
-        <p>Advanced</p>
-    </article>
+    <div id="skillList" class="d-flex flex-wrap gap-2"></div>
 </section>
 
-@push('scripts')
-<script>
-    $("#btnSkill").on("click", function () {
-        let modal = bootstrap.Modal.getOrCreateInstance($("#skillModal"));
-        modal.show()
-    })
-</script>
-@endpush

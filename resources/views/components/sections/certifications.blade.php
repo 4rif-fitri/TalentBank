@@ -32,6 +32,3 @@
     <a href="./certifications.html" class="d-flex justify-content-center align-items-center">Show
         All</a>
 </section>
-
-@push('scripts')
-@endpush

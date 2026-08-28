@@ -181,6 +181,19 @@
             return html;
         }
         // Render
+
+        function asd(skills) {
+            let html
+            skills.forEach(data => {
+                html += `
+                    <div class="badge text-bg-secondary m-1">
+                        ${data.skill_name}
+                    </div>
+                `
+            })
+            return html
+        }
+
         function renderCardEducation(data, $educationList) {
             $educationList.empty();
             let itemsPerSlide = getEducationItemsPerSlide();
@@ -235,19 +248,7 @@
                                 </p>
 
 								<div class="skills d-flex flex-wrap align-items-center">
-									Skills:
-									<div class="badge text-bg-secondary m-1">
-										Software Engineering
-									</div>
-									<div class="badge text-bg-secondary m-1">
-										System Analysis
-									</div>
-									<div class="badge text-bg-secondary m-1">
-										Database Design
-									</div>
-									<div class="badge text-bg-secondary m-1">
-										Web Development
-									</div>
+                                    ${asd(education.skills ?? "")}
 								</div>
 
                                 <div class="d-flex gap-2 flex-wrap">
