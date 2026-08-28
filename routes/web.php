@@ -50,14 +50,30 @@ Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->
 |
 */
 Route::middleware('auth')->group(function () {
-    Route::get('/', [internshipController::class, "index"])->name('home'); //+
-    Route::get('/invitations', [internshipController::class, "invitations"])->name('invitations'); //+
-    Route::get('/interviews', [internshipController::class, "interviews"])->name('interviews'); //+
-    Route::get('/jobOffers', [internshipController::class, "jobOffers"])->name('jobOffers'); //+
-    Route::get('/messages', [internshipController::class, "messages"])->name('messages'); //+
-    Route::get('/settings', [internshipController::class, "settings"])->name('settings'); //+
-    Route::get('/shortlist', [internshipController::class, "shortlists"])->name('shortlists'); //+
-    Route::get('/talents', [internshipController::class, "talents"])->name('talents'); //+
+    Route::get('/', [internshipController::class, "index"])->name('home');
+
+    Route::middleware('checkRole:Student')->group(function () {
+        Route::get('/index', [internshipController::class, "studentIndex"])->name('student.index');
+        Route::get('/invitations', [internshipController::class, "invitations"])->name('student.invitations');
+        Route::get('/interviews', [internshipController::class, "interviews"])->name('student.interviews');
+        Route::get('/jobOffers', [internshipController::class, "jobOffers"])->name('student.jobOffers');
+        Route::get('/messages', [internshipController::class, "messages"])->name('student.messages');
+        Route::get('/settings', [internshipController::class, "settings"])->name('student.settings');
+    });
+
+    Route::middleware('checkRole:Recruiter,Student')->group(function () {
+        Route::get('/index', [internshipController::class, "recruiterIndex"])->name('recruiter.index');
+        Route::get('/shortlist', [internshipController::class, "recruiterShortlists"])->name('recruiter.shortlists');
+        Route::get('/talents', [internshipController::class, "recruiterTalents"])->name('recruiter.talents');
+        Route::get('/savedTalent', [internshipController::class, "recruiterSavedTalent"])->name('recruiter.savedTalent');
+        Route::get('/invitations', [internshipController::class, "recruiterInvitations"])->name('recruiter.invitations');
+        Route::get('/interviews', [internshipController::class, "recruiterInterviews"])->name('recruiter.interviews');
+        Route::get('/jobOffers', [internshipController::class, "recruiterJobOffers"])->name('recruiter.jobOffers');
+        Route::get('/hiredTalent', [internshipController::class, "recruiterHiredTalent"])->name('recruiter.hiredTalent');
+        Route::get('/messages', [internshipController::class, "recruiterMessages"])->name('recruiter.messages');
+        Route::get('/settings', [internshipController::class, "recruiterSettings"])->name('recruiter.settings');
+    });
+
 
     Route::prefix('profile')->group(function () {
         Route::get('/student', [internshipController::class, "profile"])->name('profile.student'); //+
