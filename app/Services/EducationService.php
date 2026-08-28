@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\AppConstants;
 use App\Models\Education;
 use App\Models\FieldOfStudy;
 use App\Models\Qualification;
@@ -105,7 +106,7 @@ class EducationService
                 'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
                 'enrollment_status' => $data['enrollment_status'],
-                'verification_status' => 'Pending',  // initially pending for admin to approve
+                'verification_status' => AppConstants::VERIFICATION_STATUS['PENDING'],  // initially pending for admin to approve
             ]);
 
             $this->uploadImages($education->id, $data, $userProfileId);

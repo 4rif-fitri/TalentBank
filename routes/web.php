@@ -6,7 +6,10 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\FacultyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\internshipController;
+use App\Http\Controllers\InterviewController;
+use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\OrganizationController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
@@ -76,7 +79,7 @@ Route::middleware('auth')->group(function () {
 | Here is where you can register API routes for your application.
 |
 */
-Route::middleware(['auth', 'throttle:api'])->prefix('api')->group(function () {
+Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(function () {
 
     Route::prefix('profile')->group(function () {
         // crud routes
@@ -148,6 +151,45 @@ Route::middleware(['auth', 'throttle:api'])->prefix('api')->group(function () {
         Route::get('/', [SkillController::class, 'getAllSkills'])->name('skills.getAllSkills');
         Route::post('/store', [SkillController::class, 'store'])->name('skills.store');
         Route::put('/update/{id}', [SkillController::class, 'update'])->name('skills.update');
-        Route::delete('/delete/{id}', [SkillController::class, 'delete'])->name('skills.delete'); //+
+        Route::delete('/delete/{id}', [SkillController::class, 'delete'])->name('skills.delete');
+    });
+
+    Route::prefix('positions')->group(function () {
+        Route::get('/', [PositionController::class, 'getAllPositions'])->name('positions.getAllPositions');
+        Route::get('/{id}', [PositionController::class, 'getPositionById'])->name('positions.getPositionById');
+        Route::get('/org/{id}', [PositionController::class, 'getPositionsByOrgId'])->name('positions.getPositionsByOrgId');
+
+        Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
+            Route::post('/store', [PositionController::class, 'store'])->name('positions.store');
+            Route::put('/update/{id}', [PositionController::class, 'update'])->name('positions.update');
+        });
+    });
+
+    Route::prefix('invitations')->group(function () {
+        Route::get('/getInvitationsByReceiverId', [InvitationController::class, 'getInvitationsByReceiverId'])->name('invitations.getInvitationsByReceiverId');
+        Route::get('/status/{status}', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId');
+        Route::get('/getInvitationById/{id}', [InvitationController::class, 'getInvitationById'])->name('invitations.getInvitationById');
+        Route::put('/acceptInvitation/{id}', [InvitationController::class, 'acceptInvitation'])->name('invitations.acceptInvitation');
+        Route::put('/rejectInvitation/{id}', [InvitationController::class, 'rejectInvitation'])->name('invitations.rejectInvitation');
+
+        Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
+            Route::get('/getInvitationsBySenderId', [InvitationController::class, 'getInvitationsBySenderId'])->name('invitations.getInvitationsBySenderId');
+            Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store');
+            Route::put('/update/{id}', [InvitationController::class, 'update'])->name('invitations.update');
+            Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.rejectInvitation');
+        });
+    });
+
+    Route::prefix('interviews')->group(function () {
+        Route::get('/getInterviewsByReceiverId', [InterviewController::class, 'getInterviewsByReceiverId'])->name('interviews.getInterviewsByReceiverId');
+        Route::get('/getInterviewById/{id}', [InterviewController::class, 'getInterviewById'])->name('interviews.getInterviewById');
+
+        Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
+            Route::get('/getInterviewsBySenderId', [InterviewController::class, 'getInterviewsBySenderId'])->name('interviews.getInterviewsBySenderId');
+            Route::post('/store', [InterviewController::class, 'store'])->name('interviews.store');
+            Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update');
+            Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview');
+            Route::put('/cancelInterview/{id}', [InterviewController::class, 'cancelInterview'])->name('interviews.cancelInterview');
+        });
     });
 });

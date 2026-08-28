@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Constants\AppConstants;
-use App\Http\Helpers\ApiResponse;
+use App\Helpers\ApiResponse;
 use App\Services\EducationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

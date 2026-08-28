@@ -36,6 +36,10 @@ class DatabaseSeeder extends Seeder
             UserLanguageSeeder::class,
             SkillSeeder::class,
             UserSkillSeeder::class,
+            PositionSeeder::class,
+            ShortlistSeeder::class,
+            InvitationSeeder::class,
+            InterviewSeeder::class,
         ]);
     }
 }
