@@ -2,7 +2,6 @@
 
 @section('css')
 <style>
-    /* --- Talent Finder Layout --- */
     .talent-layout {
         display: flex;
         gap: 24px;
@@ -25,14 +24,11 @@
         background: rgba(0, 0, 0, 0.4);
         display: none;
         z-index: 1040;
-        /* Z-index tinggi sikit dari sidebar utama */
     }
 
-    /* --- Mobile / Off-Canvas Filter --- */
     @media (max-width: 1000px) {
         .talent-layout {
             display: block;
-            /* Buang flexbox supaya results penuh skrin */
         }
 
         .filter-panel {
@@ -43,49 +39,35 @@
             max-width: 85vw;
             height: 100vh;
             z-index: 1050;
-            /* Z-index paling tinggi untuk berada atas overlay */
             border-radius: 0;
             overflow-y: auto;
             transform: translateX(-100%);
-            /* Sorok filter di luar skrin kiri */
         }
 
-        /* Class yang ditambah dengan JS */
         body.filter-open .filter-panel {
             transform: translateX(0);
-            /* Tarik masuk skrin */
         }
 
         body.filter-open .filter-overlay {
             display: block;
-            /* Tunjuk background gelap */
         }
 
         body.filter-open {
             overflow: hidden;
-            /* Elakkan user scroll page belakang masa filter terbukak */
         }
     }
 
-    /* --- Custom Select2 supaya sama macam UI design --- */
-
-    /* Ubah rupa kotak input utama */
     .select2-container--default .select2-selection--multiple {
         border: 1px solid #dee2e6 !important;
-        /* Ikut border Bootstrap */
         border-radius: 0.375rem !important;
         min-height: 48px !important;
         padding: 4px !important;
     }
 
-    /* Ubah rupa tag (Chips) */
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
         background-color: #f0f6ff !important;
-        /* Warna background biru cair */
         border: 1px solid #bfdbfe !important;
-        /* Warna border biru */
         color: #2563eb !important;
-        /* Warna teks biru pekat */
         border-radius: 6px !important;
         padding: 4px 8px !important;
         margin-top: 4px !important;
@@ -93,16 +75,13 @@
         font-weight: 600 !important;
     }
 
-    /* Ubah butang 'x' pada tag */
     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
         color: #2563eb !important;
         margin-right: 6px !important;
         border-right: none !important;
-        /* Buang garisan pembahagi default */
         font-weight: normal !important;
     }
 
-    /* Warna butang 'x' bila cursor hover */
     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
         background-color: transparent !important;
         color: #1d4ed8 !important;
@@ -116,13 +95,9 @@
         line-height: 1 !important;
         margin-right: 0 !important;
         padding: 0 !important;
-
-        /* Tambahan kod untuk pastikan ia hilang bila ditekan */
         position: relative !important;
         z-index: 2 !important;
-        /* Paksa 'x' timbul di atas */
         cursor: pointer !important;
-        /* Tukar cursor jadi bentuk tangan */
     }
 </style>
 @endsection
@@ -163,9 +138,6 @@
                 <label class="form-label text-muted small fw-bold">University</label>
                 <select id="selectUniversiti" class="form-select select2-skills" multiple="multiple"
                     data-placeholder="Select or type skills...">
-                    <option value="1">UTEM</option>
-                    <option value="2">UTM</option>
-                    <option value="3">UTHM</option>
                 </select>
             </div>
 
@@ -173,12 +145,6 @@
                 <label class="form-label text-muted small fw-bold">Skill</label>
                 <select id="selectSkill" class="form-select select2-skills" multiple="multiple"
                     data-placeholder="Select or type skills...">
-                    <option value="1">React</option>
-                    <option value="2">Laravel</option>
-                    <option value="3">Figma</option>
-                    <option value="3">Node.js</option>
-                    <option value="4">Python</option>
-                    <option value="5">Vue</option>
                 </select>
             </div>
 
@@ -186,10 +152,6 @@
                 <label class="form-label text-muted small fw-bold">Language</label>
                 <select id="selectLanguage" class="form-select select2-skills" multiple="multiple"
                     data-placeholder="Select or type skills...">
-                    <option value="1">Malay</option>
-                    <option value="2">Mandarin</option>
-                    <option value="3">English</option>
-                    <option value="3">Tamil</option>
                 </select>
             </div>
 
@@ -199,7 +161,6 @@
                     data-placeholder="Select or type skills...">
                     <option value="Degree">Degree</option>
                     <option value="Diploma">Diploma</option>
-                    <option value="Kuala Lumpur">Johor</option>
                 </select>
             </div>
 
@@ -208,7 +169,7 @@
                 <label class="form-check-label text-muted small fw-bold" for="verifiedSwitch">University
                     Verified</label>
             </div>
-            <button class="btn btn-outline-danger w-100 mt-2">Reset</button>
+            <button class="btn btn-outline-danger w-100 mt-2" id="btnResetFilter">Reset</button>
             <button class="btn btn-primary w-100 mt-2" id="btnFilter">Filter</button>
         </aside>
 
@@ -497,6 +458,98 @@
     }
 
     $(document).ready(function () {
+        let state = {
+            allOrganizations: [],
+            allLanguages: [],
+            allSkills: [],
+            allQualifications: []
+        }
+
+        function setOptions() {
+            $("#selectUniversiti").empty()
+            state.allOrganizations.forEach(organization => {
+                let name = organization.company_name.split(" ")
+                let lastName = name.length
+                let shortName = name[lastName - 1].replace("(", "").replace(")", "")
+                $("#selectUniversiti").append(`<option value="${organization.id}">${shortName}</option>`)
+            })
+
+            $("#selectLanguage").empty()
+            state.allLanguages.forEach(language => {
+                $("#selectLanguage").append(`<option value="${language.id}">${language.language_name}</option>`)
+            })
+
+            $("#selectSkill").empty()
+            state.allSkills.forEach(skill => {
+                $("#selectSkill").append(`<option value="${skill.id}">${skill.skill_name}</option>`)
+            })
+        }
+
+        function getAllOrganizations() {
+            return $.ajax({
+                url: "{{ route('organization.getAllOrganizations') }}",
+                type: 'GET',
+                success: response => {
+                    state.allOrganizations = response.data
+                },
+                error: xhr => {
+                    console.log(xhr);
+                }
+            })
+        }
+
+        function getAllLanguages() {
+            return $.ajax({
+                url: "{{ route('languages.getAllLanguages') }}",
+                type: 'GET',
+                success: response => {
+                    state.allLanguages = response.data
+                },
+                error: xhr => {
+                    console.log(xhr);
+                }
+            })
+        }
+
+        function getAllSkills() {
+            return $.ajax({
+                url: "{{ route('skills.getAllSkills') }}",
+                type: 'GET',
+                success: response => {
+                    state.allSkills = response.data
+                },
+                error: xhr => {
+                    console.log(xhr);
+                }
+            })
+        }
+
+        function getAllQualifications() {
+            // return $.ajax({
+            //     getAllQualifications
+            //     url: "{{ route('languages.getAllLanguages') }}",
+            //     type: 'GET',
+            //     dataType: "json",
+            //     success: response => {
+            //         state.allLanguages = response.data
+            //     },
+            //     error: xhr => {
+            //         console.log(xhr);
+            //     }
+            // })
+
+        }
+
+        async function getData() {
+            await Promise.all([
+                getAllOrganizations(),
+                getAllLanguages(),
+                getAllSkills()
+            ]);
+
+            setOptions()
+        }
+        getData()
 
         $('.select2-skills').select2({
             width: '100%',
@@ -506,14 +559,26 @@
             allowClear: true
         });
 
-        $(document).on("click", "#btnFilter", function () {
-            let formData = new FormData();
+        $(document).on("click", "#btnResetFilter", () => {
+            $("#selectUniversiti").val(null).trigger("change");
+            $("#selectLanguage").val(null).trigger("change");
+            $("#selectSkill").val(null).trigger("change");
+            $("#selectQualifications").val(null).trigger("change");
+
+            $("#verifiedSwitch").prop("checked", false);
+            $("#searchName").val("");
+        })
+
+        function getAndSentDataFilter() {
             let universities = $("#selectUniversiti").val() || [];
             let skills = $("#selectSkill").val() || [];
             let languages = $("#selectLanguage").val() || [];
             let qualifications = $("#selectQualifications").val() || [];
             let verified = $("#verifiedSwitch").is(":checked");
-            let name = $("#searchName").val() || [];
+            let name = $("#searchName").val() || "";
+
+            let formData = new FormData();
+
 
             universities.forEach(function (value) {
                 formData.append("universities[]", value);
@@ -532,15 +597,14 @@
             });
 
             formData.append("verified", verified ? 1 : 0);
+            formData.append("name", name);
 
-            console.log({
-                universities,
-                skills,
-                languages,
-                qualifications,
-                verified
-            });
-        });
+            for (const key of formData) {
+                console.log(key);
+            }
+        }
+        getAndSentDataFilter()
+        $(document).on("click", "#btnFilter", () => getAndSentDataFilter());
     });
 </script>
 @endsection

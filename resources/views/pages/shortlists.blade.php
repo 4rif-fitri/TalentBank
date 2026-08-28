@@ -89,7 +89,7 @@
         <aside class="filter-panel" id="filterPanel">
             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
                 <h5 class="m-0 fw-bold">Your Shortlists</h5>
-                <button class="btn btn-sm" onclick="toggleFilter()">
+                <button type="button" class="btn btn-outline-primary d-flex justify-content-center align-items-center" data-bs-toggle="modal" data-bs-target="#addShortlistModal">
                     <i class="fa-solid fa-plus fs-5"></i>
                 </button>
             </div>
@@ -553,6 +553,103 @@
     </div>
 </div>
 
+<div class="modal fade" id="addShortlistModal" tabindex="-1" aria-labelledby="addShortlistModal" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="employmentModalLabel">
+                    Add Employment
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+
+            <form id="employmentForm">
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        {{-- Employment Type --}}
+                        <div class="col-md-6 mb-3">
+                            <label for="employment_type" class="form-label">
+                                Employment Type
+                            </label>
+
+                            <select name="employment_type" id="employment_type" class="form-select" required>
+                                <option value="">Select employment type</option>
+                                <option value="full_time">Full Time</option>
+                                <option value="part_time">Part Time</option>
+                                <option value="contract">Contract</option>
+                                <option value="internship">Internship</option>
+                                <option value="temporary">Temporary</option>
+                            </select>
+                        </div>
+
+                        {{-- Department --}}
+                        <div class="col-md-6 mb-3">
+                            <label for="department" class="form-label">
+                                Department
+                            </label>
+
+                            <input type="text" name="department" id="department" class="form-control"
+                                placeholder="e.g. Information Technology" required>
+                        </div>
+
+                        {{-- Work Location --}}
+                        <div class="col-md-6 mb-3">
+                            <label for="work_location" class="form-label">
+                                Work Location
+                            </label>
+
+                            <input type="text" name="work_location" id="work_location" class="form-control"
+                                placeholder="e.g. Melaka" required>
+                        </div>
+
+                        {{-- Vacancies --}}
+                        <div class="col-md-6 mb-3">
+                            <label for="vacancies" class="form-label">
+                                Vacancies
+                            </label>
+
+                            <input type="number" name="vacancies" id="vacancies" class="form-control" min="1"
+                                placeholder="e.g. 5" required>
+                        </div>
+
+                        {{-- Description --}}
+                        <div class="col-12 mb-3">
+                            <label for="description" class="form-label">
+                                Description
+                            </label>
+
+                            <textarea name="description" id="description" class="form-control" rows="5"
+                                placeholder="Enter employment description..." required></textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancel
+                    </button>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save Employment
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
 <div class="filter-overlay" onclick="toggleFilter()"></div>
 @endsection
 
