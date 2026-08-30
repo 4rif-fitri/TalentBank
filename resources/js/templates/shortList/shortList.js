@@ -65,7 +65,7 @@ export function detail(data) {
 }
 
 export function candidate(user) {
-    return `<tr>
+    return `<tr data-id=${user.id}>
                 <td>
                     <div class="d-flex gap-2">
                         <h6 class="text-start">${user.name}</h6>
@@ -91,7 +91,7 @@ export function candidate(user) {
                     </div>
                 </td>
                 <td>
-                    <div class="badge bg-warning">Invited</div>
+                    <div class="badge bg-primary">Added</div>
                 </td>
                 <td class="position-relative">
                     <button type="button" class="btn btn-light border" data-bs-toggle="dropdown">
@@ -105,15 +105,30 @@ export function candidate(user) {
                                     View Profile
                                 </a>
                             </li>
-                            <li>
-                                <button class="dropdown-item text-danger">
+                            <!-- <li>
+                                <button data-id=${user.id} class="dropdown-item text-danger">
                                     <i class="fa-solid fa-circle-minus"></i>
                                     Cencel Invite
+                                </button>
+                            </li> -->
+
+                            <li>
+                                <button data-id=${user.id} class="dropdown-item btnShowModalAddInvite">
+                                    <i class="fa-regular fa-trash-can me-2"></i>
+                                    Invite
                                 </button>
                             </li>
 
                             <li>
-                                <button class="dropdown-item text-danger" id="btnDeletTalentRow">
+                                <button data-id=${user.id} class="dropdown-item btnShowModalAddinterview">
+                                    <i class="fa-regular fa-trash-can me-2"></i>
+                                    Set Interview
+                                </button>
+                            </li>
+
+
+                            <li>
+                                <button data-id=${user.id} class="dropdown-item text-danger" id="btnDeletTalentRow">
                                     <i class="fa-regular fa-trash-can me-2"></i>
                                     Delete
                                 </button>

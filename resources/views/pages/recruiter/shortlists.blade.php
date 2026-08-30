@@ -117,112 +117,10 @@
 
 <div class="shortlist-overlay toggleFilter"></div>
 
-<div class="modal fade" id="shortlistModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="shortlistModalLabel" aria-hidden="true">
+<x-modals.shortlist-modal />
+<x-modals.invitation-modal />
+<x-modals.interview-modal />
 
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title" id="shortlistModalLabel">
-                    Add Shortlist
-                </h5>
-
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                </button>
-            </div>
-
-            <form id="shortlistForm">
-
-                <div class="modal-body">
-
-                    <div class="row">
-
-                        <input type="text" id="position_id" class="form-control" hidden>
-
-                        <div class="col-md-12 mb-3">
-                            <label for="position_title" class="form-label">
-                                Position Title
-                            </label>
-
-                            <input type="text" name="position_title" id="position_title" class="form-control" required>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="employment_type" class="form-label">
-                                Employment Type
-                            </label>
-
-                            <select name="employment_type" id="employment_type" class="form-select" required>
-
-                                @foreach (\App\Constants\AppConstants::EMPLOYMENT_TYPES as $type)
-                                <option value="{{ $type }}">
-                                    {{ $type }}
-                                </option>
-                                @endforeach
-
-                            </select>
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="vacancies" class="form-label">
-                                Vacancies
-                            </label>
-
-                            <input type="number" name="vacancies" id="vacancies" class="form-control" min="1"
-                                placeholder="e.g. 5" required>
-                        </div>
-
-                        <div class="col-md-12 mb-3">
-                            <label for="department" class="form-label">
-                                Department
-                            </label>
-
-                            <input type="text" name="department" id="department" class="form-control"
-                                placeholder="e.g. Information Technology" required>
-                        </div>
-
-                        <div class="col-md-12 mb-3">
-                            <label for="work_location" class="form-label">
-                                Work Location
-                            </label>
-
-                            <input type="text" name="work_location" id="work_location" class="form-control"
-                                placeholder="e.g. Durian Tunggal, Melaka, Malaysia" required>
-                        </div>
-
-                        <div class="col-12 mb-3">
-                            <label for="description" class="form-label">
-                                Description
-                            </label>
-
-                            <textarea name="description" id="description" class="form-control" rows="5"
-                                placeholder="Enter employment description..." required></textarea>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Cancel
-                    </button>
-
-                    <button type="submit" id="btnAddShortlist" class="btn btn-primary">
-                        Save
-                    </button>
-                    <button type="submit" id="btnUpdateShortlist" class="btn btn-primary">
-                        Update
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('script')
@@ -268,12 +166,12 @@
     //     });
     // })
 
-    let myData, positionId, curruntPosition
+    let myData, positionId, curruntPosition, candidateList
 
     async function getProfileDataByProfileId() {
         let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
         url = url.replace("__ID__", "{{ session('user_profile_id') }}");
-        const response = await $.ajax({
+        let response = await $.ajax({
             url: url,
             method: 'GET'
         });
@@ -305,10 +203,10 @@
 
     async function loadData() {
         try {
-            const profile = await getProfileDataByProfileId();
-            const organizations = profile.organization_users;
+            let profile = await getProfileDataByProfileId();
+            let organizations = profile.organization_users;
 
-            const results = await Promise.all(
+            let results = await Promise.all(
                 organizations.map(organization => getPositionsByOrgId(organization.organization_id))
             );
 
@@ -319,31 +217,6 @@
         }
     }
 
-    async function handleClickShortlist() {
-        let newPositionId = $(this).data('id');
-        if (newPositionId === positionId) return
-        positionId = newPositionId
-
-        try {
-            $(".shortlist-item").each(function () {
-                $(this).removeClass("active");
-            });
-
-            $(this).addClass("active")
-
-            let response = await getPositionById(positionId)
-            if (!response) return
-            console.log(response.data);
-            curruntPosition = response.data
-
-            shortListRender.detail(response.data)
-
-        } catch (error) {
-            console.error(error);
-        }
-
-
-    }
 
     function storePosition(position_title, employment_type, vacancies, department, work_location, description) {
         let formData = new FormData()
@@ -357,6 +230,25 @@
 
         return $.ajax({
             url: "{{ route('positions.store') }}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        });
+    }
+
+    function storeInvitations(candidate_id, position_id, expires_at, invitation_message) {
+        let formData = new FormData()
+        formData.append("receiver_profile_id", candidate_id)
+        formData.append("invitation_message", invitation_message)
+        formData.append("expires_at", expires_at)
+        formData.append("position_id", position_id)
+
+        return $.ajax({
+            url: "{{ route('invitations.store') }}",
             type: "POST",
             data: formData,
             processData: false,
@@ -390,6 +282,32 @@
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
         });
+    }
+
+    async function handleClickShortlist() {
+        let newPositionId = $(this).data('id');
+        if (newPositionId === positionId) return
+        positionId = newPositionId
+
+        try {
+            $(".shortlist-item").each(function () {
+                $(this).removeClass("active");
+            });
+
+            $(this).addClass("active")
+
+            let response = await getPositionById(positionId)
+            if (!response) return
+            console.log(response.data);
+            curruntPosition = response.data
+            candidateList = response.data.shortlist_users
+
+            shortListRender.detail(response.data)
+
+        } catch (error) {
+            console.error(error);
+        }
+
     }
 
     async function handleAddShortlist(e) {
@@ -458,8 +376,6 @@
     }
 
     async function handleUpdateShortlist(e) {
-        e.preventDefault()
-
         e.preventDefault();
 
         let form = $(this).closest("form");
@@ -530,8 +446,105 @@
             console.error(xhr);
             salert.salert("Error", xhr, "error")
         }
-
     }
+
+    async function handleAddInvitation(e) {
+        e.preventDefault()
+        let today = new Date().toISOString().split('T')[0];
+        let form = $(this).closest("form");
+
+        let candidate_id = form.find("#invite_candidate_id").val()
+        let position_id = form.find("#invite_position_id").val()
+        let expires_at = form.find("#expires_at").val()
+        let invitation_message = form.find("#invitation_message").val()
+
+        if (candidate_id == "") {
+            salert.salert("Validation Error", "Candidte id is NULL", "warning");
+            return
+        }
+
+        if (position_id == "") {
+            salert.salert("Validation Error", "Position id is NULL", "warning");
+            return
+        }
+
+        if (expires_at == "") {
+            salert.salert("Validation Error", "Please select employment type", "warning");
+            return
+        }
+
+        if (expires_at < today) {
+            salert.salert("Validation Error", "Expiration date cannot be in the past", "warning");
+            return;
+        }
+
+        if (invitation_message == "") {
+            salert.salert("Validation Error", "Please enter a vacancies", "warning");
+            return
+        }
+
+        try {
+            let response = await storeInvitations(candidate_id, position_id, expires_at, invitation_message)
+            if (!response) return
+
+            salert.salert('Success', response.message, 'success');
+
+
+        } catch (xhr) {
+            console.error(xhr);
+            salert.salert("Error", xhr.responseJSON.message, "error")
+        }
+    }
+
+    function toggleInterviewMode(mode) {
+        $("#div_meeting_url, #div_location").addClass("d-none");
+        $("#meeting_url, #location").prop("required", false);
+
+        if (mode === "Online") {
+            $("#div_meeting_url").removeClass("d-none");
+            $("#meeting_url").prop("required", true);
+        } else if (mode === "On-site") {
+            $("#div_location").removeClass("d-none");
+            $("#location").prop("required", true);
+        }
+    }
+
+    $(document).on("submit", "#inviteForm", function (e) {
+        e.preventDefault();
+
+        const formData = {
+            invitation_id: $("#invitation_id").val(),
+            scheduled_at: `${$("#interview_date").val()} ${$("#start_time").val()}`,
+            interview_mode: $("input[name='interview_mode']:checked").val(),
+            meeting_url: $("#meeting_url").val(),
+            location: $("#location").val(),
+            recruiter_comment: $("#recruiter_comment").val()
+        };
+
+        if (!formData.interview_mode) {
+            salert.salert("Validation Error", "Please select an interview mode", "warning");
+            return;
+        }
+
+        $.ajax({
+            url: "{{ route('interviews.store') }}",
+            type: "POST",
+            data: formData,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            success: function (response) {
+                bootstrap.Modal.getInstance($("#interviewModal")).hide();
+                salert.salert("Success", isUpdate ? "Interview updated successfully!" : "Interview scheduled successfully!", "success");
+                // Reload table/datatable jika perlu:
+                // table.ajax.reload();
+            },
+            error: function (xhr) {
+                const message = xhr.responseJSON?.message || "An error occurred while saving.";
+                salert.salert("Error", message, "error");
+            }
+        });
+    });
 
     $(document).ready(function () {
         loadData()
@@ -563,6 +576,59 @@
         $("#btnUpdateShortlist").show()
         bootstrap.Modal.getOrCreateInstance($("#shortlistModal")).show()
     });
+
+    $(document).on("click", ".btnShowModalAddInvite", function () {
+        $("#btnAddInvitation").show()
+        $("#btnUpdateInvitation").hide()
+
+        let profileId = $(this).attr("data-id")
+        let candidte = candidateList.find(user => user.id == profileId)
+        console.log(candidte);
+        $(".invitation_id").val()
+        $("#invite_candidate").val(candidte.name)
+        $("#invite_position_title").val(curruntPosition.position_title)
+        $("#invite_position_id").val(curruntPosition.id)
+        bootstrap.Modal.getOrCreateInstance($("#invitationModal")).show()
+    })
+    $(document).on("click", "#btnAddInvitation", handleAddInvitation)
+
+    $(document).on("change", "input[name='interview_mode']", function () {
+        toggleInterviewMode($(this).val());
+    });
+
+    $(document).on("click", ".btnShowModalAddinterview", function () {
+        $("#inviteForm")[0].reset();
+        $("#invitation_id").val("");
+
+        $(".invitation_id").val(curruntPosition.id)
+
+        let profileId = $(this).attr("data-id")
+        let candidte = candidateList.find(user => user.id == profileId)
+        $(".candidate_name").val(candidte.name)
+
+        toggleInterviewMode("");
+
+        let today = new Date().toISOString().split("T")[0];
+        $("#interview_date").attr("min", today).val(today);
+        $("#start_time").val("10:00");
+
+        let candidateName = $(this).data("candidate-name") || "";
+        let candidateId = $(this).data("candidate-id") || "";
+        $("#invite_candidate").val(candidateName);
+        $("#invite_candidate_id").val(candidateId);
+
+        $("#interviewModalLabel").text("Schedule Interview");
+        $("#btnAddInterview").show();
+        $("#btnUpdateInterview").hide();
+
+        bootstrap.Modal.getOrCreateInstance($("#interviewModal")).show();
+    });
+
+    // $(document).on("click", "#btnAddInterview", handleAddInterview)
+
+
+
+
 
 
 </script>
