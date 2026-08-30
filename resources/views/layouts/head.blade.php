@@ -5,6 +5,7 @@
 <script>
     window.appConfig = {
         userId: @json(session('user_profile_id')),
+        baseURL: "{{ url('/') }}",
         proficiencies: @json(\App\Constants\AppConstants:: PROFICIENCY_LEVELS),
         semesterResultsFileUrl: "{{ asset(env('SEMESTER_RESULTS_FILE_URL')) }}",
         coverImageUrl: "{{ asset(env('COVER_IMAGE_URL')) }}",

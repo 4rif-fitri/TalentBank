@@ -97,8 +97,10 @@ Route::middleware('auth')->group(function () {
 */
 Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(function () {
 
+
     Route::prefix('profile')->group(function () {
         // crud routes
+        Route::get('/', [ProfileController::class, 'getAllProfile'])->name('profile.getAllProfile');
         Route::get('/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
@@ -171,13 +173,13 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('positions')->group(function () {
-        Route::get('/', [PositionController::class, 'getAllPositions'])->name('positions.getAllPositions');
-        Route::get('/{id}', [PositionController::class, 'getPositionById'])->name('positions.getPositionById');
-        Route::get('/org/{id}', [PositionController::class, 'getPositionsByOrgId'])->name('positions.getPositionsByOrgId');
+        Route::get('/', [PositionController::class, 'getAllPositions'])->name('positions.getAllPositions'); // get All
+        Route::get('/{id}', [PositionController::class, 'getPositionById'])->name('positions.getPositionById'); //+ get Detail
+        Route::get('/org/{id}', [PositionController::class, 'getPositionsByOrgId'])->name('positions.getPositionsByOrgId'); //+
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::post('/store', [PositionController::class, 'store'])->name('positions.store');
-            Route::put('/update/{id}', [PositionController::class, 'update'])->name('positions.update');
+            Route::post('/store', [PositionController::class, 'store'])->name('positions.store'); //+
+            Route::put('/update/{id}', [PositionController::class, 'update'])->name('positions.update'); //+
         });
     });
 

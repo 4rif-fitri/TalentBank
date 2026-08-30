@@ -9,45 +9,21 @@
     <!-- MENU -->
     <nav class="sidebar-menu">
 
-        @if (array_intersect(session('roles') ?? [], ['Recruiter', 'Organization Admin']))
-        <x-sidebar-link :route="route('recruiter.index')" routeName="recruiter.index" icon="fa-solid fa-gauge"
-            label="Dashboard" />
-        <x-sidebar-link :route="route('recruiter.talents')" routeName="recruiter.talents"
-            icon="fa-solid fa-user-graduate" label="Talent" />
-        <x-sidebar-link :route="route('recruiter.savedTalent')" routeName="recruiter.savedTalent"
-            icon="fa-solid fa-heart" label="Saved Talent" />
-        <x-sidebar-link :route="route('recruiter.shortlists')" routeName="recruiter.shortlists"
-            icon="fa-solid fa-address-book" label="Shortlists" />
-        <x-sidebar-link :route="route('recruiter.invitations')" routeName="recruiter.invitations"
-            icon="fa-solid fa-paper-plane" label="Invitations" />
-        <x-sidebar-link :route="route('recruiter.interviews')" routeName="recruiter.interviews"
-            icon="fa-solid fa-calendar-days" label="Interviews" />
-        <x-sidebar-link :route="route('recruiter.jobOffers')" routeName="recruiter.jobOffers"
-            icon="fa-solid fa-briefcase" label="Job Offers" />
-        <x-sidebar-link :route="route('recruiter.hiredTalent')" routeName="recruiter.hiredTalent"
-            icon="fa-solid fa-user-tie" label="Hired Talent" />
-        <x-sidebar-link :route="route('recruiter.messages')" routeName="recruiter.messages" icon="fa-solid fa-comment"
-            label="Messages" />
-        <x-sidebar-link :route="route('recruiter.settings')" routeName="recruiter.settings" icon="fa-solid fa-gear"
-            label="Settings" />
-        @elseif(array_intersect(session('roles') ?? [], ['Student']))
-        <x-sidebar-link :route="route('student.index')" routeName="student.index" icon="fa-solid fa-gauge"
-            label="Dashboard" />
-        <x-sidebar-link :route="route('student.profile')" routeName="student.profile" icon="fa-solid fa-user"
-            label="My Profile" />
-        <x-sidebar-link :route="route('student.invitations')" routeName="student.invitations" icon="fa-solid fa-file"
+        <x-sidebar-link :route="route('recruiter.index')" routeName="recruiter.index" icon="fa-solid fa-gauge" label="Dashboard" />
+        <x-sidebar-link :route="route('recruiter.talents')" routeName="recruiter.talents" icon="fa-solid fa-user-graduate" label="Talent" />
+        <x-sidebar-link :route="route('recruiter.savedTalent')" routeName="recruiter.savedTalent" icon="fa-solid fa-heart"
+            label="Saved Talent" />
+        <x-sidebar-link :route="route('recruiter.shortlists')" routeName="recruiter.shortlists" icon="fa-solid fa-address-book"
+            label="Shortlists" />
+        <x-sidebar-link :route="route('recruiter.invitations')" routeName="recruiter.invitations" icon="fa-solid fa-paper-plane"
             label="Invitations" />
-        <x-sidebar-link :route="route('student.interviews')" routeName="student.interviews" icon="fa-solid fa-envelope"
+        <x-sidebar-link :route="route('recruiter.interviews')" routeName="recruiter.interviews" icon="fa-solid fa-calendar-days"
             label="Interviews" />
-        <x-sidebar-link :route="route('student.jobOffers')" routeName="student.jobOffers" icon="fa-solid fa-briefcase"
+        <x-sidebar-link :route="route('recruiter.jobOffers')" routeName="recruiter.jobOffers" icon="fa-solid fa-briefcase"
             label="Job Offers" />
-        <x-sidebar-link :route="route('student.messages')" routeName="student.messages" icon="fa-solid fa-comment"
-            label="Messages" />
-        <x-sidebar-link :route="route('student.settings')" routeName="student.settings" icon="fa-solid fa-gear"
-            label="Settings" />
-
-        @else
-        <h1>KONTOl</h1>
-        @endif
+        <x-sidebar-link :route="route('recruiter.hiredTalent')" routeName="recruiter.hiredTalent" icon="fa-solid fa-user-tie"
+            label="Hired Talent" />
+        <x-sidebar-link :route="route('recruiter.messages')" routeName="recruiter.messages" icon="fa-solid fa-comment" label="Messages" />
+        <x-sidebar-link :route="route('recruiter.settings')" routeName="recruiter.settings" icon="fa-solid fa-gear" label="Settings" />
     </nav>
 </aside>

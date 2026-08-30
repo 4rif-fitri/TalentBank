@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Models\UserProfile;
 use App\Services\ProfileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,13 +12,18 @@ class ProfileController extends Controller
 {
     public function __construct(
         private readonly ProfileService $profileService
-    ) {
+    ) {}
+
+    public function getAllProfile(): JsonResponse
+    {
+        $profile = UserProfile::all();
+        return ApiResponse::success('Success.', $profile)->toJsonResponse();
     }
 
     /**
-     * Handles request to get profile data based on given user ID 
+     * Handles request to get profile data based on given user ID
      * (or current user ID if one is not provided)
-     * 
+     *
      * @param   int $id
      * @return  JsonResponse
      */
@@ -30,7 +36,7 @@ class ProfileController extends Controller
 
     /**
      * Handles request to update profile data for current logged in user
-     * 
+     *
      * @param   Request $request
      * @return  JsonResponse
      */
