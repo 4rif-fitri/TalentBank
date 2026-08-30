@@ -306,7 +306,6 @@
     async function loadData() {
         try {
             const profile = await getProfileDataByProfileId();
-            console.log(profile);
             const organizations = profile.organization_users;
 
             const results = await Promise.all(

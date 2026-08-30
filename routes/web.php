@@ -173,8 +173,8 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('positions')->group(function () {
-        Route::get('/', [PositionController::class, 'getAllPositions'])->name('positions.getAllPositions'); // get All
-        Route::get('/{id}', [PositionController::class, 'getPositionById'])->name('positions.getPositionById'); //+ get Detail
+        Route::get('/', [PositionController::class, 'getAllPositions'])->name('positions.getAllPositions'); //
+        Route::get('/{id}', [PositionController::class, 'getPositionById'])->name('positions.getPositionById'); //+
         Route::get('/org/{id}', [PositionController::class, 'getPositionsByOrgId'])->name('positions.getPositionsByOrgId'); //+
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
