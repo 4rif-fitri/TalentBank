@@ -85,7 +85,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
         <h3 class="m-0 fw-bold">Talent Shortlists</h3>
-        <button class="btn btn-primary d-xl-none btn-toggle-filter toggleFilter">
+        <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
             <i class="fa-solid fa-filter"></i>
             Shortlists
         </button>

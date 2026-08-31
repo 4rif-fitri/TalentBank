@@ -277,32 +277,109 @@
         }
     });
 
-    url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 4)
+    // url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
+    // url = url.replace("__ID__", 4)
+
+    // $.ajax({
+    //     url,
+    //     type: "GET",
+    //     success: function (response) {
+    //         console.log("getInvitationById", response)
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr)
+
+    //     }
+    // });
+
+    // url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
+    // url = url.replace("__status__", "ACCEPTED")
+
+    // $.ajax({
+    //     url,
+    //     type: "GET",
+    //     success: function (response) {
+    //         console.log("getInvitationsByStatus", response)
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr)
+    //     }
+    // });
+
+    // // can create intervwe many times
+    // url = "{{ route('interviews.store') }}"
+    // let formData = new FormData()
+    // formData.append("invitation_id", 6)
+    // formData.append("scheduled_at", "2026-9-30 05:07:17")
+    // formData.append("interview_mode", "Online")
+    // formData.append("location", "")
+    // formData.append("meeting_url", "http://127.0.0.1:8000/recruiter/invitations")
+    // formData.append("recruiter_comment", "recruiter_comment recruiter_comment")
+
+    // $.ajax({
+    //     url,
+    //     data: formData,
+    //     type: "POST",
+    //     processData: false,
+    //     contentType: false,
+    //     headers: {
+    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+    //     },
+    //     success: function (response) {
+    //         console.log("interviews.store", response)
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr)
+
+    //     }
+    // });
+
+    // url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
+    // url = url.replace("__ID__", 10)
+
+    // let formData = new FormData()
+    // formData.append("expires_at", "2026-9-30 05:07:17")
+    // formData.append("invitation_message", "NOBB")
+    // formData.append("_method", "PUT")
+
+    // $.ajax({
+    //     url,
+    //     data: formData,
+    //     type: "POST",
+    //     processData: false,
+    //     contentType: false,
+    //     headers: {
+    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+    //     },
+    //     success: function (response) {
+    //         console.log("interviews.update", response)
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr.responseJSON.message)
+
+    //     }
+    // });
+
+    url = "{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}"
+    url = url.replace("__ID__", 14)
+
+    let formData = new FormData()
+    formData.append("_method", "PUT")
 
     $.ajax({
         url,
-        type: "GET",
+        data: formData,
+        type: "POST",
+        processData: false,
+        contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
         success: function (response) {
-            console.log("getInvitationById", response)
+            console.log("interviews.update", response)
         },
         error: function (xhr) {
-            console.error(xhr)
-
-        }
-    });
-
-    url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
-    url = url.replace("__status__", "PENDING")
-
-    $.ajax({
-        url,
-        type: "GET",
-        success: function (response) {
-            console.log("getInvitationsByStatus", response)
-        },
-        error: function (xhr) {
-            console.error(xhr)
+            console.error(xhr.responseJSON.message)
 
         }
     });
