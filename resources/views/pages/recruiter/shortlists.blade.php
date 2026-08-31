@@ -584,7 +584,7 @@
         let profileId = $(this).attr("data-id")
         let candidte = candidateList.find(user => user.id == profileId)
         console.log(candidte);
-        $(".invitation_id").val()
+        $("#invite_candidate_id").val(profileId)
         $("#invite_candidate").val(candidte.name)
         $("#invite_position_title").val(curruntPosition.position_title)
         $("#invite_position_id").val(curruntPosition.id)

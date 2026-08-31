@@ -185,14 +185,14 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
 
     Route::prefix('invitations')->group(function () {
         Route::get('/getInvitationsByReceiverId', [InvitationController::class, 'getInvitationsByReceiverId'])->name('invitations.getInvitationsByReceiverId');
-        Route::get('/status/{status}', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId');
-        Route::get('/getInvitationById/{id}', [InvitationController::class, 'getInvitationById'])->name('invitations.getInvitationById');
+        Route::get('/status/{status}', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId'); //+
+        Route::get('/getInvitationById/{id}', [InvitationController::class, 'getInvitationById'])->name('invitations.getInvitationById'); //+
         Route::put('/acceptInvitation/{id}', [InvitationController::class, 'acceptInvitation'])->name('invitations.acceptInvitation');
         Route::put('/rejectInvitation/{id}', [InvitationController::class, 'rejectInvitation'])->name('invitations.rejectInvitation');
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::get('/getInvitationsBySenderId', [InvitationController::class, 'getInvitationsBySenderId'])->name('invitations.getInvitationsBySenderId');
-            Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store');
+            Route::get('/getInvitationsBySenderId', [InvitationController::class, 'getInvitationsBySenderId'])->name('invitations.getInvitationsBySenderId'); //+
+            Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store'); //+
             Route::put('/update/{id}', [InvitationController::class, 'update'])->name('invitations.update');
             Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.rejectInvitation');
         });
