@@ -77,9 +77,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/recruiter/settings', [internshipController::class, "recruiterSettings"])->name('recruiter.settings');
     });
 
-
     Route::prefix('profile')->group(function () {
         Route::get('/student', [internshipController::class, "profile"])->name('profile.student'); //+
+        Route::get('/student/{id}', [internshipController::class, "studentView"])->name('profile.student.view'); //+
         Route::get('/education', [internshipController::class, "education"])->name('profile.education'); //+
         Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience'); //+
     });

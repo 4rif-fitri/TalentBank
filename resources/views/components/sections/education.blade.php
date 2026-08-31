@@ -56,10 +56,14 @@
 
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="fw-bold text-sm-center text-lg-start">Education</h3>
+
+        @if (array_intersect(session('roles') ?? [], ['Student']))
         <button class="btn btn-primary" id="addEducation" type="button">
             <i class="fa-solid fa-plus me-1"></i>
             Add Education
         </button>
+        @endif
+
     </div>
     <hr>
     <div id="educationCarousel" class="carousel slide" data-bs-interval="false" data-bs-touch="true">

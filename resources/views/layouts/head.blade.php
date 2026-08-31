@@ -4,6 +4,7 @@
 
 <script>
     window.appConfig = {
+        role: @json(session('roles')[0]),
         userId: @json(session('user_profile_id')),
         baseURL: "{{ url('/') }}",
         proficiencies: @json(\App\Constants\AppConstants:: PROFICIENCY_LEVELS),
@@ -17,7 +18,7 @@
         },
         routes: {
             profile: {
-                show: "{{ route('profile.getProfileDataByProfileId', ['id' => session('user_profile_id')]) }}",
+                show: "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}",
                 update: "{{ route('profile.update') }}",
                 updateAbout: "{{ route('update.updateAboutField') }}",
                 uploadProfileImage: "{{ route('update.uploadProfileImage') }}",

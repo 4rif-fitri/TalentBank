@@ -25,6 +25,11 @@ class internshipController extends Controller
         return view("pages.student.invitations");
     }
 
+    public function studentView()
+    {
+        return view("pages.student.profile");
+    }
+
     public function profile()
     {
         return view("pages.student.profile");

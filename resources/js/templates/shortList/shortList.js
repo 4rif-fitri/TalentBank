@@ -100,7 +100,7 @@ export function candidate(user) {
                     <div class="dropdown position-absolute top-0 end-0">
                         <ul class="dropdown-menu dropdown-menu-end shadow border-0">
                             <li>
-                                <a target="_blank" href="${window.appConfig.baseURL}/profile" class="dropdown-item">
+                                <a target="_blank" href="${window.appConfig.baseURL}/profile/student/${user.id}" class="dropdown-item">
                                     <i class="fa-solid fa-address-book"></i>
                                     View Profile
                                 </a>
