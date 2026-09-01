@@ -18,8 +18,8 @@ return new class extends Migration {
             $table->enum('interview_mode', AppConstants::INTERVIEW_MODES);
             $table->string('location')->nullable();
             $table->string('meeting_url')->nullable();
-            $table->enum('interview_status', AppConstants::INTERVIEW_STATUS);
-            $table->enum('interview_result', AppConstants::INTERVIEW_RESULTS)->nullable();
+            $table->enum('interview_status', AppConstants::INTERVIEW_STATUS)->default(AppConstants::INTERVIEW_STATUS['SCHEDULED']);
+            $table->enum('interview_result', AppConstants::INTERVIEW_RESULTS)->nullable()->default(AppConstants::INTERVIEW_RESULTS['PENDING']);
             $table->text('recruiter_comment')->nullable();
             $table->timestamps();
         });

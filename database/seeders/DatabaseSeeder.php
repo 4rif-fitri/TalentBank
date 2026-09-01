@@ -40,6 +40,7 @@ class DatabaseSeeder extends Seeder
             ShortlistSeeder::class,
             InvitationSeeder::class,
             InterviewSeeder::class,
+            JobOfferSeeder::class,
         ]);
     }
 }
