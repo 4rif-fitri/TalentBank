@@ -60,8 +60,9 @@ class InvitationService
     public function getInvitationsByReceiverId(int $receiverId): Collection
     {
         return Invitation::with([
-            'position:id,position_title',
-            'sender:id,name,profile_image'
+            'position:id,position_title,organization_id',
+            'sender:id,name,profile_image',
+            'position.organization:id,company_name'
         ])->where('receiver_profile_id', $receiverId)->get();
     }
 
@@ -74,8 +75,9 @@ class InvitationService
     public function getInvitationsBySenderId(int $senderId): Collection
     {
         return Invitation::with([
-            'position:id,position_title',
-            'receiver:id,name,profile_image'
+            'position:id,position_title,organization_id',
+            'receiver:id,name,profile_image',
+            'position.organization:id,company_name'
         ])->where('sender_profile_id', $senderId)->get();
     }
 
@@ -89,7 +91,12 @@ class InvitationService
      */
     public function getInvitationById(int $invitationId, int $userProfileId): Invitation
     {
-        $invitation = Invitation::with('position')
+        $invitation = Invitation::with([
+            'position',
+            'receiver:id,name,profile_image,location,headline',
+            'sender:id,name,profile_image,location,headline',
+            'position.organization:id,company_name'
+        ])
             ->where(function ($query) use ($userProfileId) {
                 $query->where('sender_profile_id', $userProfileId)
                     ->orWhere('receiver_profile_id', $userProfileId);
@@ -115,9 +122,14 @@ class InvitationService
      */
     public function getInvitationsByStatusAndSenderId(string $invitationStatus, int $senderId): Collection
     {
+        if (!in_array($invitationStatus, AppConstants::INVITATION_STATUS)) {
+            throw new Exception('Invalid invitation status provided.', Response::HTTP_BAD_REQUEST);
+        }
+
         return Invitation::with([
-            'position:id,position_title',
-            'receiver:id,name,profile_image'
+            'position:id,position_title,organization_id',
+            'receiver:id,name,profile_image',
+            'position.organization:id,company_name'
         ])
             ->where([
                 'invitation_status' => $invitationStatus,

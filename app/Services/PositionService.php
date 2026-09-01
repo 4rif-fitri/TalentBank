@@ -60,7 +60,10 @@ class PositionService
      */
     public function getPositionById(int $positionId): Position
     {
-        $position = Position::with('shortlistUsers')->find($positionId);
+        $position = Position::with([
+            'shortlistUsers:id,name',
+            'shortlistUsers.skills:id,skill_name',
+        ])->find($positionId);
 
         if (!isset($position)) {
             throw new Exception('Position not found with given ID.', Response::HTTP_NOT_FOUND);
