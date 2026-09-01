@@ -13,15 +13,14 @@
         background-color: white !important;
         padding: 20px;
         border-radius: 12px;
-        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
         flex-shrink: 0;
         transition: transform 0.3s ease;
     }
 
     .filter-overlay {
         position: fixed;
+        background-color: rgba(0, 0, 0, 0.5);
         inset: 0;
-        background: rgba(0, 0, 0, 0.4);
         display: none;
         z-index: 1040;
     }
@@ -79,7 +78,7 @@
 
     <div class="talent-layout">
 
-        <aside class="results-panel" id="filterPanel">
+        <aside class="card results-panel" id="filterPanel">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
@@ -100,104 +99,25 @@
                 </ul>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
-                onclick="toggleFilter()">
-                <div role="button" class="d-flex align-items-center gap-3">
-                    <i class="fa-solid fa-circle-user fa-xl" style="color: rgb(0, 0, 0);"></i>
-                    <div class="flex-grow-1 d-flex flex-column">
-                        <p class="fw-semibold">
-                            Software Engineering Interns
-                        </p>
-                        <p>FrontEnd intern </p>
-                        <div class="badge text-primary border border-primary w-75">
-                            Awaiting Response
-                        </div>
-                        <small class="text-muted">
-                            Expires 22 May 2025
-                        </small>
-                    </div>
-                </div>
-                <i class="fa-solid fa-angle-right" style="color: rgb(0, 0, 0);"></i>
-            </div>
+            <div id="recruitment-invitation-list">
 
-            <div class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
-                onclick="toggleFilter()">
-                <div role="button" class="d-flex align-items-center gap-3">
-                    <i class="fa-solid fa-circle-user fa-xl" style="color: rgb(0, 0, 0);"></i>
-                    <div class="flex-grow-1 d-flex flex-column">
-                        <p class="fw-semibold">
-                            Software Engineering Interns
-                        </p>
-                        <p>FrontEnd intern </p>
-                        <div class="badge text-danger border border-danger w-75">
-                            Awaiting Response
-                        </div>
-                        <small class="text-muted">
-                            Expires 22 May 2025
-                        </small>
-                    </div>
-                </div>
-                <i class="fa-solid fa-angle-right" style="color: rgb(0, 0, 0);"></i>
             </div>
-
-            <div class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
-                onclick="toggleFilter()">
-                <div role="button" class="d-flex align-items-center gap-3">
-                    <i class="fa-solid fa-circle-user fa-xl" style="color: rgb(0, 0, 0);"></i>
-                    <div class="flex-grow-1 d-flex flex-column">
-                        <p class="fw-semibold">
-                            Software Engineering Interns
-                        </p>
-                        <p>FrontEnd intern </p>
-                        <div class="badge text-success border border-success w-75">
-                            Acceped
-                        </div>
-                        <small class="text-muted">
-                            Expires 22 May 2025
-                        </small>
-                    </div>
-                </div>
-                <i class="fa-solid fa-angle-right" style="color: rgb(0, 0, 0);"></i>
-            </div>
-
         </aside>
 
-        <div class=" filter-panel flex-grow-1">
+        <div class="card filter-panel flex-grow-1">
             <div class="row g-3 ">
-                <div class="card h-100 shadow-sm border-0 p-3 position-relative">
+                <div class="h-100 border-0 p-3 position-relative">
 
-                    <div class="dropdown position-absolute top-0 end-0 m-3">
-                        <button type="button" class="btn btn-sm p-1" data-bs-toggle="dropdown">
-                            <i class="fa-solid fa-ellipsis-vertical"></i>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                            <li>
-                                <button class="dropdown-item">
-                                    <i class="fa-regular fa-copy me-2"></i>
-                                    Duplicate
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item">
-                                    <i class="fa-regular fa-folder me-2"></i>
-                                    Archive
-                                </button>
-                            </li>
-                            <li>
-                                <button class="dropdown-item text-danger">
-                                    <i class="fa-regular fa-trash-can me-2"></i>
-                                    Delete
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
+                    <div class="mb-3 d-flex flex-xl-row flex-column gap-3">
+                        <div class="bg-primary"
+                            style="width:6rem; height:6rem; border-radius: 50%; background-size: cover; background-image:url('${window.appConfig.profileImageUrl}/${inv.receiver.profile_image}')">
+                        </div>
 
-                    <div class="d-flex gap-3">
-                        <i class="fa-solid fa-circle-user" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
                         <div>
                             <h3 class="fw-semibold">Dr Lorem Ipsum Dolor Sit Amit</h3>
                             <p class="fw-semibold">Sofware inginer with Honor</p>
                             <small class="text-muted d-block">Universiti Teknikal Malaysia Melaka(UTEM)</small>
+                            <div class="badge bg-primary">See More</div>
                             <small class="text-muted d-block">
                                 <i class="fa-solid fa-location-dot" style="color: rgb(0, 0, 0);"></i>
                                 Durian Tunggal, Malaka, Malaysia
@@ -205,29 +125,41 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between my-3">
-                        <div class="border p-1">
-                            <small class="text-muted">Position</small>
-                            <h5 class="fw-semibold">FrontEnd Intern</h5>
+                    <div class="mb-3 border d-block d-xl-flex justify-content-between p-2">
+                        <div class="d-flex gap-2 mb-2 mb-xl-0">
+                            <i class="fa-solid fa-briefcase bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
+                                style="width: 3rem; height: 3rem; color: rgb(0, 0, 0); font-size: 1.5rem; border-radius: 50%;"></i>
+                            <div>
+                                <small class="text-muted">Position</small>
+                                <h5 class="fw-semibold">FrontEnd Intern</h5>
+                            </div>
                         </div>
-                        <div>
-                            <small class="text-muted">Department</small>
-                            <h5 class="fw-semibold">Department IT and DEV</h5>
+                        <div class="d-flex gap-2 mb-2 mb-xl-0">
+                            <i class="fa-solid fa-building bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
+                                style="width: 3rem; height: 3rem; color: rgb(0, 0, 0); font-size: 1.5rem; border-radius: 50%;"></i>
+                            <div>
+                                <small class="text-muted">Department</small>
+                                <h5 class="fw-semibold">Department IT and DEV</h5>
+                            </div>
                         </div>
-                        <div>
-                            <small class="text-muted">employment_type</small>
-                            <h5 class="fw-semibold">employment_type</h5>
+                        <div class="d-flex gap-2 mb-2 mb-xl-0">
+                            <i class="fa-solid fa-calendar-check bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
+                                style="width: 3rem; height: 3rem; color: rgb(0, 0, 0); font-size: 1.5rem; border-radius: 50%;"></i>
+                            <div>
+                                <small class="text-muted">employment_type</small>
+                                <h5 class="fw-semibold">employment_type</h5>
+                            </div>
                         </div>
                     </div>
 
-                    <div>
+                    <div class="mb-3 border p-3">
                         <h5 class="fw-semibold">Personal Message</h5>
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste reprehenderit veniam sunt dicta
                             iusto, temporibus ex consequatur perferendis quasi. Corrupti, mollitia aperiam! Dolorem,
                             ipsum! Quo expedita reiciendis quae libero accusamus!</p>
                     </div>
 
-                    <div class="mt-2">
+                    <div>
                         <h6 class="fw-semibold mb-1">Actions</h6>
                         <div>
                             <button class="btn btn-outline-primary">
@@ -251,7 +183,6 @@
     </div>
 </div>
 
-<!-- Overlay Gelap untuk Mobile -->
 <div class="filter-overlay" onclick="toggleFilter()"></div>
 @endsection
 
@@ -270,6 +201,11 @@
         type: "GET",
         success: function (response) {
             console.log("getInvitationsBySenderId", response)
+            $("#recruitment-invitation-list").empty()
+            let invitations = response.data
+            invitations.forEach(inv => {
+                $("#recruitment-invitation-list").append(invitation.recruitmentInvitationList(inv))
+            });
         },
         error: function (xhr) {
             console.error(xhr)
@@ -277,20 +213,20 @@
         }
     });
 
-    url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 4)
+    // url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
+    // url = url.replace("__ID__", 4)
 
-    $.ajax({
-        url,
-        type: "GET",
-        success: function (response) {
-            console.log("getInvitationById", response)
-        },
-        error: function (xhr) {
-            console.error(xhr)
+    // $.ajax({
+    //     url,
+    //     type: "GET",
+    //     success: function (response) {
+    //         console.log("getInvitationById", response)
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr)
 
-        }
-    });
+    //     }
+    // });
 
     // url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
     // url = url.replace("__status__", "ACCEPTED")
@@ -360,28 +296,28 @@
     //     }
     // });
 
-    url = "{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 14)
+    // url = "{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}"
+    // url = url.replace("__ID__", 14)
 
-    let formData = new FormData()
-    formData.append("_method", "PUT")
+    // let formData = new FormData()
+    // formData.append("_method", "PUT")
 
-    $.ajax({
-        url,
-        data: formData,
-        type: "POST",
-        processData: false,
-        contentType: false,
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-        },
-        success: function (response) {
-            console.log("interviews.update", response)
-        },
-        error: function (xhr) {
-            console.error(xhr.responseJSON.message)
+    // $.ajax({
+    //     url,
+    //     data: formData,
+    //     type: "POST",
+    //     processData: false,
+    //     contentType: false,
+    //     headers: {
+    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+    //     },
+    //     success: function (response) {
+    //         console.log("interviews.update", response)
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr.responseJSON.message)
 
-        }
-    });
+    //     }
+    // });
 </script>
 @endsection

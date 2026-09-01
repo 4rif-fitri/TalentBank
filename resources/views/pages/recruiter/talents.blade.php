@@ -579,7 +579,6 @@
 
             let formData = new FormData();
 
-
             universities.forEach(function (value) {
                 formData.append("universities[]", value);
             });

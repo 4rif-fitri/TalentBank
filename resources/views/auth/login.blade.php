@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label">password</label>
                     <div class="input-group has-validation">
                         <span class="input-group-text bg-white" id="basic-addon-password">
                             <i class="fas fa-lock"></i>
