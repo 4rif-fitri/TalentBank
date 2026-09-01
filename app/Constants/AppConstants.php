@@ -37,4 +37,18 @@ class AppConstants
         'PASSED' => 'Passed',
         'FAILED' => 'Failed',
     ];
+    public const JOB_OFFER_STATUS = [
+        'PENDING' => 'Pending',
+        'ACCEPTED' => 'Accepted',
+        'REJECTED' => 'Rejected',
+        'EXPIRED' => 'Expired',
+        'WITHDRAWN' => 'Withdrawn'
+    ];
+    public const SALARY_PERIODS = [
+        'HOURLY' => 'Hourly',
+        'DAILY' => 'Daily',
+        'WEEKLY' => 'Weekly',
+        'MONTHLY' => 'Monthly',
+        'YEARLY' => 'Yearly',
+    ];
 }

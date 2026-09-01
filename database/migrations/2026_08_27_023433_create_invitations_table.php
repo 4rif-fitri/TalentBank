@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('sender_profile_id')->constrained('user_profiles')->onDelete('restrict');
             $table->foreignId('receiver_profile_id')->constrained('user_profiles')->onDelete('restrict');
             $table->text('invitation_message');
-            $table->enum('invitation_status', AppConstants::INVITATION_STATUS);
+            $table->enum('invitation_status', AppConstants::INVITATION_STATUS)->default(AppConstants::INVITATION_STATUS['PENDING']);
             $table->date('expires_at');
             $table->timestamps();
             $table->foreignId('position_id')->constrained('positions');

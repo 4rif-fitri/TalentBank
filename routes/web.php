@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\internshipController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\JobOfferController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileController;
@@ -190,6 +191,21 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
             Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update');
             Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview');
             Route::put('/cancelInterview/{id}', [InterviewController::class, 'cancelInterview'])->name('interviews.cancelInterview');
+        });
+    });
+
+    Route::prefix('job-offers')->group(function () {
+        Route::get('/getJobOffersByReceiverId', [JobOfferController::class, 'getJobOffersByReceiverId'])->name('jobOffers.getJobOffersByReceiverId');
+        Route::get('/getJobOfferById/{id}', [JobOfferController::class, 'getJobOfferById'])->name('jobOffers.getJobOfferById');
+        Route::get('/getJobOffersByStatus/{status}', [JobOfferController::class, 'getJobOffersByStatus'])->name('jobOffers.getJobOffersByStatus');
+
+        Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
+            Route::get('/getJobOffersBySenderId', [JobOfferController::class, 'getJobOffersBySenderId'])->name('jobOffers.getJobOffersBySenderId');
+            Route::post('/store', [JobOfferController::class, 'store'])->name('jobOffers.store');
+            Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update');
+            Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer');
+            Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer');
+            Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer');
         });
     });
 });
