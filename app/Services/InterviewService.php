@@ -81,8 +81,10 @@ class InterviewService
     public function getInterviewById(int $interviewId, int $userProfileId): Interview
     {
         $interview = Interview::with([
-            'invitation:id,position_id,receiver_profile_id',
+            'invitation:id,position_id,receiver_profile_id,sender_profile_id',
             'invitation.position',
+            'invitation.receiver:id,name,profile_image',
+            'invitation.sender:id,name,profile_image'
         ])
             ->whereHas('invitation', function ($query) use ($userProfileId) {
                 $query->where('sender_profile_id', $userProfileId)
