@@ -7,6 +7,7 @@ use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -50,6 +51,40 @@ class ProfileService
         }
 
         return $profile;
+    }
+
+    /**
+     * Returns all student and alumni user profiles with search functionality
+     * 
+     * @param string $search
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, UserProfile>
+     */
+    public function getAllStudentUserProfiles(string $search): Collection
+    {
+        $search = filled($search) ? '%' . trim($search) . '%' : '';
+
+        return UserProfile::when(filled($search), function ($query) use ($search) {
+            $query->where('name', 'like', $search)
+                ->orWhere('headline', 'like', $search)
+                ->orWhere('location', 'like', $search)
+                ->orWhereHas('skills', function ($query) use ($search) {
+                    $query->where('skill_name', 'like', $search);
+                })
+                ->orWhereHas('userLanguages.language', function ($query) use ($search) {
+                    $query->where('language_name', 'like', $search);
+                })
+                ->orWhereHas('programmes', function ($query) use ($search) {
+                    $query->where('programme_name', 'like', $search);
+                })
+                ->orWhereHas('organizationUsers.organization', function ($query) use ($search) {
+                    $query->where('company_name', 'like', $search);
+                });
+        })
+            ->whereHas('roles', function ($query) {
+                $query->whereIn('name', ['Student', 'Alumni']);
+            })
+            ->select('id', 'name', 'location', 'headline', 'profile_image')
+            ->paginate(20);
     }
 
     /**

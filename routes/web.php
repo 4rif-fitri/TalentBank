@@ -83,7 +83,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(function () {
 
     Route::prefix('profile')->group(function () {
-        // crud routes
+        Route::get('/', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.getAllStudentUserProfiles');
         Route::get('/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
@@ -92,7 +92,6 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('organizations')->group(function () {
-        // crud routes
         Route::get('/', [OrganizationController::class, 'getAllOrganizations'])->name('organization.getAllOrganizations'); //+
         Route::get('/types', [OrganizationController::class, 'getAllOrganizationTypes'])->name('organization.getAllOrganizationTypes'); //-
         Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategories'])->name('organization.getAllIndustryCategories'); //-
@@ -102,7 +101,6 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('faculties')->group(function () {
-        // crud routes
         Route::get('/org/{id}', [FacultyController::class, 'getFacultiesByOrgId'])->name('faculty.getFacultiesByOrgId'); //-
         Route::get('/{id}', [FacultyController::class, 'getFacultyById'])->name('faculty.getFacultyById'); //-
         Route::middleware('checkRole:Organization Admin')->post('/store', [FacultyController::class, 'store'])->name('faculty.store'); //-
@@ -110,20 +108,17 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('programmes')->group(function () {
-        // crud routes
         Route::get('/getProgrammesByUserProfileId/{id}', [ProgrammeController::class, 'getProgrammesByUserProfileId'])->name('programme.getProgrammesByUserProfileId'); //!+
         Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId'); //+
     });
 
     Route::prefix('semesters')->group(function () {
-        // crud routes
         Route::post('/uploadResults/{id}', [SemesterController::class, 'uploadResults'])->name('semester.uploadResults'); //+
         Route::post('/store', [SemesterController::class, 'store'])->name('semester.store'); //+
         Route::put('/update/{id}', [SemesterController::class, 'update'])->name('semester.update'); //+
     });
 
     Route::prefix('education')->group(function () {
-        // crud routes
         Route::get('/getEducationByUserProfileId/{id}', [EducationController::class, 'getEducationByUserProfileId'])->name('education.getEducationByUserProfileId'); //+
         Route::get('/getEducationById/{id}', [EducationController::class, 'getEducationById'])->name('education.getEducationById'); //+
         Route::post('/store', [EducationController::class, 'store'])->name('education.store'); //+

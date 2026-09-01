@@ -44,6 +44,11 @@ class UserProfile extends Model
         return $this->hasMany(OrganizationUser::class, 'user_profile_id');
     }
 
+    public function programmes()
+    {
+        return $this->hasManyThrough(Programme::class, Education::class, 'user_profile_id', 'id', 'id', 'programme_id');
+    }
+
     public function activeProgrammes()
     {
         return $this->hasManyThrough(Programme::class, Education::class, 'user_profile_id', 'id', 'id', 'programme_id')

@@ -29,6 +29,19 @@ class ProfileController extends Controller
     }
 
     /**
+     * Handles request to get all student and alumni user profiles
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getAllStudentUserProfiles(Request $request): JsonResponse
+    {
+        $search = $request->query('search', '');
+        $profiles = $this->profileService->getAllStudentUserProfiles($search);
+        return ApiResponse::success('Success.', $profiles)->toJsonResponse();
+    }
+
+    /**
      * Handles request to update profile data for current logged in user
      * 
      * @param   Request $request
