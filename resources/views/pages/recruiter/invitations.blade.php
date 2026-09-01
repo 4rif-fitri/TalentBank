@@ -69,7 +69,7 @@
 <div class="content p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
-        <h3 class="m-0 fw-bold">Talent Shortlists</h3>
+        <h3 class="m-0 fw-bold">Recruitment Invitation</h3>
         <!-- <button class="btn btn-primary d-md-none btn-toggle-filter">
             <i class="fa-solid fa-filter"></i>
             Shortlists
@@ -277,20 +277,20 @@
         }
     });
 
-    // url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 4)
+    url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
+    url = url.replace("__ID__", 4)
 
-    // $.ajax({
-    //     url,
-    //     type: "GET",
-    //     success: function (response) {
-    //         console.log("getInvitationById", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
+    $.ajax({
+        url,
+        type: "GET",
+        success: function (response) {
+            console.log("getInvitationById", response)
+        },
+        error: function (xhr) {
+            console.error(xhr)
 
-    //     }
-    // });
+        }
+    });
 
     // url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
     // url = url.replace("__status__", "ACCEPTED")

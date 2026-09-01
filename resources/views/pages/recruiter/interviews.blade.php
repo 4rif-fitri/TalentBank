@@ -2,6 +2,13 @@
 
 @section('css')
 <style>
+    .icon-img {
+        background-size: cover;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+    }
+
     .shortlist-layout {
         display: flex;
         gap: 24px;
@@ -84,7 +91,7 @@
 <div class="content p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
-        <h3 class="m-0 fw-bold">Interview</h3>
+        <h3 class="m-0 fw-bold">Interviews</h3>
         <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
             <i class="fa-solid fa-filter"></i>
             Upcoming Interview
@@ -99,53 +106,28 @@
                 <h5 class="m-0 fw-bold">Upcoming Interview</h5>
             </div>
 
-            <div id="shortlistList">
+            <div id="shortlistList"></div>
+        </aside>
 
-                <div class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
-                    onclick="toggleFilter()">
-                    <div role="button" class="d-flex align-items-center gap-3">
-                        <i class="fa-solid fa-circle-user fa-xl" style="color: rgb(0, 0, 0);"></i>
-                        <div class="flex-grow-1 d-flex flex-column">
-                            <p class="fw-semibold">
-                                Software Engineering Interns
-                            </p>
-                            <p>FrontEnd intern </p>
-                            <small class="text-muted">
-                                Expires 22 May 2025
-                            </small>
-                        </div>
-                    </div>
-                    <i class="fa-solid fa-angle-right" style="color: rgb(0, 0, 0);"></i>
-                </div>
+        <div class="shortlist-content flex-grow-1">
 
-                <div class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
-                    onclick="toggleFilter()">
-                    <div role="button" class="d-flex align-items-center gap-3">
-                        <i class="fa-solid fa-circle-user fa-xl" style="color: rgb(0, 0, 0);"></i>
-                        <div class="flex-grow-1 d-flex flex-column">
-                            <p class="fw-semibold">
-                                Software Engineering Interns
-                            </p>
-                            <p>FrontEnd intern </p>
-                            <small class="text-muted">
-                                Expires 22 May 2025
-                            </small>
-                        </div>
+            <div class="bg-white row g-3" id="shortlistContent">
+
+                <div class="d-flex">
+                    <div class="icon-img"
+                        style="background-image: url('http://127.0.0.1:8000/uploads/profile-image-url/default.png');">
                     </div>
-                    <i class="fa-solid fa-angle-right" style="color: rgb(0, 0, 0);"></i>
+                    <div>
+                        <p class="fw-semibold">Name person 1</p>
+                        <p>Universiti Teknikal Malaysia Melaka(Utem)</p>
+                        <p>Game Technology</p>
+                    </div>
+
                 </div>
 
             </div>
+        </div>
     </div>
-
-    </aside>
-
-    <div class="shortlist-content flex-grow-1">
-
-        <div class="row g-3" id="shortlistContent"></div>
-
-    </div>
-</div>
 </div>
 
 <div class="shortlist-overlay toggleFilter"></div>
@@ -155,9 +137,30 @@
 
 @section('script')
 <script type="module">
-
     function toggleFilter() {
         document.body.classList.toggle('filter-open');
+    }
+
+    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
+        toggleFilter();
+    });
+
+
+    function template(interview) {
+        return `<div data-id=${interview.id} class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
+                    onclick="toggleFilter()">
+                    <div role="button" class="d-flex align-items-center gap-3">
+                        <div class="icon-img" style="background-image: url('{{ url('/') }}/{{ env('PROFILE_IMAGE_URL') }}/${interview.invitation.receiver.profile_image}');"></div>
+                        <div class="flex-grow-1 d-flex flex-column">
+                            <p class="fw-semibold">${interview.invitation.receiver.name}</p>
+                            <p>
+                                ${interview.invitation.position.position_title}
+                            </p>
+                        </div>
+                    </div>
+
+                    <i class="fa-solid fa-angle-right" style="color: rgb(0, 0, 0);"></i>
+                </div>`
     }
 
     let url = "{{ route('interviews.getInterviewsBySenderId', ['id' => '__ID__' ]) }}"
@@ -168,6 +171,13 @@
         type: "GET",
         success: function (response) {
             console.log("getInterviewsBySenderId", response)
+
+            $("#shortlistList").empty()
+            let interviews = response.data
+            interviews.forEach(interview => {
+                $("#shortlistList").append(template(interview))
+            });
+
         },
         error: function (xhr) {
             console.error(xhr)
@@ -175,20 +185,20 @@
         }
     });
 
-    // url = "{{ route('interviews.getInterviewById', ['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 2)
+    url = "{{ route('interviews.getInterviewById', ['id' => '__ID__' ]) }}"
+    url = url.replace("__ID__", 22)
 
-    // $.ajax({
-    //     url,
-    //     type: "GET",
-    //     success: function (response) {
-    //         console.log("getInterviewById", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
+    $.ajax({
+        url,
+        type: "GET",
+        success: function (response) {
+            console.log("getInterviewById", response)
+        },
+        error: function (xhr) {
+            console.error(xhr)
 
-    //     }
-    // });
+        }
+    });
 
     // url = "{{ route('interviews.update',['id' => '__ID__' ]) }}"
     // url = url.replace("__ID__", 2)

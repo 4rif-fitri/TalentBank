@@ -88,10 +88,10 @@
 <div class="content p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
-        <h3 class="m-0 fw-bold">Talent Shortlists</h3>
+        <h3 class="m-0 fw-bold">Positions</h3>
         <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
             <i class="fa-solid fa-filter"></i>
-            Shortlists
+            Positions
         </button>
     </div>
 
@@ -100,7 +100,7 @@
         <aside class="shortlist-sidebar" id="listContainer">
 
             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
-                <h5 class="m-0 fw-bold">Your Shortlists</h5>
+                <h5 class="m-0 fw-bold">Your Positions</h5>
                 <button type="button"
                     class="btnShowModalAddShortlist btn btn-outline-primary d-flex justify-content-center align-items-center">
                     <i class="fa-solid fa-plus fs-5"></i>
@@ -119,7 +119,7 @@
                     <h4 class="mt-2">No Position Selected Yet</h4>
                     <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
                         <i class="fa-solid fa-filter"></i>
-                        Shortlists
+                        Positions
                     </button>
                 </div>
             </div>

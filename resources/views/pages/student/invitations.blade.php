@@ -191,7 +191,7 @@
     }
 </script>
 <script>
-    let url = "{{ route('invitations.getInvitationsByReceiverId', ['id' => '__ID__' ]) }}"
+    let url = "{{ route('invitations. ', ['id' => '__ID__' ]) }}"
     url = url.replace("__ID__", 2)
 
     $.ajax({

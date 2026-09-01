@@ -17,7 +17,7 @@
         <x-sidebar-link :route="route('recruiter.savedTalent')" routeName="recruiter.savedTalent"
             icon="fa-solid fa-heart" label="Saved Talent" />
         <x-sidebar-link :route="route('recruiter.shortlists')" routeName="recruiter.shortlists"
-            icon="fa-solid fa-address-book" label="Shortlists" />
+            icon="fa-solid fa-address-book" label="Position " />
         <x-sidebar-link :route="route('recruiter.invitations')" routeName="recruiter.invitations"
             icon="fa-solid fa-paper-plane" label="Invitations" />
         <x-sidebar-link :route="route('recruiter.interviews')" routeName="recruiter.interviews"

@@ -142,7 +142,7 @@
 
             visibleMedia.forEach((dt, index) => {
 
-                let baseUrl = "{{ URL::asset('EDUCATION_FILE_URL') }}";
+                let baseUrl = "{{ URL::asset('uploads/education-file-url') }}";
                 let imageUrl = `${baseUrl}/${dt.file_name}`;
 
                 let remaining = media.length - 2;
