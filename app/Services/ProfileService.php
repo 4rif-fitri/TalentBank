@@ -65,7 +65,7 @@ class ProfileService
     public function getAllStudentUserProfiles(array $searchParams): LengthAwarePaginator
     {
         return UserProfile::where(function ($query) use ($searchParams) {
-            $query->when(!empty($searchParams['name']), function ($query) use ($searchParams) {
+            $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
                 $query->where('name', 'LIKE', '%' . $searchParams['name'] . '%');
             })
                 ->when(!empty($searchParams['skills']), function ($query) use ($searchParams) {
