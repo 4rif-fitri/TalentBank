@@ -35,6 +35,19 @@ class ProfileController extends Controller
     }
 
     /**
+     * Handles request to get all student and alumni user profiles
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getAllStudentUserProfiles(Request $request): JsonResponse
+    {
+        $searchParams = $request->query('searchParams', []);
+        $profiles = $this->profileService->getAllStudentUserProfiles($searchParams);
+        return ApiResponse::success('Success.', $profiles)->toJsonResponse();
+    }
+
+    /**
      * Handles request to update profile data for current logged in user
      *
      * @param   Request $request
@@ -111,5 +124,25 @@ class ProfileController extends Controller
         $profile = $this->profileService->uploadCoverImage($file, $profileId);
 
         return ApiResponse::success('Cover image uploaded successfully.', $profile)->toJsonResponse();
+    }
+
+    /**
+     * Handles request to like or unlike profile
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function toggleLike(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'liked_user_profile_id' => ['required', 'integer'],
+        ]);
+
+        $likerProfileId = session('user_profile_id');
+        $likedProfileId = $validated['liked_user_profile_id'];
+
+        $isLiked = $this->profileService->toggleLike($likerProfileId, $likedProfileId);
+
+        return ApiResponse::success($isLiked ? 'Profile liked successfully.' : 'Profile unliked successfully.', ['is_liked' => $isLiked])->toJsonResponse();
     }
 }
