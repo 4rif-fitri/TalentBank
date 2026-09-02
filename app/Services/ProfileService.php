@@ -74,13 +74,18 @@ class ProfileService
                     });
                 })
                 ->when(!empty($searchParams['languages']), function ($query) use ($searchParams) {
-                    $query->whereHas('userLanguages.language', function ($query) use ($searchParams) {
-                        $query->whereIn('languages.id', $searchParams['languages']);
+                    $query->whereHas('userLanguages', function ($query) use ($searchParams) {
+                        $query->whereIn('language_id', $searchParams['languages']);
                     });
                 })
                 ->when(!empty($searchParams['programmes']), function ($query) use ($searchParams) {
-                    $query->whereHas('programmes', function ($query) use ($searchParams) {
-                        $query->whereIn('programmes.id', $searchParams['programmes']);
+                    $query->whereHas('education', function ($query) use ($searchParams) {
+                        $query->whereIn('programme_id', $searchParams['programmes']);
+                    });
+                })
+                ->when(!empty($searchParams['qualifications']), function ($query) use ($searchParams) {
+                    $query->whereHas('education', function ($query) use ($searchParams) {
+                        $query->whereIn('qualification_id', $searchParams['qualifications']);
                     });
                 })
                 ->whereHas('organizationUsers', function ($query) use ($searchParams) {
