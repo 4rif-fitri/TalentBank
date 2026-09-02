@@ -103,6 +103,27 @@ class ProfileService
     }
 
     /**
+     * Returns user profiles that have been liked by the current user
+     * 
+     * @param int $userProfileId
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, UserProfile>
+     */
+    public function getLikedUserProfiles(int $userProfileId): Collection
+    {
+        return UserProfile::with([
+            'skills',
+            'activeProgrammes:programmes.id,programme_name,organization_id,duration_years',
+            'activeProgrammes.organization:id,name',
+            'activeProgrammes.qualification',
+        ])
+            ->whereHas('likes', function ($query) use ($userProfileId) {
+                $query->where('liker_user_profile_id', $userProfileId);
+            })
+            ->select('id', 'name', 'location', 'headline', 'profile_image')
+            ->get();
+    }
+
+    /**
      * Update profile data of profile by profile ID.
      * Excluding password update.
      *

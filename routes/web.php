@@ -99,10 +99,10 @@ Route::middleware('auth')->group(function () {
 */
 Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(function () {
 
-
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.getAllStudentUserProfiles');
-        Route::get('/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
+        Route::get('/getProfileDataByProfileId/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
+        Route::get('/getLikedUserProfiles', [ProfileController::class, 'getLikedUserProfiles'])->name('profile.getLikedUserProfiles');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
         Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage');
