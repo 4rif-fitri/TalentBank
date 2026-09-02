@@ -57,6 +57,20 @@ class InterviewController extends Controller
     }
 
     /**
+     * Handles request to get interview by status
+     * 
+     * @param string $status
+     * @return JsonResponse
+     */
+    public function getInterviewsByStatus(string $status): JsonResponse
+    {
+        $userProfileId = session('user_profile_id');
+        $interviews = $this->interviewService->getInterviewsByStatus($status, $userProfileId);
+
+        return ApiResponse::success('Success.', $interviews)->toJsonResponse();
+    }
+
+    /**
      * Handles request to create a new interview
      *
      * @param Request $request
