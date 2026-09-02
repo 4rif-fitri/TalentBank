@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             InvitationSeeder::class,
             InterviewSeeder::class,
             JobOfferSeeder::class,
+            LikeSeeder::class,
         ]);
     }
 }

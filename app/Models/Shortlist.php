@@ -16,4 +16,9 @@ class Shortlist extends Model
         'position_id',
         'user_profile_id',
     ];
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
+    }
 }

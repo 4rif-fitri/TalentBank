@@ -14,6 +14,7 @@ use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\ShortlistController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SocialMediaLinkController;
 use App\Http\Controllers\UserLanguageController;
@@ -89,6 +90,7 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
         Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
         Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage');
         Route::post('/upload/cover-image', [ProfileController::class, 'uploadCoverImage'])->name('update.uploadCoverImage');
+        Route::post('/toggleLike', [ProfileController::class, 'toggleLike'])->name('profile.toggleLike');
     });
 
     Route::prefix('organizations')->group(function () {
@@ -159,6 +161,11 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
             Route::post('/store', [PositionController::class, 'store'])->name('positions.store');
             Route::put('/update/{id}', [PositionController::class, 'update'])->name('positions.update');
         });
+    });
+
+    Route::middleware('checkRole:Organization Admin,Recruiter')->prefix('shortlists')->group(function () {
+        Route::post('/store', [ShortlistController::class, 'store'])->name('shortlists.store');
+        Route::delete('/delete/{shortlistId}', [ShortlistController::class, 'delete'])->name('shortlists.delete');
     });
 
     Route::prefix('invitations')->group(function () {

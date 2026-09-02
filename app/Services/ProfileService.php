@@ -2,11 +2,14 @@
 
 namespace App\Services;
 
+use App\Models\Like;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -56,33 +59,37 @@ class ProfileService
     /**
      * Returns all student and alumni user profiles with search functionality
      * 
-     * @param string $search
-     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, UserProfile>
+     * @param array $searchParams
+     * @return LengthAwarePaginator
      */
-    public function getAllStudentUserProfiles(string $search): Collection
+    public function getAllStudentUserProfiles(array $searchParams): LengthAwarePaginator
     {
-        $search = filled($search) ? '%' . trim($search) . '%' : '';
-
-        return UserProfile::when(filled($search), function ($query) use ($search) {
-            $query->where('name', 'like', $search)
-                ->orWhere('headline', 'like', $search)
-                ->orWhere('location', 'like', $search)
-                ->orWhereHas('skills', function ($query) use ($search) {
-                    $query->where('skill_name', 'like', $search);
+        return UserProfile::where(function ($query) use ($searchParams) {
+            $query->when(!empty($searchParams['name']), function ($query) use ($searchParams) {
+                $query->where('name', 'LIKE', '%' . $searchParams['name'] . '%');
+            })
+                ->when(!empty($searchParams['skills']), function ($query) use ($searchParams) {
+                    $query->whereHas('skills', function ($query) use ($searchParams) {
+                        $query->whereIn('skills.id', $searchParams['skills']);
+                    });
                 })
-                ->orWhereHas('userLanguages.language', function ($query) use ($search) {
-                    $query->where('language_name', 'like', $search);
+                ->when(!empty($searchParams['languages']), function ($query) use ($searchParams) {
+                    $query->whereHas('userLanguages.language', function ($query) use ($searchParams) {
+                        $query->whereIn('languages.id', $searchParams['languages']);
+                    });
                 })
-                ->orWhereHas('programmes', function ($query) use ($search) {
-                    $query->where('programme_name', 'like', $search);
+                ->when(!empty($searchParams['programmes']), function ($query) use ($searchParams) {
+                    $query->whereHas('programmes', function ($query) use ($searchParams) {
+                        $query->whereIn('programmes.id', $searchParams['programmes']);
+                    });
                 })
-                ->orWhereHas('organizationUsers.organization', function ($query) use ($search) {
-                    $query->where('company_name', 'like', $search);
+                ->whereHas('organizationUsers', function ($query) use ($searchParams) {
+                    $query->when(!empty($searchParams['organizations']), function ($query) use ($searchParams) {
+                        $query->whereIn('organization_id', $searchParams['organizations']);
+                    })
+                        ->whereIn('role_id', Role::whereIn('name', ['Student', 'Alumni'])->pluck('id')->toArray());
                 });
         })
-            ->whereHas('roles', function ($query) {
-                $query->whereIn('name', ['Student', 'Alumni']);
-            })
             ->select('id', 'name', 'location', 'headline', 'profile_image')
             ->paginate(20);
     }
@@ -202,5 +209,37 @@ class ProfileService
         $profile->update([$column => $filename]);
 
         return $profile;
+    }
+
+    /**
+     * Like or unlike a profile
+     * 
+     * @param int $likerProfileId
+     * @param int $likedProfileId
+     * @throws Exception
+     * @return bool
+     */
+    public function toggleLike(int $likerProfileId, int $likedProfileId): bool
+    {
+        if ($likerProfileId === $likedProfileId) {
+            throw new Exception('You cannot like your own profile.', Response::HTTP_BAD_REQUEST);
+        }
+
+        $like = Like::where('liker_user_profile_id', $likerProfileId)
+            ->where('liked_user_profile_id', $likedProfileId)
+            ->first();
+
+        if ($like) {
+            // If the like already exists, remove it (unlike)
+            $like->delete();
+            return false;
+        } else {
+            // If the like does not exist, create it (like)
+            Like::create([
+                'liker_user_profile_id' => $likerProfileId,
+                'liked_user_profile_id' => $likedProfileId,
+            ]);
+            return true;
+        }
     }
 }
