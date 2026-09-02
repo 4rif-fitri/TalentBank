@@ -639,10 +639,5 @@
 
     // $(document).on("click", "#btnAddInterview", handleAddInterview)
 
-
-
-
-
-
 </script>
 @endsection

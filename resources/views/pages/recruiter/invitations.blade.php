@@ -2,63 +2,83 @@
 
 @section('css')
 <style>
-    .talent-layout {
+    .shortlist-layout {
         display: flex;
         gap: 24px;
         align-items: flex-start;
     }
 
-    .filter-panel {
-        width: 350px;
-        background-color: white !important;
+    .shortlist-sidebar {
+        width: 420px;
+        background: #fff;
+        height: 80vh !important;
+        overflow-y: auto;
         padding: 20px;
         border-radius: 12px;
+        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
         flex-shrink: 0;
         transition: transform 0.3s ease;
     }
 
-    .filter-overlay {
+    .shortlist-overlay {
         position: fixed;
-        background-color: rgba(0, 0, 0, 0.5);
         inset: 0;
+        background: rgba(0, 0, 0, 0.4);
         display: none;
         z-index: 1040;
     }
 
-    .results-panel {
-        padding: 1rem;
-        background-color: #fff;
-    }
+    @media (max-width: 1300px) {
+        .btn-toggle-filter {
+            display: block !important;
+        }
 
-    @media (max-width: 768px) {
-        .talent-layout {
+        .shortlist-layout {
             display: block;
         }
 
-        .filter-panel {
+        .shortlist-sidebar {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            max-width: 100vw;
-            height: 100vh;
+            width: 380px;
+            max-width: 85vw;
+            height: 100vh !important;
             z-index: 1050;
             border-radius: 0;
             overflow-y: auto;
-            transform: translateY(100%);
+            transform: translateX(-100%);
         }
 
-        body.filter-open .filter-panel {
-            transform: translateY(10%);
-            border-radius: 14px;
+        body.filter-open .shortlist-sidebar {
+            transform: translateX(0);
         }
 
-        body.filter-open .filter-overlay {
+        body.filter-open .shortlist-overlay {
             display: block;
         }
 
         body.filter-open {
             overflow: hidden;
+        }
+    }
+
+    .shortlist-item:hover {
+        border: 1px solid #6d7eca !important;
+        color: #6d7eca;
+
+        small {
+            color: #6d7eca !important;
+        }
+
+    }
+
+    .shortlist-item.active {
+        border: 1px solid #5267c4 !important;
+        color: #5267c4;
+
+        small {
+            color: #5267c4 !important;
         }
     }
 </style>
@@ -68,122 +88,62 @@
 <div class="content p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
-        <h3 class="m-0 fw-bold">Recruitment Invitation</h3>
-        <!-- <button class="btn btn-primary d-md-none btn-toggle-filter">
+        <h3 class="m-0 fw-bold">Invitations</h3>
+        <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
             <i class="fa-solid fa-filter"></i>
-            Shortlists
-        </button> -->
-
+            invitation
+        </button>
     </div>
 
-    <div class="talent-layout">
+    <div class="shortlist-layout">
 
-        <aside class="card results-panel" id="filterPanel">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+        <aside class="shortlist-sidebar" id="listContainer">
+
+            <div class="d-flex flex-column justify-content-between mb-3 pb-3">
+                <!-- <div class="d-flex justify-content-between w-100">
+                    <h5 class="m-0 fw-bold">Your invitation</h5>
+                    <button type="button"
+                        class="btnShowModalAddShortlist btn btn-outline-primary d-flex justify-content-center align-items-center">
+                        <i class="fa-solid fa-plus fs-5"></i>
+                    </button>
+                </div> -->
+
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <button class="nav-link active text-primary">All</button>
+                        <a class="nav-link active text-primary" aria-current="page" href="#">All</a>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link text-body">Sent</button>
+                        <a class="nav-link text-black" href="#">Appected</a>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link text-body">Accepted</button>
+                        <a class="nav-link text-black" href="#">Rejected</a>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link text-body">Dealined</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link text-body">Exprired</button>
+                        <a class="nav-link text-black" href="#">Expired</a>
                     </li>
                 </ul>
             </div>
 
-            <div id="recruitment-invitation-list">
-
-            </div>
+            <div id="recruitment-invitation-list"></div>
         </aside>
 
-        <div class="card filter-panel flex-grow-1">
-            <div class="row g-3 ">
-                <div class="h-100 border-0 p-3 position-relative">
-
-                    <div class="mb-3 d-flex flex-xl-row flex-column gap-3">
-                        <div class="bg-primary"
-                            style="width:6rem; height:6rem; border-radius: 50%; background-size: cover; background-image:url('${window.appConfig.profileImageUrl}/${inv.receiver.profile_image}')">
-                        </div>
-
-                        <div>
-                            <h3 class="fw-semibold">Dr Lorem Ipsum Dolor Sit Amit</h3>
-                            <p class="fw-semibold">Sofware inginer with Honor</p>
-                            <small class="text-muted d-block">Universiti Teknikal Malaysia Melaka(UTEM)</small>
-                            <div class="badge bg-primary">See More</div>
-                            <small class="text-muted d-block">
-                                <i class="fa-solid fa-location-dot" style="color: rgb(0, 0, 0);"></i>
-                                Durian Tunggal, Malaka, Malaysia
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 border d-block d-xl-flex justify-content-between p-2">
-                        <div class="d-flex gap-2 mb-2 mb-xl-0">
-                            <i class="fa-solid fa-briefcase bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
-                                style="width: 3rem; height: 3rem; color: rgb(0, 0, 0); font-size: 1.5rem; border-radius: 50%;"></i>
-                            <div>
-                                <small class="text-muted">Position</small>
-                                <h5 class="fw-semibold">FrontEnd Intern</h5>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2 mb-2 mb-xl-0">
-                            <i class="fa-solid fa-building bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
-                                style="width: 3rem; height: 3rem; color: rgb(0, 0, 0); font-size: 1.5rem; border-radius: 50%;"></i>
-                            <div>
-                                <small class="text-muted">Department</small>
-                                <h5 class="fw-semibold">Department IT and DEV</h5>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2 mb-2 mb-xl-0">
-                            <i class="fa-solid fa-calendar-check bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
-                                style="width: 3rem; height: 3rem; color: rgb(0, 0, 0); font-size: 1.5rem; border-radius: 50%;"></i>
-                            <div>
-                                <small class="text-muted">employment_type</small>
-                                <h5 class="fw-semibold">employment_type</h5>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-3 border p-3">
-                        <h5 class="fw-semibold">Personal Message</h5>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste reprehenderit veniam sunt dicta
-                            iusto, temporibus ex consequatur perferendis quasi. Corrupti, mollitia aperiam! Dolorem,
-                            ipsum! Quo expedita reiciendis quae libero accusamus!</p>
-                    </div>
-
-                    <div>
-                        <h6 class="fw-semibold mb-1">Actions</h6>
-                        <div>
-                            <button class="btn btn-outline-primary">
-                                <i class="fa-regular fa-message text-primary"></i>
-                                Message Student
-                            </button>
-                            <button class="btn btn-outline-danger">
-                                <i class="fa-regular fa-trash-can text-danger"></i>
-                                Withdraw Invitation
-                            </button>
-                            <button class="btn btn-outline-primary">
-                                <i class="fa-solid fa-pen text-primary"></i>
-                                Edit Invitation
-                            </button>
-                        </div>
-                    </div>
-
+        <div class="shortlist-content bg-body flex-grow-1 p-2 rounded card">
+            <div class="row g-3" id="shortlistContent">
+                <div class="border-0 p-3 d-flex flex-column align-items-center">
+                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                    <h4 class="mt-2">No Interview Selected Yet</h4>
+                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                        <i class="fa-solid fa-filter"></i>
+                        Interview
+                    </button>
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
-<div class="filter-overlay" onclick="toggleFilter()"></div>
+<div class="shortlist-overlay toggleFilter"></div>
 @endsection
 
 @section('script')
@@ -191,6 +151,8 @@
     function toggleFilter() {
         document.body.classList.toggle('filter-open');
     }
+
+    $(document).on("click", ".toggleFilter", toggleFilter)
 </script>
 <script>
     let url = "{{ route('invitations.getInvitationsBySenderId', ['id' => '__ID__' ]) }}"
@@ -213,20 +175,32 @@
         }
     });
 
-    // url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 4)
+    function getInvitationById(id) {
+        url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
+        url = url.replace("__ID__", id)
 
-    // $.ajax({
-    //     url,
-    //     type: "GET",
-    //     success: function (response) {
-    //         console.log("getInvitationById", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
+        return $.ajax({
+            url,
+            type: "GET",
+        });
+    }
 
-    //     }
-    // });
+    async function handleSelectedInvitation() {
+        let id = $(this).data('id');
+
+        try {
+            let inv = await getInvitationById(id)
+            console.log(inv);
+
+            $("#shortlistContent").empty()
+            $("#shortlistContent").append(invitation.mainContent(inv.data))
+
+        } catch (xhr) {
+            console.error(xhr);
+        }
+    }
+
+    $(document).on("click", ".invitation-item", handleSelectedInvitation)
 
     // url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
     // url = url.replace("__status__", "ACCEPTED")
