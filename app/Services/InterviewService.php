@@ -14,6 +14,11 @@ class InterviewService
     private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
     private const LOCKED_STATUS = [AppConstants::INTERVIEW_STATUS['COMPLETED'], AppConstants::INTERVIEW_STATUS['CANCELLED']];
 
+    // used to determine the columns to be returned for related models when fetching invitations
+    private const INVITATION_RETURN_COLUMNS = 'id,position_id,receiver_profile_id,sender_profile_id';
+    private const POSITION_RETURN_COLUMNS = 'id,position_title';
+    private const PROFILE_RETURN_COLUMNS = 'id,name,profile_image,location,headline';
+
     public function __construct(
         private readonly InvitationService $invitationService
     ) {
@@ -21,7 +26,7 @@ class InterviewService
 
     private function getInterviewModel(int $interviewId, int $senderId): Interview
     {
-        $interview = Interview::with('invitation.position')
+        $interview = Interview::with('invitation.position:' . self::POSITION_RETURN_COLUMNS)
             ->whereHas('invitation', function ($query) use ($senderId) {
                 $query->where('sender_profile_id', $senderId);
             })->find($interviewId);
@@ -55,9 +60,9 @@ class InterviewService
     public function getInterviewsBySenderId(int $senderId): Collection
     {
         return Interview::with([
-            'invitation:id,position_id,receiver_profile_id',
-            'invitation.position:id,position_title',
-            'invitation.receiver:id,name,profile_image'
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS
         ])
             ->whereHas('invitation', function ($query) use ($senderId) {
                 $query->where('sender_profile_id', $senderId);
@@ -68,9 +73,9 @@ class InterviewService
     public function getInterviewsByReceiverId(int $receiverId): Collection
     {
         return Interview::with([
-            'invitation:id,position_id,receiver_profile_id',
-            'invitation.position:id,position_title',
-            'invitation.receiver:id,name,profile_image'
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS
         ])
             ->whereHas('invitation', function ($query) use ($receiverId) {
                 $query->where('receiver_profile_id', $receiverId);
@@ -81,10 +86,10 @@ class InterviewService
     public function getInterviewById(int $interviewId, int $userProfileId): Interview
     {
         $interview = Interview::with([
-            'invitation:id,position_id,receiver_profile_id,sender_profile_id',
-            'invitation.position',
-            'invitation.receiver:id,name,profile_image',
-            'invitation.sender:id,name,profile_image'
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'invitation.sender:' . self::PROFILE_RETURN_COLUMNS
         ])
             ->whereHas('invitation', function ($query) use ($userProfileId) {
                 $query->where('sender_profile_id', $userProfileId)
@@ -130,9 +135,9 @@ class InterviewService
         ]);
 
         return $interview->load([
-            'invitation:id,position_id,receiver_profile_id',
-            'invitation.position:id,position_title',
-            'invitation.receiver:id,name,profile_image'
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS
         ]);
     }
 
