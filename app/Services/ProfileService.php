@@ -43,9 +43,11 @@ class ProfileService
             'organizationUsers.organization',
             'organizationUsers.role',
             'activeProgrammes.organization',
+            'activeProgrammes.qualification',
+            'activeProgrammes.fieldOfStudy',
             'socialMediaLinks.socialMedia',
             'userLanguages.language',
-            'skills'
+            'skills',
         ])
             ->find($userProfileId);
 
@@ -64,37 +66,38 @@ class ProfileService
      */
     public function getAllStudentUserProfiles(array $searchParams): LengthAwarePaginator
     {
-        return UserProfile::where(function ($query) use ($searchParams) {
-            $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
-                $query->where('name', 'LIKE', '%' . $searchParams['name'] . '%');
-            })
-                ->when(!empty($searchParams['skills']), function ($query) use ($searchParams) {
-                    $query->whereHas('skills', function ($query) use ($searchParams) {
-                        $query->whereIn('skills.id', $searchParams['skills']);
-                    });
+        return UserProfile::with([
+            'skills',
+            'activeProgrammes:id,programme_name,organization_id,duration_years',
+            'activeProgrammes.organization:id,name',
+            'activeProgrammes.qualifications',
+        ])
+            ->where(function ($query) use ($searchParams) {
+                $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
+                    $query->where('name', 'LIKE', '%' . $searchParams['name'] . '%');
                 })
-                ->when(!empty($searchParams['languages']), function ($query) use ($searchParams) {
-                    $query->whereHas('userLanguages', function ($query) use ($searchParams) {
-                        $query->whereIn('language_id', $searchParams['languages']);
-                    });
-                })
-                ->when(!empty($searchParams['programmes']), function ($query) use ($searchParams) {
-                    $query->whereHas('education', function ($query) use ($searchParams) {
-                        $query->whereIn('programme_id', $searchParams['programmes']);
-                    });
-                })
-                ->when(!empty($searchParams['qualifications']), function ($query) use ($searchParams) {
-                    $query->whereHas('education', function ($query) use ($searchParams) {
-                        $query->whereIn('qualification_id', $searchParams['qualifications']);
-                    });
-                })
-                ->whereHas('organizationUsers', function ($query) use ($searchParams) {
-                    $query->when(!empty($searchParams['organizations']), function ($query) use ($searchParams) {
-                        $query->whereIn('organization_id', $searchParams['organizations']);
+                    ->when(!empty($searchParams['skills']), function ($query) use ($searchParams) {
+                        $query->whereHas('skills', function ($query) use ($searchParams) {
+                            $query->whereIn('skills.id', $searchParams['skills']);
+                        });
                     })
-                        ->whereIn('role_id', Role::whereIn('name', ['Student', 'Alumni'])->pluck('id')->toArray());
-                });
-        })
+                    ->when(!empty($searchParams['languages']), function ($query) use ($searchParams) {
+                        $query->whereHas('userLanguages', function ($query) use ($searchParams) {
+                            $query->whereIn('language_id', $searchParams['languages']);
+                        });
+                    })
+                    ->when(!empty($searchParams['programmes']), function ($query) use ($searchParams) {
+                        $query->whereHas('education', function ($query) use ($searchParams) {
+                            $query->whereIn('programme_id', $searchParams['programmes']);
+                        });
+                    })
+                    ->whereHas('organizationUsers', function ($query) use ($searchParams) {
+                        $query->when(!empty($searchParams['organizations']), function ($query) use ($searchParams) {
+                            $query->whereIn('organization_id', $searchParams['organizations']);
+                        })
+                            ->whereIn('role_id', Role::whereIn('name', ['Student', 'Alumni'])->pluck('id')->toArray());
+                    });
+            })
             ->select('id', 'name', 'location', 'headline', 'profile_image')
             ->paginate(20);
     }

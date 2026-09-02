@@ -4,18 +4,13 @@ namespace App\Services;
 
 use App\Constants\AppConstants;
 use App\Models\Education;
-use App\Models\FieldOfStudy;
-use App\Models\Qualification;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class EducationService
 {
-    private const CACHE_TIME_HOURS = 1;
-
     /**
      * Create a new class instance.
      */
@@ -50,10 +45,10 @@ class EducationService
     public function getEducationByUserProfileId(int $userProfileId): Collection
     {
         return Education::with([
-            'fieldOfStudy',
-            'qualification',
             'programme',
-            'programme.organization',
+            'programme.organization:id,company_name',
+            'programme.qualification',
+            'programme.fieldOfStudy',
             'media',
             'skills'
         ])
@@ -71,10 +66,10 @@ class EducationService
     public function getEducationById(int $id): Education
     {
         $education = Education::with([
-            'fieldOfStudy',
-            'qualification',
             'programme',
-            'programme.organization',
+            'programme.organization:id,company_name',
+            'programme.qualification',
+            'programme.fieldOfStudy',
             'media',
             'skills'
         ])
@@ -100,8 +95,6 @@ class EducationService
                 'user_profile_id' => $userProfileId,
                 'programme_id' => $data['programme_id'],
                 'description' => $data['description'],
-                'field_of_study_id' => $data['field_of_study_id'],
-                'qualification_id' => $data['qualification_id'],
                 'cgpa' => $data['cgpa'],
                 'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
@@ -116,7 +109,12 @@ class EducationService
             return $education;
         });
 
-        return $education;
+        return $education->load([
+            'programme.organization:id,company_name',
+            'programme.qualification',
+            'programme.fieldOfStudy',
+            'media'
+        ]);
     }
 
     /**
@@ -139,11 +137,9 @@ class EducationService
 
         DB::transaction(function () use ($data, $education, $userProfileId) {
             // update education
-            $result = $education->update([
+            $education->update([
                 'programme_id' => $data['programme_id'],
                 'description' => $data['description'],
-                'field_of_study_id' => $data['field_of_study_id'],
-                'qualification_id' => $data['qualification_id'],
                 'cgpa' => $data['cgpa'],
                 'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
@@ -168,9 +164,9 @@ class EducationService
         });
 
         return $education->load([
-            'fieldOfStudy',
-            'qualification',
-            'programme.organization',
+            'programme.organization:id,company_name',
+            'programme.qualification',
+            'programme.fieldOfStudy',
             'media',
             'skills'
         ]);
@@ -210,27 +206,5 @@ class EducationService
         return $result;
     }
 
-    /**
-     * Get all field of studies from the database
-     * 
-     * @return Collection<int, FieldOfStudy>
-     */
-    public function getAllFieldOfStudies(): Collection
-    {
-        return Cache::remember('field_of_studies', self::CACHE_TIME_HOURS, function () {
-            return FieldOfStudy::get();
-        });
-    }
 
-    /**
-     * Get all qualifications from the database
-     * 
-     * @return Collection<int, Qualification>
-     */
-    public function getAllQualifications(): Collection
-    {
-        return Cache::remember('qualifications', self::CACHE_TIME_HOURS, function () {
-            return Qualification::get();
-        });
-    }
 }

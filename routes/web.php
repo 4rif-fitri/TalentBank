@@ -129,6 +129,8 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     Route::prefix('programmes')->group(function () {
         Route::get('/getProgrammesByUserProfileId/{id}', [ProgrammeController::class, 'getProgrammesByUserProfileId'])->name('programme.getProgrammesByUserProfileId'); //!+
         Route::get('/getProgrammesByOrgId/{orgId}', [ProgrammeController::class, 'getProgrammesByOrgId'])->name('programme.getProgrammesByOrgId'); //+
+        Route::get('/getAllFieldOfStudies', [ProgrammeController::class, 'getAllFieldOfStudies'])->name('programme.getAllFieldOfStudies'); //+
+        Route::get('/getAllQualifications', [ProgrammeController::class, 'getAllQualifications'])->name('programme.getAllQualifications'); //+
     });
 
     Route::prefix('semesters')->group(function () {
@@ -143,9 +145,6 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
         Route::post('/store', [EducationController::class, 'store'])->name('education.store'); //+
         Route::put('/update/{id}', [EducationController::class, 'update'])->name('education.update'); //+
         Route::delete('/delete/{id}', [EducationController::class, 'delete'])->name('education.delete'); //+
-
-        Route::get('/getAllFieldOfStudies', [EducationController::class, 'getAllFieldOfStudies'])->name('education.getAllFieldOfStudies'); //+
-        Route::get('/getAllQualifications', [EducationController::class, 'getAllQualifications'])->name('education.getAllQualifications'); //+
     });
 
     Route::prefix('social-media')->group(function () {

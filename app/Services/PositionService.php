@@ -62,7 +62,7 @@ class PositionService
     {
         $position = Position::with([
             'shortlistUsers:id,name',
-            'shortlistUsers.skills:id,skill_name',
+            'shortlistUsers.skills',
         ])->find($positionId);
 
         if (!isset($position)) {

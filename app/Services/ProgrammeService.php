@@ -2,16 +2,21 @@
 
 namespace App\Services;
 
+use App\Models\FieldOfStudy;
 use App\Models\Organization;
 use App\Models\Programme;
+use App\Models\Qualification;
 use App\Models\User;
 use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class ProgrammeService
 {
+    private const CACHE_TIME_HOURS = 1;
+
     /**
      * Gets the programmes joined by the user and filters them based on search query or session
      * Search query can be programme name, programme code and programme level
@@ -72,5 +77,29 @@ class ProgrammeService
         return Programme::whereHas('organization', function ($query) use ($organizationId) {
             $query->where('organizations.id', $organizationId);
         })->get();
+    }
+
+    /**
+     * Get all field of studies from the database.
+     *
+     * @return Collection<int, FieldOfStudy>
+     */
+    public function getAllFieldOfStudies(): Collection
+    {
+        return Cache::remember('field_of_studies', self::CACHE_TIME_HOURS, function () {
+            return FieldOfStudy::all();
+        });
+    }
+
+    /**
+     * Get all qualifications from the database.
+     *
+     * @return Collection<int, Qualification>
+     */
+    public function getAllQualifications(): Collection
+    {
+        return Cache::remember('qualifications', self::CACHE_TIME_HOURS, function () {
+            return Qualification::all();
+        });
     }
 }

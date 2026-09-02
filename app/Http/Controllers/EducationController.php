@@ -22,8 +22,6 @@ class EducationController extends Controller
         return $request->validate([
             'programme_id' => ['required', 'exists:programmes,id'],
             'description' => ['nullable', 'string'],
-            'field_of_study_id' => ['nullable', 'exists:field_of_studies,id'],
-            'qualification_id' => ['nullable', 'exists:qualifications,id'],
             'cgpa' => ['nullable', 'numeric', 'between:0,4.00', 'decimal:0,2'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],
@@ -116,25 +114,4 @@ class EducationController extends Controller
         return ApiResponse::success('Education deleted successfully.', null)->toJsonResponse();
     }
 
-    /**
-     * Handles request to get all field of studies
-     *
-     * @return JsonResponse
-     */
-    public function getAllFieldOfStudies(): JsonResponse
-    {
-        $fieldOfStudies = $this->educationService->getAllFieldOfStudies();
-        return ApiResponse::success('Success.', $fieldOfStudies)->toJsonResponse();
-    }
-
-    /**
-     * Handles request to get all qualifications
-
-     * @return JsonResponse
-     */
-    public function getAllQualifications(): JsonResponse
-    {
-        $qualifications = $this->educationService->getAllQualifications();
-        return ApiResponse::success('Success.', $qualifications)->toJsonResponse();
-    }
 }
