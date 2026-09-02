@@ -124,13 +124,12 @@
                 </button>
             </div>
 
-            <!-- Header Desktop Filter -->
             <div class="d-none d-md-flex justify-content-between align-items-center mb-4">
                 <span class="fw-bold">Filters</span>
             </div>
 
             <div class="mb-3">
-                <label class="form-label text-muted small fw-bold" id="searchName">Name</label>
+                <label class="form-label text-muted small fw-bold">Name</label>
                 <input type="email" class="form-control" id="searchName" placeholder="Name">
             </div>
 
@@ -159,277 +158,16 @@
                 <label class="form-label text-muted small fw-bold">Qualifications</label>
                 <select id="selectQualifications" class="form-select select2-skills" multiple="multiple"
                     data-placeholder="Select or type skills...">
-                    <option value="Degree">Degree</option>
-                    <option value="Diploma">Diploma</option>
                 </select>
             </div>
 
-            <div class="form-check form-switch mt-4">
-                <input class="form-check-input" type="checkbox" id="verifiedSwitch" checked>
-                <label class="form-check-label text-muted small fw-bold" for="verifiedSwitch">University
-                    Verified</label>
-            </div>
             <button class="btn btn-outline-danger w-100 mt-2" id="btnResetFilter">Reset</button>
             <button class="btn btn-primary w-100 mt-2" id="btnFilter">Filter</button>
         </aside>
 
         <div class="results-panel flex-grow-1">
 
-
-            <div class="row g-3">
-
-                <div class="col-12 col-md-6 col-lg-6 col-xl-4">
-                    <div class="card h-100 shadow-sm border-0 p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div></div>
-                            <i class="fa-regular fa-heart text-muted" style="cursor:pointer;"></i>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-3 mb-3 mt-2">
-                            <img src="https://ui-avatars.com/api/?name=Ali+Ahmad&background=random" class="rounded"
-                                width="60" alt="Profile">
-                            <div>
-                                <h6 class="m-0 fw-bold">Ali Ahmad Bin Abl Kasim</h6>
-                                <small class="text-primary" style="font-size: 11px;"><i
-                                        class="fa-solid fa-circle-check"></i> Verified
-                                    Student</small>
-                            </div>
-                        </div>
-                        <div class="mb-2" style="font-size: 12px;">
-                            <p class="m-0 text-dark">Universiti Malaya</p>
-                            <p class="m-0 text-muted">Bachelor of Computer Science</p>
-                            <p class="m-0 text-muted mt-1">CGPA 3.78</p>
-                        </div>
-                        <div class="d-flex gap-1 flex-wrap">
-
-                            <span class="badge bg-light text-dark border fw-normal">
-                                <i class="fa-brands fa-youtube"></i>
-                                React
-                            </span>
-                            <span class="badge bg-light text-dark border fw-normal">Laravel</span>
-                            <span class="badge bg-light text-dark border fw-normal">Node.js</span>
-                        </div>
-                        <div class="mt-auto d-flex gap-2">
-                            <a href="profile-pelajar.html" target="_blank"
-                                class="btn btn-sm btn-outline-primary w-50 fw-bold d-flex align-items-center justify-content-center">
-                                View Profile
-                            </a>
-                            <button class="btn btn-sm btn-primary w-50 fw-bold">Add to
-                                Shortlist</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-6 col-xl-4">
-                    <div class="card h-100 shadow-sm border-0 p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div></div>
-                            <i class="fa-regular fa-heart text-muted" style="cursor:pointer;"></i>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-3 mb-3 mt-2">
-                            <img src="https://ui-avatars.com/api/?name=Ali+Ahmad&background=random" class="rounded"
-                                width="60" alt="Profile">
-                            <div>
-                                <h6 class="m-0 fw-bold">Ali Ahmad Bin Abl Kasim</h6>
-                                <small class="text-primary" style="font-size: 11px;"><i
-                                        class="fa-solid fa-circle-check"></i>
-                                    Verified Student</small>
-                            </div>
-                        </div>
-                        <div class="mb-2" style="font-size: 12px;">
-                            <p class="m-0 text-dark">Universiti Malaya</p>
-                            <p class="m-0 text-muted">Bachelor of Computer Science</p>
-                            <p class="m-0 text-muted mt-1">CGPA 3.78</p>
-                        </div>
-                        <div class="d-flex gap-1 flex-wrap">
-
-                            <span class="badge bg-light text-dark border fw-normal">
-                                <i class="fa-brands fa-youtube"></i>
-                                React
-                            </span>
-                            <span class="badge bg-light text-dark border fw-normal">Laravel</span>
-                            <span class="badge bg-light text-dark border fw-normal">Node.js</span>
-                        </div>
-                        <div class="mt-auto d-flex gap-2">
-                            <a href="profile-pelajar.html" target="_blank"
-                                class="btn btn-sm btn-outline-primary w-50 fw-bold d-flex align-items-center justify-content-center">
-                                View Profile
-                            </a>
-                            <button class="btn btn-sm btn-primary w-50 fw-bold">Add to
-                                Shortlist</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-6 col-xl-4">
-                    <div class="card h-100 shadow-sm border-0 p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div></div>
-                            <i class="fa-regular fa-heart text-muted" style="cursor:pointer;"></i>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-3 mb-3 mt-2">
-                            <img src="https://ui-avatars.com/api/?name=Ali+Ahmad&background=random" class="rounded"
-                                width="60" alt="Profile">
-                            <div>
-                                <h6 class="m-0 fw-bold">Ali Ahmad Bin Abl Kasim</h6>
-                                <small class="text-primary" style="font-size: 11px;"><i
-                                        class="fa-solid fa-circle-check"></i>
-                                    Verified Student</small>
-                            </div>
-                        </div>
-                        <div class="mb-2" style="font-size: 12px;">
-                            <p class="m-0 text-dark">Universiti Malaya</p>
-                            <p class="m-0 text-muted">Bachelor of Computer Science</p>
-                            <p class="m-0 text-muted mt-1">CGPA 3.78</p>
-                        </div>
-                        <div class="d-flex gap-1 flex-wrap">
-
-                            <span class="badge bg-light text-dark border fw-normal">
-                                <i class="fa-brands fa-youtube"></i>
-                                React
-                            </span>
-                            <span class="badge bg-light text-dark border fw-normal">Laravel</span>
-                            <span class="badge bg-light text-dark border fw-normal">Node.js</span>
-                        </div>
-                        <div class="mt-auto d-flex gap-2">
-                            <a href="profile-pelajar.html" target="_blank"
-                                class="btn btn-sm btn-outline-primary w-50 fw-bold d-flex align-items-center justify-content-center">
-                                View Profile
-                            </a>
-                            <button class="btn btn-sm btn-primary w-50 fw-bold">Add to
-                                Shortlist</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-6 col-xl-4">
-                    <div class="card h-100 shadow-sm border-0 p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div></div>
-                            <i class="fa-regular fa-heart text-muted" style="cursor:pointer;"></i>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-3 mb-3 mt-2">
-                            <img src="https://ui-avatars.com/api/?name=Ali+Ahmad&background=random" class="rounded"
-                                width="60" alt="Profile">
-                            <div>
-                                <h6 class="m-0 fw-bold">Ali Ahmad Bin Abl Kasim</h6>
-                                <small class="text-primary" style="font-size: 11px;"><i
-                                        class="fa-solid fa-circle-check"></i> Verified
-                                    Student</small>
-                            </div>
-                        </div>
-                        <div class="mb-2" style="font-size: 12px;">
-                            <p class="m-0 text-dark">Universiti Malaya</p>
-                            <p class="m-0 text-muted">Bachelor of Computer Science</p>
-                            <p class="m-0 text-muted mt-1">CGPA 3.78</p>
-                        </div>
-                        <div class="d-flex gap-1 flex-wrap">
-
-                            <span class="badge bg-light text-dark border fw-normal">
-                                <i class="fa-brands fa-youtube"></i>
-                                React
-                            </span>
-                            <span class="badge bg-light text-dark border fw-normal">Laravel</span>
-                            <span class="badge bg-light text-dark border fw-normal">Node.js</span>
-                        </div>
-                        <div class="mt-auto d-flex gap-2">
-                            <a href="profile-pelajar.html" target="_blank"
-                                class="btn btn-sm btn-outline-primary w-50 fw-bold d-flex align-items-center justify-content-center">
-                                View Profile
-                            </a>
-                            <button class="btn btn-sm btn-primary w-50 fw-bold">Add to
-                                Shortlist</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-6 col-xl-4">
-                    <div class="card h-100 shadow-sm border-0 p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div></div>
-                            <i class="fa-regular fa-heart text-muted" style="cursor:pointer;"></i>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-3 mb-3 mt-2">
-                            <img src="https://ui-avatars.com/api/?name=Ali+Ahmad&background=random" class="rounded"
-                                width="60" alt="Profile">
-                            <div>
-                                <h6 class="m-0 fw-bold">Ali Ahmad Bin Abl Kasim</h6>
-                                <small class="text-primary" style="font-size: 11px;"><i
-                                        class="fa-solid fa-circle-check"></i>
-                                    Verified Student</small>
-                            </div>
-                        </div>
-                        <div class="mb-2" style="font-size: 12px;">
-                            <p class="m-0 text-dark">Universiti Malaya</p>
-                            <p class="m-0 text-muted">Bachelor of Computer Science</p>
-                            <p class="m-0 text-muted mt-1">CGPA 3.78</p>
-                        </div>
-                        <div class="d-flex gap-1 flex-wrap">
-
-                            <span class="badge bg-light text-dark border fw-normal">
-                                <i class="fa-brands fa-youtube"></i>
-                                React
-                            </span>
-                            <span class="badge bg-light text-dark border fw-normal">Laravel</span>
-                            <span class="badge bg-light text-dark border fw-normal">Node.js</span>
-                        </div>
-                        <div class="mt-auto d-flex gap-2">
-                            <a href="profile-pelajar.html" target="_blank"
-                                class="btn btn-sm btn-outline-primary w-50 fw-bold d-flex align-items-center justify-content-center">
-                                View Profile
-                            </a>
-                            <button class="btn btn-sm btn-primary w-50 fw-bold">Add to
-                                Shortlist</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-6 col-lg-6 col-xl-4">
-                    <div class="card h-100 shadow-sm border-0 p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div></div>
-                            <i class="fa-regular fa-heart text-muted" style="cursor:pointer;"></i>
-                        </div>
-
-                        <div class="d-flex align-items-center gap-3 mb-3 mt-2">
-                            <img src="https://ui-avatars.com/api/?name=Ali+Ahmad&background=random" class="rounded"
-                                width="60" alt="Profile">
-                            <div>
-                                <h6 class="m-0 fw-bold">Ali Ahmad Bin Abl Kasim</h6>
-                                <small class="text-primary" style="font-size: 11px;"><i
-                                        class="fa-solid fa-circle-check"></i>
-                                    Verified Student</small>
-                            </div>
-                        </div>
-                        <div class="mb-2" style="font-size: 12px;">
-                            <p class="m-0 text-dark">Universiti Malaya</p>
-                            <p class="m-0 text-muted">Bachelor of Computer Science</p>
-                            <p class="m-0 text-muted mt-1">CGPA 3.78</p>
-                        </div>
-                        <div class="d-flex gap-1 flex-wrap">
-
-                            <span class="badge bg-light text-dark border fw-normal">
-                                <i class="fa-brands fa-youtube"></i>
-                                React
-                            </span>
-                            <span class="badge bg-light text-dark border fw-normal">Laravel</span>
-                            <span class="badge bg-light text-dark border fw-normal">Node.js</span>
-                        </div>
-                        <div class="mt-auto d-flex gap-2">
-                            <a href="profile-pelajar.html" target="_blank"
-                                class="btn btn-sm btn-outline-primary w-50 fw-bold d-flex align-items-center justify-content-center">
-                                View Profile
-                            </a>
-                            <button class="btn btn-sm btn-primary w-50 fw-bold">Add to
-                                Shortlist</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="row g-3" id="talent-cards"></div>
 
             <div class="mt-2 d-flex justify-content-between align-items-center">
                 <span class="fw-bold">1000 students found</span>
@@ -483,6 +221,11 @@
             state.allSkills.forEach(skill => {
                 $("#selectSkill").append(`<option value="${skill.id}">${skill.skill_name}</option>`)
             })
+
+            $("#selectQualifications").empty()
+            state.allQualifications.forEach(qualification => {
+                $("#selectQualifications").append(`<option value="${qualification.id}">${qualification.name}</option>`)
+            })
         }
 
         function getAllOrganizations() {
@@ -525,31 +268,28 @@
         }
 
         function getAllQualifications() {
-            // return $.ajax({
-            //     getAllQualifications
-            //     url: "{{ route('languages.getAllLanguages') }}",
-            //     type: 'GET',
-            //     dataType: "json",
-            //     success: response => {
-            //         state.allLanguages = response.data
-            //     },
-            //     error: xhr => {
-            //         console.log(xhr);
-            //     }
-            // })
-
+            return $.ajax({
+                url: "{{ route('education.getAllQualifications') }}",
+                type: 'GET',
+                dataType: "json",
+                success: response => {
+                    state.allQualifications = response.data
+                },
+                error: xhr => {
+                    console.log(xhr);
+                }
+            })
         }
 
         async function getData() {
             await Promise.all([
                 getAllOrganizations(),
                 getAllLanguages(),
-                getAllSkills()
+                getAllSkills(),
+                getAllQualifications()
             ]);
-
             setOptions()
         }
-        getData()
 
         $('.select2-skills').select2({
             width: '100%',
@@ -559,51 +299,57 @@
             allowClear: true
         });
 
-        $(document).on("click", "#btnResetFilter", () => {
-            $("#selectUniversiti").val(null).trigger("change");
-            $("#selectLanguage").val(null).trigger("change");
-            $("#selectSkill").val(null).trigger("change");
-            $("#selectQualifications").val(null).trigger("change");
-
-            $("#verifiedSwitch").prop("checked", false);
-            $("#searchName").val("");
-        })
-
         function getAndSentDataFilter() {
             let universities = $("#selectUniversiti").val() || [];
             let skills = $("#selectSkill").val() || [];
             let languages = $("#selectLanguage").val() || [];
             let qualifications = $("#selectQualifications").val() || [];
-            let verified = $("#verifiedSwitch").is(":checked");
             let name = $("#searchName").val() || "";
 
-            let formData = new FormData();
+            let searchParams = {
+                organizations: universities,
+                skills: skills,
+                languages: languages,
+                qualifications: qualifications,
+                name: name
+            };
 
-            universities.forEach(function (value) {
-                formData.append("universities[]", value);
+            $.ajax({
+                url: "{{ route('profile.getAllStudentUserProfiles') }}",
+                data: searchParams,
+                type: "GET",
+                success: function (response) {
+                    console.log("response", response.data.data)
+                    let datas = response.data.data
+
+                    $("#talent-cards").empty()
+                    datas.forEach(data => {
+                        $("#talent-cards").append(talent.talentCard(data))
+                    })
+
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseJSON.message)
+                }
             });
 
-            skills.forEach(function (value) {
-                formData.append("skills[]", value);
-            });
-
-            languages.forEach(function (value) {
-                formData.append("languages[]", value);
-            });
-
-            qualifications.forEach(function (value) {
-                formData.append("qualifications[]", value);
-            });
-
-            formData.append("verified", verified ? 1 : 0);
-            formData.append("name", name);
-
-            for (const key of formData) {
-                console.log(key);
-            }
         }
+
+        function handleResetFilter() {
+            setOptions()
+            getAndSentDataFilter()
+        }
+
+        function handleAddToShortlist() {
+
+        }
+
         getAndSentDataFilter()
-        $(document).on("click", "#btnFilter", () => getAndSentDataFilter());
+        getData()
+
+        $(document).on("click", "#btnFilter", getAndSentDataFilter);
+        $(document).on("click", ".btn-add-to-shortlist", handleAddToShortlist)
+        $(document).on("click", "#btnResetFilter", handleResetFilter);
     });
 </script>
 @endsection

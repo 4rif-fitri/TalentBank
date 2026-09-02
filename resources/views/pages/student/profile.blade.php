@@ -2,7 +2,12 @@
 
 @section('content')
 
-<div class="user-card">
+<div class="user-card ">
+    @if(array_intersect(session('roles') ?? [], ['Recruiter']))
+    <div class="position-fixed z-3 p-2 rounded-2" style="right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5);">
+        <button class="btn btn-primary">Add to Shortlist</button>
+    </div>
+    @endif
 
     <div class="user-card-left">
 

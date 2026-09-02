@@ -64,31 +64,28 @@ export function detail(data) {
                 </div>`
 }
 
+function renderSkills(skills) {
+    let html = ""
+
+    skills.forEach(skill => {
+        html += `<div class="badge border text-black">
+                        <i class="fa-brands fa-laravel fa-lg"></i>
+                        ${skill.skill_name}
+                    </div>`
+    });
+
+    return html
+}
+
 export function candidate(user) {
     return `<tr data-id=${user.id}>
                 <td>
                     <div class="d-flex gap-2">
                         <h6 class="text-start">${user.name}</h6>
-                        <!-- <p class="text-muted text-start">(UTEM)</p> -->
                     </div>
                 </td>
                 <td class="d-none d-md-block">
-                    <div class="badge border text-black">
-                        <i class="fa-brands fa-laravel fa-lg"></i>
-                        laravel
-                    </div>
-                    <div class="badge border text-black">
-                        <i class="fa-brands fa-laravel fa-lg"></i>
-                        laravel
-                    </div>
-                    <div class="badge border text-black">
-                        <i class="fa-brands fa-laravel fa-lg"></i>
-                        laravel
-                    </div>
-                    <div class="badge border text-black">
-                        <i class="fa-brands fa-plus "></i>
-                        5
-                    </div>
+                    ${renderSkills(user.skills)}
                 </td>
                 <td>
                     <div class="badge bg-primary">Added</div>
@@ -125,7 +122,6 @@ export function candidate(user) {
                                     Set Interview
                                 </button>
                             </li>
-
 
                             <li>
                                 <button data-id=${user.id} class="dropdown-item text-danger" id="btnDeletTalentRow">

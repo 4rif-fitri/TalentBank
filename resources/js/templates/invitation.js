@@ -24,8 +24,6 @@ export function recruitmentInvitationList(inv) {
 }
 
 export function mainContent(data) {
-    console.log(data);
-
     return `
     <div class="row g-3 ">
         <div class="h-100 border-0 p-3 position-relative">
