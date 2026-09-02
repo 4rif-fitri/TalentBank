@@ -14,6 +14,11 @@ class InterviewService
     private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
     private const LOCKED_STATUS = [AppConstants::INTERVIEW_STATUS['COMPLETED'], AppConstants::INTERVIEW_STATUS['CANCELLED']];
 
+    // used to determine the columns to be returned for related models when fetching invitations
+    private const INVITATION_RETURN_COLUMNS = 'id,position_id,receiver_profile_id,sender_profile_id';
+    private const POSITION_RETURN_COLUMNS = 'id,position_title';
+    private const PROFILE_RETURN_COLUMNS = 'id,name,profile_image,location,headline';
+
     public function __construct(
         private readonly InvitationService $invitationService
     ) {
@@ -21,7 +26,7 @@ class InterviewService
 
     private function getInterviewModel(int $interviewId, int $senderId): Interview
     {
-        $interview = Interview::with('invitation.position')
+        $interview = Interview::with('invitation.position:' . self::POSITION_RETURN_COLUMNS)
             ->whereHas('invitation', function ($query) use ($senderId) {
                 $query->where('sender_profile_id', $senderId);
             })->find($interviewId);
@@ -52,12 +57,18 @@ class InterviewService
         return $interview->unsetRelation('invitation');
     }
 
+    /**
+     * Returnes interview based on sender's user profile ID
+     * 
+     * @param int $senderId
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Interview>
+     */
     public function getInterviewsBySenderId(int $senderId): Collection
     {
         return Interview::with([
-            'invitation:id,position_id,receiver_profile_id',
-            'invitation.position:id,position_title',
-            'invitation.receiver:id,name,profile_image'
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS
         ])
             ->whereHas('invitation', function ($query) use ($senderId) {
                 $query->where('sender_profile_id', $senderId);
@@ -65,12 +76,18 @@ class InterviewService
             ->get();
     }
 
+    /**
+     * Returns interview based on receiver's user profile ID
+     * 
+     * @param int $receiverId
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Interview>
+     */
     public function getInterviewsByReceiverId(int $receiverId): Collection
     {
         return Interview::with([
-            'invitation:id,position_id,receiver_profile_id',
-            'invitation.position:id,position_title',
-            'invitation.receiver:id,name,profile_image'
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS
         ])
             ->whereHas('invitation', function ($query) use ($receiverId) {
                 $query->where('receiver_profile_id', $receiverId);
@@ -78,13 +95,21 @@ class InterviewService
             ->get();
     }
 
+    /**
+     * Returns interview based on interview ID
+     * 
+     * @param int $interviewId
+     * @param int $userProfileId
+     * @throws Exception
+     * @return Interview|\Illuminate\Database\Eloquent\Builder<Interview>
+     */
     public function getInterviewById(int $interviewId, int $userProfileId): Interview
     {
         $interview = Interview::with([
-            'invitation:id,position_id,receiver_profile_id,sender_profile_id',
-            'invitation.position',
-            'invitation.receiver:id,name,profile_image',
-            'invitation.sender:id,name,profile_image'
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'invitation.sender:' . self::PROFILE_RETURN_COLUMNS
         ])
             ->whereHas('invitation', function ($query) use ($userProfileId) {
                 $query->where('sender_profile_id', $userProfileId)
@@ -101,6 +126,40 @@ class InterviewService
         return $interview;
     }
 
+    /**
+     * Returns interview filtered by interview status
+     * 
+     * @param string $interviewStatus
+     * @param int $userProfileId
+     * @throws Exception
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Interview>
+     */
+    public function getInterviewsByStatus(string $interviewStatus, int $userProfileId): Collection
+    {
+        if (!in_array($interviewStatus, AppConstants::INTERVIEW_STATUS)) {
+            throw new Exception('Invalid interview status.', Response::HTTP_BAD_REQUEST);
+        }
+
+        return Interview::with([
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS
+        ])
+            ->whereHas('invitation', function ($query) use ($userProfileId) {
+                $query->where('sender_profile_id', $userProfileId);
+            })
+            ->where('interview_status', $interviewStatus)
+            ->get();
+    }
+
+    /**
+     * Creates a new interview
+     * 
+     * @param array $data
+     * @param int $senderId
+     * @throws Exception
+     * @return Interview
+     */
     public function createInterview(array $data, int $senderId): Interview
     {
         $invitation = $this->invitationService->getInvitationById($data['invitation_id'], $senderId);
@@ -130,12 +189,21 @@ class InterviewService
         ]);
 
         return $interview->load([
-            'invitation:id,position_id,receiver_profile_id',
-            'invitation.position:id,position_title',
-            'invitation.receiver:id,name,profile_image'
+            'invitation:' . self::INVITATION_RETURN_COLUMNS,
+            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS
         ]);
     }
 
+    /**
+     * Updates an existing interview (excluding status)
+     * 
+     * @param array $data
+     * @param int $interviewId
+     * @param int $senderId
+     * @throws Exception
+     * @return Interview
+     */
     public function updateInterview(array $data, int $interviewId, int $senderId): Interview
     {
         $interview = $this->getInterviewModel($interviewId, $senderId);
@@ -158,11 +226,25 @@ class InterviewService
         return $interview->unsetRelation('invitation');
     }
 
+    /**
+     * Marks the interview as complete
+     * 
+     * @param int $interviewId
+     * @param int $senderId
+     * @return Interview
+     */
     public function completeInterview(int $interviewId, int $senderId): Interview
     {
         return $this->updateInterviewStatus($interviewId, AppConstants::INTERVIEW_STATUS['COMPLETED'], $senderId);
     }
 
+    /**
+     * Cancels the interview
+     * 
+     * @param int $interviewId
+     * @param int $senderId
+     * @return Interview
+     */
     public function cancelInterview(int $interviewId, int $senderId): Interview
     {
         return $this->updateInterviewStatus($interviewId, AppConstants::INTERVIEW_STATUS['CANCELLED'], $senderId);

@@ -21,6 +21,11 @@ class InvitationService
         AppConstants::INVITATION_STATUS['WITHDRAWN']
     ];
 
+    // used to determine the columns to be returned for related models when fetching invitations
+    private const PROFILE_RETURN_COLUMNS = 'id,name,profile_image,location,headline';
+    private const POSITION_RETURN_COLUMNS = 'id,position_title,organization_id';
+    private const ORGANIZATION_RETURN_COLUMNS = 'id,company_name';
+
     private function getInvitationModel(int $invitationId, string $profileColumnName, int $userProfileId): Invitation
     {
         $invitation = Invitation::where([
@@ -60,9 +65,9 @@ class InvitationService
     public function getInvitationsByReceiverId(int $receiverId): Collection
     {
         return Invitation::with([
-            'position:id,position_title,organization_id',
-            'sender:id,name,profile_image',
-            'position.organization:id,company_name'
+            'position:' . self::POSITION_RETURN_COLUMNS,
+            'sender:' . self::PROFILE_RETURN_COLUMNS,
+            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])->where('receiver_profile_id', $receiverId)->get();
     }
 
@@ -75,9 +80,9 @@ class InvitationService
     public function getInvitationsBySenderId(int $senderId): Collection
     {
         return Invitation::with([
-            'position:id,position_title,organization_id',
-            'receiver:id,name,profile_image',
-            'position.organization:id,company_name'
+            'position:' . self::POSITION_RETURN_COLUMNS,
+            'receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])->where('sender_profile_id', $senderId)->get();
     }
 
@@ -93,9 +98,9 @@ class InvitationService
     {
         $invitation = Invitation::with([
             'position',
-            'receiver:id,name,profile_image,location,headline',
-            'sender:id,name,profile_image,location,headline',
-            'position.organization:id,company_name'
+            'receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'sender:' . self::PROFILE_RETURN_COLUMNS,
+            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
             ->where(function ($query) use ($userProfileId) {
                 $query->where('sender_profile_id', $userProfileId)
@@ -127,9 +132,9 @@ class InvitationService
         }
 
         return Invitation::with([
-            'position:id,position_title,organization_id',
-            'receiver:id,name,profile_image',
-            'position.organization:id,company_name'
+            'position:' . self::POSITION_RETURN_COLUMNS,
+            'receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
             ->where([
                 'invitation_status' => $invitationStatus,
@@ -173,8 +178,8 @@ class InvitationService
         ]);
 
         return $invitation->load([
-            'position:id,position_title',
-            'receiver:id,name,profile_image'
+            'position:' . self::POSITION_RETURN_COLUMNS,
+            'receiver:' . self::PROFILE_RETURN_COLUMNS
         ]);
     }
 
