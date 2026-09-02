@@ -35,6 +35,8 @@
             label="Dashboard" />
         <x-sidebar-link :route="route('profile.student')" routeName="profile.student" icon="fa-solid fa-user"
             label="My Profile" />
+        <x-sidebar-link :route="route('student.settings')" routeName="student.settings" icon="fa-solid fa-user"
+            label="Resume" />
         <x-sidebar-link :route="route('student.invitations')" routeName="student.invitations" icon="fa-solid fa-file"
             label="Invitations" />
         <x-sidebar-link :route="route('student.interviews')" routeName="student.interviews" icon="fa-solid fa-envelope"

@@ -66,6 +66,7 @@
 @endsection
 
 @section('content')
+
 <div class="content p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
@@ -117,7 +118,6 @@
     </div>
 </div>
 
-<!-- Overlay Gelap untuk Mobile -->
 <div class="filter-overlay" onclick="toggleFilter()"></div>
 @endsection
 

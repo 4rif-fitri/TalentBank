@@ -196,7 +196,7 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
             Route::get('/getInvitationsBySenderId', [InvitationController::class, 'getInvitationsBySenderId'])->name('invitations.getInvitationsBySenderId');
             Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store');
             Route::put('/update/{id}', [InvitationController::class, 'update'])->name('invitations.update');
-            Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.rejectInvitation');
+            Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.withdrawInvitation');
         });
     });
 
