@@ -12,7 +12,8 @@ class ProfileController extends Controller
 {
     public function __construct(
         private readonly ProfileService $profileService
-    ) {}
+    ) {
+    }
 
     public function getAllProfile(): JsonResponse
     {
@@ -42,7 +43,15 @@ class ProfileController extends Controller
      */
     public function getAllStudentUserProfiles(Request $request): JsonResponse
     {
-        $searchParams = $request->query('searchParams', []);
+        $searchParams = [
+            'name' => $request->query('name', ''),
+            'organizations' => $request->query('organizations', []),
+            'skills' => $request->query('skills', []),
+            'languages' => $request->query('languages', []),
+            'qualifications' => $request->query('qualifications', []),
+            'programmes' => $request->query('programmes', []),
+        ];
+
         $profiles = $this->profileService->getAllStudentUserProfiles($searchParams);
         return ApiResponse::success('Success.', $profiles)->toJsonResponse();
     }

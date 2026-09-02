@@ -70,4 +70,9 @@ class UserProfile extends Model
         return $this->morphToMany(Skill::class, 'source', 'user_skills')
             ->withPivot('id');
     }
+
+    public function education()
+    {
+        return $this->hasMany(Education::class, 'user_profile_id');
+    }
 }
