@@ -75,4 +75,9 @@ class UserProfile extends Model
     {
         return $this->hasMany(Education::class, 'user_profile_id');
     }
+
+    public function likes()
+    {
+        return $this->hasMany(Like::class, 'liked_user_profile_id');
+    }
 }
