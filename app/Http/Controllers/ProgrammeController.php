@@ -44,4 +44,28 @@ class ProgrammeController extends Controller
 
         return ApiResponse::success('Success.', $programmes)->toJsonResponse();
     }
+
+    /**
+     * Handles request to get all field of studies.
+     *
+     * @return JsonResponse
+     */
+    public function getAllFieldOfStudies(): JsonResponse
+    {
+        $fieldOfStudies = $this->programmeService->getAllFieldOfStudies();
+
+        return ApiResponse::success('Success.', $fieldOfStudies)->toJsonResponse();
+    }
+
+    /**
+     * Handles request to get all qualifications.
+     *
+     * @return JsonResponse
+     */
+    public function getAllQualifications(): JsonResponse
+    {
+        $qualifications = $this->programmeService->getAllQualifications();
+
+        return ApiResponse::success('Success.', $qualifications)->toJsonResponse();
+    }
 }

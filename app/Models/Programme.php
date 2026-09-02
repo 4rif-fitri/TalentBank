@@ -18,6 +18,8 @@ class Programme extends Model
         'duration_years',
         'status',
         'organization_id',
+        'field_of_study_id',
+        'qualification_id',
         'created_at',
         'updated_at',
     ];
@@ -30,5 +32,15 @@ class Programme extends Model
     public function organization()
     {
         return $this->belongsTo(Organization::class, 'organization_id');
+    }
+
+    public function fieldOfStudy()
+    {
+        return $this->belongsTo(FieldOfStudy::class, 'field_of_study_id');
+    }
+
+    public function qualification()
+    {
+        return $this->belongsTo(Qualification::class, 'qualification_id');
     }
 }
