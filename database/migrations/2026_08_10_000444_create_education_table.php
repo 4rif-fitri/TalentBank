@@ -16,8 +16,6 @@ return new class extends Migration {
             $table->foreignId('user_profile_id')->constrained('user_profiles')->onDelete('restrict');
             $table->foreignId('programme_id')->constrained('programmes')->onDelete('restrict');
             $table->text('description')->nullable();
-            $table->foreignId('field_of_study_id')->constrained('field_of_studies')->nullable();
-            $table->foreignId('qualification_id')->constrained('qualifications')->nullable();
             $table->decimal('cgpa', 3, 2)->nullable();
             $table->date('start_date');
             $table->date('end_date');

@@ -17,6 +17,8 @@ return new class extends Migration {
             $table->string('programme_name');
             $table->string('programme_code');
             $table->enum('programme_level', AppConstants::PROGRAMME_LEVELS);
+            $table->foreignId('field_of_study_id')->constrained('field_of_studies')->nullable();
+            $table->foreignId('qualification_id')->constrained('qualifications')->nullable();
             $table->integer('duration_years', false, true);
             $table->boolean('status');
             $table->foreignId('organization_id')->constrained('organizations')->onDelete('restrict');

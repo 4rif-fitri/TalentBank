@@ -57,6 +57,18 @@ class ProfileController extends Controller
     }
 
     /**
+     * Handles request to get user profiles liked by current user
+     * 
+     * @return JsonResponse
+     */
+    public function getLikedUserProfiles(): JsonResponse
+    {
+        $userProfileId = session('user_profile_id');
+        $likedProfiles = $this->profileService->getLikedUserProfiles($userProfileId);
+        return ApiResponse::success('Success.', $likedProfiles)->toJsonResponse();
+    }
+
+    /**
      * Handles request to update profile data for current logged in user
      *
      * @param   Request $request
