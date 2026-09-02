@@ -56,10 +56,14 @@
 
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="fw-bold text-sm-center text-lg-start">Education</h3>
+
+        @if (array_intersect(session('roles') ?? [], ['Student']))
         <button class="btn btn-primary" id="addEducation" type="button">
             <i class="fa-solid fa-plus me-1"></i>
             Add Education
         </button>
+        @endif
+
     </div>
     <hr>
     <div id="educationCarousel" class="carousel slide" data-bs-interval="false" data-bs-touch="true">
@@ -138,7 +142,7 @@
 
             visibleMedia.forEach((dt, index) => {
 
-                let baseUrl = "{{ URL::asset('EDUCATION_FILE_URL') }}";
+                let baseUrl = "{{ URL::asset('uploads/education-file-url') }}";
                 let imageUrl = `${baseUrl}/${dt.file_name}`;
 
                 let remaining = media.length - 2;

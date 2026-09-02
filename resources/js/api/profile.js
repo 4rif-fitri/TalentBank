@@ -1,15 +1,15 @@
 // get profile data
 export function getProfile(profileId) {
-
+    let url = `${window.appConfig.routes.profile.show}`
+    url = url.replace("__ID__", profileId)
     return $.ajax({
-        url: `${window.appConfig.routes.profile.show}`,
+        url,
         type: 'GET'
     });
 }
 
 // update profile
 export function updateProfile(data) {
-
     return $.ajax({
         url: window.appConfig.routes.profile.update,
         type: 'POST',

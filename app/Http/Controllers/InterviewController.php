@@ -13,8 +13,7 @@ class InterviewController extends Controller
 {
     public function __construct(
         private readonly InterviewService $interviewService
-    ) {
-    }
+    ) {}
 
     /**
      * Handles request to get interviews where current user is the sender
@@ -82,8 +81,8 @@ class InterviewController extends Controller
             'invitation_id' => ['required', 'integer', 'exists:invitations,id'],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
-            'location' => ['nullable', 'string', 'required_if:interview_mode,in_person'],
-            'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,online'],
+            'location' => ['nullable', 'string', 'required_if:interview_mode,On-site'],
+            'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,Online'],
             'recruiter_comment' => ['nullable', 'string'],
         ]);
 
