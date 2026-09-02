@@ -23,5 +23,17 @@
             console.error(xhr.responseJSON.message)
         }
     });
+
+
+    $.ajax({
+        url: "{{ route('profile.getAllProfile') }}",
+        type: "GET",
+        success: function (response) {
+            console.log("getInterviewsBySenderId", response)
+        },
+        error: function (xhr) {
+            console.error(xhr.responseJSON.message)
+        }
+    });
 </script>
 @endsection
