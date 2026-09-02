@@ -222,7 +222,7 @@
         let $container = $("#mediaContainer");
         $container.empty();
 
-        let baseUrl = "{{ asset('EDUCATION_FILE_URL') }}";
+        let baseUrl = "{{ env('EDUCATION_FILE_URL') }}";
 
         existingEducationMedia.forEach(media => {
             // Kalau user dah tekan delete, jangan render
@@ -375,8 +375,8 @@
                 console.log(data);
 
                 $("#educationId").val(data.id);
-                $("#qualification").val(data.qualification_id);
-                $("#fieldOfStudy").val(data.field_of_study_id);
+                $("#qualification").val(data.qualification.id);
+                $("#fieldOfStudy").val(data.field_of_study.name);
                 $("#cgpaInput").val(data.cgpa);
                 $("#descriptionInput").val(data.description);
                 $("#enrollmentStatus").val(

@@ -17,7 +17,8 @@ export function initProfile() {
 }
 
 export async function loadProfile() {
-    const profileId = window.appConfig.userId;
+    const profileId = Number(window.location.pathname.split('/').pop()) || window.appConfig.userId;
+    console.log({ profileId });
 
     if (!profileId) {
         console.error('Profile ID missing');
@@ -34,14 +35,14 @@ export async function loadProfile() {
         renderProfile();
 
     } catch (error) {
-        console.error('Failed to load profile:',error);
+        console.error('Failed to load profile:', error);
 
     } finally {
         profileState.loading = false;
     }
 }
 
-async function loadAllSocialMedia(){
+async function loadAllSocialMedia() {
 
     socialMedia.loading = true;
 

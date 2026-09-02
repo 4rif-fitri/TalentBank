@@ -4,6 +4,7 @@
             Semester Results
         </h3>
         <div>
+            @if (array_intersect(session('roles') ?? [], ['Student']))
             <button class="btn btn-primary" id="addSemester" type="button">
                 <i class="fa-solid fa-plus me-1"></i>
                 Add Semester
@@ -12,6 +13,8 @@
                 <i class="fa-solid fa-plus me-1"></i>
                 Add Result
             </button>
+            @endif
+
         </div>
     </div>
     <hr>

@@ -3,13 +3,16 @@
         <h3 class="fw-bold text-sm-center text-lg-start mb-0">
             Skills
         </h3>
+
+        @if (array_intersect(session('roles') ?? [], ['Student']))
         <div class="icon-container">
             <button id="btnSkill" type="button" class="btn btn-secondary icon" title="Edit Skills">
                 <i class="fa-solid fa-pencil"></i>
             </button>
         </div>
+        @endif
     </div>
+
     <hr>
     <div id="skillList" class="d-flex flex-wrap gap-2"></div>
 </section>
-

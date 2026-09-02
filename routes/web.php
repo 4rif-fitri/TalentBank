@@ -55,17 +55,33 @@ Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->
 |
 */
 Route::middleware('auth')->group(function () {
-    Route::get('/', [internshipController::class, "index"])->name('home'); //+
-    Route::get('/invitations', [internshipController::class, "invitations"])->name('invitations'); //+
-    Route::get('/interviews', [internshipController::class, "interviews"])->name('interviews'); //+
-    Route::get('/jobOffers', [internshipController::class, "jobOffers"])->name('jobOffers'); //+
-    Route::get('/messages', [internshipController::class, "messages"])->name('messages'); //+
-    Route::get('/settings', [internshipController::class, "settings"])->name('settings'); //+
-    Route::get('/shortlist', [internshipController::class, "shortlists"])->name('shortlists'); //+
-    Route::get('/talents', [internshipController::class, "talents"])->name('talents'); //+
+    Route::get('/', [internshipController::class, "index"])->name('home');
+
+    Route::middleware('checkRole:Student')->group(function () {
+        Route::get('/student', [internshipController::class, "studentIndex"])->name('student.index');
+        Route::get('/student/invitations', [internshipController::class, "invitations"])->name('student.invitations');
+        Route::get('/student/interviews', [internshipController::class, "interviews"])->name('student.interviews');
+        Route::get('/student/jobOffers', [internshipController::class, "jobOffers"])->name('student.jobOffers');
+        Route::get('/student/messages', [internshipController::class, "messages"])->name('student.messages');
+        Route::get('/student/settings', [internshipController::class, "settings"])->name('student.settings');
+    });
+
+    Route::middleware('checkRole:Recruiter')->group(function () {
+        Route::get('/recruiter', [internshipController::class, "recruiterIndex"])->name('recruiter.index');
+        Route::get('/recruiter/shortlist', [internshipController::class, "recruiterShortlists"])->name('recruiter.shortlists');
+        Route::get('/recruiter/talents', [internshipController::class, "recruiterTalents"])->name('recruiter.talents');
+        Route::get('/recruiter/savedTalent', [internshipController::class, "recruiterSavedTalent"])->name('recruiter.savedTalent');
+        Route::get('/recruiter/invitations', [internshipController::class, "recruiterInvitations"])->name('recruiter.invitations');
+        Route::get('/recruiter/interviews', [internshipController::class, "recruiterInterviews"])->name('recruiter.interviews');
+        Route::get('/recruiter/jobOffers', [internshipController::class, "recruiterJobOffers"])->name('recruiter.jobOffers');
+        Route::get('/recruiter/hiredTalent', [internshipController::class, "recruiterHiredTalent"])->name('recruiter.hiredTalent');
+        Route::get('/recruiter/messages', [internshipController::class, "recruiterMessages"])->name('recruiter.messages');
+        Route::get('/recruiter/settings', [internshipController::class, "recruiterSettings"])->name('recruiter.settings');
+    });
 
     Route::prefix('profile')->group(function () {
         Route::get('/student', [internshipController::class, "profile"])->name('profile.student'); //+
+        Route::get('/student/{id}', [internshipController::class, "studentView"])->name('profile.student.view'); //+
         Route::get('/education', [internshipController::class, "education"])->name('profile.education'); //+
         Route::get('/experience', [internshipController::class, "experience"])->name('profile.experience'); //+
     });
@@ -82,6 +98,7 @@ Route::middleware('auth')->group(function () {
 |
 */
 Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(function () {
+
 
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.getAllStudentUserProfiles');
@@ -153,13 +170,13 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('positions')->group(function () {
-        Route::get('/', [PositionController::class, 'getAllPositions'])->name('positions.getAllPositions');
-        Route::get('/{id}', [PositionController::class, 'getPositionById'])->name('positions.getPositionById');
-        Route::get('/org/{id}', [PositionController::class, 'getPositionsByOrgId'])->name('positions.getPositionsByOrgId');
+        Route::get('/', [PositionController::class, 'getAllPositions'])->name('positions.getAllPositions'); //
+        Route::get('/{id}', [PositionController::class, 'getPositionById'])->name('positions.getPositionById'); //+
+        Route::get('/org/{id}', [PositionController::class, 'getPositionsByOrgId'])->name('positions.getPositionsByOrgId'); //+
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::post('/store', [PositionController::class, 'store'])->name('positions.store');
-            Route::put('/update/{id}', [PositionController::class, 'update'])->name('positions.update');
+            Route::post('/store', [PositionController::class, 'store'])->name('positions.store'); //+
+            Route::put('/update/{id}', [PositionController::class, 'update'])->name('positions.update'); //+
         });
     });
 
@@ -169,30 +186,30 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('invitations')->group(function () {
-        Route::get('/getInvitationsByReceiverId', [InvitationController::class, 'getInvitationsByReceiverId'])->name('invitations.getInvitationsByReceiverId');
-        Route::get('/status/{status}', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId');
-        Route::get('/getInvitationById/{id}', [InvitationController::class, 'getInvitationById'])->name('invitations.getInvitationById');
-        Route::put('/acceptInvitation/{id}', [InvitationController::class, 'acceptInvitation'])->name('invitations.acceptInvitation');
-        Route::put('/rejectInvitation/{id}', [InvitationController::class, 'rejectInvitation'])->name('invitations.rejectInvitation');
+        Route::get('/getInvitationsByReceiverId', [InvitationController::class, 'getInvitationsByReceiverId'])->name('invitations.getInvitationsByReceiverId'); //+
+        Route::get('/status/{status}', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId'); //+
+        Route::get('/getInvitationById/{id}', [InvitationController::class, 'getInvitationById'])->name('invitations.getInvitationById'); //+ //+
+        Route::put('/acceptInvitation/{id}', [InvitationController::class, 'acceptInvitation'])->name('invitations.acceptInvitation'); //+
+        Route::put('/rejectInvitation/{id}', [InvitationController::class, 'rejectInvitation'])->name('invitations.rejectInvitation'); //+
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::get('/getInvitationsBySenderId', [InvitationController::class, 'getInvitationsBySenderId'])->name('invitations.getInvitationsBySenderId');
-            Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store');
-            Route::put('/update/{id}', [InvitationController::class, 'update'])->name('invitations.update');
-            Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.rejectInvitation');
+            Route::get('/getInvitationsBySenderId', [InvitationController::class, 'getInvitationsBySenderId'])->name('invitations.getInvitationsBySenderId'); //+
+            Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store'); //+
+            Route::put('/update/{id}', [InvitationController::class, 'update'])->name('invitations.update'); //+
+            Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.withdrawInvitation'); //+
         });
     });
 
     Route::prefix('interviews')->group(function () {
-        Route::get('/getInterviewsByReceiverId', [InterviewController::class, 'getInterviewsByReceiverId'])->name('interviews.getInterviewsByReceiverId');
-        Route::get('/getInterviewById/{id}', [InterviewController::class, 'getInterviewById'])->name('interviews.getInterviewById');
+        Route::get('/getInterviewsByReceiverId', [InterviewController::class, 'getInterviewsByReceiverId'])->name('interviews.getInterviewsByReceiverId'); //+
+        Route::get('/getInterviewById/{id}', [InterviewController::class, 'getInterviewById'])->name('interviews.getInterviewById'); //+
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::get('/getInterviewsBySenderId', [InterviewController::class, 'getInterviewsBySenderId'])->name('interviews.getInterviewsBySenderId');
-            Route::post('/store', [InterviewController::class, 'store'])->name('interviews.store');
-            Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update');
-            Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview');
-            Route::put('/cancelInterview/{id}', [InterviewController::class, 'cancelInterview'])->name('interviews.cancelInterview');
+            Route::get('/getInterviewsBySenderId', [InterviewController::class, 'getInterviewsBySenderId'])->name('interviews.getInterviewsBySenderId'); //+
+            Route::post('/store', [InterviewController::class, 'store'])->name('interviews.store'); //+
+            Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update'); //+
+            Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview'); //+
+            Route::put('/cancelInterview/{id}', [InterviewController::class, 'cancelInterview'])->name('interviews.cancelInterview'); //+
         });
     });
 

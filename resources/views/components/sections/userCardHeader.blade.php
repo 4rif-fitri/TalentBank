@@ -21,6 +21,8 @@
 
 <section class="user-card-header">
     <div class="user-card-banner" id="coverImage" style="background-image: url('');">
+
+        @if (array_intersect(session('roles') ?? [], ['Student']))
         <button class="icon-container btn" data-bs-toggle="tooltip" data-bs-placement="bottom"
             data-bs-custom-class="custom-tooltip" data-bs-title="Edit Cover Image">>
             <label for="coverImageInput" class="btn icon bg-body">
@@ -28,10 +30,14 @@
                 <input type="file" hidden id="coverImageInput" name="cover_image" accept="image/*">
             </label>
         </button>
+        @endif
+
     </div>
 
     <div class="user-profile-group">
         <div class="profile-image" id="profileImage" style="background-image: url('');">
+
+            @if (array_intersect(session('roles') ?? [], ['Student']))
             <div class="w-100 h-100 position-relative">
                 <label for="profileImageInput" class="btn icon bg-body">
                     <i class="fa-solid fa-camera" data-bs-toggle="tooltip" data-bs-placement="right"
@@ -39,6 +45,8 @@
                     <input type="file" hidden id="profileImageInput" accept="image/*">
                 </label>
             </div>
+            @endif
+
         </div>
     </div>
 
@@ -50,10 +58,14 @@
                 </button>
             </div> -->
             <p id="name" class="fw-bold lg-h2 sm-h6"></p>
+
+            @if (array_intersect(session('roles') ?? [], ['Student']))
             <button type="button" class="btn btn-secondary icon" id="btnEditProfile" data-bs-toggle="tooltip"
                 data-bs-placement="bottom" data-bs-custom-class="custom-tooltip" data-bs-title="Edit Profile Data">
                 <i class="fa-solid fa-pencil"></i>
             </button>
+            @endif
+
             <p id="headline"></p>
             <a id="uni-name" href="#" class="h6 fw-bold mb-0"></a>
             <p id="programme"></p>
@@ -74,6 +86,7 @@
         </div>
 
         <div class="row g-2 profile-actions mt-lg-4 mt-md-4">
+            @if (array_intersect(session('roles') ?? [], ['Student']))
             <div class="col-12 order-1 order-md-2">
                 <button class="btn btn-primary w-100 profile-action-btn" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
@@ -87,12 +100,23 @@
                     Preview
                 </button>
             </div>
+
             <div class="col-6 col-md-12 order-3 order-md-3">
                 <button class="btn btn-outline-primary w-100 profile-action-btn" type="button">
                     <i class="fa-solid fa-share-nodes"></i>
                     Share
                 </button>
             </div>
+
+            @elseif(array_intersect(session('roles') ?? [], ['Recruiter']))
+            <div class="col-12 order-1 order-md-2">
+                <button class="btn btn-outline-primary w-100 profile-action-btn" type="button">
+                    <i class="fa-solid fa-share-nodes"></i>
+                    Share
+                </button>
+            </div>
+            @endif
+
 
         </div>
     </div>
