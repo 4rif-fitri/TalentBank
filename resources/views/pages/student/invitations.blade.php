@@ -96,85 +96,22 @@
                 </ul>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
-                onclick="toggleFilter()">
-                <div role="button" class="d-flex align-items-center gap-3">
-                    <div class="flex-grow-1 d-flex flex-column">
-                        <p class="fw-semibold">
-                            Anak2you sdn bhd
-                        </p>
-                        <p class="text-primary fw-semibold">FrontEnd intern</p>
-                        <p class="text-primary fw-semibold">FrontEnd intern</p>
-                        <small class="text-primary">
-                            Expires 22 May 2025
-                        </small>
-                    </div>
-                </div>
-                <i class="fa-solid fa-angle-right" style="color: rgb(0, 0, 0);"></i>
-            </div>
-
+            <div class="invitation-list"></div>
 
         </aside>
 
-        <div class=" filter-panel flex-grow-1">
-            <div class="row g-3 ">
-                <div class="card h-100 shadow-sm border-0 p-3 position-relative">
+        <div class="filter-panel flex-grow-1">
+            <div class="row g-3 " id="shortlistContent">
 
-
-                    <div class="d-flex gap-3">
-                        <i class="fa-solid fa-circle-user" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                        <div>
-                            <h3 class="fw-semibold">Dr Lorem Ipsum Dolor Sit Amit</h3>
-                            <p class="fw-semibold">Sofware inginer with Honor</p>
-                            <small class="text-muted d-block">Universiti Teknikal Malaysia Melaka(UTEM)</small>
-                            <small class="text-muted d-block">
-                                <i class="fa-solid fa-location-dot" style="color: rgb(0, 0, 0);"></i>
-                                Durian Tunggal, Malaka, Malaysia
-                            </small>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-between my-3">
-                        <div class="border p-1">
-                            <small class="text-muted">Position</small>
-                            <h5 class="fw-semibold">FrontEnd Intern</h5>
-                        </div>
-                        <div>
-                            <small class="text-muted">Department</small>
-                            <h5 class="fw-semibold">Department IT and DEV</h5>
-                        </div>
-                        <div>
-                            <small class="text-muted">employment_type</small>
-                            <h5 class="fw-semibold">employment_type</h5>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h5 class="fw-semibold">Personal Message</h5>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste reprehenderit veniam sunt dicta
-                            iusto, temporibus ex consequatur perferendis quasi. Corrupti, mollitia aperiam! Dolorem,
-                            ipsum! Quo expedita reiciendis quae libero accusamus!</p>
-                    </div>
-
-                    <div class="mt-2">
-                        <h6 class="fw-semibold mb-1">Actions</h6>
-                        <div>
-                            <button class="btn btn-outline-primary">
-                                <i class="fa-regular fa-message text-primary"></i>
-                                Message Student
-                            </button>
-                            <button class="btn btn-outline-danger">
-                                <i class="fa-regular fa-trash-can text-danger"></i>
-                                Withdraw Invitation
-                            </button>
-                            <button class="btn btn-outline-primary">
-                                <i class="fa-solid fa-pen text-primary"></i>
-                                Edit Invitation
-                            </button>
-                        </div>
-                    </div>
-
+                <div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
+                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                    <h4 class="mt-2">No Interview Selected Yet</h4>
+                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                        <i class="fa-solid fa-filter"></i>
+                        Interview
+                    </button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -191,14 +128,15 @@
     }
 </script>
 <script>
-    let url = "{{ route('invitations.getInvitationsByReceiverId ', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 2)
-
     $.ajax({
-        url,
+        url: "{{ route('invitations.getInvitationsByReceiverId') }}",
         type: "GET",
         success: function (response) {
             console.log("getInvitationsByReceiverId", response)
+            $(".invitation-list").empty()
+            let invitations = response.data
+
+            invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
         },
         error: function (xhr) {
             console.error(xhr)
@@ -206,68 +144,83 @@
         }
     });
 
-    url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 6)
+    function getInvitationById(id) {
+        url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
+        url = url.replace("__ID__", id)
 
-    $.ajax({
-        url,
-        type: "GET",
-        success: function (response) {
-            console.log("getInvitationsByReceiverId", response)
-        },
-        error: function (xhr) {
-            console.error(xhr)
+        return $.ajax({
+            url,
+            type: "GET"
+        });
+    }
 
-        }
-    });
+    async function handleSelectedInvitation() {
+        let id = $(this).data('id');
 
-    // Once update only
-    url = "{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 6)
-    let formData = new FormData()
-    formData.append("_method", "PUT")
+        try {
+            let invitationDetail = await getInvitationById(id);
+            console.log(invitationDetail);
 
-    $.ajax({
-        url,
-        data: formData,
-        type: "POST",
-        processData: false,
-        contentType: false,
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-        },
-        success: function (response) {
-            console.log("acceptInvitation", response)
-        },
-        error: function (xhr) {
-            console.error(xhr)
+            $("#shortlistContent").empty()
+            $("#shortlistContent").append(invitation.reciverInvitatinMainContent(invitationDetail.data))
+
+        } catch (error) {
+            console.error(error);
 
         }
-    });
+    }
 
-    // Once update only
-    url = "{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 7)
-    formData = new FormData()
-    formData.append("_method", "PUT")
 
-    $.ajax({
-        url,
-        data: formData,
-        type: "POST",
-        processData: false,
-        contentType: false,
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-        },
-        success: function (response) {
-            console.log("rejectInvitation", response)
-        },
-        error: function (xhr) {
-            console.error(xhr)
+    $(document).on("click", ".invitation-item", handleSelectedInvitation)
 
-        }
-    });
+
+    // // Once update only
+    // url = "{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}"
+    // url = url.replace("__ID__", 6)
+    // let formData = new FormData()
+    // formData.append("_method", "PUT")
+
+    // $.ajax({
+    //     url,
+    //     data: formData,
+    //     type: "POST",
+    //     processData: false,
+    //     contentType: false,
+    //     headers: {
+    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+    //     },
+    //     success: function (response) {
+    //         console.log("acceptInvitation", response)
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr)
+
+    //     }
+    // });
+
+    // // Once update only
+    // url = "{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}"
+    // url = url.replace("__ID__", 7)
+    // formData = new FormData()
+    // formData.append("_method", "PUT")
+
+    // $.ajax({
+    //     url,
+    //     data: formData,
+    //     type: "POST",
+    //     processData: false,
+    //     contentType: false,
+    //     headers: {
+    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+    //     },
+    //     success: function (response) {
+    //         console.log("rejectInvitation", response)
+    //     },
+    //     error: function (xhr) {
+    //         console.error(xhr)
+
+    //     }
+    // });
 
 </script>
 @endsection
