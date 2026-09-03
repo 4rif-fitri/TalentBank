@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->string('company_email');
             $table->string('company_phone');
+            $table->string('organization_logo')->nullable();
             $table->foreignId('industry_category_id')->constrained('industry_categories')->onDelete('restrict');
             $table->foreignId('organization_type_id')->constrained('organization_types')->onDelete('restrict');
             $table->timestamps();
