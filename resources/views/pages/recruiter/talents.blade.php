@@ -191,6 +191,8 @@
 
 @section('script')
 <script>
+    let currentPage
+
     function toggleFilter() {
         document.body.classList.toggle('filter-open');
     }
@@ -311,7 +313,8 @@
                 skills: skills,
                 languages: languages,
                 qualifications: qualifications,
-                name: name
+                name: name,
+                page: 1
             };
 
             $.ajax({
@@ -321,7 +324,6 @@
                 success: function (response) {
                     console.log("response", response.data)
                     let datas = response.data.data
-
                     $("#talent-cards").empty()
                     datas.forEach(data => {
                         $("#talent-cards").append(talent.talentCard(data))

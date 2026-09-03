@@ -1,10 +1,13 @@
-function renderEducation(education) {
-    if (!education[0]) return ""
+function renderEducation(programmes) {
+
+    if (!Array.isArray(programmes) || programmes.length === 0) {
+        return "";
+    }
 
     return `
         <div class=" d-flex align-items-start flex-column w-100">
-            <p class="m-0 text-dark">${education[0].organization.company_name}</p>
-            <p class="m-0 text-muted">${education[0].programme_name}</p>
+            <p class="m-0 text-dark">${programmes[0].organization.company_name}</p>
+            <p class="m-0 text-muted">${programmes[0].programme_name}</p>
             <div class=" badge bg-primary">See More</div>
         </div>`
 }
@@ -25,6 +28,7 @@ function renderSkills(skills) {
 }
 
 export function talentCard(data) {
+
     return `<div class="col-12 col-md-6 col-lg-6 col-xl-4">
                     <div class="card h-100 border-0 p-3">
                         <div class="d-flex justify-content-between align-items-start">
@@ -39,7 +43,7 @@ export function talentCard(data) {
                             </div>
                             <div class="mb-2 d-flex align-items-center flex-column" style="font-size: 12px;">
                                 <h6 class="m-0 fw-bold">${data.name}</h6>
-                                ${renderEducation(data.active_programmes)}
+                                ${renderEducation(data.programmes)}
 
                             </div>
                         </div>
