@@ -409,7 +409,6 @@
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
                 success: function (response) {
-                    console.log(response);
 
                     if (response.message.includes("unliked")) {
                         parent.html(`<div></div>

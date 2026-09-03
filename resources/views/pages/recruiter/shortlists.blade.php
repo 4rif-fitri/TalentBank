@@ -218,10 +218,14 @@
         try {
             let profile = await getProfileDataByProfileId();
             let organizations = profile.organization_users;
+            console.log(organizations);
+
 
             let results = await Promise.all(
                 organizations.map(organization => getPositionsByOrgId(organization.organization_id))
             );
+
+            console.log({ results });
 
             shortListRender.sideBar(results)
 

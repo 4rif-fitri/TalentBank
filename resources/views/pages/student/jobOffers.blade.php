@@ -120,7 +120,7 @@
 @section('script')
 <script>
     $.ajax({
-        url: "{{ route('jobOffers.getJobOffersBySenderId') }}",
+        url: "{{ route('jobOffers.getJobOffersByReceiverId') }}",
         type: "GET",
         success: function (response) {
             console.log(response);
