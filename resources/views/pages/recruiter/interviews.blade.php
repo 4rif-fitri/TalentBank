@@ -147,7 +147,7 @@
         url,
         type: "GET",
         success: function (response) {
-            console.log("getInterviewsBySenderId", response)
+            // console.log("getInterviewsBySenderId", response)
 
             $("#shortlistList").empty()
             let interviews = response.data
@@ -204,84 +204,160 @@
 
     $(document).on("click", ".shortlist-item", handleSelectedInterview)
 
-    // url = "{{ route('interviews.update',['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 2)
-
-    // let formData = new FormData()
-    // formData.append("scheduled_at", "2026-9-30 05:07:17")
-    // formData.append("interview_mode", "Online")
-    // formData.append("location", "")
-    // formData.append("meeting_url", "http://127.0.0.1:8000/recruiter/invitations")
-    // formData.append("recruiter_comment", "recruiter_comment")
-    // formData.append("interview_result", "Passed")
-    // formData.append("_method", "PUT")
-
-    // $.ajax({
-    //     url,
-    //     data: formData,
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("interviews.store", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr.responseJSON.message)
-
-    //     }
-    // });
-
-    // url = "{{ route('interviews.completeInterview',['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 20)
-    // let formData = new FormData()
-    // formData.append("_method", "PUT")
-
-    // $.ajax({
-    //     url,
-    //     data: formData,
-
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("interviews.store", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr.responseJSON.message)
-
-    //     }
-    // });
-
-    // url = "{{ route('interviews.cancelInterview',['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 19)
-    // let formData = new FormData()
-    // formData.append("_method", "PUT")
-
-    // $.ajax({
-    //     url,
-    //     data: formData,
-
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("interviews.store", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr.responseJSON.message)
-
-    //     }
-    // });
 
 
+
+
+
+    function completeInterview(id) {
+        let url = "{{ route('interviews.completeInterview',['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+
+        let data = {
+            '_token': $('meta[name="csrf-token"]').attr("content"),
+            '_method': "PUT"
+        }
+
+        $.ajax({
+            type: "POST",
+            url,
+            data,
+            success: function (response) {
+                debug.log("completeInterview", response.data);
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function cancelInterview(id) {
+        let url = "{{ route('interviews.cancelInterview',['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+
+        let data = {
+            '_token': $('meta[name="csrf-token"]').attr("content"),
+            '_method': "PUT"
+        }
+
+        $.ajax({
+            type: "POST",
+            url,
+            data,
+            success: function (response) {
+                debug.log("cancelInterview", response.data);
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function getInterviewsBySenderId() {
+
+        $.ajax({
+            url: "{{ route('interviews.getInterviewsBySenderId') }}",
+            type: "GET",
+            success: function (response) {
+                debug.log("getInterviewsBySenderId", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function update(id) {
+        url = "{{ route('interviews.update',['id' => '__ID__' ]) }}"
+        url = url.replace("__ID__", id)
+
+        let data = {
+            "_token": $('meta[name="csrf-token"]').attr("content"),
+            "_method": "PUT",
+            "scheduled_at": "2026-9-30 05:07:17",
+            "interview_mode": "Online",
+            "location": "",
+            "meeting_url": "http://127.0.0.1:8000/recruiter/invitations",
+            "recruiter_comment": "!!!",
+            "interview_result": "Passed",
+        }
+
+        $.ajax({
+            url,
+            data,
+            method: "POST",
+            success: function (response) {
+                debug.log("update", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function store(id) {
+        let data = {
+            "_token": $('meta[name="csrf-token"]').attr("content"),
+            "scheduled_at": "2026-9-30 05:07:17",
+            "interview_mode": "Online",
+            "location": "",
+            "meeting_url": "http://127.0.0.1:8000/recruiter/invitations",
+            "recruiter_comment": "!!!",
+            "interview_result": "Passed",
+            "invitation_id": id
+        }
+
+        $.ajax({
+            url: "{{ route('interviews.store') }}",
+            data,
+            method: "POST",
+            success: function (response) {
+                debug.log("store", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function getInterviewsByStatus(status) {
+        let url = "{{ route('interviews.getInterviewsByStatus',['status' => '__STATUS__']) }}"
+        url = url.replace("__STATUS__", status)
+
+        $.ajax({
+            type: "GET",
+            url,
+            success: function (response) {
+                debug.log("cancelInterview", response.data);
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function ggetInterviewById(id) {
+        let url = "{{ route('interviews.getInterviewById',['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+
+        $.ajax({
+            type: "GET",
+            url,
+            success: function (response) {
+                debug.log("cancelInterview", response.data);
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    // getInterviewsBySenderId()
+    // completeInterview(3)
+    // cancelInterview(5)
+    // update(3)
+    // store(1)
+    // getInterviewsByStatus("Scheduled")
+    // ggetInterviewById(1)
 </script>
 @endsection

@@ -116,19 +116,37 @@
 
 @section('script')
 <script>
-    let url = "{{ route('interviews.getInterviewsByReceiverId', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", "{{ session('user_profile_id') }}")
+    function getInterviewsByReceiverId() {
 
-    $.ajax({
-        url,
-        type: "GET",
-        success: function (response) {
-            console.log("getInterviewsByReceiverId", response)
-        },
-        error: function (xhr) {
-            console.error(xhr.responseJSON.message)
-        }
-    });
+        $.ajax({
+            url: "{{ route('interviews.getInterviewsByReceiverId') }}",
+            type: "GET",
+            success: function (response) {
+                debug.log("cancelInterview", response.data);
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
 
+    function getInterviewById(id) {
+        let url = "{{ route('interviews.getInterviewById',['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+
+        $.ajax({
+            type: "GET",
+            url,
+            success: function (response) {
+                debug.log("cancelInterview", response.data);
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    getInterviewsByReceiverId()
+    getInterviewById(1)
 </script>
 @endsection
