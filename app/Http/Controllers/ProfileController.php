@@ -52,7 +52,9 @@ class ProfileController extends Controller
             'programmes' => $request->query('programmes', []),
         ];
 
-        $profiles = $this->profileService->getAllStudentUserProfiles($searchParams);
+        $userProfileId = session('user_profile_id');
+
+        $profiles = $this->profileService->getAllStudentUserProfiles($searchParams, $userProfileId);
         return ApiResponse::success('Success.', [
             'data' => $profiles->items(),
             'current_page' => $profiles->currentPage(),
