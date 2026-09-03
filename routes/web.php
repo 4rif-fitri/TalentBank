@@ -116,7 +116,10 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
         Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategories'])->name('organization.getAllIndustryCategories'); //-
         Route::get('/industry-sectors', [OrganizationController::class, 'getAllIndustrySectors'])->name('organization.getAllIndustrySectors'); //-
         Route::post('/store', [OrganizationController::class, 'store'])->name('organization.store'); //-
-        Route::middleware('checkRole:Organization Admin')->put('/update/{orgId}', [OrganizationController::class, 'update'])->name('organization.update'); //-
+        Route::middleware('checkRole:Organization Admin')->group(function () {
+            Route::put('/update/{orgId}', [OrganizationController::class, 'update'])->name('organization.update'); //-
+            Route::post('/upload-logo/{orgId}', [OrganizationController::class, 'uploadOrganizationLogo'])->name('organization.uploadOrganizationLogo');
+        });
     });
 
     Route::prefix('faculties')->group(function () {

@@ -22,6 +22,7 @@ class Organization extends Model
         'description',
         'company_email',
         'company_phone',
+        'organization_logo',
         'industry_sector_id',
         'organization_type_id',
         'created_at',
