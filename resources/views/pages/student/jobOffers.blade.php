@@ -118,5 +118,16 @@
 @endsection
 
 @section('script')
-
+<script>
+    $.ajax({
+        url: "{{ route('jobOffers.getJobOffersBySenderId') }}",
+        type: "GET",
+        success: function (response) {
+            console.log(response);
+        },
+        error: function (response) {
+            console.log(response);
+        }
+    });
+</script>
 @endsection
