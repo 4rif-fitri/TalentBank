@@ -183,7 +183,7 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::middleware('checkRole:Organization Admin,Recruiter')->prefix('shortlists')->group(function () {
-        Route::get('/getShortlistedPositions/{profileId}/org/{orgId}', [ShortlistController::class, 'getShortlistedPositions'])->name('shortlists.getShortlistedPositions');
+        Route::get('/getShortlistedPositionIds/{profileId}/org/{orgId}', [ShortlistController::class, 'getShortlistedPositionIds'])->name('shortlists.getShortlistedPositionIds');
         Route::post('/store', [ShortlistController::class, 'store'])->name('shortlists.store');
         Route::delete('/delete/{shortlistId}', [ShortlistController::class, 'delete'])->name('shortlists.delete');
     });
@@ -221,13 +221,13 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
         Route::get('/getJobOffersByReceiverId', [JobOfferController::class, 'getJobOffersByReceiverId'])->name('jobOffers.getJobOffersByReceiverId');
         Route::get('/getJobOfferById/{id}', [JobOfferController::class, 'getJobOfferById'])->name('jobOffers.getJobOfferById');
         Route::get('/getJobOffersByStatus/{status}', [JobOfferController::class, 'getJobOffersByStatus'])->name('jobOffers.getJobOffersByStatus');
+        Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer');
+        Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer');
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
             Route::get('/getJobOffersBySenderId', [JobOfferController::class, 'getJobOffersBySenderId'])->name('jobOffers.getJobOffersBySenderId');
             Route::post('/store', [JobOfferController::class, 'store'])->name('jobOffers.store');
             Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update');
-            Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer');
-            Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer');
             Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer');
         });
     });
