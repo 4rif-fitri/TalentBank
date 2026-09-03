@@ -170,15 +170,17 @@
             <div class="row g-3" id="talent-cards"></div>
 
             <div class="mt-2 d-flex justify-content-between align-items-center">
-                <span class="fw-bold">1000 students found</span>
+                <span class="fw-bold" id="total-found"></span>
                 <nav aria-label="..." class="">
                     <ul class="pagination">
+                        <!--
                         <li class="page-item"><a href="#" class="page-link">Previous</a></li>
                         <li class="page-item"><a class="page-link active" href="#">1</a></li>
                         <li class="page-item"><a class="page-link" href="#">2</a></li>
                         <li class="page-item"><a class="page-link" href="#">3</a></li>
                         <li class="page-item"><a class="page-link" href="#">4</a></li>
                         <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                         -->
                     </ul>
                 </nav>
             </div>
@@ -191,7 +193,8 @@
 
 @section('script')
 <script>
-    let currentPage
+    let current_page = 1
+    let last_page
 
     function toggleFilter() {
         document.body.classList.toggle('filter-open');
@@ -301,6 +304,30 @@
             allowClear: true
         });
 
+        function renderPagination() {
+            $(".pagination").empty();
+
+            $(".pagination").append(`
+                <li data-page="${current_page > 1 ? current_page - 1 : ""}"
+                    class="page-target page-item ${current_page === 1 ? "disabled" : ""}">
+                    <a class="page-link">Previous</a>
+                </li>
+            `);
+
+            for (let index = 1; index <= last_page; index++) {
+                $(".pagination").append(`
+                    <li data-page="${index}" role="button"
+                        class="page-target page-item ${index === current_page ? "active" : ""}">
+                        <a class="page-link">${index}</a>
+                    </li>`);
+            }
+
+            $(".pagination").append(`
+                <li data-page="${current_page < last_page ? current_page + 1 : ""}"
+                    class="page-target page-item ${current_page === last_page ? "disabled" : ""}">
+                    <a class="page-link">Next</a>
+                </li>`);
+        }
         function getAndSentDataFilter() {
             let universities = $("#selectUniversiti").val() || [];
             let skills = $("#selectSkill").val() || [];
@@ -314,7 +341,7 @@
                 languages: languages,
                 qualifications: qualifications,
                 name: name,
-                page: 1
+                page: current_page
             };
 
             $.ajax({
@@ -324,11 +351,16 @@
                 success: function (response) {
                     console.log("response", response.data)
                     let datas = response.data.data
+                    current_page = response.data.current_page
+                    last_page = response.data.last_page
+                    $("#total-found").text(`${response.data.total} students found`)
+
                     $("#talent-cards").empty()
                     datas.forEach(data => {
                         $("#talent-cards").append(talent.talentCard(data))
                     })
 
+                    renderPagination()
                 },
                 error: function (xhr) {
                     console.error(xhr.responseJSON.message)
@@ -336,6 +368,7 @@
             });
 
         }
+
 
         function handleResetFilter() {
             setOptions()
@@ -349,9 +382,58 @@
         getAndSentDataFilter()
         getData()
 
+        function handlePage() {
+            let page = $(this).data("page")
+
+            current_page = page
+            renderPagination()
+            getAndSentDataFilter()
+        }
+
+        function hanldeToggleLike() {
+            let id = $(this).data("id")
+            let parent = $(this).parent()
+
+            console.log(id);
+
+            let fromData = new FormData()
+            fromData.append("liked_user_profile_id", id)
+
+            $.ajax({
+                url: "{{ route('profile.toggleLike') }}",
+                type: "POST",
+                data: fromData,
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                success: function (response) {
+                    console.log(response);
+
+                    if (response.message.includes("unliked")) {
+                        parent.html(`<div></div>
+                                    <i role="button" data-id="${id}" class="fa-regular fa-heart text-muted talent-like"></i>`)
+                    } else {
+                        parent.html(`<div></div>
+                                    <i role="button" data-id="${id}" class="fa-solid fa-heart text-danger talent-like"></i>`)
+                    }
+
+                },
+                error: function (xhr) {
+                    console.error(xhr);
+
+                }
+            });
+
+        }
+
         $(document).on("click", "#btnFilter", getAndSentDataFilter);
         $(document).on("click", ".btn-add-to-shortlist", handleAddToShortlist)
         $(document).on("click", "#btnResetFilter", handleResetFilter);
+        $(document).on("click", ".page-target", handlePage)
+        $(document).on("click", ".talent-like", hanldeToggleLike)
+
     });
 </script>
 @endsection
