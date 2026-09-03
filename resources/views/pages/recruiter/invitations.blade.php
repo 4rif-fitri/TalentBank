@@ -109,17 +109,20 @@
                 </div> -->
 
                 <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active text-primary" aria-current="page" href="#">All</a>
+                    <li data-status="Pending" class="nav-item">
+                        <button class="nav-link active text-primary">Pending</button>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-black" href="#">Appected</a>
+                    <li data-status="Accepted" class="nav-item">
+                        <button class="nav-link text-black">Appected</button>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-black" href="#">Rejected</a>
+                    <li data-status="Rejected" class="nav-item">
+                        <button class="nav-link text-black">Rejected</button>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-black" href="#">Expired</a>
+                    <li data-status="Expired" class="nav-item">
+                        <button class="nav-link text-black">Expired</button>
+                    </li>
+                    <li data-status="Withdrawn" class="nav-item">
+                        <button class="nav-link text-black">Withdrawn</button>
                     </li>
                 </ul>
             </div>
@@ -129,6 +132,7 @@
 
         <div class="shortlist-content bg-body flex-grow-1 p-2 rounded card">
             <div class="row g-3" id="shortlistContent">
+
                 <div class="border-0 p-3 d-flex flex-column align-items-center">
                     <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
                     <h4 class="mt-2">No Interview Selected Yet</h4>
@@ -137,6 +141,7 @@
                         Interview
                     </button>
                 </div>
+
             </div>
         </div>
 
@@ -144,6 +149,9 @@
 </div>
 
 <div class="shortlist-overlay toggleFilter"></div>
+
+<x-modals.invitation-modal />
+
 @endsection
 
 @section('script')
@@ -155,6 +163,9 @@
     $(document).on("click", ".toggleFilter", toggleFilter)
 </script>
 <script>
+
+    let currentStatus = "Pending"
+    let currentInv
     let url = "{{ route('invitations.getInvitationsBySenderId', ['id' => '__ID__' ]) }}"
     url = url.replace("__ID__", 1)
 
@@ -191,6 +202,7 @@
         try {
             let inv = await getInvitationById(id)
             console.log(inv);
+            currentInv = inv.data
 
             $("#shortlistContent").empty()
             $("#shortlistContent").append(invitation.mainContent(inv.data))
@@ -202,96 +214,179 @@
 
     $(document).on("click", ".invitation-item", handleSelectedInvitation)
 
-    // url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
-    // url = url.replace("__status__", "ACCEPTED")
+    function getInvitationsByStatusAndSenderId(status) {
 
-    // $.ajax({
-    //     url,
-    //     type: "GET",
-    //     success: function (response) {
-    //         console.log("getInvitationsByStatus", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
-    //     }
-    // });
+        url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
+        url = url.replace("__status__", status)
 
-    // // can create intervwe many times
-    // url = "{{ route('interviews.store') }}"
-    // let formData = new FormData()
-    // formData.append("invitation_id", 6)
-    // formData.append("scheduled_at", "2026-9-30 05:07:17")
-    // formData.append("interview_mode", "Online")
-    // formData.append("location", "")
-    // formData.append("meeting_url", "http://127.0.0.1:8000/recruiter/invitations")
-    // formData.append("recruiter_comment", "recruiter_comment recruiter_comment")
+        $.ajax({
+            url,
+            type: "GET",
+            success: function (response) {
+                console.log("getInvitationsByStatus", response)
+                let invitations = response.data
+                $("#recruitment-invitation-list").empty()
+                invitations.forEach(inv => {
+                    $("#recruitment-invitation-list").append(invitation.recruitmentInvitationList(inv))
+                });
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
 
-    // $.ajax({
-    //     url,
-    //     data: formData,
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("interviews.store", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
+    }
+    getInvitationsByStatusAndSenderId("Pending")
 
-    //     }
-    // });
+    function store() {
 
-    // url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 10)
+        url = "{{ route('interviews.store') }}"
+        let formData = new FormData()
+        formData.append("invitation_id", 6)
+        formData.append("scheduled_at", "2026-9-30 05:07:17")
+        formData.append("interview_mode", "Online")
+        formData.append("location", "")
+        formData.append("meeting_url", "http://127.0.0.1:8000/recruiter/invitations")
+        formData.append("recruiter_comment", "recruiter_comment recruiter_comment")
 
-    // let formData = new FormData()
-    // formData.append("expires_at", "2026-9-30 05:07:17")
-    // formData.append("invitation_message", "NOBB")
-    // formData.append("_method", "PUT")
+        $.ajax({
+            url,
+            data: formData,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            success: function (response) {
+                console.log("interviews.store", response)
+            },
+            error: function (xhr) {
+                console.error(xhr)
 
-    // $.ajax({
-    //     url,
-    //     data: formData,
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("interviews.update", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr.responseJSON.message)
+            }
+        });
 
-    //     }
-    // });
+    }
 
-    // url = "{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 14)
 
-    // let formData = new FormData()
-    // formData.append("_method", "PUT")
+    $(document).on("click", ".nav-item", function () {
+        $(".nav-item button").removeClass("active text-primary").addClass("text-black");
+        $(this).find("button").removeClass("text-black").addClass("active text-primary");
+        let status = $(this).data("status")
+        $("#shortlistContent").html(`  <div class="border-0 p-3 d-flex flex-column align-items-center">
+                                            <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                                            <h4 class="mt-2">No Interview Selected Yet</h4>
+                                            <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                                                <i class="fa-solid fa-filter"></i>
+                                                Interview
+                                            </button>
+                                        </div>`)
+        if (currentStatus == status) return
+        currentStatus = status
 
-    // $.ajax({
-    //     url,
-    //     data: formData,
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("interviews.update", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr.responseJSON.message)
+        getInvitationsByStatusAndSenderId(status)
+    });
 
-    //     }
-    // });
+    $(document).on("click", ".btn-message-student", function () {
+
+    })
+
+    $(document).on("click", ".btn-withdraw-invitation", function () {
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+
+            let id = $(this).data('id');
+
+            url = "{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}"
+            url = url.replace("__ID__", id)
+
+            let formData = new FormData()
+            formData.append("_method", "PUT")
+
+            $.ajax({
+                url,
+                data: formData,
+                type: "POST",
+                processData: false,
+                contentType: false,
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                success: function (response) {
+                    console.log("interviews.update", response)
+                    salert.salert('Success', response.message, 'success');
+
+                    $(`#recruitment-invitation-list .invitation-item[data-id="${response.data.id}"]`).remove();
+
+                    $("#shortlistContent").html(`<div class="border-0 p-3 d-flex flex-column align-items-center">
+                                                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                                                <h4 class="mt-2">No Interview Selected Yet</h4>
+                                                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                                                    <i class="fa-solid fa-filter"></i>
+                                                    Interview
+                                                </button>
+                                            </div>`)
+                    getInvitationsByStatusAndSenderId(currentStatus)
+
+                },
+                error: function (xhr) {
+                    console.error(xhr.responseJSON.message)
+
+                }
+            });
+        });
+
+    })
+
+    $(document).on("click", ".btn-edit-invitation", function () {
+        let id = $(this).data('id');
+
+        bootstrap.Modal.getOrCreateInstance("#invitationModal").show()
+
+
+        $("#invite_candidate").val(currentInv.receiver.name)
+        $("#invite_position_title").val(currentInv.position.position_title)
+        $("#expires_at").val(currentInv.expires_at)
+        $("#invitation_message").val(currentInv.invitation_message)
+
+
+        // url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
+        // url = url.replace("__ID__", id)
+
+        // let formData = new FormData()
+        // formData.append("expires_at", "2026-9-30 05:07:17")
+        // formData.append("invitation_message", "NOBB")
+        // formData.append("_method", "PUT")
+
+        // $.ajax({
+        //     url,
+        //     data: formData,
+        //     type: "POST",
+        //     processData: false,
+        //     contentType: false,
+        //     headers: {
+        //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        //     },
+        //     success: function (response) {
+        //         console.log("interviews.update", response)
+        //         salert.salert('Success', response.message, 'success');
+
+        //     },
+        //     error: function (xhr) {
+        //         console.error(xhr.responseJSON.message)
+        //         salert.salert('Error', xhr.responseJSON.message, 'error');
+        //     }
+        // });
+    })
+
 </script>
 @endsection

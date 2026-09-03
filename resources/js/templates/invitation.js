@@ -1,5 +1,18 @@
 import { formatDate } from "../utils/format.js"
 
+function renderStatus(status) {
+    let class_name = ""
+    if (status.invitation_status == "Pending") class_name = "bg-warning text-white"
+    if (status.invitation_status == "Accepted") class_name = "bg-success text-white"
+    if (status.invitation_status == "Rejected") class_name = "bg-danger text-white"
+    if (status.invitation_status == "Exprired") class_name = "bg-danger text-white"
+    if (status.invitation_status == "Withdrawn") class_name = "bg-danger text-white"
+
+    return `<div class="badge text-success border-2 ${class_name} w-75">
+                ${status.invitation_status}
+            </div>`
+}
+
 export function recruitmentInvitationList(inv) {
     return `<div role="button" data-id=${inv.id} class="invitation-item d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
                 onclick="toggleFilter()">
@@ -10,9 +23,7 @@ export function recruitmentInvitationList(inv) {
                             ${inv.receiver.name}
                         </p>
                         <p>${inv.position.position_title}</p>
-                        <div class="badge text-success border border-success w-75">
-                            ${inv.invitation_status}
-                        </div>
+                        ${renderStatus(inv)}
                         <small class="text-muted">
                         expires
                             ${formatDate(inv.expires_at)}
@@ -24,6 +35,8 @@ export function recruitmentInvitationList(inv) {
 }
 
 export function mainContent(data) {
+    console.log(data);
+
     return `
     <div class="row g-3 ">
         <div class="h-100 border-0 p-3 position-relative">
@@ -33,8 +46,8 @@ export function mainContent(data) {
                 </div>
 
                 <div>
-                    <h3 class="fw-semibold">Dr Lorem Ipsum Dolor Sit Amit</h3>
-                    <p class="fw-semibold">${data.receiver.name}</p>
+                    <h3 class="fw-semibold" id="receiverName">${data.receiver.name}</h3>
+                    <p class="fw-semibold"></p>
                     <small class="text-muted d-block">Universiti Teknikal Malaysia Melaka(UTEM)</small>
                     <div class="badge bg-primary">See More</div>
                     <small class="text-muted d-block">
@@ -50,7 +63,7 @@ export function mainContent(data) {
                         style="width: 3rem; height: 3rem; color: rgb(0, 0, 0); font-size: 1.5rem; border-radius: 50%;"></i>
                     <div>
                         <small class="text-muted">Position</small>
-                        <h5 class="fw-semibold">${data.position.position_title}</h5>
+                        <h5 class="fw-semibold" id="position">${data.position.position_title}</h5>
                     </div>
                 </div>
                 <div class="d-flex gap-2 mb-2 mb-xl-0">
@@ -79,15 +92,14 @@ export function mainContent(data) {
             <div>
                 <h6 class="fw-semibold mb-1">Actions</h6>
                 <div>
-                    <button class="btn btn-outline-primary">
-                        <i class="fa-regular fa-message text-primary"></i>
+                   <button class="btn btn-outline-primary btn-message-student">
                         Message Student
                     </button>
-                    <button class="btn btn-outline-danger">
+                    <button data-id=${data.id} ${data.invitation_status === "Pending" ? "" : "disabled"} class="btn-withdraw-invitation btn btn-outline-danger ${data.invitation_status === "Pending" ? "" : "disabled"}">
                         <i class="fa-regular fa-trash-can text-danger"></i>
                         Withdraw Invitation
                     </button>
-                    <button class="btn btn-outline-primary">
+                    <button data-id=${data.id} ${data.invitation_status === "Pending" ? "" : "disabled"} class="${data.invitation_status === "Pending" ? "" : "disabled"} btn btn-outline-info text-black btn-edit-invitation">
                         <i class="fa-solid fa-pen text-primary"></i>
                         Edit Invitation
                     </button>
