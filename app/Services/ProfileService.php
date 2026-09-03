@@ -108,6 +108,7 @@ class ProfileService
                     $query->where('liker_user_profile_id', $userProfileId);
                 }
             ])
+            ->where('id', '<>', $userProfileId)
             ->paginate(6);
     }
 
@@ -128,6 +129,7 @@ class ProfileService
             ->whereHas('likes', function ($query) use ($userProfileId) {
                 $query->where('liker_user_profile_id', $userProfileId);
             })
+            ->where('id', '<>', $userProfileId)
             ->select('id', 'name', 'location', 'headline', 'profile_image')
             ->simplePaginate(6);
     }
