@@ -80,4 +80,14 @@ class UserProfile extends Model
     {
         return $this->hasMany(Like::class, 'liked_user_profile_id');
     }
+
+    public function receivedInvitations()
+    {
+        return $this->hasMany(Invitation::class, 'receiver_profile_id');
+    }
+
+    public function receivedInterviews()
+    {
+        return $this->hasManyThrough(Interview::class, Invitation::class, 'receiver_profile_id', 'invitation_id', 'id', 'id');
+    }
 }
