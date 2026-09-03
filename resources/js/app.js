@@ -6,7 +6,7 @@ import * as invitation from './templates/invitation.js';
 import * as interview from './templates/Interview.js';
 import * as talent from './templates/talent.js';
 import * as format from './utils/format.js';
-import * as log from './utils/debug.js';
+import * as debug from './utils/debug.js';
 
 
 window.bootstrap = bootstrap;
@@ -17,4 +17,4 @@ window.talent = talent;
 window.intervieww = interview;
 window.salert = salert;
 window.format = format;
-window.log = log;
+window.debug = debug;

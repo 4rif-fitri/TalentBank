@@ -152,6 +152,139 @@
 
 @section('script')
 <script>
+    function getJobOffersBySenderId() {
+
+        $.ajax({
+            url: "{{ route('jobOffers.getJobOffersBySenderId') }}",
+            type: "GET",
+            success: function (response) {
+                debug.log("getJobOffersBySenderId", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function getJobOfferById(id) {
+        let url = "{{ route('jobOffers.getJobOfferById', ['id' => '__ID__']) }}"
+        url = url.replace('__ID__', id)
+        $.ajax({
+            url,
+            type: "GET",
+            success: function (response) {
+                debug.log("getJobOfferById", response.data);
+
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function getJobOffersByStatus(status) {
+        let url = "{{ route('jobOffers.getJobOffersByStatus', ['status' => '__STATUS__']) }}"
+        url = url.replace('__STATUS__', status)
+        $.ajax({
+            url,
+            type: "GET",
+            success: function (response) {
+                debug.log("getJobOffersByStatus", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function withdrawJobOffer(id) {
+        let url = "{{ route('jobOffers.withdrawJobOffer', ['id' => '__ID__']) }}"
+        url = url.replace('__ID__', id)
+
+        let data = {
+            '_method': "PUT"
+        }
+
+        $.ajax({
+            url,
+            data,
+            type: "POST",
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            success: function (response) {
+                debug.log("getJobOffersByStatus", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function update(id) {
+        let url = "{{ route('jobOffers.update', ['id' => '__ID__']) }}"
+        url = url.replace('__ID__', id)
+
+        let data = {
+            '_token': $('meta[name="csrf-token"]').attr("content"),
+            'salary_amount': 67,
+            'salary_period': "a",
+            'start_date': "2000-1-10",
+            'end_date': "2000-1-11",
+            'terms_and_conditions': "Kerja Lembur",
+            'benefits': "Percutian Di Homestay",
+            'expires_at': "2027-1-1 00:00:00",
+            '_method': "PUT",
+        }
+
+        $.ajax({
+            url,
+            data,
+            type: "POST",
+            success: function (response) {
+                debug.log("update", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function store(inv_id) {
+
+        let data = {
+            '_token': $('meta[name="csrf-token"]').attr("content"),
+            "invitation_id": inv_id,
+            "salary_amount": "9797",
+            "salary_period": "a",
+            "start_date": "2005-01-25",
+            "end_date": "2005-05-29",
+            "terms_and_conditions": "Voluptatem animi harum incidunt doloribus. Error veniam ut voluptas non. Dolores reprehenderit atque consequatur est. Non facilis aliquam ipsa aut facere enim temporibus.",
+            "benefits": "Voluptatem animi harum incidunt doloribus. Error veniam ut voluptas non. Dolores reprehenderit atque consequatur est. Non facilis aliquam ipsa aut facere enim temporibus.",
+            "expires_at": "2027-1-1 00:00:00",
+        }
+
+        $.ajax({
+            url: "{{ route('jobOffers.store') }}",
+            data,
+            type: "POST",
+            success: function (response) {
+                debug.log("update", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    // getJobOffersBySenderId()
+    // getJobOfferById(2)
+    // getJobOffersByStatus("Pending")
+    // withdrawJobOffer(1)
+    // update(2)
+
+    // one inv can have many job offers
+    // store(8)
 
 </script>
 @endsection

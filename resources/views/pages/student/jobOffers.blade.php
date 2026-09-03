@@ -119,15 +119,99 @@
 
 @section('script')
 <script>
-    $.ajax({
-        url: "{{ route('jobOffers.getJobOffersByReceiverId') }}",
-        type: "GET",
-        success: function (response) {
-            console.log(response);
-        },
-        error: function (response) {
-            console.log(response);
+    function getJobOffersByReceiverId() {
+        $.ajax({
+            url: "{{ route('jobOffers.getJobOffersByReceiverId') }}",
+            type: "GET",
+            success: function (response) {
+                debug.log("getJobOffersByReceiverId", response.data)
+            },
+            error: function (response) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function getJobOfferById(id) {
+        let url = "{{ route('jobOffers.getJobOfferById', ['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+
+        $.ajax({
+            url,
+            type: "GET",
+            success: function (response) {
+                debug.log("getJobOffersByReceiverId", response.data)
+            },
+            error: function (response) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function getJobOffersByStatus(status) {
+        let url = "{{ route('jobOffers.getJobOffersByStatus', ['status' => '__STATUS__']) }}"
+        url = url.replace("__STATUS__", status)
+
+        $.ajax({
+            type: "GET",
+            url,
+            success: function (response) {
+                debug.log("getJobOffersByReceiverId", response.data)
+            },
+            error: function (response) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function acceptJobOffer(id) {
+        let url = "{{ route('jobOffers.acceptJobOffer', ['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+
+        let data = {
+            "_method": "PUT",
+            "_token": $('meta[name="csrf-token"]').attr("content"),
         }
-    });
+
+        $.ajax({
+            url,
+            type: "POST",
+            data,
+            success: function (response) {
+                debug.log("acceptJobOffer", response.data)
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function rejectJobOffer(id) {
+        let url = "{{ route('jobOffers.rejectJobOffer', ['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+
+        let data = {
+            "_method": "PUT",
+            "_token": $('meta[name="csrf-token"]').attr("content"),
+        }
+
+        $.ajax({
+            url,
+            data,
+            type: "POST",
+            success: function (response) {
+                debug.log("acceptJobOffer", response.data)
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    // getJobOffersByReceiverId()
+    // getJobOfferById(1)
+    // getJobOffersByStatus("Pending")
+    // acceptJobOffer(2)
+    // rejectJobOffer(2)
 </script>
 @endsection

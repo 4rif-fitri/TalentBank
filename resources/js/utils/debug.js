@@ -1,5 +1,7 @@
 export function log(label, data) {
-    console.log(label, data);
+    console.group(label);
+    console.log(data);
+    console.groupEnd("")
 }
 
 export function error(label, data) {

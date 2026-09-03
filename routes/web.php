@@ -218,17 +218,17 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('job-offers')->group(function () {
-        Route::get('/getJobOffersByReceiverId', [JobOfferController::class, 'getJobOffersByReceiverId'])->name('jobOffers.getJobOffersByReceiverId');
-        Route::get('/getJobOfferById/{id}', [JobOfferController::class, 'getJobOfferById'])->name('jobOffers.getJobOfferById');
-        Route::get('/getJobOffersByStatus/{status}', [JobOfferController::class, 'getJobOffersByStatus'])->name('jobOffers.getJobOffersByStatus');
-        Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer');
-        Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer');
+        Route::get('/getJobOffersByReceiverId', [JobOfferController::class, 'getJobOffersByReceiverId'])->name('jobOffers.getJobOffersByReceiverId'); //+
+        Route::get('/getJobOfferById/{id}', [JobOfferController::class, 'getJobOfferById'])->name('jobOffers.getJobOfferById'); //+ //+
+        Route::get('/getJobOffersByStatus/{status}', [JobOfferController::class, 'getJobOffersByStatus'])->name('jobOffers.getJobOffersByStatus'); //+ //+
+        Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer'); //!
+        Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer'); //!
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::get('/getJobOffersBySenderId', [JobOfferController::class, 'getJobOffersBySenderId'])->name('jobOffers.getJobOffersBySenderId');
-            Route::post('/store', [JobOfferController::class, 'store'])->name('jobOffers.store');
-            Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update');
-            Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer');
+            Route::get('/getJobOffersBySenderId', [JobOfferController::class, 'getJobOffersBySenderId'])->name('jobOffers.getJobOffersBySenderId'); //+
+            Route::post('/store', [JobOfferController::class, 'store'])->name('jobOffers.store'); //+
+            Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update'); //!
+            Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer'); //!
         });
     });
 });
