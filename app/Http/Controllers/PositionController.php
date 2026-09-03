@@ -48,7 +48,8 @@ class PositionController extends Controller
      */
     public function getPositionById(int $id): JsonResponse
     {
-        $position = $this->positionService->getPositionById($id);
+        $userProfileId = session('user_profile_id');
+        $position = $this->positionService->getPositionById($id, $userProfileId);
         return ApiResponse::success('Success.', $position)->toJsonResponse();
     }
 

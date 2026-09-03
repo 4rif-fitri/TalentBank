@@ -19,7 +19,7 @@ class ShortlistService
      * @param int $userProfileId
      * @return array
      */
-    public function getShortlistedPositions(int $userProfileId, int $shortlistedProfileId, int $orgId): array
+    public function getShortlistedPositionIds(int $userProfileId, int $shortlistedProfileId, int $orgId): array
     {
         $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $orgId);
 
@@ -27,11 +27,8 @@ class ShortlistService
             throw new Exception('Unauthorized access to view shortlisted positions.', Response::HTTP_FORBIDDEN);
         }
 
-        $shortlistedPositions = Shortlist::whereHas('position', function ($query) use ($orgId, $userProfileId) {
-            $query->where([
-                'organization_id' => $orgId,
-                'user_profile_id' => $userProfileId
-            ]);
+        $shortlistedPositions = Shortlist::whereHas('position', function ($query) use ($orgId) {
+            $query->where('organization_id', $orgId);
         })
             ->where('user_profile_id', $shortlistedProfileId)
             ->get();
