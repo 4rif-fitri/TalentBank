@@ -36,8 +36,8 @@
                 educationStore: "{{ route('education.store') }}",
                 educationUpdate: "{{ route('education.update', ['id' => '__ID__']) }}",
                 educationDelete: "{{ route('education.delete', ['id' => '__ID__']) }}",
-                getAllFieldOfStudies: "{{ route('education.getAllFieldOfStudies') }}",
-                getAllQualifications: "{{ route('education.getAllQualifications') }}",
+                getAllFieldOfStudies: "{{ route('programme.getAllFieldOfStudies') }}",
+                getAllQualifications: "{{ route('programme.getAllQualifications') }}",
             },
             languages: {
                 getAllLanguages: "{{ route('languages.getAllLanguages') }}",

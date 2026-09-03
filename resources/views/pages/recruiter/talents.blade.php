@@ -269,7 +269,7 @@
 
         function getAllQualifications() {
             return $.ajax({
-                url: "{{ route('education.getAllQualifications') }}",
+                url: "{{ route('programme.getAllQualifications') }}",
                 type: 'GET',
                 dataType: "json",
                 success: response => {

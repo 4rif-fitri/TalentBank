@@ -78,7 +78,7 @@ export function getAllFieldOfStudies() {
 export function getAllQualifications() {
 
     return $.ajax({
-        url: `${window.appConfig.routes.education.getAllQualifications}`,
+        url: `${window.appConfig.routes.programme.getAllQualifications}`,
         type: 'GET',
         dataType: "json",
     });

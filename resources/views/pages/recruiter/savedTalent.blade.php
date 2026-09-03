@@ -23,15 +23,13 @@
     @section('script')
     <script>
         $.ajax({
-            url: "url",
+            url: "{{ route('profile.getLikedUserProfiles') }}",
             type: "GET",
-            data: "data",
-            dataType: "dataType",
             success: function (response) {
                 console.log(response);
             },
             error: function (xhr) {
-                console.log(xhr);
+                console.error(xhr);
             }
         });
     </script>
