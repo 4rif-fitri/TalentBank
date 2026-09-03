@@ -79,20 +79,23 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item">
+                    <li data-status="" class="nav-item">
                         <button class="nav-link active text-primary">All</button>
                     </li>
-                    <li class="nav-item">
+                    <li data-status="Pending" class="nav-item">
                         <button class="nav-link text-body">Pending</button>
                     </li>
-                    <li class="nav-item">
+                    <li data-status="Accepted" class="nav-item">
                         <button class="nav-link text-body">Accepted</button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link text-body">Dealined</button>
+                    <li data-status="Rejected" class="nav-item">
+                        <button class="nav-link text-body">Rejected</button>
                     </li>
-                    <li class="nav-item">
+                    <li data-status="Exprired" class="nav-item">
                         <button class="nav-link text-body">Exprired</button>
+                    </li>
+                    <li data-status="Withdrawn" class="nav-item">
+                        <button class="nav-link text-body">Withdrawn</button>
                     </li>
                 </ul>
             </div>
@@ -128,21 +131,24 @@
     }
 </script>
 <script>
-    $.ajax({
-        url: "{{ route('invitations.getInvitationsByReceiverId') }}",
-        type: "GET",
-        success: function (response) {
-            console.log("getInvitationsByReceiverId", response)
-            $(".invitation-list").empty()
-            let invitations = response.data
+    let invitations
 
-            invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
-        },
-        error: function (xhr) {
-            console.error(xhr)
-
-        }
-    });
+    function getInvitationsByReceiverId() {
+        $.ajax({
+            url: "{{ route('invitations.getInvitationsByReceiverId') }}",
+            type: "GET",
+            success: function (response) {
+                console.log("getInvitationsByReceiverId", response)
+                $(".invitation-list").empty()
+                invitations = response.data
+                invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+            },
+            error: function (xhr) {
+                console.error(xhr)
+            }
+        });
+    }
+    getInvitationsByReceiverId()
 
     function getInvitationById(id) {
         url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
@@ -173,54 +179,112 @@
 
     $(document).on("click", ".invitation-item", handleSelectedInvitation)
 
+    function disabledButton(id) {
+        $(".btnContainer")
+            .html(`<button disabled data-id=${id} class="btn btn-outline-danger btnRejectInvitation">
+                    <i class="fa-regular fa-trash-can text-danger"></i>
+                    Decline
+                </button>
+                <button disabled data-id=${id} class="btn btn-outline-primary btnAcceptInvitation">
+                    <i class="fa-solid fa-pen text-primary"></i>
+                    Accept Invitation
+                </button>`)
+    }
 
-    // // Once update only
-    // url = "{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 6)
-    // let formData = new FormData()
-    // formData.append("_method", "PUT")
+    $(document).on("click", ".btnAcceptInvitation", function () {
+        let id = $(this).data("id")
+        let $btn = $(this)
+        url = "{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}"
+        url = url.replace("__ID__", id)
+        let formData = new FormData()
+        formData.append("_method", "PUT")
 
-    // $.ajax({
-    //     url,
-    //     data: formData,
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("acceptInvitation", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
+        $.ajax({
+            url,
+            data: formData,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            success: function (response) {
+                console.log("acceptInvitation", response)
+                disabledButton(id)
+                salert.salert('Success', response.message, 'success');
+                $(`.invitation-item[data-id="${id}"]`).remove()
+                console.log(
+                    $btn.closest("#shortlistContent").html()
+                );
 
-    //     }
-    // });
+            },
+            error: function (xhr) {
+                console.error(xhr)
+                salert.salert('Error', xhr.responseJSON?.message, 'error');
 
-    // // Once update only
-    // url = "{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 7)
-    // formData = new FormData()
-    // formData.append("_method", "PUT")
+            }
+        });
+    })
 
-    // $.ajax({
-    //     url,
-    //     data: formData,
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("rejectInvitation", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
+    $(document).on("click", ".btnRejectInvitation", function () {
+        let id = $(this).data("id")
 
-    //     }
-    // });
+        url = "{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}"
+        url = url.replace("__ID__", id)
+        formData = new FormData()
+        formData.append("_method", "PUT")
+
+        $.ajax({
+            url,
+            data: formData,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            success: function (response) {
+                console.log("rejectInvitation", response)
+                disabledButton(id)
+                salert.salert('Success', response.message, 'success');
+                $(".invitation-list").find(`.invitation-item [data-id=${id}]`).remove()
+            },
+            error: function (xhr) {
+                console.error(xhr)
+                salert.salert('Error', xhr.responseJSON?.message, 'error');
+            }
+        });
+    })
+
+    const statusOrder = {
+        Pending: 1,
+        Accepted: 2,
+        Rejected: 3,
+        Expired: 4,
+        Withdrawn: 5
+    };
+
+    function dataFilter(status) {
+        $(".invitation-list").empty()
+
+        invitations.sort((a, b) => statusOrder[a.invitation_status] - statusOrder[b.invitation_status]);
+
+        if (status == "") {
+            invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+        }
+
+        let filted = invitations.filter(inv => inv.invitation_status == status)
+        filted.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+    }
+
+    $(document).on("click", ".nav-item", function () {
+        $(".nav-item button").removeClass("active text-primary").addClass("text-body");
+        $(this).find("button").removeClass("text-body").addClass("active text-primary");
+
+        let status = $(this).data("status")
+
+        dataFilter(status)
+    });
 
 </script>
 @endsection

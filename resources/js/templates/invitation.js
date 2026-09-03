@@ -113,6 +113,8 @@ export function reciverInvitationList(inv) {
 }
 
 export function reciverInvitatinMainContent(inv) {
+    console.log(inv);
+
     return `<div class="h-100 border-0 p-3 position-relative">
                 <div class="d-flex gap-3">
                     <i class="fa-solid fa-circle-user" style="color: rgb(0, 0, 0); font-size: 4rem;"></i>
@@ -152,19 +154,22 @@ export function reciverInvitatinMainContent(inv) {
 
                 <div class="mt-2">
                     <h6 class="fw-semibold mb-1">Actions</h6>
-                    <div>
+                    <div class=" d-flex gap-1">
                         <button class="btn btn-outline-primary">
                             <i class="fa-regular fa-message text-primary"></i>
                             Message Company
                         </button>
-                        <button class="btn btn-outline-danger">
-                            <i class="fa-regular fa-trash-can text-danger"></i>
-                            Decline
-                        </button>
-                        <button class="btn btn-outline-primary">
-                            <i class="fa-solid fa-pen text-primary"></i>
-                            Accept Invitation
-                        </button>
+                        <div class="btnContainer">
+                            <button ${inv.invitation_status == "Pending" ? "" : "disabled"}  data-id=${inv.id} class="btn btn-outline-danger btnRejectInvitation">
+                                <i class="fa-regular fa-trash-can text-danger"></i>
+                                Decline
+                            </button>
+                            <button ${inv.invitation_status == "Pending" ? "" : "disabled"} data-id=${inv.id} class="btn btn-outline-primary btnAcceptInvitation">
+                                <i class="fa-solid fa-pen text-primary"></i>
+                                Accept Invitation
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 
