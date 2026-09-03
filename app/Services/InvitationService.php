@@ -23,8 +23,8 @@ class InvitationService
 
     // used to determine the columns to be returned for related models when fetching invitations
     private const PROFILE_RETURN_COLUMNS = 'id,name,profile_image,location,headline';
-    private const POSITION_RETURN_COLUMNS = 'id,position_title,organization_id';
-    private const ORGANIZATION_RETURN_COLUMNS = 'id,company_name';
+    private const POSITION_RETURN_COLUMNS = 'positions.id,position_title,organization_id';
+    private const ORGANIZATION_RETURN_COLUMNS = 'organizations.id,company_name,organization_logo';
 
     private function getInvitationModel(int $invitationId, string $profileColumnName, int $userProfileId): Invitation
     {

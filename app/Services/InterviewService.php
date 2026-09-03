@@ -15,8 +15,8 @@ class InterviewService
     private const LOCKED_STATUS = [AppConstants::INTERVIEW_STATUS['COMPLETED'], AppConstants::INTERVIEW_STATUS['CANCELLED']];
 
     // used to determine the columns to be returned for related models when fetching invitations
-    private const INVITATION_RETURN_COLUMNS = 'id,position_id,receiver_profile_id,sender_profile_id';
-    private const POSITION_RETURN_COLUMNS = 'id,position_title';
+    private const INVITATION_RETURN_COLUMNS = 'invitations.id,position_id,receiver_profile_id,sender_profile_id';
+    private const POSITION_RETURN_COLUMNS = 'positions.id,position_title';
     private const PROFILE_RETURN_COLUMNS = 'id,name,profile_image,location,headline';
 
     public function __construct(
