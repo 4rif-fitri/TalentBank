@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -70,7 +71,7 @@ class ProfileService
     {
         return UserProfile::with([
             'skills',
-            'activeProgrammes:id,programme_name,organization_id,duration_years',
+            'activeProgrammes:programmes.id,programme_name,organization_id,duration_years',
             'activeProgrammes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'activeProgrammes.qualifications',
         ])
@@ -101,16 +102,16 @@ class ProfileService
                     });
             })
             ->select('id', 'name', 'location', 'headline', 'profile_image')
-            ->paginate(20);
+            ->paginate(6);
     }
 
     /**
      * Returns user profiles that have been liked by the current user
      * 
      * @param int $userProfileId
-     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, UserProfile>
+     * @return Paginator
      */
-    public function getLikedUserProfiles(int $userProfileId): Collection
+    public function getLikedUserProfiles(int $userProfileId): Paginator
     {
         return UserProfile::with([
             'skills',
@@ -122,7 +123,7 @@ class ProfileService
                 $query->where('liker_user_profile_id', $userProfileId);
             })
             ->select('id', 'name', 'location', 'headline', 'profile_image')
-            ->get();
+            ->simplePaginate(6);
     }
 
     /**
