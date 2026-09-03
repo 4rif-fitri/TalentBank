@@ -152,6 +152,10 @@ class InvitationService
      */
     public function createInvitation(array $data, int $senderId): Invitation
     {
+        if ($data['receiver_profile_id'] === $senderId) {
+            throw new Exception('Users cannot send invitations to themselves.', Response::HTTP_BAD_REQUEST);
+        }
+
         // check if current user has an administrative role
         $isUserOrgAdmin = Position::query()
             ->join('organization_users as ou', 'positions.organization_id', '=', 'ou.organization_id')

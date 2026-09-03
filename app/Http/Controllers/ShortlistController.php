@@ -43,7 +43,8 @@ class ShortlistController extends Controller
             'position_id' => ['required', 'integer', 'exists:positions,id'],
         ]);
 
-        $shortlist = $this->shortlistService->createShortlist($validated['position_id'], $validated['user_profile_id']);
+        $userProfileId = session('user_profile_id');
+        $shortlist = $this->shortlistService->createShortlist($validated, $userProfileId);
 
         return ApiResponse::success('User profile shortlisted successfully.', $shortlist, Response::HTTP_CREATED)->toJsonResponse();
     }

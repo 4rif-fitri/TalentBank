@@ -39,14 +39,18 @@ class ShortlistService
     /**
      * Creates a new shortlist entry
      * 
-     * @param int $positionId
-     * @param int $userProfileId
+     * @param array $data
+     * @param int $currentUserProfileId
      * @throws Exception
      * @return Shortlist
      */
-    public function createShortlist(int $positionId, int $userProfileId): Shortlist
+    public function createShortlist(array $data, int $currentUserProfileId): Shortlist
     {
-        $position = Position::findOrFail($positionId);
+        if ($data['user_profile_id'] === $currentUserProfileId) {
+            throw new Exception('Users cannot shortlist themselves.', Response::HTTP_BAD_REQUEST);
+        }
+
+        $position = Position::findOrFail($data['position_id']);
 
         // Check if the user an admin of the current organization
         $isUserAdmin = CheckOrgRoleHelper::userHasRoles($position->user_profile_id, self::ADMINISTRATIVE_ROLES, $position->organization_id);
@@ -56,8 +60,8 @@ class ShortlistService
         }
 
         // Check if the user is already shortlisted for the position
-        $existingShortlist = Shortlist::where('position_id', $positionId)
-            ->where('user_profile_id', $userProfileId)
+        $existingShortlist = Shortlist::where('position_id', $data['position_id'])
+            ->where('user_profile_id', $data['user_profile_id'])
             ->first();
 
         if ($existingShortlist) {
@@ -66,8 +70,8 @@ class ShortlistService
 
         // Create a new shortlist entry
         $shortlist = Shortlist::create([
-            'position_id' => $positionId,
-            'user_profile_id' => $userProfileId,
+            'position_id' => $data['position_id'],
+            'user_profile_id' => $data['user_profile_id'],
         ]);
 
         return $shortlist;
