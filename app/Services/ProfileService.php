@@ -68,7 +68,7 @@ class ProfileService
      * @param array $searchParams
      * @return LengthAwarePaginator
      */
-    public function getAllStudentUserProfiles(array $searchParams): LengthAwarePaginator
+    public function getAllStudentUserProfiles(array $searchParams, int $userProfileId): LengthAwarePaginator
     {
         return UserProfile::with([
             'skills',
@@ -76,6 +76,7 @@ class ProfileService
             'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'programmes.qualification',
         ])
+            ->select('id', 'name', 'location', 'headline', 'profile_image')
             ->where(function ($query) use ($searchParams) {
                 $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
                     $query->where('name', 'LIKE', '%' . $searchParams['name'] . '%');
@@ -102,7 +103,11 @@ class ProfileService
                             ->whereIn('role_id', Role::whereIn('name', ['Student', 'Alumni'])->pluck('id')->toArray());
                     });
             })
-            ->select('id', 'name', 'location', 'headline', 'profile_image')
+            ->withExists([
+                'likes as is_liked' => function ($query) use ($userProfileId) {
+                    $query->where('liker_user_profile_id', $userProfileId);
+                }
+            ])
             ->paginate(6);
     }
 

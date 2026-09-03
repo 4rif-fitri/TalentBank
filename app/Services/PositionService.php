@@ -12,19 +12,12 @@ class PositionService
 {
     private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
 
-    private function getPositionModel(int $positionId, int $userProfileId): Position
+    private function getPositionModel(int $positionId): Position
     {
-        // TODO: Refactor
-        $position = Position::where('id', $positionId)
-            ->whereHas('organization.organizationUsers', function ($query) use ($userProfileId) {
-                $query->where('user_profile_id', $userProfileId)
-                    ->whereHas('role', function ($q) {
-                        $q->whereIn('name', self::ADMINISTRATIVE_ROLES);
-                    });
-            })->first();
+        $position = Position::find($positionId);
 
         if (!$position) {
-            throw new Exception('Position not found or access unauthorized.', Response::HTTP_NOT_FOUND);
+            throw new Exception('Position not found.', Response::HTTP_NOT_FOUND);
         }
 
         return $position;
@@ -58,7 +51,7 @@ class PositionService
      * @throws Exception
      * @return Position|\Illuminate\Database\Eloquent\Builder<Position>|\stdClass
      */
-    public function getPositionById(int $positionId): Position
+    public function getPositionById(int $positionId, int $userProfileId): Position
     {
         $position = Position::with([
             'shortlistUsers:id,name',
@@ -67,6 +60,12 @@ class PositionService
 
         if (!isset($position)) {
             throw new Exception('Position not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
+
+        if (!$isUserAdmin) {
+            throw new Exception('Unauthorized access to view this position.', Response::HTTP_FORBIDDEN);
         }
 
         return $position;
@@ -83,9 +82,9 @@ class PositionService
     public function createPosition(array $data, int $userProfileId): Position
     {
         // check if user is a recruiter or organization admin in this organization
-        $isUserRecuiterInOrg = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $data['organization_id']);
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $data['organization_id']);
 
-        if (!$isUserRecuiterInOrg) {
+        if (!$isUserAdmin) {
             throw new Exception('Unauthorized access.', Response::HTTP_FORBIDDEN);
         }
 
@@ -115,7 +114,14 @@ class PositionService
     public function updatePosition(array $data, int $positionId, int $userProfileId): Position
     {
         // get position model
-        $position = $this->getPositionModel($positionId, $userProfileId);
+        $position = $this->getPositionModel($positionId);
+
+        // check if user is a recruiter or organization admin in this organization
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
+
+        if (!$isUserAdmin) {
+            throw new Exception('Unauthorized access.', Response::HTTP_FORBIDDEN);
+        }
 
         $position->update([
             'position_title' => $data['position_title'],
