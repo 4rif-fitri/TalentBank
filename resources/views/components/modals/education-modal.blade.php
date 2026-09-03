@@ -39,22 +39,6 @@
                     </select>
                 </div>
 
-                <!-- Field of Study -->
-                <div class="mb-3">
-                    <label for="fieldOfStudy" class="form-label fw-bold">Field of Study</label>
-                    <select class="form-select" id="fieldOfStudy" name="field_of_study_id" required>
-                        <option value="" disabled selected>Select Field of Study</option>
-                    </select>
-                </div>
-
-                <!-- Qualification -->
-                <div class="mb-3">
-                    <label for="qualification" class="form-label fw-bold">Qualification</label>
-                    <select class="form-select" id="qualification" name="qualification_id" required>
-                        <option value="" disabled selected>Select Qualification</option>
-                    </select>
-                </div>
-
                 <!-- CGPA -->
                 <div class="mb-3">
                     <label for="cgpaInput" class="form-label">
@@ -208,8 +192,6 @@
 @push('scripts')
 <script>
 
-    let listOfFieldOfStudies = [];
-    let listOfQualifications = [];
     let listOfOrganizations = [];
     let listOfSkills = [];
 
@@ -308,55 +290,6 @@
         });
     }
 
-    function getAllFieldOfStudies() {
-        $.ajax({
-            url: "{{ route('programme.getAllFieldOfStudies') }}",
-            type: "GET",
-            dataType: "json",
-
-            success: function ({ data }) {
-                listOfFieldOfStudies = data;
-                $("#fieldOfStudy").html(`<option value="" disabled selected>Select Field of Study</option>`);
-                data.forEach(item => {
-                    $("#fieldOfStudy").append(`<option value="${item.id}">${item.name}</option>`)
-                });
-            },
-            error: function (xhr) {
-                console.error(xhr);
-            }
-        });
-    }
-
-    function getAllQualifications() {
-        $.ajax({
-            url: "{{ route('programme.getAllQualifications') }}",
-            type: "GET",
-            dataType: "json",
-
-            success: function ({ data }) {
-                listOfQualifications = data;
-
-                $("#qualification").html(`
-                    <option value="" disabled selected>
-                        Select Qualification
-                    </option>
-                `);
-
-                data.forEach(item => {
-                    $("#qualification").append(`
-                        <option value="${item.id}">
-                            ${item.name}
-                        </option>
-                    `);
-                });
-            },
-
-            error: function (xhr) {
-                console.error(xhr);
-            }
-        });
-    }
-
     function getEducationDetail(eduId) {
 
         let modalEl = document.getElementById("educationModal");
@@ -375,8 +308,6 @@
                 console.log(data);
 
                 $("#educationId").val(data.id);
-                $("#qualification").val(data.qualification.id);
-                $("#fieldOfStudy").val(data.field_of_study.name);
                 $("#cgpaInput").val(data.cgpa);
                 $("#descriptionInput").val(data.description);
                 $("#enrollmentStatus").val(
@@ -856,8 +787,6 @@
             </option>
         `);
 
-        $("#qualification").val("");
-        $("#fieldOfStudy").val("");
         $("#cgpaInput").val("");
         $("#descriptionInput").val("");
 
@@ -898,25 +827,7 @@
             return;
         }
 
-        if (!$("#fieldOfStudy").val()) {
-            swalfire(
-                "Validation Error",
-                "Please select a field of study",
-                "error"
-            );
-            return;
-        }
-
-        if (!$("#qualification").val()) {
-            swalfire(
-                "Validation Error",
-                "Please select a qualification",
-                "error"
-            );
-            return;
-        }
-
-        // validate start date and end date
+        // Validate start date and end date
         if (!isValidDates()) {
             swalfire(
                 "Validation Error",
@@ -932,7 +843,6 @@
                 "Please complete all skills and do not select duplicate skills.",
                 "error"
             );
-
             return;
         }
 
@@ -940,34 +850,43 @@
             $("#startMonth").val(),
             $("#startYear").val()
         );
+
         let endDate = buildValidDate(
             $("#endMonth").val(),
             $("#endYear").val()
         );
 
         let formData = new FormData();
+
         formData.append("programme_id", $("#educationProgramme").val());
-        formData.append("field_of_study_id", $("#fieldOfStudy").val());
-        formData.append("qualification_id", $("#qualification").val());
         formData.append("cgpa", $("#cgpaInput").val() || "");
-        formData.append("description", $("#descriptionInput").val());
+        formData.append("description", $("#descriptionInput").val() || "");
         formData.append("start_date", startDate);
         formData.append("end_date", endDate);
-        formData.append("enrollment_status", $("#enrollmentStatus").val() || "Active");
+
+        formData.append("enrollment_status",
+            $("#enrollmentStatus").val() || "Active"
+        );
 
         $(".skill-select").each(function (index) {
             let skillId = $(this).val();
             formData.append(`skill_ids[${index}]`, skillId);
         });
 
+        // New media
         newEducationMedia.forEach((file, index) => {
             formData.append(`media[${index}][file]`, file);
         });
 
+        // Deleted media
         deletedEducationMediaIds.forEach((mediaId, index) => {
-            formData.append(`deleted_media_ids[${index}]`, mediaId);
+            formData.append(
+                `deleted_media_ids[${index}]`,
+                mediaId
+            );
         });
 
+        // Debug
         for (let [key, value] of formData.entries()) {
             console.log(key, value);
         }
@@ -975,12 +894,14 @@
         if (educationId) {
             let url = "{{ route('education.update', ['id' => '__ID__']) }}";
             url = url.replace("__ID__", educationId);
+
             updateEducation(url, formData);
             return;
         }
 
         createEducation(formData);
     });
+
 
     $(document).on("change", "#educationInstitution", function () {
         let organizationId = $(this).val();
@@ -990,11 +911,9 @@
     // trigger
 
     // init Load Data from API
-    $(document).ready(function () {
-        getAllOrganizations();
-        getAllFieldOfStudies();
-        getAllQualifications();
-        getAllSkills();
+    $(document).ready(async function () {
+        await getAllOrganizations();
+        await getAllSkills();
     });
     // init Load Data from API
     $(document).on("click", "#addSkill", function () {

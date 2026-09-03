@@ -1,4 +1,4 @@
-export function educationTemplate(programme){
+export function educationTemplate(programme) {
     return ` <div class="alert alert-primary d-flex gap-2" role="button"
                   data-programme-id="${programme.id}">
 
@@ -16,7 +16,7 @@ export function educationTemplate(programme){
         </div>`;
 }
 
-export function templateLoadingEducation(){
+export function templateLoadingEducation() {
     return `<div class="carousel-item active">
                 <div class="py-5 text-center">
                 <div class="spinner-border" role="status"></div>
@@ -91,7 +91,7 @@ export function templateCardEducation(education) {
                 </p>
 
                 <div class="skills d-flex flex-wrap align-items-center">
-                    ${asd(education.skills ?? "")}
+                    ${asd(education.skills ?? [])}
                 </div>
 
                 <div class="d-flex gap-2 flex-wrap">

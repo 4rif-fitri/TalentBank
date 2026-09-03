@@ -187,7 +187,7 @@
         // Render
 
         function asd(skills) {
-            let html
+            let html = ""
             skills.forEach(data => {
                 html += `
                     <div class="badge text-bg-secondary m-1">

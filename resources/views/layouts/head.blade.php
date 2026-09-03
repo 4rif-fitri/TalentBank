@@ -20,9 +20,9 @@
             profile: {
                 show: "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}",
                 update: "{{ route('profile.update') }}",
-                updateAbout: "{{ route('update.updateAboutField') }}",
-                uploadProfileImage: "{{ route('update.uploadProfileImage') }}",
-                uploadCoverImage: "{{ route('update.uploadCoverImage') }}"
+                updateAbout: "{{ route('profile.updateAboutField') }}",
+                uploadProfileImage: "{{ route('profile.uploadProfileImage') }}",
+                uploadCoverImage: "{{ route('profile.uploadCoverImage') }}"
             },
             socialMedia: {
                 getAllSocialMedia: "{{ route('social-media.getAllSocialMedia') }}",

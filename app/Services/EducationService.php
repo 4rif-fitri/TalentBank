@@ -19,8 +19,7 @@ class EducationService
     public function __construct(
         private readonly MediaService $mediaService,
         private readonly SkillService $skillService
-    ) {
-    }
+    ) {}
 
     private function uploadImages(int $educationId, array $data, int $userProfileId): void
     {
@@ -39,7 +38,7 @@ class EducationService
 
     /**
      * Gets all education by user profile ID
-     * 
+     *
      * @param int $userProfileId
      * @throws Exception
      * @return Collection<int, Education>|\Illuminate\Support\Collection<int, \stdClass>
@@ -60,7 +59,7 @@ class EducationService
 
     /**
      * Get education by education ID
-     * 
+     *
      * @param int $id
      * @throws Exception
      * @return Education
@@ -86,7 +85,7 @@ class EducationService
 
     /**
      * Creates a new education for current user
-     * 
+     *
      * @param array $data
      * @return Education
      */
@@ -106,7 +105,7 @@ class EducationService
 
             $this->uploadImages($education->id, $data, $userProfileId);
 
-            $this->skillService->createUserSkills($data['new_skill_ids'], 'education', $education->id);
+            $this->skillService->createUserSkills($data['new_skill_ids'] ?? [], 'education', $education->id);
 
             return $education;
         });
@@ -121,7 +120,7 @@ class EducationService
 
     /**
      * Creates a new education for current user
-     * 
+     *
      * @param int $educationId
      * @param array $data
      * @return Education
@@ -177,7 +176,7 @@ class EducationService
     /**
      * Delete an existing education
      * (any semesters and media (attached to semester) attached to it will be deleted as well)
-     * 
+     *
      * @param int $educationId
      * @return bool|
      */
@@ -207,6 +206,4 @@ class EducationService
 
         return $result;
     }
-
-
 }
