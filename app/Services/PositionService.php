@@ -41,6 +41,12 @@ class PositionService
      */
     public function getPositionsByOrgId(int $orgId): Collection
     {
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles(session('user_profile_id'), self::ADMINISTRATIVE_ROLES, $orgId);
+
+        if (!$isUserAdmin) {
+            throw new Exception('Unauthorized access to view positions for this organization.', Response::HTTP_FORBIDDEN);
+        }
+
         return Position::where('organization_id', $orgId)->get();
     }
 
