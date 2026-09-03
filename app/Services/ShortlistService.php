@@ -7,11 +7,46 @@ use App\Models\Position;
 use App\Models\Shortlist;
 use Exception;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 class ShortlistService
 {
     private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
 
+    /**
+     * Returns shortlisted positions filtered by user profile ID
+     * 
+     * @param int $userProfileId
+     * @return array
+     */
+    public function getShortlistedPositions(int $userProfileId, int $shortlistedProfileId, int $orgId): array
+    {
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $orgId);
+
+        if (!$isUserAdmin) {
+            throw new Exception('Unauthorized access to view shortlisted positions.', Response::HTTP_FORBIDDEN);
+        }
+
+        $shortlistedPositions = Shortlist::whereHas('position', function ($query) use ($orgId, $userProfileId) {
+            $query->where([
+                'organization_id' => $orgId,
+                'user_profile_id' => $userProfileId
+            ]);
+        })
+            ->where('user_profile_id', $shortlistedProfileId)
+            ->get();
+
+        return $shortlistedPositions->pluck('position_id')->toArray();
+    }
+
+    /**
+     * Creates a new shortlist entry
+     * 
+     * @param int $positionId
+     * @param int $userProfileId
+     * @throws Exception
+     * @return Shortlist
+     */
     public function createShortlist(int $positionId, int $userProfileId): Shortlist
     {
         $position = Position::findOrFail($positionId);
@@ -41,6 +76,14 @@ class ShortlistService
         return $shortlist;
     }
 
+    /**
+     * Deletes an existing shortlist entry
+     * 
+     * @param int $shortlistId
+     * @param int $userProfileId
+     * @throws Exception
+     * @return Shortlist|\Illuminate\Database\Eloquent\Builder<Shortlist>|\stdClass
+     */
     public function deleteShortlist(int $shortlistId, int $userProfileId): Shortlist
     {
         $shortlist = Shortlist::with('position:id,organization_id')->find($shortlistId);
