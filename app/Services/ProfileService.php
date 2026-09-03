@@ -73,7 +73,7 @@ class ProfileService
             'skills',
             'activeProgrammes:programmes.id,programme_name,organization_id,duration_years',
             'activeProgrammes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
-            'activeProgrammes.qualifications',
+            'activeProgrammes.qualification',
         ])
             ->where(function ($query) use ($searchParams) {
                 $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
