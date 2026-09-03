@@ -310,7 +310,7 @@
 
     function getAllFieldOfStudies() {
         $.ajax({
-            url: "{{ route('education.getAllFieldOfStudies') }}",
+            url: "{{ route('programme.getAllFieldOfStudies') }}",
             type: "GET",
             dataType: "json",
 

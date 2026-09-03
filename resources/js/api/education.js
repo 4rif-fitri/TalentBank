@@ -69,7 +69,7 @@ export function educationDelete(id) {
 export function getAllFieldOfStudies() {
 
     return $.ajax({
-        url: `${window.appConfig.routes.education.getAllFieldOfStudies}`,
+        url: `${window.appConfig.routes.programme.getAllFieldOfStudies}`,
         type: 'GET',
         dataType: "json",
     });

@@ -1,6 +1,32 @@
+function renderEducation(education) {
+    if (!education[0]) return ""
+
+    return `
+        <div class=" d-flex align-items-start flex-column w-100">
+            <p class="m-0 text-dark">${education[0].organization.company_name}</p>
+            <p class="m-0 text-muted">${education[0].programme_name}</p>
+            <div class=" badge bg-primary">See More</div>
+        </div>`
+}
+
+function renderSkills(skills) {
+    if (!skills) return ""
+    let html = "<div class='d-flex gap-1 flex-wrap'>"
+
+    skills.forEach(skill => {
+        html += `
+            <span class="badge bg-light text-dark border fw-normal">
+                <i class="${skill.icon_class_name}"></i>
+                ${skill.skill_name}
+            </span>`
+    });
+    html += "</div>"
+    return html
+}
+
 export function talentCard(data) {
     return `<div class="col-12 col-md-6 col-lg-6 col-xl-4">
-                    <div class="card h-100 shadow-sm border-0 p-3">
+                    <div class="card h-100 border-0 p-3">
                         <div class="d-flex justify-content-between align-items-start">
                             <div></div>
                             <i class="fa-regular fa-heart text-muted" style="cursor:pointer;"></i>
@@ -11,23 +37,16 @@ export function talentCard(data) {
                                 <img src="${window.appConfig.baseURL}/uploads/profile-image-url/${data.profile_image}" class="rounded"
                                     width="60" alt="Profile">
                             </div>
-                            <div class="mb-2" style="font-size: 12px;">
+                            <div class="mb-2 d-flex align-items-center flex-column" style="font-size: 12px;">
                                 <h6 class="m-0 fw-bold">${data.name}</h6>
-                                <p class="m-0 text-dark">Universiti Malaya</p>
-                                <p class="m-0 text-muted">Bachelor of Computer Science</p>
-                                <div class=" badge bg-primary">See More</div>
+                                ${renderEducation(data.active_programmes)}
+
                             </div>
                         </div>
 
-                        <div class="d-flex gap-1 flex-wrap">
-                            <span class="badge bg-light text-dark border fw-normal">
-                                <i class="fa-brands fa-youtube"></i>
-                                React
-                            </span>
-                            <span class="badge bg-light text-dark border fw-normal">Laravel</span>
-                            <span class="badge bg-light text-dark border fw-normal">Node.js</span>
-                        </div>
-                        <div class="mt-auto d-flex gap-2">
+                        ${renderSkills(data.skills)}
+
+                        <div class="mt-2 d-flex gap-2">
                             <a href="${window.appConfig.baseURL}/profile/student/${data.id}" target="_blank"
                                 class="btn btn-sm btn-outline-primary w-50 fw-bold d-flex align-items-center justify-content-center">
                                 View Profile

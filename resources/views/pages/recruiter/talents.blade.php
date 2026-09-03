@@ -319,7 +319,7 @@
                 data: searchParams,
                 type: "GET",
                 success: function (response) {
-                    console.log("response", response.data.data)
+                    console.log("response", response.data)
                     let datas = response.data.data
 
                     $("#talent-cards").empty()
