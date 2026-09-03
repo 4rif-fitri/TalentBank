@@ -53,7 +53,14 @@ class ProfileController extends Controller
         ];
 
         $profiles = $this->profileService->getAllStudentUserProfiles($searchParams);
-        return ApiResponse::success('Success.', $profiles)->toJsonResponse();
+        return ApiResponse::success('Success.', [
+            'data' => $profiles->items(),
+            'current_page' => $profiles->currentPage(),
+            'last_page' => $profiles->lastPage(),
+            'per_page' => $profiles->perPage(),
+            'total' => $profiles->total(),
+            'has_more_pages' => $profiles->hasMorePages(),
+        ])->toJsonResponse();
     }
 
     /**
@@ -65,7 +72,10 @@ class ProfileController extends Controller
     {
         $userProfileId = session('user_profile_id');
         $likedProfiles = $this->profileService->getLikedUserProfiles($userProfileId);
-        return ApiResponse::success('Success.', $likedProfiles)->toJsonResponse();
+        return ApiResponse::success('Success.', [
+            'data' => $likedProfiles->items(),
+            'has_more_pages' => $likedProfiles->hasMorePages(),
+        ])->toJsonResponse();
     }
 
     /**
