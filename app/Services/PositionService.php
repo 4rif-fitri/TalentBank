@@ -54,7 +54,25 @@ class PositionService
     public function getPositionById(int $positionId, int $userProfileId): Position
     {
         $position = Position::with([
-            'shortlistUsers:id,name',
+            'shortlistUsers' => function ($query) use ($positionId) {
+                $query->select(
+                    'user_profiles.id',
+                    'user_profiles.name',
+                    'user_profiles.location',
+                    'user_profiles.profile_image',
+                    'user_profiles.headline'
+                )
+                    ->withCount([
+                        'receivedInvitations as invitations_count' => function ($query) use ($positionId) {
+                            $query->where('position_id', $positionId);
+                        }
+                    ])
+                    ->withCount([
+                        'receivedInterviews as interviews_count' => function ($query) use ($positionId) {
+                            $query->where('invitations.position_id', $positionId);
+                        }
+                    ]);
+            },
             'shortlistUsers.skills',
         ])->find($positionId);
 
