@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\File;
 
 class ProfileService
 {
+    private const ORGANIZATION_RETURN_COLUMNS = 'id,company_name,organization_logo';
+
     private function getProfileModel(int $profileId): UserProfile
     {
         $profile = UserProfile::find($profileId);
@@ -40,9 +42,9 @@ class ProfileService
             'organizationUsers' => function ($query) {
                 $query->where('status', 1);
             },
-            'organizationUsers.organization',
+            'organizationUsers.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'organizationUsers.role',
-            'activeProgrammes.organization',
+            'activeProgrammes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'activeProgrammes.qualification',
             'activeProgrammes.fieldOfStudy',
             'socialMediaLinks.socialMedia',
@@ -69,7 +71,7 @@ class ProfileService
         return UserProfile::with([
             'skills',
             'activeProgrammes:id,programme_name,organization_id,duration_years',
-            'activeProgrammes.organization:id,name',
+            'activeProgrammes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'activeProgrammes.qualifications',
         ])
             ->where(function ($query) use ($searchParams) {
@@ -113,7 +115,7 @@ class ProfileService
         return UserProfile::with([
             'skills',
             'activeProgrammes:programmes.id,programme_name,organization_id,duration_years',
-            'activeProgrammes.organization:id,name',
+            'activeProgrammes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'activeProgrammes.qualification',
         ])
             ->whereHas('likes', function ($query) use ($userProfileId) {

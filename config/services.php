@@ -40,5 +40,6 @@ return [
         'cover_image' => env('COVER_IMAGE_URL'),
         'semester_results' => env('SEMESTER_RESULTS_FILE_URL'),
         'education' => env('EDUCATION_FILE_URL'),
+        'organization_logos' => env('ORGANIZATION_LOGO_URL'),
     ],
 ];

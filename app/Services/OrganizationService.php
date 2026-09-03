@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\CheckOrgRoleHelper;
 use App\Models\IndustryCategory;
 use App\Models\IndustrySector;
 use App\Models\Organization;
@@ -10,9 +11,11 @@ use App\Models\OrganizationUser;
 use App\Models\Role;
 use Exception;
 use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class OrganizationService
 {
@@ -60,10 +63,11 @@ class OrganizationService
                 'postcode' => $data['postcode'],
                 'city' => $data['city'],
                 'state' => $data['state'],
-                'website' => $data['website'],
+                'website' => $data['website'] ?? null,
                 'company_email' => $data['company_email'],
                 'company_phone' => $data['company_phone'],
-                'description' => $data['description'],
+                'description' => $data['description'] ?? null,
+                'organization_logo' => $data['organization_logo'] ?? null,
                 'industry_sector_id' => $data['industry_sector_id'],
                 'organization_type_id' => $data['organization_type_id'],
             ]);
@@ -127,13 +131,48 @@ class OrganizationService
             'postcode' => $data['postcode'],
             'city' => $data['city'],
             'state' => $data['state'],
-            'website' => $data['website'],
+            'website' => $data['website'] ?? null,
             'company_email' => $data['company_email'],
             'company_phone' => $data['company_phone'],
-            'description' => $data['description'],
+            'description' => $data['description'] ?? null,
+            'organization_logo' => $data['organization_logo'] ?? null,
             'industry_sector_id' => $data['industry_sector_id'],
             'organization_type_id' => $data['organization_type_id'],
         ]);
+
+        return $organization;
+    }
+
+    public function uploadOrganizationLogo(UploadedFile $file, int $orgId, int $userProfileId): Organization
+    {
+        $organization = Organization::find($orgId);
+
+        if (!isset($organization)) {
+            throw new Exception('Organization not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, ['Organization Admin'], $orgId);
+
+        if (!$isUserAdmin) {
+            throw new Exception('Unauthorized access to upload organization logo for this organization.', Response::HTTP_FORBIDDEN);
+        }
+
+        $oldLogo = $organization->organization_logo;
+
+        // upload the organization logo
+        $filename = uniqid('org_logo_') . '_' . $file->getClientOriginalName();
+        $filePath = config('services.uploads_file_path.organization_logos');
+        $file->move($filePath, $filename);
+
+        // update organization_logo field for organization
+        $organization->update([
+            'organization_logo' => $filename,
+        ]);
+
+        // delete existing organization logo
+        if ($oldLogo) {
+            File::delete(config('services.uploads_file_path.organization_logos') . '/' . $oldLogo);
+        }
 
         return $organization;
     }

@@ -32,6 +32,7 @@ class OrganizationFactory extends Factory
             'description' => $this->faker->paragraph(),
             'company_email' => $this->faker->unique()->companyEmail(),
             'company_phone' => $this->faker->phoneNumber(),
+            'organization_logo' => $this->faker->optional()->imageUrl(200, 200, 'business', true, 'logo'),
             'industry_sector_id' => IndustrySector::inRandomOrder()->first()->id,
             'organization_type_id' => OrganizationType::inRandomOrder()->first()->id,
         ];

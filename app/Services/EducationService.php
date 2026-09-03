@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class EducationService
 {
+    private const ORGANIZATION_RETURN_COLUMNS = 'id,company_name,organization_logo';
+
     /**
      * Create a new class instance.
      */
@@ -46,7 +48,7 @@ class EducationService
     {
         return Education::with([
             'programme',
-            'programme.organization:id,company_name',
+            'programme.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'programme.qualification',
             'programme.fieldOfStudy',
             'media',
@@ -67,7 +69,7 @@ class EducationService
     {
         $education = Education::with([
             'programme',
-            'programme.organization:id,company_name',
+            'programme.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'programme.qualification',
             'programme.fieldOfStudy',
             'media',
@@ -110,7 +112,7 @@ class EducationService
         });
 
         return $education->load([
-            'programme.organization:id,company_name',
+            'programme.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'programme.qualification',
             'programme.fieldOfStudy',
             'media'
@@ -164,7 +166,7 @@ class EducationService
         });
 
         return $education->load([
-            'programme.organization:id,company_name',
+            'programme.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'programme.qualification',
             'programme.fieldOfStudy',
             'media',

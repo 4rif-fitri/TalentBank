@@ -35,6 +35,7 @@ class OrganizationController extends Controller
             'description' => ['nullable', 'string', 'max:255'],
             'company_email' => ['required', 'email', 'max:255'],
             'company_phone' => ['required', 'string', 'max:255'],
+            'organization_logo' => ['nullable', 'string', 'max:255'],
             'industry_sector_id' => ['required', 'int', 'exists:industry_sectors,id'],
             'organization_type_id' => ['required', 'int', 'exists:organization_types,id'],
         ]);
@@ -82,6 +83,26 @@ class OrganizationController extends Controller
         $organization = $this->organizationService->updateOrganization($validated, $orgId, $userProfileId);
 
         return ApiResponse::success('Organization updated successfully.', $organization)->toJsonResponse();
+    }
+
+    /**
+     * Handles request to upload organization logo
+     * 
+     * @param Request $request
+     * @param int $orgId
+     * @return JsonResponse
+     */
+    public function uploadOrganizationLogo(Request $request, int $orgId): JsonResponse
+    {
+        $request->validate([
+            'organization_logo' => ['required', 'file', 'image', 'max:2048'],
+        ]);
+
+        $userProfileId = session('user_profile_id');
+        $file = $request->file('organization_logo');
+        $organization = $this->organizationService->uploadOrganizationLogo($file, $orgId, $userProfileId);
+
+        return ApiResponse::success('Organization logo uploaded successfully.', $organization)->toJsonResponse();
     }
 
     /**
