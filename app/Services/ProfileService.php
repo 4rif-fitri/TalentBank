@@ -148,7 +148,7 @@ class ProfileService
 
         $isNameChanged = $data['name'] !== $profile->name;
         $isEmailChanged = $data['email'] !== $profile->email;
-        $isPhoneChanged = $data['phone_no'] !== $profile->phone_no;
+        $isPhoneChanged = ($data['phone_no'] ?? null) !== $profile->phone_no;
 
         // if the email and phone_no changed, then check if the updated one already exists in db before updating
         if ($isEmailChanged || $isPhoneChanged) {
@@ -158,7 +158,7 @@ class ProfileService
                 }
 
                 if ($isPhoneChanged && isset($data['phone_no'])) {
-                    $query->orWhere('phone_no', $data['phone_no']);
+                    $query->orWhere('phone_no', $data['phone_no'] ?? null);
                 }
             })
                 ->where('id', '<>', $profileId)
@@ -173,9 +173,9 @@ class ProfileService
             $profile->update([
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'headline' => $data['headline'],
-                'location' => $data['location'],
-                'phone_no' => $data['phone_no'],
+                'headline' => $data['headline'] ?? null,
+                'location' => $data['location'] ?? null,
+                'phone_no' => $data['phone_no'] ?? null,
             ]);
 
             if ($isNameChanged || $isEmailChanged) {
