@@ -148,7 +148,7 @@ class ProfileService
 
         $isNameChanged = $data['name'] !== $profile->name;
         $isEmailChanged = $data['email'] !== $profile->email;
-        $isPhoneChanged = $data['phone_no'] !== $profile->phone_no;
+        $isPhoneChanged = ($data['phone_no'] ?? null) !== $profile->phone_no;
 
         // if the email and phone_no changed, then check if the updated one already exists in db before updating
         if ($isEmailChanged || $isPhoneChanged) {
