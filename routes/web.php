@@ -104,9 +104,9 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
         Route::get('/getProfileDataByProfileId/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
         Route::get('/getLikedUserProfiles', [ProfileController::class, 'getLikedUserProfiles'])->name('profile.getLikedUserProfiles');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
-        Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('update.updateAboutField');
-        Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('update.uploadProfileImage');
-        Route::post('/upload/cover-image', [ProfileController::class, 'uploadCoverImage'])->name('update.uploadCoverImage');
+        Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('profile.updateAboutField');
+        Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('profile.uploadProfileImage');
+        Route::post('/upload/cover-image', [ProfileController::class, 'uploadCoverImage'])->name('profile.uploadCoverImage');
         Route::post('/toggleLike', [ProfileController::class, 'toggleLike'])->name('profile.toggleLike');
     });
 
