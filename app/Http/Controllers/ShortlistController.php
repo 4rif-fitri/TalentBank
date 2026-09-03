@@ -16,7 +16,25 @@ class ShortlistController extends Controller
     }
 
     /**
-     * Shortlist a user profile for a position.
+     * Handles request to get shortlisted positions by user profile ID
+     * 
+     * @param int $profileId
+     * @param int $orgId
+     * @return JsonResponse
+     */
+    public function getShortlistedPositions(int $profileId, int $orgId): JsonResponse
+    {
+        $userProfileId = session('user_profile_id');
+        $shortlistedPositions = $this->shortlistService->getShortlistedPositions($userProfileId, $profileId, $orgId);
+
+        return ApiResponse::success('Success.', $shortlistedPositions)->toJsonResponse();
+    }
+
+    /**
+     * Handles request to create a new shortlist entry
+     * 
+     * @param Request $request
+     * @return JsonResponse
      */
     public function store(Request $request): JsonResponse
     {
@@ -31,7 +49,10 @@ class ShortlistController extends Controller
     }
 
     /**
-     * Remove a shortlist entry.
+     * Handles request to delete shortlist entry
+     * 
+     * @param int $shortlistId
+     * @return JsonResponse
      */
     public function delete(int $shortlistId): JsonResponse
     {
