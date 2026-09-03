@@ -641,7 +641,95 @@
         bootstrap.Modal.getOrCreateInstance($("#interviewModal")).show();
     });
 
-    // $(document).on("click", "#btnAddInterview", handleAddInterview)
+    function store() {
+        let data = {
+            "_token": $('meta[name="csrf-token"]').attr("content"),
+            "organization_id": 1,
+            "position_title": "New Position 2025",
+            "employment_type": "Internship",
+            "department": "New Department 2025",
+            "work_location": "New Work Location 2025",
+            "vacancies": "5",
+            "description": "New Description 2025"
+        }
 
+        $.ajax({
+            url: "{{ route('positions.store') }}",
+            data,
+            method: "POST",
+            success: function (response) {
+                debug.log("store", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function getShortlistedPositionIds(profileId, orgId) {
+        let url = "{{ route('interviews.getInterviewById',['id' => '__profileId__','orgId' => '__orgId__' ]) }}"
+        url = url.replace("__orgId__", orgId)
+        url = url.replace("__profileId__", profileId)
+
+        $.ajax({
+            url,
+            type: "GET",
+            success: function (response) {
+                debug.log("getShortlistedPositionIds", response.data);
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function _store(user_profile_id, position_id) {
+        let data = {
+            "_token": $('meta[name="csrf-token"]').attr("content"),
+            "scheduled_at": "2026-9-30 05:07:17",
+            "user_profile_id": user_profile_id,
+            "position_id": position_id,
+        }
+
+        $.ajax({
+            url: "{{ route('shortlists.store') }}",
+            data,
+            method: "POST",
+            success: function (response) {
+                debug.log("store", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    function _delete(id) {
+        let url = "{{ route('shortlists.delete', ['shortlistId' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+
+        let data = {
+            "_token": $('meta[name="csrf-token"]').attr("content"),
+            "_method": "DELETE"
+        }
+
+        $.ajax({
+            url,
+            data,
+            type: "POST",
+            success: function (response) {
+                debug.log("store", response.data);
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    // $(document).on("click", "#btnAddInterview", handleAddInterview)
+    // store()
+    // getShortlistedPositionIds(2, 1)
+    // _store(2, 11)
+    // _delete(11)
 </script>
 @endsection
