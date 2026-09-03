@@ -77,6 +77,11 @@ function renderSkills(skills) {
     return html
 }
 
+function renderStatus(data) {
+    if (data.invitations_count = 1) return "Invited"
+    if (data.interviews_count = 2) return "interviewed"
+}
+
 export function candidate(user) {
     return `<tr data-id=${user.id}>
                 <td>
@@ -88,7 +93,7 @@ export function candidate(user) {
                     ${renderSkills(user.skills)}
                 </td>
                 <td>
-                    <div class="badge bg-primary">Added</div>
+                    <div class="badge bg-primary">${renderStatus(user)}</div>
                 </td>
                 <td class="position-relative">
                     <button type="button" class="btn btn-light border" data-bs-toggle="dropdown">

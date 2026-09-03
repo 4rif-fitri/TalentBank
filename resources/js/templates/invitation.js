@@ -117,7 +117,7 @@ export function reciverInvitatinMainContent(inv) {
 
     return `<div class="h-100 border-0 p-3 position-relative">
                 <div class="d-flex gap-3">
-                    <i class="fa-solid fa-circle-user" style="color: rgb(0, 0, 0); font-size: 4rem;"></i>
+                    <div class=" bg-danger border-2"  style="width:4rem; height:4rem; background-image: url('${window.appConfig.organizationLogoUrl}/${inv.position.organization.organization_logo}'); background-size: cover;"></div>
                     <div class="d-flex align-items-center">
                         <h3 class="fw-semibold">${inv.position.organization.company_name}</h3>
                     </div>

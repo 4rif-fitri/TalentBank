@@ -142,6 +142,7 @@
                 $(".invitation-list").empty()
                 invitations = response.data
                 invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+
             },
             error: function (xhr) {
                 console.error(xhr)
@@ -211,17 +212,26 @@
             success: function (response) {
                 console.log("acceptInvitation", response)
                 disabledButton(id)
+                let target = invitations.find(inv => inv.id == id);
+                if (target) {
+                    target.invitation_status = "Accepted";
+                }
+
                 salert.salert('Success', response.message, 'success');
                 $(`.invitation-item[data-id="${id}"]`).remove()
-                console.log(
-                    $btn.closest("#shortlistContent").html()
-                );
+                $("#shortlistContent").html(`<div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
+                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                    <h4 class="mt-2">Select Interview</h4>
+                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                        <i class="fa-solid fa-filter"></i>
+                        Interview
+                    </button>
+                </div>`)
 
             },
             error: function (xhr) {
                 console.error(xhr)
                 salert.salert('Error', xhr.responseJSON?.message, 'error');
-
             }
         });
     })
@@ -245,9 +255,23 @@
             },
             success: function (response) {
                 console.log("rejectInvitation", response)
-                disabledButton(id)
                 salert.salert('Success', response.message, 'success');
-                $(".invitation-list").find(`.invitation-item [data-id=${id}]`).remove()
+                disabledButton(id)
+                let target = invitations.find(inv => inv.id == id);
+                if (target) {
+                    target.invitation_status = "Rejected";
+                }
+
+                salert.salert('Success', response.message, 'success');
+                $(`.invitation-item[data-id="${id}"]`).remove()
+                $("#shortlistContent").html(`<div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
+                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                    <h4 class="mt-2">Select Interview</h4>
+                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                        <i class="fa-solid fa-filter"></i>
+                        Interview
+                    </button>
+                </div>`)
             },
             error: function (xhr) {
                 console.error(xhr)
@@ -271,6 +295,7 @@
 
         if (status == "") {
             invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+            return;
         }
 
         let filted = invitations.filter(inv => inv.invitation_status == status)

@@ -12,6 +12,7 @@
         coverImageUrl: "{{ asset(env('COVER_IMAGE_URL')) }}",
         profileImageUrl: "{{ asset(env('PROFILE_IMAGE_URL')) }}",
         educationFileUrl: "{{ asset(env('EDUCATION_FILE_URL')) }}",
+        organizationLogoUrl: "{{ asset(env('ORGANIZATION_LOGO_URL')) }}",
         assets: {
             coverImage: "{{ asset('cover-image-url') }}",
             profileImage: "{{ asset('profile-image-url') }}"

@@ -41,7 +41,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 380px;
+            width: 450px !important;
             max-width: 85vw;
             height: 100vh !important;
             z-index: 1050;
