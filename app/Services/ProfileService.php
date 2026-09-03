@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\File;
 class ProfileService
 {
     private const ORGANIZATION_RETURN_COLUMNS = 'id,company_name,organization_logo';
+    private const PROGRAMME_RETURN_COLUMNS = 'programmes.id,programme_name,organization_id,duration_years,qualification_id';
 
     private function getProfileModel(int $profileId): UserProfile
     {
@@ -71,9 +72,9 @@ class ProfileService
     {
         return UserProfile::with([
             'skills',
-            'activeProgrammes:programmes.id,programme_name,organization_id,duration_years',
-            'activeProgrammes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
-            'activeProgrammes.qualification',
+            'programmes:' . self::PROGRAMME_RETURN_COLUMNS,
+            'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
+            'programmes.qualification',
         ])
             ->where(function ($query) use ($searchParams) {
                 $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
@@ -115,9 +116,9 @@ class ProfileService
     {
         return UserProfile::with([
             'skills',
-            'activeProgrammes:programmes.id,programme_name,organization_id,duration_years',
-            'activeProgrammes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
-            'activeProgrammes.qualification',
+            'programmes:' . self::PROGRAMME_RETURN_COLUMNS,
+            'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
+            'programmes.qualification',
         ])
             ->whereHas('likes', function ($query) use ($userProfileId) {
                 $query->where('liker_user_profile_id', $userProfileId);
