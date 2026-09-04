@@ -78,14 +78,14 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <button class="nav-link active text-primary">Upcoming</button>
+                    <li data-status="Scheduled" class="nav-item">
+                        <button class="nav-link active text-primary">Scheduled</button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link text-body">Completed</button>
+                    <li data-status="Completed" class="nav-item">
+                        <button class="nav-link text-black">Completed</button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link text-body">Cancelled</button>
+                    <li data-status="Cancelled" class="nav-item">
+                        <button class="nav-link text-black">Cancelled</button>
                     </li>
                 </ul>
             </div>
@@ -116,13 +116,21 @@
 
 @section('script')
 <script>
+    let userInterviews
+    let currentStatus = "Scheduled"
+
+    function filterInterviewsbyStatus() {
+
+    }
+
     function getInterviewsByReceiverId() {
 
         $.ajax({
             url: "{{ route('interviews.getInterviewsByReceiverId') }}",
             type: "GET",
             success: function (response) {
-                debug.log("getInterviewsByReceiverId", response.data);
+                // debug.log("getInterviewsByReceiverId", response.data);
+                userInterviews = response.data
             },
             error: function (xhr) {
                 debug.error(xhr.responseJSON.message)
@@ -146,7 +154,23 @@
         });
     }
 
-    getInterviewsByReceiverId()
-    getInterviewById(1)
+    // getInterviewsByReceiverId()
+    // getInterviewById(1)
+
+    function dataFilter(status) {
+        $(".invitation-list").empty()
+
+        userInterviews.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+
+    }
+
+    $(document).on("click", ".nav-item", async function () {
+        $(".nav-item button").removeClass("active text-primary").addClass("text-body");
+        $(this).find("button").removeClass("text-body").addClass("active text-primary");
+        await getInterviewsByReceiverId()
+        let status = $(this).data("status")
+
+        dataFilter(status)
+    });
 </script>
 @endsection

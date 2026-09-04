@@ -382,7 +382,6 @@
         if (currentStatus == status) return
         currentStatus = status
         getInterviewsByStatus(currentStatus)
-
     });
 
     $(document).on("click", "#btnMessageStudent", function () { })
@@ -411,7 +410,7 @@
     // cancelInterview(5)
     // update(3)
     // store(1)
-    // getInterviewsByStatus("Scheduled")
+    // getInterviewsByStatus("Completed")
     // ggetInterviewById(2)
 </script>
 @endsection
