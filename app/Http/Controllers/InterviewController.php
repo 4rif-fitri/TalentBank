@@ -13,7 +13,8 @@ class InterviewController extends Controller
 {
     public function __construct(
         private readonly InterviewService $interviewService
-    ) {}
+    ) {
+    }
 
     /**
      * Handles request to get interviews where current user is the sender
@@ -106,7 +107,7 @@ class InterviewController extends Controller
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
             'location' => ['nullable', 'string'],
             'meeting_url' => ['nullable', 'string', 'url'],
-            'interview_result' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_RESULTS)],
+            'interview_result' => ['nullable', 'string', Rule::in(AppConstants::INTERVIEW_RESULTS)],
             'recruiter_comment' => ['nullable', 'string'],
         ]);
 
