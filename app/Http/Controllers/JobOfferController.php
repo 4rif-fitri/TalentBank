@@ -19,10 +19,11 @@ class JobOfferController extends Controller
      *
      * @return JsonResponse
      */
-    public function getJobOffersBySenderId(): JsonResponse
+    public function getJobOffersByStatusAndSenderId(Request $request): JsonResponse
     {
         $senderId = session('user_profile_id');
-        $jobOffers = $this->jobOfferService->getJobOffersBySenderId($senderId);
+        $status = $request->query('status');
+        $jobOffers = $this->jobOfferService->getJobOffersBySenderId($senderId, $status);
 
         return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
     }
@@ -32,10 +33,11 @@ class JobOfferController extends Controller
      *
      * @return JsonResponse
      */
-    public function getJobOffersByReceiverId(): JsonResponse
+    public function getJobOffersByStatusAndReceiverId(Request $request): JsonResponse
     {
         $receiverId = session('user_profile_id');
-        $jobOffers = $this->jobOfferService->getJobOffersByReceiverId($receiverId);
+        $status = $request->query('status');
+        $jobOffers = $this->jobOfferService->getJobOffersByReceiverId($receiverId, $status);
 
         return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
     }
@@ -46,13 +48,13 @@ class JobOfferController extends Controller
      * @param string $status
      * @return JsonResponse
      */
-    public function getJobOffersByStatus(string $status): JsonResponse
-    {
-        $userProfileId = session('user_profile_id');
-        $jobOffers = $this->jobOfferService->getJobOffersByStatus($status, $userProfileId);
+    // public function getJobOffersByStatus(string $status): JsonResponse
+    // {
+    //     $userProfileId = session('user_profile_id');
+    //     $jobOffers = $this->jobOfferService->getJobOffersByStatus($status, $userProfileId);
 
-        return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
-    }
+    //     return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
+    // }
 
     /**
      * Handles request to get job offer by job offer ID
