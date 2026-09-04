@@ -293,7 +293,7 @@
     function getEducationDetail(eduId) {
 
         let modalEl = document.getElementById("educationModal");
-        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        let modal = bootstrap.Modal .getOrCreateInstance(modalEl);
 
         let url = "{{ route('education.getEducationById', ['id' => '__ID__']) }}";
         url = url.replace("__ID__", eduId);
@@ -702,7 +702,7 @@
             },
 
             success: function (response) {
-                bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
+                bootstrap.Modal .getInstance(document.getElementById("educationModal"))?.hide();
                 swalfire("Success", response.message ?? "Education created successfully.", "success")
                 $(document).trigger("education:updated");
             },
@@ -748,7 +748,7 @@
                 },
 
                 success: function (response) {
-                    bootstrap.Modal.getInstance(document.getElementById("educationModal"))?.hide();
+                    bootstrap.Modal .getInstance(document.getElementById("educationModal"))?.hide();
                     swalfire("Success", response.message ?? "Education deleted successfully.", "success")
                     $(document).trigger("education:updated");
                 },
@@ -763,7 +763,7 @@
 
     $(document).on("click", "#addEducation", function () {
 
-        let modal = bootstrap.Modal.getOrCreateInstance(
+        let modal = bootstrap.Modal .getOrCreateInstance(
             $("#educationModal")[0]
         );
 

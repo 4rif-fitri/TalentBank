@@ -115,7 +115,7 @@
 @endsection
 
 @section('script')
-<script>
+<script type="module">
     let userInterviews
     let currentStatus = "Scheduled"
 

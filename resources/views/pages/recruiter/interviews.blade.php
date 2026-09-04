@@ -412,5 +412,60 @@
     // store(1)
     // getInterviewsByStatus("Completed")
     // ggetInterviewById(2)
+
+    async function getPositionsByOrgId(id) {
+        let url = "{{ route('positions.getPositionsByOrgId', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", id);
+
+        return await $.ajax({
+            url: url,
+            method: 'GET'
+        });
+    } async function getProfileDataByProfileId() {
+        let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+        let response = await $.ajax({
+            url: url,
+            method: 'GET'
+        });
+
+        return response.data;
+    }
+
+    async function loadData() {
+        try {
+            let profile = await getProfileDataByProfileId();
+            let organizations = profile.organization_users;
+            console.log(organizations);
+
+
+            let results = await Promise.all(
+                organizations.map(organization => getPositionsByOrgId(organization.organization_id))
+            );
+
+            results.forEach(pos => console.group(pos))
+
+
+        } catch (error) {
+            console.error("Ralat semasa loadData:", error);
+        }
+    }
+    loadData()
+
+    function getPositionById(id) {
+        let url = "{{ route('positions.getPositionById', ['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+        $.ajax({
+            url,
+            type: "GET",
+            success: function (response) {
+                debug.log("getPositionById", response.data)
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
+    getPositionById(1)
 </script>
 @endsection

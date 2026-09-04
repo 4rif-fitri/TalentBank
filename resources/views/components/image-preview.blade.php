@@ -61,7 +61,7 @@
 			`);
         });
 
-        let modal = bootstrap.Modal.getOrCreateInstance(
+        let modal = bootstrap.Modal .getOrCreateInstance(
             document.getElementById("imagePreviewModal")
         );
         document.activeElement.blur();

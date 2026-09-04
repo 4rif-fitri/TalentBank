@@ -118,7 +118,7 @@
 @endsection
 
 @section('script')
-<script>
+<script type="module">
     function getJobOffersByReceiverId() {
         $.ajax({
             url: "{{ route('jobOffers.getJobOffersByReceiverId') }}",

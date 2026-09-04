@@ -7,7 +7,7 @@
 @endsection
 
 @section('script')
-<script>
+<script type="module">
     let mydata;
 
     function getMyData() {

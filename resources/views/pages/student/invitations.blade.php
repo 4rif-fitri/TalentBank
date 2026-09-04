@@ -130,9 +130,9 @@
         document.body.classList.toggle('filter-open');
     }
 </script>
-<script>
+<script type="module">
     let invitations
-
+    let url
     function getInvitationsByReceiverId() {
         $.ajax({
             url: "{{ route('invitations.getInvitationsByReceiverId') }}",

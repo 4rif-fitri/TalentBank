@@ -155,14 +155,14 @@
 @endsection
 
 @section('script')
-<script>
+<script type="module">
     function toggleFilter() {
         document.body.classList.toggle('filter-open');
     }
 
     $(document).on("click", ".toggleFilter", toggleFilter)
 </script>
-<script>
+<script type="module">
 
     let currentStatus = "Pending"
     let currentInv
@@ -350,7 +350,7 @@
     $(document).on("click", ".btn-edit-invitation", function () {
         let id = $(this).data('id');
 
-        bootstrap.Modal.getOrCreateInstance("#invitationModal").show()
+        bootstrap.Modal .getOrCreateInstance("#invitationModal").show()
 
 
         $("#invite_candidate").val(currentInv.receiver.name)

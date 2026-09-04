@@ -1,6 +1,5 @@
 <!-- Vendor CSS -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/libs/jquery-ui.css') }}">
 
 <script>
     window.appConfig = {
@@ -73,11 +72,9 @@
 @vite([
 'resources/scss/app.scss',
 'resources/js/app.js',
-'resources/js/api.js',
 ])
 <!-- TalentBank Custom CSS -->
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/layout/newLayout.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/style.css') }}">
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
 @yield('css')

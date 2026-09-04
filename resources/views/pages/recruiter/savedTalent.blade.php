@@ -21,7 +21,7 @@
     @endsection
 
     @section('script')
-    <script>
+    <script type="module">
         $.ajax({
             url: "{{ route('profile.getLikedUserProfiles') }}",
             type: "GET",

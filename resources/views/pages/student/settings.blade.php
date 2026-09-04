@@ -2,7 +2,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         let profileModalEl = document.getElementById("editProfileModal");
-        let profileModal = bootstrap.Modal.getOrCreateInstance(profileModalEl);
+        let profileModal = bootstrap.Modal .getOrCreateInstance(profileModalEl);
 
         let $profileLoading = $("#profileLoading");
         let $profileFields = $("#profileFields");

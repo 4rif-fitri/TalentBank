@@ -189,7 +189,7 @@
             method: 'GET'
         });
         myData = response.data;
-        console.log(myData);
+        // console.log(myData);
 
         return response.data;
     }
@@ -218,14 +218,14 @@
         try {
             let profile = await getProfileDataByProfileId();
             let organizations = profile.organization_users;
-            console.log(organizations);
+            // console.log(organizations);
 
 
             let results = await Promise.all(
                 organizations.map(organization => getPositionsByOrgId(organization.organization_id))
             );
 
-            console.log({ results });
+            // console.log({ results });
 
             shortListRender.sideBar(results)
 
@@ -233,7 +233,6 @@
             console.error("Ralat semasa loadData:", error);
         }
     }
-
 
     function storePosition(position_title, employment_type, vacancies, department, work_location, description) {
         let formData = new FormData()
@@ -381,7 +380,7 @@
             console.log(response);
             salert.salert('Success', response.message, 'success');
             form[0].reset();
-            bootstrap.Modal.getOrCreateInstance($("#shortlistModal")).hide();
+            bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).hide();
 
             shortListRender.appendNew(response.data)
 
@@ -453,7 +452,7 @@
             console.log(response);
             salert.salert('Success', response.message, 'success');
             form[0].reset();
-            bootstrap.Modal.getOrCreateInstance($("#shortlistModal")).hide();
+            bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).hide();
 
             shortListRender.detail(response.data)
             let $row = $("#shortlistList").find(`[data-id="${response.data.id}"]`)
@@ -551,7 +550,7 @@
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
             success: function (response) {
-                bootstrap.Modal.getInstance($("#interviewModal")).hide();
+                bootstrap.Modal .getInstance($("#interviewModal")).hide();
                 salert.salert("Success", isUpdate ? "Interview updated successfully!" : "Interview scheduled successfully!", "success");
                 // Reload table/datatable jika perlu:
                 // table.ajax.reload();
@@ -575,7 +574,7 @@
     $(document).on("click", ".btnShowModalAddShortlist", function () {
         $("#btnAddShortlist").show()
         $("#btnUpdateShortlist").hide()
-        bootstrap.Modal.getOrCreateInstance($("#shortlistModal")).show()
+        bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).show()
     });
 
     $(document).on("click", ".btnShowModalUpdateShortlist", function () {
@@ -591,7 +590,7 @@
 
         $("#btnAddShortlist").hide()
         $("#btnUpdateShortlist").show()
-        bootstrap.Modal.getOrCreateInstance($("#shortlistModal")).show()
+        bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).show()
     });
 
     $(document).on("click", ".btnShowModalAddInvite", function () {
@@ -605,8 +604,9 @@
         $("#invite_candidate").val(candidte.name)
         $("#invite_position_title").val(curruntPosition.position_title)
         $("#invite_position_id").val(curruntPosition.id)
-        bootstrap.Modal.getOrCreateInstance($("#invitationModal")).show()
+        bootstrap.Modal .getOrCreateInstance($("#invitationModal")).show()
     })
+
     $(document).on("click", "#btnAddInvitation", handleAddInvitation)
 
     $(document).on("change", "input[name='interview_mode']", function () {
@@ -638,7 +638,7 @@
         $("#btnAddInterview").show();
         $("#btnUpdateInterview").hide();
 
-        bootstrap.Modal.getOrCreateInstance($("#interviewModal")).show();
+        bootstrap.Modal .getOrCreateInstance($("#interviewModal")).show();
     });
 
     function store() {
@@ -728,7 +728,7 @@
 
     // $(document).on("click", "#btnAddInterview", handleAddInterview)
     // store()
-    getShortlistedPositionIds(2, 1)
+    // getShortlistedPositionIds(2, 1)
     // _store(2, 11)
     // _delete(11)
 </script>

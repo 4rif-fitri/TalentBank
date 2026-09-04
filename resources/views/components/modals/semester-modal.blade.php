@@ -133,7 +133,7 @@
         });
 
 
-        let semesterModal = bootstrap.Modal.getOrCreateInstance(
+        let semesterModal = bootstrap.Modal .getOrCreateInstance(
             $("#semesterModal")[0]
         );
 
@@ -188,7 +188,7 @@
                     "success"
                 );
 
-                let semesterModal = bootstrap.Modal.getInstance(
+                let semesterModal = bootstrap.Modal .getInstance(
                     $("#semesterModal")[0]
                 );
 
@@ -250,7 +250,7 @@
         $("#semesterModal .modal-title").text("Edit Semester");
         $("#semesterForm button[type='submit']").text("Update");
 
-        let semesterModal = bootstrap.Modal.getOrCreateInstance(
+        let semesterModal = bootstrap.Modal .getOrCreateInstance(
             $("#semesterModal")[0]
         );
 

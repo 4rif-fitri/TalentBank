@@ -147,7 +147,7 @@
 @endsection
 
 @section('script')
-<script>
+<script type="module">
 
     let currentStatus = "Pending"
 

@@ -142,7 +142,7 @@
         let addResultModalEl = document.getElementById('addResultModal');
         if (!addResultModalEl) return;
 
-        let addResultModal = bootstrap.Modal.getOrCreateInstance(addResultModalEl);
+        let addResultModal = bootstrap.Modal .getOrCreateInstance(addResultModalEl);
 
         $("#addResult").on("click", function () {
             resetResultForm();
