@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
-use App\Models\UserProfile;
 use App\Services\ProfileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,12 +12,6 @@ class ProfileController extends Controller
     public function __construct(
         private readonly ProfileService $profileService
     ) {
-    }
-
-    public function getAllProfile(): JsonResponse
-    {
-        $profile = UserProfile::all();
-        return ApiResponse::success('Success.', $profile)->toJsonResponse();
     }
 
     /**
@@ -111,7 +104,7 @@ class ProfileController extends Controller
     public function updateAboutField(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'about' => ['nullable', 'max:255']
+            'about' => ['nullable', 'string']
         ]);
 
         $profileId = session('user_profile_id');

@@ -7,7 +7,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class MediaService
 {
@@ -27,15 +27,15 @@ class MediaService
 
     private function moveFileGetInsertRecord(array $data, string $filePath, UploadedFile $file, int $userProfileId): array
     {
-        $filename = uniqid($data['source_name'] . '_') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
         $fileMimeType = $file->getMimeType();
 
         if (!in_array($fileMimeType, $this->allowedMediaType)) {
             throw new Exception('Invalid file type. File must either be ' . implode(', ', $this->allowedMediaType), Response::HTTP_BAD_REQUEST);
         }
 
+        $filename = uniqid($data['source_name'] . '_') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
         $mediaType = str_starts_with($fileMimeType, 'application') ? 'pdf' : explode('/', $fileMimeType)[0];
-        $file->move($filePath, $filename);
+        $file->storeAs($filePath, $filename, 'public');
 
         $insertRecord = [
             'uploaded_by_user_id' => $userProfileId,
@@ -117,7 +117,7 @@ class MediaService
         // delete all the files associated with this media
         foreach ($media as $m) {
             $path = $filePath . $m->file_name;
-            File::delete($path);
+            Storage::disk('public')->delete($path);
         }
 
         // delete data from database after deleting the file in uploads folder
@@ -155,7 +155,7 @@ class MediaService
 
         foreach ($media as $m) {
             $path = $filePath . $m->file_name;
-            File::delete($path);
+            Storage::disk('public')->delete($path);
         }
 
         return $result;

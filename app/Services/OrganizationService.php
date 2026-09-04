@@ -15,7 +15,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class OrganizationService
 {
@@ -162,7 +162,7 @@ class OrganizationService
         // upload the organization logo
         $filename = uniqid('org_logo_') . '_' . $file->getClientOriginalName();
         $filePath = config('services.uploads_file_path.organization_logos');
-        $file->move($filePath, $filename);
+        $file->storeAs($filePath, $filename, 'public');
 
         // update organization_logo field for organization
         $organization->update([
@@ -171,7 +171,7 @@ class OrganizationService
 
         // delete existing organization logo
         if ($oldLogo) {
-            File::delete(config('services.uploads_file_path.organization_logos') . '/' . $oldLogo);
+            Storage::disk('public')->delete(config('services.uploads_file_path.organization_logos') . '/' . $oldLogo);
         }
 
         return $organization;
