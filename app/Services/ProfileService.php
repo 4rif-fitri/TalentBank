@@ -11,10 +11,9 @@ use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
@@ -197,7 +196,7 @@ class ProfileService
      * @throws Exception
      * @return UserProfile
      */
-    public function updateAboutField(string $about, int $profileId): UserProfile
+    public function updateAboutField(?string $about, int $profileId): UserProfile
     {
         $profile = $this->getProfileModel($profileId);
 
@@ -240,11 +239,11 @@ class ProfileService
 
         // delete existing image file
         if (isset($profile->{$column})) {
-            File::delete($imagePath . $profile->{$column});
+            Storage::disk('public')->delete($imagePath . $profile->{$column});
         }
 
         $filename = uniqid($column . '_') . '_' . str_replace(' ', '-', $image->getClientOriginalName());
-        $image->move($imagePath, $filename);
+        $image->storeAs($imagePath, $filename, 'public');
 
         $profile->update([$column => $filename]);
 
