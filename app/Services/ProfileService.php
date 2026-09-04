@@ -65,9 +65,11 @@ class ProfileService
      * Returns all student and alumni user profiles with search functionality
      * 
      * @param array $searchParams
+     * @param int $userProfileId
+     * @param bool $returnLiked
      * @return LengthAwarePaginator
      */
-    public function getAllStudentUserProfiles(array $searchParams, int $userProfileId): LengthAwarePaginator
+    public function getAllStudentUserProfiles(array $searchParams, int $userProfileId, bool $returnLiked): LengthAwarePaginator
     {
         return UserProfile::with([
             'skills',
@@ -76,6 +78,11 @@ class ProfileService
             'programmes.qualification',
         ])
             ->select('id', 'name', 'location', 'headline', 'profile_image')
+            ->when($returnLiked, function ($query) use ($userProfileId) {
+                $query->whereHas('likes', function ($query) use ($userProfileId) {
+                    $query->where('liker_user_profile_id', $userProfileId);
+                });
+            })
             ->where(function ($query) use ($searchParams) {
                 $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
                     $query->where('name', 'LIKE', '%' . $searchParams['name'] . '%');
@@ -117,21 +124,21 @@ class ProfileService
      * @param int $userProfileId
      * @return Paginator
      */
-    public function getLikedUserProfiles(int $userProfileId): Paginator
-    {
-        return UserProfile::with([
-            'skills',
-            'programmes:' . self::PROGRAMME_RETURN_COLUMNS,
-            'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
-            'programmes.qualification',
-        ])
-            ->whereHas('likes', function ($query) use ($userProfileId) {
-                $query->where('liker_user_profile_id', $userProfileId);
-            })
-            ->where('id', '<>', $userProfileId)
-            ->select('id', 'name', 'location', 'headline', 'profile_image')
-            ->simplePaginate(6);
-    }
+    // public function getLikedUserProfiles(int $userProfileId): Paginator
+    // {
+    //     return UserProfile::with([
+    //         'skills',
+    //         'programmes:' . self::PROGRAMME_RETURN_COLUMNS,
+    //         'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
+    //         'programmes.qualification',
+    //     ])
+    //         ->whereHas('likes', function ($query) use ($userProfileId) {
+    //             $query->where('liker_user_profile_id', $userProfileId);
+    //         })
+    //         ->where('id', '<>', $userProfileId)
+    //         ->select('id', 'name', 'location', 'headline', 'profile_image')
+    //         ->simplePaginate(6);
+    // }
 
     /**
      * Update profile data of profile by profile ID.

@@ -263,15 +263,16 @@ class ProfileControllerTest extends TestCase
 
     public function test_user_can_get_liked_user_profiles(): void
     {
-        UserProfile::factory()->count(3)->create()
-            ->each(function (UserProfile $newUser) {
-                Like::create([
-                    'liked_user_profile_id' => $newUser->id,
-                    'liker_user_profile_id' => $this->userProfile->id,
-                ]);
-            });
+        collect(range(1, 3))->each(function () {
+            $profile = $this->createStudentInOrg();
 
-        $response = $this->getJson(route('profile.getLikedUserProfiles'));
+            Like::create([
+                'liked_user_profile_id' => $profile->id,
+                'liker_user_profile_id' => $this->userProfile->id
+            ]);
+        });
+
+        $response = $this->getJson(route('profile.getAllStudentUserProfiles', ['return_liked' => 'true']));
 
         $response->assertStatus(Response::HTTP_OK)
             ->assertJsonFragment([
