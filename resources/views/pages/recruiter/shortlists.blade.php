@@ -667,7 +667,7 @@
     }
 
     function getShortlistedPositionIds(profileId, orgId) {
-        let url = "{{ route('interviews.getInterviewById',['id' => '__profileId__','orgId' => '__orgId__' ]) }}"
+        let url = "{{ route('shortlists.getShortlistedPositionIds',['profileId' => '__profileId__','orgId' => '__orgId__' ]) }}"
         url = url.replace("__orgId__", orgId)
         url = url.replace("__profileId__", profileId)
 
@@ -728,7 +728,7 @@
 
     // $(document).on("click", "#btnAddInterview", handleAddInterview)
     // store()
-    // getShortlistedPositionIds(2, 1)
+    getShortlistedPositionIds(2, 1)
     // _store(2, 11)
     // _delete(11)
 </script>

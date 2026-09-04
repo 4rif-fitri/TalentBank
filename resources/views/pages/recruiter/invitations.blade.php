@@ -388,5 +388,9 @@
         // });
     })
 
+    function _store() {
+
+    }
+
 </script>
 @endsection

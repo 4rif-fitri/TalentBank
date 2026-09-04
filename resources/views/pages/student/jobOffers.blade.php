@@ -140,7 +140,7 @@
             url,
             type: "GET",
             success: function (response) {
-                debug.log("getJobOffersByReceiverId", response.data)
+                debug.log("getJobOfferById", response.data)
             },
             error: function (response) {
                 debug.error(xhr.responseJSON.message)
@@ -156,7 +156,7 @@
             type: "GET",
             url,
             success: function (response) {
-                debug.log("getJobOffersByReceiverId", response.data)
+                debug.log("getJobOffersByStatus", response.data)
             },
             error: function (response) {
                 debug.error(xhr.responseJSON.message)
@@ -209,9 +209,9 @@
     }
 
     // getJobOffersByReceiverId()
-    // getJobOfferById(1)
+    // getJobOfferById(4)
     // getJobOffersByStatus("Pending")
-    // acceptJobOffer(2)
-    // rejectJobOffer(2)
+    // acceptJobOffer(4)
+    // rejectJobOffer(4)
 </script>
 @endsection

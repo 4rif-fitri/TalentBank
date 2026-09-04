@@ -183,7 +183,7 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::middleware('checkRole:Organization Admin,Recruiter')->prefix('shortlists')->group(function () {
-        Route::get('/getShortlistedPositionIds/{profileId}/org/{orgId}', [ShortlistController::class, 'getShortlistedPositionIds'])->name('shortlists.getShortlistedPositionIds'); //?
+        Route::get('/getShortlistedPositionIds/{profileId}/org/{orgId}', [ShortlistController::class, 'getShortlistedPositionIds'])->name('shortlists.getShortlistedPositionIds'); //+
         Route::post('/store', [ShortlistController::class, 'store'])->name('shortlists.store'); //+
         Route::delete('/delete/{shortlistId}', [ShortlistController::class, 'delete'])->name('shortlists.delete'); //+
     });

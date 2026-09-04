@@ -103,7 +103,20 @@
         <aside class="shortlist-sidebar" id="listContainer">
 
             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
-                <h5 class="m-0 fw-bold">Upcoming Interview</h5>
+                <ul class="nav nav-tabs">
+                    <li data-status="Scheduled" class="nav-item">
+                        <button class="nav-link active text-primary">Scheduled</button>
+                    </li>
+                    <li data-status="Completed" class="nav-item">
+                        <button class="nav-link text-black">Completed</button>
+                    </li>
+                    <li data-status="Cancelled" class="nav-item">
+                        <button class="nav-link text-black">Cancelled</button>
+                    </li>
+                    <li data-status="Rescheduled" class="nav-item">
+                        <button class="nav-link text-black">Rescheduled</button>
+                    </li>
+                </ul>
             </div>
 
             <div id="shortlistList"></div>
@@ -203,11 +216,6 @@
     }
 
     $(document).on("click", ".shortlist-item", handleSelectedInterview)
-
-
-
-
-
 
     function completeInterview(id) {
         let url = "{{ route('interviews.completeInterview',['id' => '__ID__']) }}"
@@ -328,7 +336,13 @@
             type: "GET",
             url,
             success: function (response) {
-                debug.log("cancelInterview", response.data);
+                debug.log("getInterviewsByStatus", response.data);
+                let interviews = response.data
+                $("#shortlistList").empty()
+                interviews.forEach(interview => {
+                    $("#shortlistList").append(intervieww.sidebar(interview))
+                });
+
             },
             error: function (xhr) {
                 debug.error(xhr.responseJSON.message)
@@ -344,7 +358,7 @@
             type: "GET",
             url,
             success: function (response) {
-                debug.log("cancelInterview", response.data);
+                debug.log("getInterviewById", response.data);
             },
             error: function (xhr) {
                 debug.error(xhr.responseJSON.message)
@@ -352,12 +366,52 @@
         });
     }
 
+    let currentStatus
+    $(document).on("click", ".nav-item", function () {
+        $(".nav-item button").removeClass("active text-primary").addClass("text-black");
+        $(this).find("button").removeClass("text-black").addClass("active text-primary");
+        let status = $(this).data("status")
+        $(".shortlist-content").html(`  <div class="border-0 p-3 d-flex flex-column align-items-center">
+                                            <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                                            <h4 class="mt-2">No Interview Selected Yet</h4>
+                                            <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                                                <i class="fa-solid fa-filter"></i>
+                                                Interview
+                                            </button>
+                                        </div>`)
+        if (currentStatus == status) return
+        currentStatus = status
+        getInterviewsByStatus(currentStatus)
+
+    });
+
+    $(document).on("click", "#btnMessageStudent", function () { })
+
+    $(document).on("click", "#btnReschedule", function () {
+        let id = $(this).data("id")
+
+    })
+
+    $(document).on("click", "#btnCencelInterview", function () {
+        let id = $(this).data("id")
+        cancelInterview(id)
+
+    })
+
+    $(document).on("click", "#btnCompletedInterview", function () {
+        let id = $(this).data("id")
+        completeInterview(id)
+    })
+
+    // If belum interview, nak update interview kene masukkan interview_result
+    // Apa func INTERVIEW_STATUS => Rescheduled
+
     // getInterviewsBySenderId()
     // completeInterview(3)
     // cancelInterview(5)
     // update(3)
     // store(1)
     // getInterviewsByStatus("Scheduled")
-    // ggetInterviewById(1)
+    // ggetInterviewById(2)
 </script>
 @endsection

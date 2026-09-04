@@ -124,25 +124,30 @@ export function mainContent(data, educations) {
                     <div>
                         <h6 class="fw-semibold mb-1">Actions</h6>
                         <div class="d-flex gap-2 flex-row flex-sm-wrap">
-                            <button
+                            <button id="btnMessageStudent"
                                 class="btn btn-outline-primary d-flex justify-content-center align-items-center gap-2">
                                 <i class="fa-regular fa-message text-primary"></i>
                                 <p>Message Student</p>
                             </button>
-                            <button
+                            <button id="btnReschedule" data-id=${data.id}
                                 class="btn btn-outline-primary d-flex justify-content-center align-items-center gap-2">
                                 <i class="fa-regular fa-calendar-check text-primary"></i>
                                 <p>Reschedule</p>
                             </button>
-                            <button
+                            <button id="btnCencelInterview" data-id="${data.id}"
                                 class="btn btn-outline-danger d-flex justify-content-center align-items-center gap-2">
                                 <i class="fa-solid fa-trash-can text-danger"></i>
                                 <p>Cencel Interview</p>
                             </button>
-                            <button
+                            <button id="btnCompletedInterview" data-id=${data.id}
                                 class="btn btn-outline-success d-flex justify-content-center align-items-center gap-2">
                                 <i class="fa-solid fa-check-circle text-success"></i>
                                 <p class="text-success">Mark as Completed</p>
+                            </button>
+                            <button id="btnUpdateInterview" data-id=${data.id}
+                                class="btn btn-outline-primary d-flex justify-content-center align-items-center gap-2">
+                                <i class="fa-regular fa-calendar-check text-primary"></i>
+                                <p class="text-success">Edit Interview</p>
                             </button>
                         </div>
                     </div>

@@ -122,7 +122,7 @@
             url: "{{ route('interviews.getInterviewsByReceiverId') }}",
             type: "GET",
             success: function (response) {
-                debug.log("cancelInterview", response.data);
+                debug.log("getInterviewsByReceiverId", response.data);
             },
             error: function (xhr) {
                 debug.error(xhr.responseJSON.message)
@@ -138,7 +138,7 @@
             type: "GET",
             url,
             success: function (response) {
-                debug.log("cancelInterview", response.data);
+                debug.log("getInterviewById", response.data);
             },
             error: function (xhr) {
                 debug.error(xhr.responseJSON.message)

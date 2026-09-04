@@ -109,23 +109,17 @@
                 </div> -->
 
                 <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active text-primary" aria-current="page" href="#">All</a>
+                    <li data-status="Pending" class="nav-item">
+                        <button class="nav-link text-primary active">Pending</button>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-black" href="#">All Offers</a>
+                    <li data-status="Accepted" class="nav-item">
+                        <button class="nav-link text-black">Accepted</button>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-black" href="#">Awaiting Respons</a>
+                    <li data-status="Declined" class="nav-item">
+                        <button class="nav-link text-black">Declined</button>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-black" href="#">Accepted</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-black" href="#">Declined</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-black" href="#">Expired</a>
+                    <li data-status="Expired" class="nav-item">
+                        <button class="nav-link text-black">Expired</button>
                     </li>
                 </ul>
             </div>
@@ -148,10 +142,23 @@
 
     </div>
 </div>
+<div class="shortlist-overlay toggleFilter"></div>
+
 @endsection
 
 @section('script')
 <script>
+
+    let currentStatus = "Pending"
+
+    function toggleFilter() {
+        document.body.classList.toggle('filter-open');
+    }
+
+    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
+        toggleFilter();
+    });
+
     function getJobOffersBySenderId() {
 
         $.ajax({
@@ -159,12 +166,20 @@
             type: "GET",
             success: function (response) {
                 debug.log("getJobOffersBySenderId", response.data);
+
+                let jobOffers = response.data
+                $("#recruitment-invitation-list").empty()
+                jobOffers.forEach(offer => {
+                    $("#recruitment-invitation-list").append(jobOffer.recruiter.sidebar(offer))
+                });
+
             },
             error: function (xhr) {
                 console.error(xhr.responseJSON.message)
             }
         });
     }
+
 
     function getJobOfferById(id) {
         let url = "{{ route('jobOffers.getJobOfferById', ['id' => '__ID__']) }}"
@@ -174,6 +189,8 @@
             type: "GET",
             success: function (response) {
                 debug.log("getJobOfferById", response.data);
+                $(".shortlist-content").empty();
+                $(".shortlist-content").append(jobOffer.recruiter.mainContent(response.data))
 
             },
             error: function (xhr) {
@@ -190,6 +207,12 @@
             type: "GET",
             success: function (response) {
                 debug.log("getJobOffersByStatus", response.data);
+
+                let jobOffers = response.data
+                $("#recruitment-invitation-list").empty()
+                jobOffers.forEach(offer => {
+                    $("#recruitment-invitation-list").append(jobOffer.recruiter.sidebar(offer))
+                });
             },
             error: function (xhr) {
                 console.error(xhr.responseJSON.message)
@@ -277,16 +300,52 @@
         });
     }
 
-
-
     // getJobOffersBySenderId()
     // getJobOfferById(2)
-    // getJobOffersByStatus("Pending")
+    getJobOffersByStatus(currentStatus)
     // withdrawJobOffer(2)
     // update(2)
-
-    // one inv can have many job offers
     // store(8)
+
+    $(document).on("click", ".nav-item", function () {
+        $(".nav-item button").removeClass("active text-primary").addClass("text-black");
+        $(this).find("button").removeClass("text-black").addClass("active text-primary");
+        let status = $(this).data("status")
+        $(".shortlist-content").html(`<div class="border-0 p-3 d-flex flex-column align-items-center">
+                                            <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                                            <h4 class="mt-2">No Interview Selected Yet</h4>
+                                            <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                                                <i class="fa-solid fa-filter"></i>
+                                                Interview
+                                            </button>
+                                        </div>`)
+
+        if (currentStatus == status) return
+        currentStatus = status
+        getJobOffersByStatus(currentStatus)
+    })
+
+    $(document).on("click", ".invitation-item", function () {
+        let id = $(this).data("id")
+        console.log(id);
+
+        getJobOfferById(id)
+    })
+
+    $(document).on("click", "#btnMessageStudent", function () {
+        let id = $(this).data("id")
+    })
+
+    $(document).on("click", "#btnWithdrawJobOffer", function () {
+        let id = $(this).data("id")
+        withdrawJobOffer(id)
+    })
+
+    $(document).on("click", "#btnEditJobOffer", function () {
+        let id = $(this).data("id")
+
+    })
+
 
 </script>
 @endsection
