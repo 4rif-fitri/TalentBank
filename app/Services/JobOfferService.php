@@ -20,8 +20,9 @@ class JobOfferService
 
     // used to determine the columns to be returned for related models when fetching invitations
     private const INVITATION_RETURN_COLUMNS = 'invitations.id,position_id,receiver_profile_id,sender_profile_id';
-    private const POSITION_RETURN_COLUMNS = 'positions.id,position_title';
+    private const POSITION_RETURN_COLUMNS = 'positions.id,position_title,organization_id';
     private const PROFILE_RETURN_COLUMNS = 'id,name,profile_image,location,headline';
+    private const ORGANIZATION_RETURN_COLUMNS = 'id,company_name,organization_logo';
 
     public function __construct(
         private readonly InvitationService $invitationService
@@ -81,17 +82,22 @@ class JobOfferService
 
     /**
      * Retrieves job offers where the given profile is the sender
-     *
+     * 
      * @param int $senderId
-     * @return Collection
+     * @param ?string $offerStatus
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, JobOffer>
      */
-    public function getJobOffersBySenderId(int $senderId): Collection
+    public function getJobOffersBySenderId(int $senderId, ?string $offerStatus): Collection
     {
         return JobOffer::with([
             'invitation:' . self::INVITATION_RETURN_COLUMNS,
             'invitation.position:' . self::POSITION_RETURN_COLUMNS,
             'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'invitation.position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
+            ->when(isset($offerStatus), function ($query) use ($offerStatus) {
+                $query->where('offer_status', $offerStatus);
+            })
             ->whereHas('invitation', function ($query) use ($senderId) {
                 $query->where('sender_profile_id', $senderId);
             })
@@ -100,17 +106,22 @@ class JobOfferService
 
     /**
      * Retrieves job offers where the given profile is the receiver
-     *
+     * 
      * @param int $receiverId
-     * @return Collection
+     * @param ?string $offerStatus
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, JobOffer>
      */
-    public function getJobOffersByReceiverId(int $receiverId): Collection
+    public function getJobOffersByReceiverId(int $receiverId, ?string $offerStatus): Collection
     {
         return JobOffer::with([
             'invitation:' . self::INVITATION_RETURN_COLUMNS,
             'invitation.position:' . self::POSITION_RETURN_COLUMNS,
             'invitation.sender:' . self::PROFILE_RETURN_COLUMNS,
+            'invitation.position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
+            ->when(isset($offerStatus), function ($query) use ($offerStatus) {
+                $query->where('offer_status', $offerStatus);
+            })
             ->whereHas('invitation', function ($query) use ($receiverId) {
                 $query->where('receiver_profile_id', $receiverId);
             })
@@ -124,23 +135,24 @@ class JobOfferService
      * @param int $userProfileId
      * @return Collection
      */
-    public function getJobOffersByStatus(string $offerStatus, int $userProfileId): Collection
-    {
-        return JobOffer::with([
-            'invitation:' . self::INVITATION_RETURN_COLUMNS,
-            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
-            'invitation.sender:' . self::PROFILE_RETURN_COLUMNS,
-            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
-        ])
-            ->where('offer_status', $offerStatus)
-            ->whereHas('invitation', function ($query) use ($userProfileId) {
-                $query->where(function ($query) use ($userProfileId) {
-                    $query->where('sender_profile_id', $userProfileId)
-                        ->orWhere('receiver_profile_id', $userProfileId);
-                });
-            })
-            ->get();
-    }
+    // public function getJobOffersByStatus(string $offerStatus, int $userProfileId): Collection
+    // {
+    //     return JobOffer::with([
+    //         'invitation:' . self::INVITATION_RETURN_COLUMNS,
+    //         'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+    //         'invitation.sender:' . self::PROFILE_RETURN_COLUMNS,
+    //         'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
+    //         'invitation.position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
+    //     ])
+    //         ->where('offer_status', $offerStatus)
+    //         ->whereHas('invitation', function ($query) use ($userProfileId) {
+    //             $query->where(function ($query) use ($userProfileId) {
+    //                 $query->where('sender_profile_id', $userProfileId)
+    //                     ->orWhere('receiver_profile_id', $userProfileId);
+    //             });
+    //         })
+    //         ->get();
+    // }
 
     /**
      * Retrieves a job offer by job offer ID, accessible to either the sender or receiver
@@ -154,9 +166,10 @@ class JobOfferService
     {
         $jobOffer = JobOffer::with([
             'invitation:' . self::INVITATION_RETURN_COLUMNS,
-            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
+            'invitation.position',
             'invitation.sender:' . self::PROFILE_RETURN_COLUMNS,
             'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'invitation.position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
             ->whereHas('invitation', function ($query) use ($userProfileId) {
                 $query->where('sender_profile_id', $userProfileId)

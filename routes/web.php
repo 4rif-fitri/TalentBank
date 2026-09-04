@@ -100,9 +100,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(function () {
 
     Route::prefix('profile')->group(function () {
-        Route::get('/', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.getAllStudentUserProfiles');
+        Route::get('/getAllStudentUserProfiles', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.getAllStudentUserProfiles');
         Route::get('/getProfileDataByProfileId/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
-        Route::get('/getLikedUserProfiles', [ProfileController::class, 'getLikedUserProfiles'])->name('profile.getLikedUserProfiles');
+        // Route::get('/getLikedUserProfiles', [ProfileController::class, 'getLikedUserProfiles'])->name('profile.getLikedUserProfiles');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('profile.updateAboutField');
         Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('profile.uploadProfileImage');
@@ -218,17 +218,17 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('job-offers')->group(function () {
-        Route::get('/getJobOffersByReceiverId', [JobOfferController::class, 'getJobOffersByReceiverId'])->name('jobOffers.getJobOffersByReceiverId'); //+
-        Route::get('/getJobOfferById/{id}', [JobOfferController::class, 'getJobOfferById'])->name('jobOffers.getJobOfferById'); //+ //+
-        Route::get('/getJobOffersByStatus/{status}', [JobOfferController::class, 'getJobOffersByStatus'])->name('jobOffers.getJobOffersByStatus'); //+ //+
-        Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer'); //!
-        Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer'); //!
+        Route::get('/getJobOffersByStatusAndReceiverId', [JobOfferController::class, 'getJobOffersByStatusAndReceiverId'])->name('jobOffers.getJobOffersByStatusAndReceiverId');
+        Route::get('/getJobOfferById/{id}', [JobOfferController::class, 'getJobOfferById'])->name('jobOffers.getJobOfferById');
+        // Route::get('/getJobOffersByStatus/{status}', [JobOfferController::class, 'getJobOffersByStatus'])->name('jobOffers.getJobOffersByStatus');
+        Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer');
+        Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer');
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::get('/getJobOffersBySenderId', [JobOfferController::class, 'getJobOffersBySenderId'])->name('jobOffers.getJobOffersBySenderId'); //+
-            Route::post('/store', [JobOfferController::class, 'store'])->name('jobOffers.store'); //+
-            Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update'); //!
-            Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer'); //!
+            Route::get('/getJobOffersByStatusAndSenderId', [JobOfferController::class, 'getJobOffersByStatusAndSenderId'])->name('jobOffers.getJobOffersByStatusAndSenderId');
+            Route::post('/store', [JobOfferController::class, 'store'])->name('jobOffers.store');
+            Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update');
+            Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer');
         });
     });
 });

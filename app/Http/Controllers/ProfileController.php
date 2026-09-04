@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
-use App\Models\UserProfile;
 use App\Services\ProfileService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,12 +12,6 @@ class ProfileController extends Controller
     public function __construct(
         private readonly ProfileService $profileService
     ) {
-    }
-
-    public function getAllProfile(): JsonResponse
-    {
-        $profile = UserProfile::all();
-        return ApiResponse::success('Success.', $profile)->toJsonResponse();
     }
 
     /**
@@ -53,8 +46,10 @@ class ProfileController extends Controller
         ];
 
         $userProfileId = session('user_profile_id');
+        $returnLiked = $request->has('return_liked') ? filter_var($request->query('return_liked'), FILTER_VALIDATE_BOOL) : false;
 
-        $profiles = $this->profileService->getAllStudentUserProfiles($searchParams, $userProfileId);
+        $profiles = $this->profileService->getAllStudentUserProfiles($searchParams, $userProfileId, $returnLiked);
+
         return ApiResponse::success('Success.', [
             'data' => $profiles->items(),
             'current_page' => $profiles->currentPage(),
@@ -70,15 +65,15 @@ class ProfileController extends Controller
      * 
      * @return JsonResponse
      */
-    public function getLikedUserProfiles(): JsonResponse
-    {
-        $userProfileId = session('user_profile_id');
-        $likedProfiles = $this->profileService->getLikedUserProfiles($userProfileId);
-        return ApiResponse::success('Success.', [
-            'data' => $likedProfiles->items(),
-            'has_more_pages' => $likedProfiles->hasMorePages(),
-        ])->toJsonResponse();
-    }
+    // public function getLikedUserProfiles(): JsonResponse
+    // {
+    //     $userProfileId = session('user_profile_id');
+    //     $likedProfiles = $this->profileService->getLikedUserProfiles($userProfileId);
+    //     return ApiResponse::success('Success.', [
+    //         'data' => $likedProfiles->items(),
+    //         'has_more_pages' => $likedProfiles->hasMorePages(),
+    //     ])->toJsonResponse();
+    // }
 
     /**
      * Handles request to update profile data for current logged in user
@@ -111,7 +106,7 @@ class ProfileController extends Controller
     public function updateAboutField(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'about' => ['nullable', 'max:255']
+            'about' => ['nullable', 'string']
         ]);
 
         $profileId = session('user_profile_id');

@@ -11,10 +11,9 @@ use Illuminate\Http\Response;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
@@ -66,9 +65,11 @@ class ProfileService
      * Returns all student and alumni user profiles with search functionality
      * 
      * @param array $searchParams
+     * @param int $userProfileId
+     * @param bool $returnLiked
      * @return LengthAwarePaginator
      */
-    public function getAllStudentUserProfiles(array $searchParams, int $userProfileId): LengthAwarePaginator
+    public function getAllStudentUserProfiles(array $searchParams, int $userProfileId, bool $returnLiked): LengthAwarePaginator
     {
         return UserProfile::with([
             'skills',
@@ -77,6 +78,11 @@ class ProfileService
             'programmes.qualification',
         ])
             ->select('id', 'name', 'location', 'headline', 'profile_image')
+            ->when($returnLiked, function ($query) use ($userProfileId) {
+                $query->whereHas('likes', function ($query) use ($userProfileId) {
+                    $query->where('liker_user_profile_id', $userProfileId);
+                });
+            })
             ->where(function ($query) use ($searchParams) {
                 $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
                     $query->where('name', 'LIKE', '%' . $searchParams['name'] . '%');
@@ -118,21 +124,21 @@ class ProfileService
      * @param int $userProfileId
      * @return Paginator
      */
-    public function getLikedUserProfiles(int $userProfileId): Paginator
-    {
-        return UserProfile::with([
-            'skills',
-            'programmes:' . self::PROGRAMME_RETURN_COLUMNS,
-            'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
-            'programmes.qualification',
-        ])
-            ->whereHas('likes', function ($query) use ($userProfileId) {
-                $query->where('liker_user_profile_id', $userProfileId);
-            })
-            ->where('id', '<>', $userProfileId)
-            ->select('id', 'name', 'location', 'headline', 'profile_image')
-            ->simplePaginate(6);
-    }
+    // public function getLikedUserProfiles(int $userProfileId): Paginator
+    // {
+    //     return UserProfile::with([
+    //         'skills',
+    //         'programmes:' . self::PROGRAMME_RETURN_COLUMNS,
+    //         'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
+    //         'programmes.qualification',
+    //     ])
+    //         ->whereHas('likes', function ($query) use ($userProfileId) {
+    //             $query->where('liker_user_profile_id', $userProfileId);
+    //         })
+    //         ->where('id', '<>', $userProfileId)
+    //         ->select('id', 'name', 'location', 'headline', 'profile_image')
+    //         ->simplePaginate(6);
+    // }
 
     /**
      * Update profile data of profile by profile ID.
@@ -197,7 +203,7 @@ class ProfileService
      * @throws Exception
      * @return UserProfile
      */
-    public function updateAboutField(string $about, int $profileId): UserProfile
+    public function updateAboutField(?string $about, int $profileId): UserProfile
     {
         $profile = $this->getProfileModel($profileId);
 
@@ -240,11 +246,11 @@ class ProfileService
 
         // delete existing image file
         if (isset($profile->{$column})) {
-            File::delete($imagePath . $profile->{$column});
+            Storage::disk('public')->delete($imagePath . $profile->{$column});
         }
 
         $filename = uniqid($column . '_') . '_' . str_replace(' ', '-', $image->getClientOriginalName());
-        $image->move($imagePath, $filename);
+        $image->storeAs($imagePath, $filename, 'public');
 
         $profile->update([$column => $filename]);
 
