@@ -12,4 +12,4 @@
     }
 </script>
 <script src="{{ URL::asset('assets/internship-assets/layout/newLayout.js') }}"></script>
-@yield('script')
+

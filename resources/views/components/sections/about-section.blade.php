@@ -12,3 +12,15 @@
     </div>
     @endif
 </section>
+
+@section('childScript')
+
+<script>
+    $(document).ready(function (){
+        $(document).on("profile:aboutUpdated", function(event,data){
+            console.log(event);
+            console.log(data);
+        })
+    })
+</script>
+@endsection

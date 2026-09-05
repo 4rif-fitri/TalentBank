@@ -51,6 +51,20 @@
 @section('script')
 <!-- @vite('resources/js/student/index.js') -->
 <script>
-
+    $(document).ready( function (){
+        function getAllStudentUserProfiles(){
+            $.ajax({
+                url: "{{ route('profile.getAllStudentUserProfiles') }}",
+                type: "GET",
+                success: response => {
+                    $(document).trigger("profile:aboutUpdated", [response.data])
+                },
+                error: xhr => {
+                    console.log(xhr);
+                }
+            });
+        }
+        getAllStudentUserProfiles()
+    })
 </script>
 @endsection
