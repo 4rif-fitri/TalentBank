@@ -1,4 +1,3 @@
-<!-- JAVASCRIPT -->
 <script src="{{ URL::asset('assets/internship-assets/libs/jquery-3.7.1.min.js') }}"></script>
 <script src="{{ URL::asset('assets/internship-assets/libs/select2.full.min.js') }}"></script>
 <script src="{{ URL::asset('assets/internship-assets/libs/jquery-ui.min.js') }}"></script>
@@ -14,4 +13,3 @@
 </script>
 <script src="{{ URL::asset('assets/internship-assets/layout/newLayout.js') }}"></script>
 @yield('script')
-<!-- JAVASCRIPT -->

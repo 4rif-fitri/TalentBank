@@ -8,29 +8,25 @@
     <meta content="Parental Relationship Information Management" name="description" />
     <meta content="UTeM" name="author" />
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <!-- App favicon -->
     <link rel="shortcut icon" href="{{ URL::asset('assets/internship-assets/images/logoTalentBankWhite.png') }}">
-    <!-- Web Application Manifest -->
-    <!-- <link rel="manifest" href="/manifest.json"> -->
-    @include('layouts.head')
+    @include('layouts.header')
 </head>
 
 <body>
-    @include('layouts.internship-sidebar')
+    @include('layouts.sidebar')
 
-    @include('layouts.internship-topbar')
+    @include('layouts.topbar')
 
     <main class="main-content">
         @yield('content')
     </main>
 
-    @include('layouts.footer-script')
+    @include('layouts.footer')
 
     @stack('scripts')
     <script>
         function swalfire(title, text, icon){
             Swal.fire({ title, text, icon });
-
         }
     </script>
 </body>

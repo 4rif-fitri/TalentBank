@@ -61,41 +61,41 @@ class internshipController extends Controller
         return view("pages.recruiter.index");
     }
 
-    public function recruiterShortlists()
+    public function recruiterPosition()
     {
-        return view("pages.recruiter.shortlists");
+        return view("pages.recruiter.position");
     }
 
-    public function recruiterTalents()
+    public function recruiterProfiles()
     {
-        return view("pages.recruiter.talents");
+        return view("pages.recruiter.profiles");
     }
-    public function recruiterSavedTalent()
+    public function recruiterLikeTalent()
     {
-        return view("pages.recruiter.savedTalent");
+        return view("pages.recruiter.likeTalent");
     }
-    public function recruiterInvitations()
+    public function recruiterInvitation()
     {
-        return view("pages.recruiter.invitations");
+        return view("pages.recruiter.invitation");
     }
-    public function recruiterInterviews()
+    public function recruiterInterview()
     {
-        return view("pages.recruiter.interviews");
+        return view("pages.recruiter.interview");
     }
-    public function recruiterJobOffers()
+    public function recruiterJobOffer()
     {
-        return view("pages.recruiter.jobOffers");
+        return view("pages.recruiter.jobOffer");
     }
     public function recruiterHiredTalent()
     {
         return view("pages.recruiter.hiredTalent");
     }
-    public function recruiterMessages()
+    public function recruiterMessage()
     {
         return view("pages.recruiter.hiredTalent");
     }
-    public function recruiterSettings()
+    public function recruiterSetting()
     {
-        return view("pages.recruiter.settings");
+        return view("pages.recruiter.setting");
     }
 }

@@ -12,23 +12,23 @@
         @if (array_intersect(session('roles') ?? [], ['Recruiter']))
         <x-sidebar-link :route="route('recruiter.index')" routeName="recruiter.index" icon="fa-solid fa-gauge"
             label="Dashboard" />
-        <x-sidebar-link :route="route('recruiter.talents')" routeName="recruiter.talents"
+        <x-sidebar-link :route="route('recruiter.profiles')" routeName="recruiter.profiles"
             icon="fa-solid fa-user-graduate" label="Talent" />
-        <x-sidebar-link :route="route('recruiter.savedTalent')" routeName="recruiter.savedTalent"
+        <x-sidebar-link :route="route('recruiter.likeTalent')" routeName="recruiter.likeTalent"
             icon="fa-solid fa-heart" label="Saved Talent" />
-        <x-sidebar-link :route="route('recruiter.shortlists')" routeName="recruiter.shortlists"
+        <x-sidebar-link :route="route('recruiter.position')" routeName="recruiter.position"
             icon="fa-solid fa-address-book" label="Position " />
-        <x-sidebar-link :route="route('recruiter.invitations')" routeName="recruiter.invitations"
+        <x-sidebar-link :route="route('recruiter.invitation')" routeName="recruiter.invitation"
             icon="fa-solid fa-paper-plane" label="Invitations" />
-        <x-sidebar-link :route="route('recruiter.interviews')" routeName="recruiter.interviews"
+        <x-sidebar-link :route="route('recruiter.interview')" routeName="recruiter.interview"
             icon="fa-solid fa-calendar-days" label="Interviews" />
-        <x-sidebar-link :route="route('recruiter.jobOffers')" routeName="recruiter.jobOffers"
+        <x-sidebar-link :route="route('recruiter.jobOffer')" routeName="recruiter.jobOffer"
             icon="fa-solid fa-briefcase" label="Job Offers" />
         <x-sidebar-link :route="route('recruiter.hiredTalent')" routeName="recruiter.hiredTalent"
             icon="fa-solid fa-user-tie" label="Hired Talent" />
-        <x-sidebar-link :route="route('recruiter.messages')" routeName="recruiter.messages" icon="fa-solid fa-comment"
+        <x-sidebar-link :route="route('recruiter.message')" routeName="recruiter.message" icon="fa-solid fa-comment"
             label="Messages" />
-        <x-sidebar-link :route="route('recruiter.settings')" routeName="recruiter.settings" icon="fa-solid fa-gear"
+        <x-sidebar-link :route="route('recruiter.setting')" routeName="recruiter.setting" icon="fa-solid fa-gear"
             label="Settings" />
         @elseif(array_intersect(session('roles') ?? [], ['Student']))
         <x-sidebar-link :route="route('student.index')" routeName="student.index" icon="fa-solid fa-gauge"
