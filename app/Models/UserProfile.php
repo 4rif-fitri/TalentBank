@@ -88,6 +88,6 @@ class UserProfile extends Model
 
     public function receivedInterviews()
     {
-        return $this->hasManyThrough(Interview::class, Invitation::class, 'receiver_profile_id', 'invitation_id', 'id', 'id');
+        return $this->hasMany(Interview::class, 'interviewee_profile_id');
     }
 }

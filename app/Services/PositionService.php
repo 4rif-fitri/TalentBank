@@ -75,7 +75,7 @@ class PositionService
                     ])
                     ->withCount([
                         'receivedInterviews as interviews_count' => function ($query) use ($positionId) {
-                            $query->where('invitations.position_id', $positionId);
+                            $query->where('position_id', $positionId);
                         }
                     ]);
             },

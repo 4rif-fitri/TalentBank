@@ -4,7 +4,8 @@ namespace Database\Factories;
 
 use App\Constants\AppConstants;
 use App\Models\Interview;
-use App\Models\Invitation;
+use App\Models\Position;
+use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,7 +21,6 @@ class InterviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'invitation_id' => Invitation::inRandomOrder()->first()->id,
             'scheduled_at' => fake()->dateTimeBetween('now', '+1 month'),
             'interview_mode' => fake()->randomElement(AppConstants::INTERVIEW_MODES),
             'location' => null,
@@ -28,6 +28,9 @@ class InterviewFactory extends Factory
             'interview_status' => fake()->randomElement(AppConstants::INTERVIEW_STATUS),
             'interview_result' => fake()->randomElement(AppConstants::INTERVIEW_RESULTS),
             'recruiter_comment' => fake()->optional()->sentence(),
+            'position_id' => Position::inRandomOrder()->first()->id,
+            'interviewer_profile_id' => UserProfile::inRandomOrder()->first()->id,
+            'interviewee_profile_id' => UserProfile::inRandomOrder()->first()->id,
         ];
     }
 }
