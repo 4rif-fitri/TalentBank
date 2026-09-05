@@ -192,7 +192,7 @@
 @endsection
 
 @section('script')
-<script type="module">
+<script>
     let current_page = 1
     let last_page
 

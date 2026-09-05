@@ -1,25 +1,6 @@
-import $ from 'jquery';
-
-window.$ = $;
-window.jQuery = $;
-
-await import('jquery-ui/ui/widgets/datepicker');
-await import('select2');
-await import('owl.carousel');
-await import('bootstrap-datepicker');
-
-const { default: DataTable } = await import('datatables.net-dt');
-
 import * as bootstrap from 'bootstrap';
-import Swal from 'sweetalert2';
 
 window.bootstrap = bootstrap;
-window.DataTable = DataTable;
-window.Swal = Swal;
-
-await import('./api.js');
-
-await import('./layout/newLayout.js');
 
 import * as shortListTemplate from './templates/shortList/shortList.js';
 import * as shortListRender from './render/shortList.js';

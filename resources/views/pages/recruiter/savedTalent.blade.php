@@ -21,7 +21,7 @@
     @endsection
 
     @section('script')
-    <script type="module">
+    <!-- <script type="module">
         $.ajax({
             url: "{{ route('profile.getLikedUserProfiles') }}",
             type: "GET",
@@ -32,5 +32,5 @@
                 console.error(xhr);
             }
         });
-    </script>
+    </script> -->
     @endsection
