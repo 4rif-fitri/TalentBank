@@ -189,23 +189,43 @@
 </div>
 
 <div class="filter-overlay" onclick="toggleFilter()"></div>
+
+<x-modals.shortlist-modal />
+
 @endsection
 
 @section('script')
 <script>
-    let current_page = 1
-    let last_page
+    $(document).ready(function (){
+        let current_page = 1
+        let last_page
+        let myData
+        let positions = []
+        let organizations
 
-    function toggleFilter() {
-        document.body.classList.toggle('filter-open');
-    }
+        let myOrg = []
+        let organizationWithPosition = [];
 
-    $(document).ready(function () {
         let state = {
             allOrganizations: [],
             allLanguages: [],
             allSkills: [],
             allQualifications: []
+        }
+
+        function toggleFilter() {
+            document.body.classList.toggle('filter-open');
+        }
+
+        async function getProfileDataByProfileId() {
+            let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+            let response = await $.ajax({
+                url: url,
+                method: 'GET'
+            });
+            myData = response.data;
+            return response.data;
         }
 
         function setOptions() {
@@ -286,14 +306,48 @@
             })
         }
 
+        async function getPositionsByOrgId(id) {
+            let url = "{{ route('positions.getPositionsByOrgId', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", id);
+
+            return await $.ajax({
+                url: url,
+                method: 'GET'
+            });
+        }
+
+        async function getPosition() {
+
+            organizations = myData.organization_users;
+            organizations.forEach(organization => myOrg.push(organization));
+
+
+            results = await Promise.all(
+                myOrg.map(async org => {
+                    let response = await getPositionsByOrgId(org.id);
+
+                    positions.push(response.data);
+
+                    return {
+                        org: org,
+                        position: response.data
+                    };
+                })
+            );
+
+            organizationWithPosition = results;
+        }
+
         async function getData() {
             await Promise.all([
+                getProfileDataByProfileId(),
                 getAllOrganizations(),
                 getAllLanguages(),
                 getAllSkills(),
-                getAllQualifications()
+                getAllQualifications(),
             ]);
             setOptions()
+            getPosition()
         }
 
         $('.select2-skills').select2({
@@ -308,7 +362,7 @@
             $(".pagination").empty();
 
             $(".pagination").append(`
-                <li data-page="${current_page > 1 ? current_page - 1 : ""}"
+                <li role="button" data-page="${current_page > 1 ? current_page - 1 : ""}"
                     class="page-target page-item ${current_page === 1 ? "disabled" : ""}">
                     <a class="page-link">Previous</a>
                 </li>
@@ -323,7 +377,7 @@
             }
 
             $(".pagination").append(`
-                <li data-page="${current_page < last_page ? current_page + 1 : ""}"
+                <li role="button" data-page="${current_page < last_page ? current_page + 1 : ""}"
                     class="page-target page-item ${current_page === last_page ? "disabled" : ""}">
                     <a class="page-link">Next</a>
                 </li>`);
@@ -349,7 +403,6 @@
                 data: searchParams,
                 type: "GET",
                 success: function (response) {
-                    console.log("response", response.data)
                     let datas = response.data.data
                     current_page = response.data.current_page
                     last_page = response.data.last_page
@@ -369,14 +422,37 @@
 
         }
 
-
         function handleResetFilter() {
             setOptions()
             getAndSentDataFilter()
         }
 
-        function handleAddToShortlist() {
+        function handleAddToShortlist(e) {
+            e.preventDefault();
 
+            let profileId = $("#candidateId").val();
+            let positionId = $("#selectPosition").val();
+
+            $.ajax({
+                url: "{{ route('shortlists.store') }}",
+                type: "POST",
+                data: {
+                    user_profile_id: profileId,
+                    position_id: positionId,
+                    _token: $('meta[name="csrf-token"]').attr("content")
+                },
+                success: response => {
+                    console.log(response);
+                    xalert.alert('Success', response.message, 'success');
+                },
+                error: xhr => {
+                    console.log(xhr);
+                    xalert.alert("Error", xhr.responseJSON.message, "error")
+                },
+                complete: function () {
+                    modal.hide("shortlistModal")
+                }
+            });
         }
 
         getAndSentDataFilter()
@@ -424,7 +500,42 @@
 
                 }
             });
+        }
 
+        function getShortlistedPositionIds(profileId, orgId) {
+            let url = "{{ route('shortlists.getShortlistedPositionIds', ['profileId' => '__profileId__', 'orgId' => '__orgId__']) }}"
+            url = url.replace("__profileId__", profileId)
+            url = url.replace("__orgId__", orgId)
+            return $.ajax({
+                url,
+                type: "GET",
+            });
+        }
+
+        async function handleAddtoShortlist() {
+            let id = $(this).data("id")
+            let name = $(this).data("name")
+
+            modal.show("shortlistModal")
+
+            $('#candidateId').val(id)
+            $('#candidateName').val(name)
+
+            let html = ""
+            for (const data of organizationWithPosition) {
+                let shortlistedPositionIds = await getShortlistedPositionIds(id, data.org.organization.id)
+                console.log(shortlistedPositionIds.data);
+                let xxx = shortlistedPositionIds.data
+
+                html += `<optgroup label="${data.org.organization.company_name}">`
+                data.position.forEach(pos => {
+
+                    html += `<option ${xxx.includes(pos.id) ? "disabled" : ""} value="${pos.id}">${pos.position_title} ${xxx.includes(pos.id) ? "(Added)" : ""}</option>`
+                })
+                html += `</optgroup>`
+            }
+
+            $("#selectPosition").html(html)
         }
 
         $(document).on("click", "#btnFilter", getAndSentDataFilter);
@@ -432,7 +543,9 @@
         $(document).on("click", "#btnResetFilter", handleResetFilter);
         $(document).on("click", ".page-target", handlePage)
         $(document).on("click", ".talent-like", hanldeToggleLike)
+        $(document).on("click", ".btnAddToShortlist", handleAddtoShortlist)
+        $(document).on("submit", "#shortlistForm", handleAddToShortlist)
+    })
 
-    });
 </script>
 @endsection

@@ -11,13 +11,16 @@ import * as talent from './templates/talent.js';
 import * as jobOffer from './templates/jobOffer.js';
 import * as format from './utils/format.js';
 import * as debug from './utils/debug.js';
+import * as modal from './utils/modal.js'
 
+window.modal = modal
 window.shortListTemplate = shortListTemplate;
 window.shortListRender = shortListRender;
 window.invitation = invitation;
 window.talent = talent;
 window.intervieww = interview;
 window.salert = salert;
+window.xalert = salert;
 window.format = format;
 window.debug = debug;
 window.jobOffer = jobOffer;

@@ -130,7 +130,7 @@
 
 <div class="shortlist-overlay toggleFilter"></div>
 
-<x-modals.shortlist-modal />
+<x-modals.position-modal />
 <x-modals.invitation-modal />
 <x-modals.interview-modal />
 
@@ -139,47 +139,11 @@
 @section('script')
 <script type="module">
 
+    let myData, positionId, curruntPosition, candidateList
+
     function toggleFilter() {
         document.body.classList.toggle('filter-open');
     }
-
-    // $(document).on("click", "#btnDeletTalentRow", function() {
-    //     Swal.fire({
-    //         title: "Are you sure?",
-    //         text: "You won't be able to revert this!",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonColor: "#3085d6",
-    //         cancelButtonColor: "#d33",
-    //         confirmButtonText: "Yes, delete it!"
-    //     }).then((result) => {
-    //         if (result.isConfirmed) Swal.fire({
-    //             title: "Deleted!",
-    //             text: "Your file has been deleted.",
-    //             icon: "success"
-    //         });
-    //     });
-    // })
-
-    // $(document).on("click", "#btnDeleteShortlist", function() {
-    //     Swal.fire({
-    //         title: "Are you sure?",
-    //         text: "You won't be able to revert this!",
-    //         icon: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonColor: "#3085d6",
-    //         cancelButtonColor: "#d33",
-    //         confirmButtonText: "Yes, delete it!"
-    //     }).then((result) => {
-    //         if (result.isConfirmed) Swal.fire({
-    //             title: "Deleted!",
-    //             text: "Your file has been deleted.",
-    //             icon: "success"
-    //         });
-    //     });
-    // })
-
-    let myData, positionId, curruntPosition, candidateList
 
     async function getProfileDataByProfileId() {
         let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
@@ -189,8 +153,6 @@
             method: 'GET'
         });
         myData = response.data;
-        // console.log(myData);
-
         return response.data;
     }
 
