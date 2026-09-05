@@ -21,6 +21,6 @@ class interviewModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.interview-modal');
+        return view('components.modals.interview-modal');
     }
 }

@@ -21,6 +21,6 @@ class positionModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.position-modal');
+        return view('components.modals.position-modal');
     }
 }

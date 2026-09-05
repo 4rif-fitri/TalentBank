@@ -21,6 +21,6 @@ class ContactInformationModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.contact-information-modal');
+        return view('components.modals.contact-information-modal');
     }
 }

@@ -21,6 +21,6 @@ class ContactInformation extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.contact-information');
+        return view('components.sections.sections.contact-information');
     }
 }

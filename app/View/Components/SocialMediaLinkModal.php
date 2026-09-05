@@ -21,6 +21,6 @@ class SocialMediaLinkModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.social-media-link-modal');
+        return view('components.modals.social-media-link-modal');
     }
 }

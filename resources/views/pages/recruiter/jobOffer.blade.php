@@ -147,7 +147,7 @@
 @endsection
 
 @section('script')
-<script type="module">
+<script>
 
     let currentStatus = "Pending"
 
@@ -302,7 +302,7 @@
 
     // getJobOffersBySenderId()
     // getJobOfferById(2)
-    getJobOffersByStatus(currentStatus)
+    // getJobOffersByStatus(currentStatus)
     // withdrawJobOffer(2)
     // update(2)
     // store(8)

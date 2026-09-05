@@ -21,6 +21,6 @@ class LanguagesModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.languages-modal');
+        return view('components.modals.languages-modal');
     }
 }

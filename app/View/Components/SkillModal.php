@@ -21,6 +21,6 @@ class SkillModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.skill-modal');
+        return view('components.modals.skill-modal');
     }
 }

@@ -451,7 +451,7 @@
 
         let modalEl = document.getElementById("imagePreviewModal");
 
-        let modal = bootstrap.Modal .getOrCreateInstance(modalEl);
+        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
         modal.show();
     });

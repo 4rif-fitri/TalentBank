@@ -21,6 +21,6 @@ class resultModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.result-modal');
+        return view('components.modals.result-modal');
     }
 }

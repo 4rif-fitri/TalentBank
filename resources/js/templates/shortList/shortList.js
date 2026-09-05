@@ -78,8 +78,8 @@ function renderSkills(skills) {
 }
 
 function renderStatus(data) {
+    if (data.interviews_count = 1) return "interviewed"
     if (data.invitations_count = 1) return "Invited"
-    if (data.interviews_count = 2) return "interviewed"
 }
 
 export function candidate(user) {

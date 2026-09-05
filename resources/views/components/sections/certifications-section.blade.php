@@ -13,8 +13,8 @@
         <p>Issued Oct 2025</p>
         <p>Credential ID: OCFA-ARIF-2025</p>
 
-        <a class="btn btn-outline-secondary d-flex justify-content-center align-items-center gap-2"
-            style="width:200px;" target="_blank" rel="noopener noreferrer" href="#">
+        <a class="btn btn-outline-secondary d-flex justify-content-center align-items-center gap-2" style="width:200px;"
+            target="_blank" rel="noopener noreferrer" href="#">
             <span>Show credential</span>
             <i class="fa-solid fa-up-right-from-square"></i>
         </a>

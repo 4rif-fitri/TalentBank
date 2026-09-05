@@ -20,11 +20,9 @@
         </div>
 
         <div class="images d-flex flex-wrap">
-            <div class="image rounded-1 m-1"
-                style="background-image:url('../assets/internship-assets/images/7.jpg');">
+            <div class="image rounded-1 m-1" style="background-image:url('../assets/internship-assets/images/7.jpg');">
             </div>
-            <div class="image rounded-1 m-1"
-                style="background-image:url('../assets/internship-assets/images/7.jpg');">
+            <div class="image rounded-1 m-1" style="background-image:url('../assets/internship-assets/images/7.jpg');">
             </div>
             <div class="image rounded-1 m-1 d-flex justify-content-center align-items-center"
                 style="background-image:url('../assets/internship-assets/images/7.jpg'); filter:brightness(.5);">

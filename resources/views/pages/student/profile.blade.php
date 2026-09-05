@@ -11,26 +11,26 @@
 
     <div class="user-card-left">
 
-        <x-sections.userCardHeader />
+        <x-sections.user-card-header-section />
 
         <div id="mainTabContent">
-            <x-sections.about />
+            <x-sections.about-section />
         </div>
 
         <div id="resultTabContent" class="d-none">
-            <x-sections.education-result />
+            <x-sections.education-result-section />
         </div>
 
         <div id="educationsTabContent" class="d-none">
-            <x-sections.education />
+            <x-sections.education-section />
         </div>
 
     </div>
 
     <div class="user-card-right">
-        <x-sections.contact-information />
-        <x-sections.languages />
-        <x-sections.skills />
+        <x-sections.contact-information-section />
+        <x-sections.languages-section />
+        <x-sections.skills-section />
     </div>
 </div>
 
@@ -49,5 +49,8 @@
 @endsection
 
 @section('script')
-@vite('resources/js/student/index.js')
+<!-- @vite('resources/js/student/index.js') -->
+<script>
+
+</script>
 @endsection
