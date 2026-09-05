@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Constants\AppConstants;
-use App\Models\Invitation;
 use App\Models\JobOffer;
+use App\Models\Position;
 use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -29,7 +29,9 @@ class JobOfferFactory extends Factory
             'benefits' => $this->faker->text(),
             'offer_status' => $this->faker->randomElement(AppConstants::JOB_OFFER_STATUS),
             'expires_at' => $this->faker->dateTime(),
-            'invitation_id' => Invitation::inRandomOrder()->first()->id,
+            'position_id' => Position::inRandomOrder()->first()->id,
+            'sender_profile_id' => UserProfile::inRandomOrder()->first()->id,
+            'receiver_profile_id' => UserProfile::inRandomOrder()->first()->id,
         ];
     }
 }

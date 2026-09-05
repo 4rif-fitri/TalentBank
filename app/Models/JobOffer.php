@@ -21,11 +21,23 @@ class JobOffer extends Model
         'created_at',
         'updated_at',
         'expires_at',
-        'invitation_id',
+        'position_id',
+        'sender_profile_id',
+        'receiver_profile_id',
     ];
 
-    public function invitation()
+    public function sender()
     {
-        return $this->belongsTo(Invitation::class, 'invitation_id');
+        return $this->belongsTo(UserProfile::class, 'sender_profile_id');
+    }
+
+    public function receiver()
+    {
+        return $this->belongsTo(UserProfile::class, 'receiver_profile_id');
+    }
+
+    public function position()
+    {
+        return $this->belongsTo(Position::class, 'position_id');
     }
 }
