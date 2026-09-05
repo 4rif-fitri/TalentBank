@@ -2,7 +2,9 @@
     <h3 class="fw-bold text-sm-center text-lg-start">About</h3>
     <hr>
 
-    <p id="aboutText"></p>
+    <p class="placeholder-glow">
+        <span id="aboutText" class="placeholder">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Est, voluptas.</span>
+    </p>
 
     @if (array_intersect(session('roles') ?? [], ['Student']))
     <div class="icon-container">
@@ -13,14 +15,26 @@
     @endif
 </section>
 
-@section('childScript')
+<x-modals.about-modal />
+
+@push('childScript')
 
 <script>
-    $(document).ready(function (){
-        $(document).on("profile:aboutUpdated", function(event,data){
-            console.log(event);
-            console.log(data);
-        })
+    let about = null
+
+    function renderAbout(data){
+        about = data ?? ""
+        $("#aboutText").text(about)
+        $("#aboutText").removeClass("placeholder")
+    }
+
+    $(document).on("profile:loaded", function(event,data){
+        renderAbout(data.about)
     })
+
+    $(document).on("profile:about:updated", function (event, data) {
+        renderAbout(data.about)
+    })
+
 </script>
-@endsection
+@endpush

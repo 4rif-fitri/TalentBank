@@ -11,3 +11,7 @@ export function error(label, data) {
 export function table(label, data) {
     console.table(label, data);
 }
+
+export function line(data) {
+    console.log(data);
+}

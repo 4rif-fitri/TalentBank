@@ -36,7 +36,6 @@
 
 <x-modals.active-educations-modal />
 <x-modals.profile-modal />
-<x-modals.about-modal />
 <x-modals.contact-information-modal />
 <x-modals.social-media-link-modal />
 <x-modals.languages-modal />
@@ -51,20 +50,26 @@
 @section('script')
 <!-- @vite('resources/js/student/index.js') -->
 <script>
+
     $(document).ready( function (){
-        function getAllStudentUserProfiles(){
+
+        function getProfileDataByProfileId (id){
+            let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}"
+            url = url.replace("__ID__", id)
+
             $.ajax({
-                url: "{{ route('profile.getAllStudentUserProfiles') }}",
+                url,
                 type: "GET",
-                success: response => {
-                    $(document).trigger("profile:aboutUpdated", [response.data])
+                success: function (response) {
+                    $(document).trigger("profile:loaded", [response.data])
                 },
-                error: xhr => {
-                    console.log(xhr);
+                error: xhr =>{
+                    xdebug.line(xhr.responseJSON.message)
                 }
             });
         }
-        getAllStudentUserProfiles()
+        let profileId = Number(window.location.pathname.split('/').pop()) || "{{ session("user_profile_id") }}";
+        getProfileDataByProfileId(profileId)
     })
 </script>
 @endsection

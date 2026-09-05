@@ -27,11 +27,14 @@
         function swalfire(title, text, icon){
             Swal.fire({ title, text, icon });
         }
+
+        $(document).on("hide.bs.modal", function () {
+            document.activeElement?.blur();
+        });
     </script>
 
     @yield('script')
-
-    @yield('childScript')
+    @stack('childScript')
 
 </body>
 </html>

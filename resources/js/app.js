@@ -14,6 +14,7 @@ import * as debug from './utils/debug.js';
 import * as modal from './utils/modal.js'
 
 window.modal = modal
+window.xmodal = modal
 window.shortListTemplate = shortListTemplate;
 window.shortListRender = shortListRender;
 window.invitation = invitation;
@@ -23,5 +24,6 @@ window.salert = salert;
 window.xalert = salert;
 window.format = format;
 window.debug = debug;
+window.xdebug = debug;
 window.jobOffer = jobOffer;
 window.bootstrap = bootstrap;
