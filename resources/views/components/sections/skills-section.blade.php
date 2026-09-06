@@ -16,3 +16,50 @@
     <hr>
     <div id="skillList" class="d-flex flex-wrap gap-2"></div>
 </section>
+@push('childScript')
+<script>
+    let stateSkills = {
+        skills: null,
+        allSkill: null,
+        skillOptions: ""
+    }
+</script>
+
+<script type="module">
+
+    function getAllSkills() {
+        $.ajax({
+            url: "{{ route('skills.getAllSkills') }}",
+            type: "GET",
+            success: response => {
+                xdebug.line(response)
+                stateSkills.allSkill = response.data
+
+                stateSkills.allSkill.forEach(skill => {
+                   stateSkills.skillOptions += xskill.student.skillOption(skill)
+                });
+
+            },
+            error: xhr => {
+                xdebug.line(response)
+            }
+        });
+    }
+
+    function renderSkill(skills){
+        stateSkills.skills = skills
+
+        stateSkills.skills.forEach(skill => {
+            $("#skillList").append(xskill.student.rowSkill(skill))
+        });
+
+    }
+
+    $(document).on("profile:loaded", function (event, data) {
+        renderSkill(data.skills,)
+        getAllSkills()
+    })
+
+
+</script>
+@endpush

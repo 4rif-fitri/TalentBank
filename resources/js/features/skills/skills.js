@@ -6,7 +6,7 @@ function getUserSkillId(skill) {
 
 
 export let student = {
-    templateRowSkillList: (skill) => {
+    rowSkill: (skill) => {
 
         const userSkillId = getUserSkillId(skill);
 
@@ -24,7 +24,7 @@ export let student = {
             </div>
         `;
     },
-    templateRowSkillModal: (skill) => {
+    rowSkillModal: (skill) => {
 
         const userSkillId = getUserSkillId(skill);
 
@@ -84,21 +84,15 @@ export let student = {
         `;
     },
 
-    templateSkillOption(skill, selectedSkillId = "") {
+    skillOption(skill, selectedSkillId = "") {
 
-        return `
-        <option
-            value="${skill.id}"
-            ${Number(skill.id) === Number(selectedSkillId) ? "selected" : ""}
-        >
+        return `<option value="${skill.id}" ${Number(skill.id) === Number(selectedSkillId) ? "selected" : ""}>
             ${skill.skill_name ?? skill.name ?? ""}
-        </option>
-    `;
+        </option>`;
     },
 
-    templateRowSkillAdd(skillOptions) {
-        return `
-        <div class="skill-input-row border rounded p-3 d-flex align-items-center gap-2">
+    rowSkillAdd(skillOptions) {
+        return `<div class="skill-input-row border rounded p-3 d-flex align-items-center gap-2">
             <select class="form-select skill-select">
                 <option value="">Select Skill</option>
                     ${skillOptions}
@@ -109,11 +103,11 @@ export let student = {
             <button type="button" class="btn btn-outline-danger btn-cencel-addSkill">
                 <i class="fa-solid fa-trash"></i>
             </button>
-        </div>
+        </+div>
     `
     },
 
-    templateRowSkillUpdate(skillOptions, skillId, userSkillId) {
+    rowSkillUpdate(skillOptions, skillId, userSkillId) {
         return `
         <div
             class="skill-input-row border rounded p-3 d-flex align-items-center gap-2"

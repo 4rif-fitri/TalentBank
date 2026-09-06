@@ -13,12 +13,14 @@ import * as format from './utils/format.js';
 import * as debug from './utils/debug.js';
 import * as modal from './utils/modal.js'
 
-import * as templateEducation from "./features/education/education"
-import * as xvalidate from "./shared/utils/validation"
+import * as templateEducation from "./features/education/education.js"
+import * as templateSkill from "./features/skills/skills.js"
+import * as xvalidate from "./shared/utils/validation.js"
 
 window.xeducation = templateEducation;
 window.xvalidate = xvalidate;
 window.xalert = salert;
+window.xskill = templateSkill;
 
 window.modal = modal
 window.xmodal = modal

@@ -164,7 +164,6 @@
 
 <script type="module">
 
-
     async function renderUserDetail(name, headline, location, programmes, email, phoneNo, profile_image, cover_image){
 
         stateProfile.name = name
@@ -259,69 +258,39 @@
         }
     }
 
-    function uploadProfileImage(formData) {
-        console.log("uploadProfileImage");
+    async function handleUpdateProfileImage(event) {
+        const file = event.target.files[0]
 
-        return $.ajax({
-            url: "{{ route('profile.uploadProfileImage') }}",
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            }
-        });
-    }
-
-    function uploadCoverImage(formData) {
-        console.log("uploadCoverImage");
-
-        return $.ajax({
-            url: "{{ route('profile.uploadCoverImage') }}",
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            }
-        });
-    }
-
-    async function uploadImage(event, fieldName, uploadApi) {
-        const file = event.target.files[0];
-
-        if (!file) return null;
-
-        if (xvalidate.validateFileImage(file)) return null;
+        if (!file) return;
 
         const formData = new FormData();
-        formData.append(fieldName, file);
+        formData.append('profile_image', file);
 
-        console.log({event, fieldName, uploadApi});
+        $.ajax({
+            url: "{{ route('profile.uploadProfileImage') }}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
 
-        return
+            success: response => {
+                console.log('Success:', response);
+                xalert.fire('Success', 'Profile image uploaded successfully', 'success');
+            },
 
-        return await uploadApi(formData);
-    }
-
-    async function handleUpdateProfileImage(event) {
-
-        try {
-            const response = await uploadImage(event,'profile_image',uploadProfileImage);
-
-            if (!response) return;
-
-            xalert.fire('Success','Profile image uploaded successfully','success');
-
-        } catch (error) {
-            console.error( 'Failed to upload profile image:', + error);
-        }
+            error: xhr => {
+                console.error('Upload failed:', xhr);
+                console.error('Response:', xhr.responseJSON);
+                xalert.fire('Error', xhr.responseJSON?.message || 'Failed to upload cover image', 'error');
+            }
+        });
     }
 
     async function handleUpdateCoverImage(event) {
-        const file = event.target.files[0];
+        const file = event.target.files[0]
 
         if (!file) return;
 
@@ -346,13 +315,7 @@
             error: xhr => {
                 console.error('Upload failed:', xhr);
                 console.error('Response:', xhr.responseJSON);
-
-                xalert.fire(
-                    'Error',
-                    xhr.responseJSON?.message ||
-                    'Failed to upload cover image',
-                    'error'
-                );
+                xalert.fire('Error', xhr.responseJSON?.message || 'Failed to upload cover image', 'error');
             }
         });
     }
