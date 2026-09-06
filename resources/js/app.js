@@ -15,12 +15,14 @@ import * as modal from './utils/modal.js'
 
 import * as templateEducation from "./features/education/education.js"
 import * as templateSkill from "./features/skills/skills.js"
+import * as templatelanguage from "./features/language/language"
 import * as xvalidate from "./shared/utils/validation.js"
 
 window.xeducation = templateEducation;
 window.xvalidate = xvalidate;
 window.xalert = salert;
 window.xskill = templateSkill;
+window.xlanguage = templatelanguage;
 
 window.modal = modal
 window.xmodal = modal

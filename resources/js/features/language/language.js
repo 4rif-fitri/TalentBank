@@ -11,7 +11,7 @@ export let student = {
                 </article>`
         },
 
-    templateLanguagesRow: (language) => {
+    languagesRow: (language) => {
         return `<div class="language-row alert alert-light d-flex align-items-center gap-3"
                         data-id="${language.id}"
                         data-language-id="${language.language_id}"
@@ -38,15 +38,15 @@ export let student = {
                 </div>`
     },
 
-    templatelanguageOptions: (language, languageId = "") => {
+    languageOptions: (language, languageId = "") => {
         return `<option value="${language.id}" ${languageId == language.id ? "selected" : ""}>${language.language_name}</option>`
     },
 
-    templateProficiencyOptions: (proficiency, theProficiency) => {
+    proficiencyOptions: (proficiency, theProficiency) => {
         return `<option value="${proficiency}" ${proficiency == theProficiency ? "selected" : ""}>${proficiency}</option>`
     },
 
-    templateLanguagesAddRow: (languageOptions, proficiencyOptions) => {
+    languagesAddRow: (languageOptions, proficiencyOptions) => {
         return `
         <div class="language-row alert alert-light d-flex align-items-center gap-3">
 
@@ -62,10 +62,13 @@ export let student = {
                     class="btn btn-link p-0 text-success btn-save-language">
                     <i class="fa-solid fa-floppy-disk fa-xl"></i>
             </button>
+            <button type="button" class="btn btn-link p-0 text-danger btnCencelAddLanguage">
+                <i class="fa-solid fa-trash fa-lg"></i>
+            </button>
         `
     },
 
-    templateLanguagesUpdateRow: (languageOptions, proficiencyOptions, id, languageId = "", proficiency = "") => {
+    languagesUpdateRow: (languageOptions, proficiencyOptions, id, languageId = "", proficiency = "") => {
         return `<div data-id="${id}" data-language-id="${languageId}" data-proficiency="${proficiency}"
                     class="language-row alert alert-light d-flex align-items-center gap-3">
 
@@ -84,6 +87,10 @@ export let student = {
                     <button type="button"
                         class="btn btn-link p-0 text-success btn-update-language">
                         <i class="fa-solid fa-floppy-disk fa-xl"></i>
+                    </button>
+                    <button type="button"
+                            class="btn btn-link p-0 text-danger btnCencelUpdateLanguage">
+                            <i class="fa-solid fa-trash fa-lg"></i>
                     </button>
                 </div>`;
     }
