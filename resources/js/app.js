@@ -14,8 +14,10 @@ import * as debug from './utils/debug.js';
 import * as modal from './utils/modal.js'
 
 import * as templateEducation from "./features/education/education"
+import * as xvalidate from "./shared/utils/validation"
 
 window.xeducation = templateEducation;
+window.xvalidate = xvalidate;
 
 window.modal = modal
 window.xmodal = modal

@@ -157,12 +157,14 @@
         location: null,
         email: null,
         phoneNo: null,
+        profile_image: null,
+        cover_image: null,
     }
 </script>
 
 <script type="module">
 
-    function renderUserDetail(name, headline, location, programmes, email, phoneNo){
+    async function renderUserDetail(name, headline, location, programmes, email, phoneNo, profile_image, cover_image){
 
         stateProfile.name = name
         stateProfile.headline = headline
@@ -170,6 +172,8 @@
         stateProfile.programmes = programmes
         stateProfile.email = email
         stateProfile.phoneNo = phoneNo
+        stateProfile.profile_image = profile_image
+        stateProfile.cover_image = cover_image
 
         $("#name").text(stateProfile.name)
         $("#headline").text(stateProfile.headline)
@@ -177,6 +181,15 @@
         $("#uni-name").text(stateProfile.programmes[0].organization.company_name)
         $("#programme").text(stateProfile.programmes[0].programme_name)
 
+        let defaultProfile = `{{ asset(env('PROFILE_IMAGE_URL')) }}/default.png`;
+        let profileUrl = `{{ asset(env('PROFILE_IMAGE_URL')) }}/${stateProfile.profile_image}`;
+        let validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultProfile)
+        $("#profileImage").css('background-image', `url("${validProfileUrl}")`);
+
+        defaultProfile = `{{ asset(env('COVER_IMAGE_URL')) }}/default.png`;
+        profileUrl = `{{ asset(env('COVER_IMAGE_URL')) }}/${stateProfile.cover_image}`;
+        validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultProfile)
+        $("#coverImage").css('background-image', `url("${validProfileUrl}")`);
     }
 
     $(document).on("profile:loaded", function (event, data) {
@@ -186,7 +199,9 @@
             data.location,
             data.active_programmes,
             data.email,
-            data.phone_no
+            data.phone_no,
+            data.profile_image,
+            data.cover_image
         )
     })
 
@@ -197,7 +212,9 @@
             data.location,
             data.active_programmes ?? stateProfile.programmes,
             data.email,
-            data.phone_no
+            data.phone_no,
+            data.profile_image,
+            data.cover_image
         )
     })
 
@@ -215,6 +232,33 @@
         }
     }
 
+    function handleProfileTab() {
+        $(".profile-tab").removeClass("active");
+        $(this).addClass("active");
+        let target = $(this).data("target");
+        // console.log(target);
+
+        if (target === "main") {
+            $("#mainTabContent").removeClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
+        }
+
+        if (target === "result") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").removeClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
+        }
+
+        if (target === "education") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").removeClass("d-none");
+            // handleLoadEducations()
+        }
+    }
+
+    $(document).on('click', '.profile-tab', handleProfileTab);
     $(document).on("click", "#seeMoreActiveEducations", handleSeeMoreEdu)
 
 </script>
