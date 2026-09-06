@@ -13,6 +13,10 @@ import * as format from './utils/format.js';
 import * as debug from './utils/debug.js';
 import * as modal from './utils/modal.js'
 
+import * as templateEducation from "./features/education/education"
+
+window.xeducation = templateEducation;
+
 window.modal = modal
 window.xmodal = modal
 window.shortListTemplate = shortListTemplate;
@@ -27,3 +31,4 @@ window.debug = debug;
 window.xdebug = debug;
 window.jobOffer = jobOffer;
 window.bootstrap = bootstrap;
+

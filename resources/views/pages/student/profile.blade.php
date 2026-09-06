@@ -34,8 +34,10 @@
     </div>
 </div>
 
-<x-modals.active-educations-modal />
 <x-modals.profile-modal />
+
+
+<x-modals.active-educations-modal />
 <x-modals.contact-information-modal />
 <x-modals.social-media-link-modal />
 <x-modals.languages-modal />
@@ -61,6 +63,7 @@
                 url,
                 type: "GET",
                 success: function (response) {
+                    xdebug.log("Profile", response.data)
                     $(document).trigger("profile:loaded", [response.data])
                 },
                 error: xhr =>{

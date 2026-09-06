@@ -1,32 +1,18 @@
-<div class="modal fade" id="editProfileModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="editProfileModal" data-bs-backdrop="static" tabindex="-1" >
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
 
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Intro</h5>
+                <h5 class="modal-title">Edit Personal Detail</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
-                <!-- <div id="profileLoading" class="text-center py-4 d-none">
-                        <div class="spinner-border spinner-border-sm" role="status"></div>
-                        <span class="ms-2">Loading...</span>
-                    </div> -->
 
                 <div id="profileFields">
                     <div class="mb-3">
                         <label for="profileNameInput" class="form-label">Full Name</label>
                         <input type="text" class="form-control" name="name" id="profileNameInput" required>
-                    </div>
-
-                    <div class="mb-3 d-none">
-                        <label for="profileEmailInput" class="form-label">Email</label>
-                        <input type="text" class="form-control" name="email" id="profileEmailInput" required>
-                    </div>
-
-                    <div class="mb-3 d-none">
-                        <label for="profileEmailInput" class="form-label">Phone Number</label>
-                        <input type="text" class="form-control" name="phone_no" id="profilePhoneNoInput" required>
                     </div>
 
                     <div class="mb-3">
@@ -44,10 +30,63 @@
                     </div>
                 </div>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button class="btn btn-primary" id="btnSaveProfile">Save</button>
+                <button type="button" class="btn btn-outline-secondary" id="btnCencelEditProfile">Cancel</button>
+                <button type="button" class="btn btn-primary" id="btnSaveProfile">Save</button>
             </div>
         </div>
     </div>
 </div>
+
+@push('childScript')
+<script type="module">
+
+    function handleEditDetil(){
+        xmodal.show("editProfileModal")
+        $("#profileNameInput").val(stateProfile.name)
+        $("#locationInput").val(stateProfile.location)
+        $("#profileHeadlineInput").val(stateProfile.headline)
+    }
+
+    function handleCencelEditProfile(){
+        xmodal.hide("editProfileModal")
+        $("#profileNameInput").val(stateProfile.name)
+        $("#locationInput").val(stateProfile.location)
+        $("#profileHeadlineInput").val(stateProfile.headline)
+    }
+
+    function handleSaveProfile(){
+
+         let data = {
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            _method: "PUT",
+            name: $("#profileNameInput").val(),
+            email: stateProfile.email,
+            headline: $("#profileHeadlineInput").val(),
+            location: $("#locationInput").val(),
+            phone_no: stateProfile.phoneNo,
+        }
+
+        $.ajax({
+            url: "{{ route('profile.update') }}",
+            type: "POST",
+            data,
+            success: function (response) {
+                xmodal.hide("editProfileModal")
+                xdebug.line(response.data)
+                xalert.fire("Success", response.message, "success")
+                $(document).trigger("profile:stateProfile:updated", [response.data])
+            },
+            error: xhr => {
+                xdebug.line(xhr.responseJSON.message)
+            }
+        });
+    }
+
+    $(document).on("click","#btnEditProfile", handleEditDetil)
+    $(document).on("click", "#btnCencelEditProfile", handleCencelEditProfile)
+    $(document).on("click", "#btnSaveProfile", handleSaveProfile)
+
+</script>
+@endpush

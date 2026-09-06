@@ -21,3 +21,54 @@
         <p id="phoneNo"></p>
     </article>
 </section>
+
+@push('childScript')
+
+<script>
+
+    let state = {
+        name: null,
+        headline: null,
+        programmes: null,
+        location: null,
+        email: null,
+        phoneNo: null,
+    }
+
+    function renderContact(name, headline, location, programmes, email, phoneNo){
+        state.name = name
+        state.headline = headline
+        state.location = location
+        state.programmes = programmes
+        state.email = email
+        state.phoneNo = phoneNo
+
+        $("#email").text(state.email)
+        $("#phoneNo").text(state.phoneNo)
+
+    }
+
+    $(document).on("profile:loaded", function (event, data) {
+        renderContact(
+            data.name,
+            data.headline,
+            data.location,
+            data.active_programmes,
+            data.email,
+            data.phone_no
+        )
+    })
+
+    $(document).on("profile:state:updated", function (event, data) {
+        renderContact(
+            data.name,
+            data.headline,
+            data.location,
+            data.active_programmes,
+            data.email,
+            data.phone_no
+        )
+    })
+</script>
+
+@endpush

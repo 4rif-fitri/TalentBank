@@ -52,11 +52,7 @@
 
     <div class="d-md-flex justify-content-md-between">
         <div class="user-profile-detail">
-            <!-- <div class="icon-container" style="top:-25px;">
-                <button type="button" class="btn btn-secondary icon" id="btnEditProfile">
-                    <i class="fa-solid fa-pencil"></i>
-                </button>
-            </div> -->
+
             <p id="name" class="fw-bold lg-h2 sm-h6"></p>
 
             @if (array_intersect(session('roles') ?? [], ['Student']))
@@ -74,7 +70,7 @@
                 data-bs-title="See More Active Educations">
                 See More
             </button>
-            <article id="location">
+            <article>
                 <p>
                     <i class="fa-solid fa-location-dot"></i>
                     <span id="profileLocation"></span>
@@ -117,7 +113,6 @@
             </div>
             @endif
 
-
         </div>
     </div>
 
@@ -152,3 +147,75 @@
     </nav>
 
 </section>
+
+@push('childScript')
+<script>
+    let stateProfile = {
+        name: null,
+        headline:null,
+        programmes:null,
+        location: null,
+        email: null,
+        phoneNo: null,
+    }
+</script>
+
+<script type="module">
+
+    function renderUserDetail(name, headline, location, programmes, email, phoneNo){
+
+        stateProfile.name = name
+        stateProfile.headline = headline
+        stateProfile.location = location
+        stateProfile.programmes = programmes
+        stateProfile.email = email
+        stateProfile.phoneNo = phoneNo
+
+        $("#name").text(stateProfile.name)
+        $("#headline").text(stateProfile.headline)
+        $("#profileLocation").text(stateProfile.location)
+        $("#uni-name").text(stateProfile.programmes[0].organization.company_name)
+        $("#programme").text(stateProfile.programmes[0].programme_name)
+
+    }
+
+    $(document).on("profile:loaded", function (event, data) {
+        renderUserDetail(
+            data.name,
+            data.headline,
+            data.location,
+            data.active_programmes,
+            data.email,
+            data.phone_no
+        )
+    })
+
+    $(document).on("profile:stateProfile:updated", function (event, data) {
+        renderUserDetail(
+            data.name,
+            data.headline,
+            data.location,
+            data.active_programmes ?? stateProfile.programmes,
+            data.email,
+            data.phone_no
+        )
+    })
+
+    function handleSeeMoreEdu(){
+        xmodal.show("activeEducationsModal")
+        $("#activeEducationList").empty()
+
+        if(stateProfile.programmes.length == 0){
+            $("#activeEducationList").append(xeducation.student.emptyEducation())
+
+        }else{
+            stateProfile.programmes.forEach(programme => {
+                $("#activeEducationList").append(xeducation.student.template(programme))
+            });
+        }
+    }
+
+    $(document).on("click", "#seeMoreActiveEducations", handleSeeMoreEdu)
+
+</script>
+@endpush
