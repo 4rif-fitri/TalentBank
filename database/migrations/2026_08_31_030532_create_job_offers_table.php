@@ -22,7 +22,9 @@ return new class extends Migration {
             $table->enum('offer_status', AppConstants::JOB_OFFER_STATUS)->default(AppConstants::JOB_OFFER_STATUS['PENDING']);
             $table->timestamps();
             $table->datetime('expires_at');
-            $table->foreignId('invitation_id')->constrained('invitations')->onDelete('restrict');
+            $table->foreignId('sender_profile_id')->constrained('user_profiles')->onDelete('restrict');
+            $table->foreignId('receiver_profile_id')->constrained('user_profiles')->onDelete('restrict');
+            $table->foreignId('position_id')->constrained('positions')->onDelete('restrict');
         });
     }
 

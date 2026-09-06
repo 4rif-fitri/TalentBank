@@ -204,16 +204,16 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('interviews')->group(function () {
-        Route::get('/getInterviewsByReceiverId', [InterviewController::class, 'getInterviewsByReceiverId'])->name('interviews.getInterviewsByReceiverId'); //+
-        Route::get('/getInterviewById/{id}', [InterviewController::class, 'getInterviewById'])->name('interviews.getInterviewById'); //! //+
+        Route::get('/getInterviewsByStatusAndIntervieweeId', [InterviewController::class, 'getInterviewsByStatusAndIntervieweeId'])->name('interviews.getInterviewsByStatusAndIntervieweeId'); //+
+        Route::get('/getInterviewById/{id}', [InterviewController::class, 'getInterviewById'])->name('interviews.getInterviewById'); //+
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::get('/getInterviewsBySenderId', [InterviewController::class, 'getInterviewsBySenderId'])->name('interviews.getInterviewsBySenderId'); //+
-            Route::get('/status/{status}', [InterviewController::class, 'getInterviewsByStatus'])->name('interviews.getInterviewsByStatus'); //+
-            Route::post('/store', [InterviewController::class, 'store'])->name('interviews.store'); //!
-            Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update'); //!
-            Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview'); //!
-            Route::put('/cancelInterview/{id}', [InterviewController::class, 'cancelInterview'])->name('interviews.cancelInterview'); //!
+            Route::get('/getInterviewsByStatusAndInterviewerId', [InterviewController::class, 'getInterviewsByStatusAndInterviewerId'])->name('interviews.getInterviewsByStatusAndInterviewerId');
+            // Route::get('/status/{status}', [InterviewController::class, 'getInterviewsByStatus'])->name('interviews.getInterviewsByStatus');
+            Route::post('/store', [InterviewController::class, 'store'])->name('interviews.store');
+            Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update');
+            Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview');
+            Route::put('/cancelInterview/{id}', [InterviewController::class, 'cancelInterview'])->name('interviews.cancelInterview');
         });
     });
 

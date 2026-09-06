@@ -13,14 +13,16 @@ return new class extends Migration {
     {
         Schema::create('interviews', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('invitation_id')->constrained('invitations')->onDelete('restrict');
             $table->dateTime('scheduled_at');
             $table->enum('interview_mode', AppConstants::INTERVIEW_MODES);
             $table->string('location')->nullable();
             $table->string('meeting_url')->nullable();
             $table->enum('interview_status', AppConstants::INTERVIEW_STATUS)->default(AppConstants::INTERVIEW_STATUS['SCHEDULED']);
-            $table->enum('interview_result', AppConstants::INTERVIEW_RESULTS)->nullable()->default(AppConstants::INTERVIEW_RESULTS['PENDING']);
+            $table->enum('interview_result', AppConstants::INTERVIEW_RESULTS)->default(AppConstants::INTERVIEW_RESULTS['PENDING']);
             $table->text('recruiter_comment')->nullable();
+            $table->foreignId('interviewer_profile_id')->constrained('user_profiles')->onDelete('restrict');
+            $table->foreignId('interviewee_profile_id')->constrained('user_profiles')->onDelete('restrict');
+            $table->foreignId('position_id')->constrained('positions')->onDelete('restrict');
             $table->timestamps();
         });
     }

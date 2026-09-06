@@ -11,7 +11,6 @@ class Interview extends Model
     use HasFactory;
 
     protected $fillable = [
-        'invitation_id',
         'scheduled_at',
         'interview_mode',
         'location',
@@ -21,10 +20,23 @@ class Interview extends Model
         'recruiter_comment',
         'created_at',
         'updated_at',
+        'position_id',
+        'interviewer_profile_id',
+        'interviewee_profile_id',
     ];
 
-    public function invitation()
+    public function position()
     {
-        return $this->belongsTo(Invitation::class, 'invitation_id');
+        return $this->belongsTo(Position::class, 'position_id');
+    }
+
+    public function interviewer()
+    {
+        return $this->belongsTo(UserProfile::class, 'interviewer_profile_id');
+    }
+
+    public function interviewee()
+    {
+        return $this->belongsTo(UserProfile::class, 'interviewee_profile_id');
     }
 }
