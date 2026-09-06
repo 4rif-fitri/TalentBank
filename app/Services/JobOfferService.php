@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Constants\AppConstants;
 use App\Helpers\CheckOrgRoleHelper;
 use App\Models\JobOffer;
+use App\Models\Position;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -18,16 +19,10 @@ class JobOfferService
         AppConstants::JOB_OFFER_STATUS['WITHDRAWN'],
     ];
 
-    // used to determine the columns to be returned for related models when fetching invitations
-    private const INVITATION_RETURN_COLUMNS = 'invitations.id,position_id,receiver_profile_id,sender_profile_id';
+    // used to determine the columns to be returned for related models
     private const POSITION_RETURN_COLUMNS = 'positions.id,position_title,organization_id';
     private const PROFILE_RETURN_COLUMNS = 'id,name,profile_image,location,headline';
     private const ORGANIZATION_RETURN_COLUMNS = 'id,company_name,organization_logo';
-
-    public function __construct(
-        private readonly InvitationService $invitationService
-    ) {
-    }
 
     /**
      * Retrieves a job offer scoped to the given profile column/id and ensures it is still in an editable state
@@ -40,16 +35,12 @@ class JobOfferService
      */
     private function getJobOfferModel(int $jobOfferId, string $profileColumn, int $userProfileId): JobOffer
     {
-        $jobOffer = JobOffer::with('invitation.position')
+        $jobOffer = JobOffer::with('position')
             ->where($profileColumn, $userProfileId)
             ->find($jobOfferId);
 
         if (!isset($jobOffer)) {
             throw new Exception('Job offer not found or access unauthorized.', Response::HTTP_NOT_FOUND);
-        }
-
-        if (in_array($jobOffer->offer_status, self::LOCKED_STATUS)) {
-            throw new Exception('Job offer accepted, rejected or withdrawn cannot be updated anymore.', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return $jobOffer;
@@ -69,15 +60,18 @@ class JobOfferService
     {
         $jobOffer = $this->getJobOfferModel($jobOfferId, $profileColumn, $senderId);
 
-        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($senderId, self::ADMINISTRATIVE_ROLES, $jobOffer->invitation->position->organization_id);
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($senderId, self::ADMINISTRATIVE_ROLES, $jobOffer->position->organization_id);
 
-        if (!$isUserAdmin) {
+        if (!$isUserAdmin && $profileColumn == 'sender_profile_id') {
             throw new Exception('Unauthorized access to update interview.', Response::HTTP_FORBIDDEN);
         }
 
-        $jobOffer->update(['offer_status' => $status]);
+        if (in_array($jobOffer->offer_status, self::LOCKED_STATUS)) {
+            throw new Exception('Job offer accepted, rejected or withdrawn cannot be updated anymore.', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-        return $jobOffer->unsetRelation('invitation');
+        $jobOffer->update(['offer_status' => $status]);
+        return $jobOffer->unsetRelation('position');
     }
 
     /**
@@ -87,20 +81,17 @@ class JobOfferService
      * @param ?string $offerStatus
      * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, JobOffer>
      */
-    public function getJobOffersBySenderId(int $senderId, ?string $offerStatus): Collection
+    public function getJobOffersByStatusAndSenderId(int $senderId, ?string $offerStatus): Collection
     {
         return JobOffer::with([
-            'invitation:' . self::INVITATION_RETURN_COLUMNS,
-            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
-            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
-            'invitation.position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
+            'position:' . self::POSITION_RETURN_COLUMNS,
+            'receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
             ->when(isset($offerStatus), function ($query) use ($offerStatus) {
                 $query->where('offer_status', $offerStatus);
             })
-            ->whereHas('invitation', function ($query) use ($senderId) {
-                $query->where('sender_profile_id', $senderId);
-            })
+            ->where('sender_profile_id', $senderId)
             ->get();
     }
 
@@ -111,20 +102,17 @@ class JobOfferService
      * @param ?string $offerStatus
      * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, JobOffer>
      */
-    public function getJobOffersByReceiverId(int $receiverId, ?string $offerStatus): Collection
+    public function getJobOffersByStatusAndReceiverId(int $receiverId, ?string $offerStatus): Collection
     {
         return JobOffer::with([
-            'invitation:' . self::INVITATION_RETURN_COLUMNS,
-            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
-            'invitation.sender:' . self::PROFILE_RETURN_COLUMNS,
-            'invitation.position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
+            'position:' . self::POSITION_RETURN_COLUMNS,
+            'sender:' . self::PROFILE_RETURN_COLUMNS,
+            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
             ->when(isset($offerStatus), function ($query) use ($offerStatus) {
                 $query->where('offer_status', $offerStatus);
             })
-            ->whereHas('invitation', function ($query) use ($receiverId) {
-                $query->where('receiver_profile_id', $receiverId);
-            })
+            ->where('receiver_profile_id', $receiverId)
             ->get();
     }
 
@@ -138,14 +126,13 @@ class JobOfferService
     // public function getJobOffersByStatus(string $offerStatus, int $userProfileId): Collection
     // {
     //     return JobOffer::with([
-    //         'invitation:' . self::INVITATION_RETURN_COLUMNS,
-    //         'invitation.position:' . self::POSITION_RETURN_COLUMNS,
-    //         'invitation.sender:' . self::PROFILE_RETURN_COLUMNS,
-    //         'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
-    //         'invitation.position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
+    //         'position:' . self::POSITION_RETURN_COLUMNS,
+    //         'sender:' . self::PROFILE_RETURN_COLUMNS,
+    //         'receiver:' . self::PROFILE_RETURN_COLUMNS,
+    //         'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
     //     ])
     //         ->where('offer_status', $offerStatus)
-    //         ->whereHas('invitation', function ($query) use ($userProfileId) {
+    //         ->whereHas('', function ($query) use ($userProfileId) {
     //             $query->where(function ($query) use ($userProfileId) {
     //                 $query->where('sender_profile_id', $userProfileId)
     //                     ->orWhere('receiver_profile_id', $userProfileId);
@@ -165,13 +152,12 @@ class JobOfferService
     public function getJobOfferById(int $jobOfferId, int $userProfileId): JobOffer
     {
         $jobOffer = JobOffer::with([
-            'invitation:' . self::INVITATION_RETURN_COLUMNS,
-            'invitation.position',
-            'invitation.sender:' . self::PROFILE_RETURN_COLUMNS,
-            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
-            'invitation.position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
+            'position',
+            'sender:' . self::PROFILE_RETURN_COLUMNS,
+            'receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
-            ->whereHas('invitation', function ($query) use ($userProfileId) {
+            ->where(function ($query) use ($userProfileId) {
                 $query->where('sender_profile_id', $userProfileId)
                     ->orWhere('receiver_profile_id', $userProfileId);
             })
@@ -187,24 +173,19 @@ class JobOfferService
     }
 
     /**
-     * Creates a new job offer for the given invitation
+     * Creates a new job offer for the position
      *
      * @param array $data
      * @param int $senderId
      * @return JobOffer
-     * @throws Exception if the invitation does not belong to the current user, or the current user is not an admin role
+     * @throws Exception
      */
     public function createJobOffer(array $data, int $senderId): JobOffer
     {
-        $invitation = $this->invitationService->getInvitationById($data['invitation_id'], $senderId);
-
-        // check if invitation's sender is current user
-        if ($invitation->sender_profile_id !== $senderId) {
-            throw new Exception('Unauthorized access to create job offer for this invitation.', Response::HTTP_FORBIDDEN);
-        }
+        $position = Position::find($data['position_id']);
 
         // check if current user is still an admin role of the current org
-        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($senderId, self::ADMINISTRATIVE_ROLES, $invitation->position->organization_id);
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($senderId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
 
         if (!$isUserAdmin) {
             throw new Exception('Unauthorized access to create job offer.', Response::HTTP_FORBIDDEN);
@@ -212,9 +193,9 @@ class JobOfferService
 
         // create job offer
         $jobOffer = JobOffer::create([
-            'invitation_id' => $data['invitation_id'],
+            'position_id' => $data['position_id'],
             'sender_profile_id' => $senderId,
-            'receiver_profile_id' => $invitation->receiver_profile_id,
+            'receiver_profile_id' => $data['receiver_profile_id'],
             'salary_amount' => $data['salary_amount'],
             'salary_period' => $data['salary_period'],
             'start_date' => $data['start_date'] ?? null,
@@ -226,9 +207,8 @@ class JobOfferService
         ]);
 
         return $jobOffer->load([
-            'invitation:' . self::INVITATION_RETURN_COLUMNS,
-            'invitation.position:' . self::POSITION_RETURN_COLUMNS,
-            'invitation.receiver:' . self::PROFILE_RETURN_COLUMNS,
+            'position:' . self::POSITION_RETURN_COLUMNS,
+            'receiver:' . self::PROFILE_RETURN_COLUMNS,
         ]);
     }
 
@@ -245,10 +225,14 @@ class JobOfferService
     {
         $jobOffer = $this->getJobOfferModel($jobOfferId, 'sender_profile_id', $senderId);
 
-        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($senderId, self::ADMINISTRATIVE_ROLES, $jobOffer->invitation->position->organization_id);
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($senderId, self::ADMINISTRATIVE_ROLES, $jobOffer->position->organization_id);
 
         if (!$isUserAdmin) {
             throw new Exception('Unauthorized access to update job offer.', Response::HTTP_FORBIDDEN);
+        }
+
+        if (in_array($jobOffer->offer_status, self::LOCKED_STATUS)) {
+            throw new Exception('Job offer accepted, rejected or withdrawn cannot be updated anymore.', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $jobOffer->update([
@@ -261,7 +245,7 @@ class JobOfferService
             'expires_at' => $data['expires_at'],
         ]);
 
-        return $jobOffer->unsetRelation('invitation');
+        return $jobOffer->unsetRelation('position');
     }
 
     /**

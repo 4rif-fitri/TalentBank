@@ -6,6 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Services\JobOfferService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class JobOfferController extends Controller
 {
@@ -23,7 +24,7 @@ class JobOfferController extends Controller
     {
         $senderId = session('user_profile_id');
         $status = $request->query('status');
-        $jobOffers = $this->jobOfferService->getJobOffersBySenderId($senderId, $status);
+        $jobOffers = $this->jobOfferService->getJobOffersByStatusAndSenderId($senderId, $status);
 
         return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
     }
@@ -37,7 +38,7 @@ class JobOfferController extends Controller
     {
         $receiverId = session('user_profile_id');
         $status = $request->query('status');
-        $jobOffers = $this->jobOfferService->getJobOffersByReceiverId($receiverId, $status);
+        $jobOffers = $this->jobOfferService->getJobOffersByStatusAndReceiverId($receiverId, $status);
 
         return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
     }
@@ -79,7 +80,6 @@ class JobOfferController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'invitation_id' => ['required', 'integer', 'exists:invitations,id'],
             'salary_amount' => ['required', 'numeric', 'min:0'],
             'salary_period' => ['required', 'string'],
             'start_date' => ['nullable', 'date'],
@@ -87,12 +87,14 @@ class JobOfferController extends Controller
             'terms_and_conditions' => ['nullable', 'string'],
             'benefits' => ['nullable', 'string'],
             'expires_at' => ['required', 'date', 'after:now'],
+            'position_id' => ['required', 'int', 'exists:positions,id'],
+            'receiver_profile_id' => ['required', 'int', 'exists:user_profiles,id'],
         ]);
 
         $senderId = session('user_profile_id');
         $jobOffer = $this->jobOfferService->createJobOffer($validated, $senderId);
 
-        return ApiResponse::success('Job offer created successfully.', $jobOffer)->toJsonResponse();
+        return ApiResponse::success('Job offer created successfully.', $jobOffer, Response::HTTP_CREATED)->toJsonResponse();
     }
 
     /**

@@ -7,36 +7,42 @@ use App\Helpers\ApiResponse;
 use App\Services\InterviewService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Validation\Rule;
 
 class InterviewController extends Controller
 {
     public function __construct(
         private readonly InterviewService $interviewService
-    ) {}
+    ) {
+    }
 
     /**
-     * Handles request to get interviews where current user is the sender
-     *
+     * Handles request to get interviews by status where current user is the interviewer
+     * 
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getInterviewsBySenderId(): JsonResponse
+    public function getInterviewsByStatusAndInterviewerId(Request $request): JsonResponse
     {
-        $senderId = session('user_profile_id');
-        $interviews = $this->interviewService->getInterviewsBySenderId($senderId);
+        $interviewerId = session('user_profile_id');
+        $status = $request->query('status');
+        $interviews = $this->interviewService->getInterviewsByStatusAndInterviewerId($interviewerId, $status);
 
         return ApiResponse::success('Success.', $interviews)->toJsonResponse();
     }
 
     /**
-     * Handles request to get interviews where current user is the receiver
-     *
+     * Handles request to get interviews by status where current user is the interviewee
+     * 
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getInterviewsByReceiverId(): JsonResponse
+    public function getInterviewsByStatusAndIntervieweeId(Request $request): JsonResponse
     {
-        $receiverId = session('user_profile_id');
-        $interviews = $this->interviewService->getInterviewsByReceiverId($receiverId);
+        $intervieweeId = session('user_profile_id');
+        $status = $request->query('status');
+        $interviews = $this->interviewService->getInterviewsByStatusAndIntervieweeId($intervieweeId, $status);
 
         return ApiResponse::success('Success.', $interviews)->toJsonResponse();
     }
@@ -61,13 +67,13 @@ class InterviewController extends Controller
      * @param string $status
      * @return JsonResponse
      */
-    public function getInterviewsByStatus(string $status): JsonResponse
-    {
-        $userProfileId = session('user_profile_id');
-        $interviews = $this->interviewService->getInterviewsByStatus($status, $userProfileId);
+    // public function getInterviewsByStatus(string $status): JsonResponse
+    // {
+    //     $userProfileId = session('user_profile_id');
+    //     $interviews = $this->interviewService->getInterviewsByStatus($status, $userProfileId);
 
-        return ApiResponse::success('Success.', $interviews)->toJsonResponse();
-    }
+    //     return ApiResponse::success('Success.', $interviews)->toJsonResponse();
+    // }
 
     /**
      * Handles request to create a new interview
@@ -78,18 +84,19 @@ class InterviewController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'invitation_id' => ['required', 'integer', 'exists:invitations,id'],
+            'position_id' => ['required', 'integer', 'exists:positions,id'],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
             'location' => ['nullable', 'string', 'required_if:interview_mode,On-site'],
             'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,Online'],
             'recruiter_comment' => ['nullable', 'string'],
+            'interviewee_profile_id' => ['required', 'integer', 'exists:user_profiles,id'],
         ]);
 
         $senderId = session('user_profile_id');
         $interview = $this->interviewService->createInterview($validated, $senderId);
 
-        return ApiResponse::success('Interview created successfully.', $interview)->toJsonResponse();
+        return ApiResponse::success('Interview created successfully.', $interview, Response::HTTP_CREATED)->toJsonResponse();
     }
 
     /**
@@ -106,7 +113,7 @@ class InterviewController extends Controller
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
             'location' => ['nullable', 'string'],
             'meeting_url' => ['nullable', 'string', 'url'],
-            'interview_result' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_RESULTS)],
+            'interview_result' => ['nullable', 'string', Rule::in(AppConstants::INTERVIEW_RESULTS)],
             'recruiter_comment' => ['nullable', 'string'],
         ]);
 

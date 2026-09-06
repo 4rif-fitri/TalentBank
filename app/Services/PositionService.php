@@ -75,7 +75,7 @@ class PositionService
                     ])
                     ->withCount([
                         'receivedInterviews as interviews_count' => function ($query) use ($positionId) {
-                            $query->where('invitations.position_id', $positionId);
+                            $query->where('position_id', $positionId);
                         }
                     ]);
             },
@@ -109,7 +109,7 @@ class PositionService
         $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $data['organization_id']);
 
         if (!$isUserAdmin) {
-            throw new Exception('Unauthorized access.', Response::HTTP_FORBIDDEN);
+            throw new Exception('Unauthorized access to create position.', Response::HTTP_FORBIDDEN);
         }
 
         // create new position
@@ -121,7 +121,7 @@ class PositionService
             'department' => $data['department'],
             'work_location' => $data['work_location'],
             'vacancies' => $data['vacancies'],
-            'description' => $data['description'],
+            'description' => $data['description'] ?? null,
         ]);
 
         return $position;
@@ -144,7 +144,7 @@ class PositionService
         $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
 
         if (!$isUserAdmin) {
-            throw new Exception('Unauthorized access.', Response::HTTP_FORBIDDEN);
+            throw new Exception('Unauthorized access to update position.', Response::HTTP_FORBIDDEN);
         }
 
         $position->update([
@@ -153,7 +153,7 @@ class PositionService
             'department' => $data['department'],
             'work_location' => $data['work_location'],
             'vacancies' => $data['vacancies'],
-            'description' => $data['description'],
+            'description' => $data['description'] ?? null,
         ]);
 
         return $position;
