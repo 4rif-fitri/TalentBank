@@ -76,7 +76,6 @@ export let student = {
 
                 </div>
 
-                <!-- SAVE -->
                 <div class="d-flex ratio-1x1 btnAddSave">
                     <i
                         class="fa-solid fa-floppy-disk fa-lg text-success"
@@ -84,7 +83,6 @@ export let student = {
                     </i>
                 </div>
 
-                <!-- CANCEL -->
                 <div class="d-flex ratio-1x1 btnCancelAdd">
                     <i
                         class="fa-solid fa-trash fa-lg text-danger"
@@ -96,7 +94,7 @@ export let student = {
         `
     },
 
-    editSocialMedia(socialMediaId, currentName, currentLink) {
+    editSocialMedia(socialMediaId, currentName, currentLink, socialMediaOption) {
         return `
             <div class="input-group flex-grow-1">
 
@@ -110,7 +108,7 @@ export let student = {
                 </button>
 
                 <ul class="dropdown-menu">
-                    ${templateRenderSocialMedia()}
+                    ${socialMediaOption}
                 </ul>
 
                 <input
@@ -122,11 +120,11 @@ export let student = {
             </div>
 
             <div class="btnUpdateLink">
-                <i
-                    class="fa-solid fa-floppy-disk fa-lg text-success"
-                    style="cursor:pointer;">
-                </i>
-            </div>`
+                <i class="fa-solid fa-floppy-disk fa-lg text-success" style="cursor:pointer;"></i>
+            </div>
+            <!-- <div class="btnCencelUpdateLink">
+                <i class="fa-solid fa-trash fa-lg text-success" style="cursor:pointer;"></i>
+            </div> -->`
     }
 
 }

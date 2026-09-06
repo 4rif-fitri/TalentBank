@@ -96,6 +96,41 @@
 
     }
 
+    function handleCencelUpdateLink() {
+
+        let $row = $(this).closest(".alert");
+        let linkId = $row.data("id");
+
+        let $button = $row.find("button[data-id]");
+
+        let socialMediaId = $button.data("social-media-id");
+
+        let socialMediaName = $button.text().trim();
+
+        let socialMediaLink = $row
+            .find('input[type="url"]')
+            .val();
+
+        let socialMedia = stateSocialMedia.allSocialMedia.find(
+            item => Number(item.id) === Number(socialMediaId)
+        );
+
+        if (!socialMedia) {
+            console.error("Social media not found:", socialMediaId);
+            return;
+        }
+
+        $row.replaceWith(
+            xlink.student.socialMediaRow(
+                linkId,
+                socialMediaId,
+                socialMediaName,
+                socialMedia.icon_class_name,
+                socialMediaLink
+            )
+        );
+    }
+
     function handleDeleteLink(){
         let $row = $(this).closest(".social-media-row");
         let id = $row.data("id");
@@ -111,12 +146,28 @@
 
         }).then(async result => {
 
+            let url = "{{ route('social-media.delete', ['id' => '__ID__']) }}"
+            url = url.replace('__ID__', id)
+
             $.ajax({
-                url: "url",
-                type: "method",
-                data: "data",
-                dataType: "dataType",
-                success: function (response) {
+                url,
+                type: "DELETE",
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                success: response => {
+                    xdebug.line(response)
+
+                    let theBadge = $("#linksList").find(`.badge[data-id='${id}']`);
+                    theBadge.remove();
+                    $row.remove();
+
+                    xalert.fire('Success', 'contact updated successfully', 'success');
+
+                },
+                error: xhr => {
+                    xdebug.line(xhr)
+                    xalert.fire("Delete Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
 
                 }
             });
@@ -125,10 +176,78 @@
     }
 
     function handleEditLink(){
+        let $row = $(this).closest(".social-media-row");
+        let id = $row.data("id");
+        let socialMediaId = $row.data("social-media-id");
 
+        let currentName = $row.find(".social-media-name").text().trim();
+        let currentLink = $row.find(".social-media-link").attr("href");
+
+        let socialMediaOption = ""
+        stateSocialMedia.allLinks.forEach(socialMedia => {
+            socialMediaOption += xlink.student.socialMediaOption(socialMedia)
+        });
+
+        $row.html(xlink.student.editSocialMedia(socialMediaId, currentName, currentLink, socialMediaOption))
     }
 
     function handleUpdateLink(){
+        let $row = $(this).closest(".social-media-row");
+        let id = $row.data("id");
+
+        let socialMediaId = $row.find(".dropdown-toggle").attr("data-id");
+
+        let link = $row.find('input[type="url"]').val().trim();
+        $row.attr("data-social-media-id", socialMediaId)
+            .data("social-media-id", Number(socialMediaId));
+
+        if (!socialMediaId) {
+            xalert.fire("Validation Error", "Please select social media.", "warning");
+            return;
+        }
+        if (!xvalidate.isValidUrl(link)) {
+            xalert.fire("Validation Error", "Please enter a valid URL.", "warning");
+            return;
+        }
+
+        let url = "{{ route('social-media.update', ['id' => '__ID__']) }}"
+        url = url.replace('__ID__', id)
+
+        let data = {
+            _method: "PUT",
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            social_media_id: socialMediaId,
+            link: link,
+        }
+
+        $.ajax({
+            url,
+            type: "POST",
+            data,
+            success: response => {
+                xdebug.line(response)
+
+                let data = response.data;
+
+                let theBadge = $("#linksList").find(`.badge[data-id='${data.id}']`);
+                theBadge.html(`<i class="${data.social_media.icon_class_name}"></i> ${data.social_media.name}`);
+
+                $row.parent().prepend(xlink.student.socialMediaRow(data.id, data.social_media.id, data.social_media.name, data.social_media.icon_class_name, data.link));
+                $row.remove();
+
+                let badge = $("#linksList").find(`.badge[data-id="${data.id}"]`);
+                badge.find(".badge i").attr("class", data.social_media.icon_class_name);
+                badge.find(".badge").text(data.social_media.name);
+                badge.attr("href", data.link);
+
+                xalert.fire("Success", response.message ?? "Social media link updated successfully.","success");
+            },
+            error: xhr => {
+                xdebug.line(xhr)
+
+                xalert.fire("Update Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
+            }
+        });
 
     }
 
@@ -152,6 +271,8 @@
     $(document).on('click', '.btnDeleteLink', handleDeleteLink);
     $(document).on('click', '.btnEditLink', handleEditLink);
     $(document).on('click', '.btnUpdateLink', handleUpdateLink);
+    $(document).on('click', '.btnCencelUpdateLink', handleCencelUpdateLink);
     $(document).on('click', '.social-media-option', handleSelectSocialMedia);
+
 </script>
 @endpush
