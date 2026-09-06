@@ -126,11 +126,11 @@
     function getInterviewsByReceiverId() {
 
         $.ajax({
-            url: "{{ route('interviews.getInterviewsByReceiverId') }}",
+            url: "{{ route('invitations.getInvitationsByReceiverId') }}",
             type: "GET",
             success: function (response) {
-                // debug.log("getInterviewsByReceiverId", response.data);
-                userInterviews = response.data
+                xdebug.line(response.data);
+                // userInterviews = response.data
             },
             error: function (xhr) {
                 debug.error(xhr.responseJSON.message)
@@ -154,7 +154,7 @@
         });
     }
 
-    // getInterviewsByReceiverId()
+    getInterviewsByReceiverId()
     // getInterviewById(1)
 
     function dataFilter(status) {

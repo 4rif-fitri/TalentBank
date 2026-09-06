@@ -153,8 +153,7 @@
     });
 
 
-    let url = "{{ route('interviews.getInterviewsBySenderId', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 1)
+    let url = "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}"
 
     $.ajax({
         url,
@@ -264,7 +263,7 @@
     function getInterviewsBySenderId() {
 
         $.ajax({
-            url: "{{ route('interviews.getInterviewsBySenderId') }}",
+            url: "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}",
             type: "GET",
             success: function (response) {
                 debug.log("getInterviewsBySenderId", response.data);
@@ -329,8 +328,7 @@
     }
 
     function getInterviewsByStatus(status) {
-        let url = "{{ route('interviews.getInterviewsByStatus',['status' => '__STATUS__']) }}"
-        url = url.replace("__STATUS__", status)
+        let url = "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}"
 
         $.ajax({
             type: "GET",

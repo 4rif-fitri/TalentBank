@@ -162,7 +162,7 @@
     function getJobOffersBySenderId() {
 
         $.ajax({
-            url: "{{ route('jobOffers.getJobOffersBySenderId') }}",
+            url: "{{ route('jobOffers.getJobOffersByStatusAndSenderId') }}",
             type: "GET",
             success: function (response) {
                 debug.log("getJobOffersBySenderId", response.data);
@@ -200,8 +200,7 @@
     }
 
     function getJobOffersByStatus(status) {
-        let url = "{{ route('jobOffers.getJobOffersByStatus', ['status' => '__STATUS__']) }}"
-        url = url.replace('__STATUS__', status)
+        let url = "{{ route('jobOffers.getJobOffersByStatusAndSenderId') }}"
         $.ajax({
             url,
             type: "GET",

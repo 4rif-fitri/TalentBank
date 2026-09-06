@@ -139,7 +139,7 @@
 @section('script')
 <script type="module">
 
-    let myData, positionId, curruntPosition, candidateList
+    let myData, positionId, curruntPosition, candidateList, curruntCandidate
 
     function toggleFilter() {
         document.body.classList.toggle('filter-open');
@@ -180,14 +180,10 @@
         try {
             let profile = await getProfileDataByProfileId();
             let organizations = profile.organization_users;
-            // console.log(organizations);
-
 
             let results = await Promise.all(
                 organizations.map(organization => getPositionsByOrgId(organization.organization_id))
             );
-
-            // console.log({ results });
 
             shortListRender.sideBar(results)
 
@@ -325,14 +321,14 @@
             return
         }
 
-        console.log({
-            position_title,
-            employment_type,
-            vacancies,
-            department,
-            work_location,
-            description
-        });
+        // console.log({
+        //     position_title,
+        //     employment_type,
+        //     vacancies,
+        //     department,
+        //     work_location,
+        //     description
+        // });
 
         try {
 
@@ -487,19 +483,25 @@
         }
     }
 
-    $(document).on("submit", "#inviteForm", function (e) {
+    function handleInviteForm(e){
         e.preventDefault();
 
-        const formData = {
-            invitation_id: $("#invitation_id").val(),
-            scheduled_at: `${$("#interview_date").val()} ${$("#start_time").val()}`,
-            interview_mode: $("input[name='interview_mode']:checked").val(),
-            meeting_url: $("#meeting_url").val(),
+        let interviewMode = $('input[name="interview_mode"]:checked').val();
+
+        let interviewDate = $("#interview_date").val();
+        let startTime = $("#start_time").val();
+
+        let data = {
+            position_id: curruntPosition.id,
+            interviewee_profile_id: curruntCandidate.id,
+            scheduled_at: `${interviewDate} ${startTime}`,
+            interview_mode: interviewMode,
             location: $("#location").val(),
+            meeting_url: $("#meeting_url").val(),
             recruiter_comment: $("#recruiter_comment").val()
         };
 
-        if (!formData.interview_mode) {
+        if (!data.interview_mode) {
             salert.salert("Validation Error", "Please select an interview mode", "warning");
             return;
         }
@@ -507,13 +509,13 @@
         $.ajax({
             url: "{{ route('interviews.store') }}",
             type: "POST",
-            data: formData,
+            data,
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
             success: function (response) {
                 bootstrap.Modal .getInstance($("#interviewModal")).hide();
-                salert.salert("Success", isUpdate ? "Interview updated successfully!" : "Interview scheduled successfully!", "success");
+                salert.salert("Success", response.message, "success");
                 // Reload table/datatable jika perlu:
                 // table.ajax.reload();
             },
@@ -522,24 +524,15 @@
                 salert.salert("Error", message, "error");
             }
         });
-    });
+    }
 
-    $(document).ready(function () {
-        loadData()
-    });
-
-    $(document).on("click", ".shortlist-item", handleClickShortlist)
-    $(document).on("click", ".toggleFilter", toggleFilter)
-    $(document).on("click", "#btnAddShortlist", handleAddShortlist)
-    $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
-
-    $(document).on("click", ".btnShowModalAddShortlist", function () {
+    function handleShowModalAddShortlist(){
         $("#btnAddShortlist").show()
         $("#btnUpdateShortlist").hide()
         bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).show()
-    });
+    }
 
-    $(document).on("click", ".btnShowModalUpdateShortlist", function () {
+    function btnShowModalUpdateShortlist(){
         console.log(curruntPosition);
 
         $("#shortlistModal #position_id").val(curruntPosition.id)
@@ -553,9 +546,9 @@
         $("#btnAddShortlist").hide()
         $("#btnUpdateShortlist").show()
         bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).show()
-    });
+    }
 
-    $(document).on("click", ".btnShowModalAddInvite", function () {
+    function btnShowModalAddInvite(){
         $("#btnAddInvitation").show()
         $("#btnUpdateInvitation").hide()
 
@@ -567,15 +560,9 @@
         $("#invite_position_title").val(curruntPosition.position_title)
         $("#invite_position_id").val(curruntPosition.id)
         bootstrap.Modal .getOrCreateInstance($("#invitationModal")).show()
-    })
+    }
 
-    $(document).on("click", "#btnAddInvitation", handleAddInvitation)
-
-    $(document).on("change", "input[name='interview_mode']", function () {
-        toggleInterviewMode($(this).val());
-    });
-
-    $(document).on("click", ".btnShowModalAddinterview", function () {
+    function handleShowModalAddinterview(){
         $("#inviteForm")[0].reset();
         $("#invitation_id").val("");
 
@@ -583,6 +570,7 @@
 
         let profileId = $(this).attr("data-id")
         let candidte = candidateList.find(user => user.id == profileId)
+        curruntCandidate = candidte
         $(".candidate_name").val(candidte.name)
 
         toggleInterviewMode("");
@@ -600,8 +588,43 @@
         $("#btnAddInterview").show();
         $("#btnUpdateInterview").hide();
 
-        bootstrap.Modal .getOrCreateInstance($("#interviewModal")).show();
-    });
+        bootstrap.Modal.getOrCreateInstance($("#interviewModal")).show();
+    }
+
+    function handleAddInterview(){
+
+        console.log("curruntPosition",curruntPosition);
+
+        let interviewMode = $('input[name="interview_mode"]:checked').val();
+
+        let interviewDate = $("#interview_date").val();
+        let startTime = $("#start_time").val();
+
+        let data = {
+            position_id: curruntPosition.id,
+            interviewee_profile_id: $("#invite_candidate_id").val(),
+            scheduled_at: `${interviewDate} ${startTime}`,
+            interview_mode: interviewMode,
+            location: $("#location").val(),
+            meeting_url: $("#meeting_url").val(),
+            recruiter_comment: $("#recruiter_comment").val()
+        };
+
+        console.log(data);
+
+        // $.ajax({
+        //     url: "{{ route('interviews.store') }}",
+        //     type: "POST",
+        //     data,
+        //     success: function (response) {
+        //         xdebug.line(response)
+
+        //     },
+        //     error: xhr => {
+        //         xdebug.line(xhr)
+        //     }
+        // });
+    }
 
     function store() {
         let data = {
@@ -693,5 +716,21 @@
     // getShortlistedPositionIds(2, 1)
     // _store(2, 11)
     // _delete(11)
+
+    $(document).on("change", "input[name='interview_mode']", function () {
+        toggleInterviewMode($(this).val());
+    });
+
+    $(document).ready(loadData);
+    $(document).on("click", ".btnShowModalAddShortlist", handleShowModalAddShortlist);
+    $(document).on("click", ".btnShowModalUpdateShortlist", btnShowModalUpdateShortlist);
+    $(document).on("click", ".btnShowModalAddinterview", handleShowModalAddinterview);
+    $(document).on("click", ".btnShowModalAddInvite", btnShowModalAddInvite)
+    $(document).on("click", "#btnAddInvitation", handleAddInvitation)
+    $(document).on("submit", "#inviteForm", handleInviteForm);
+    $(document).on("click", ".shortlist-item", handleClickShortlist)
+    $(document).on("click", ".toggleFilter", toggleFilter)
+    $(document).on("click", "#btnAddShortlist", handleAddShortlist)
+    $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
 </script>
 @endsection

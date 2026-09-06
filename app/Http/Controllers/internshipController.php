@@ -82,7 +82,7 @@ class internshipController extends Controller
     {
         return view("pages.recruiter.interview");
     }
-    public function recruiterJobOffer()
+    public function recruiterJobOffers()
     {
         return view("pages.recruiter.jobOffer");
     }

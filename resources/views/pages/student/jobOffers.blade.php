@@ -121,12 +121,12 @@
 <script type="module">
     function getJobOffersByReceiverId() {
         $.ajax({
-            url: "{{ route('jobOffers.getJobOffersByReceiverId') }}",
+            url: "{{ route('jobOffers.getJobOffersByStatusAndReceiverId') }}",
             type: "GET",
             success: function (response) {
                 debug.log("getJobOffersByReceiverId", response.data)
             },
-            error: function (response) {
+            error: function (xhr) {
                 debug.error(xhr.responseJSON.message)
             }
         });
@@ -141,22 +141,6 @@
             type: "GET",
             success: function (response) {
                 debug.log("getJobOfferById", response.data)
-            },
-            error: function (response) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
-    }
-
-    function getJobOffersByStatus(status) {
-        let url = "{{ route('jobOffers.getJobOffersByStatus', ['status' => '__STATUS__']) }}"
-        url = url.replace("__STATUS__", status)
-
-        $.ajax({
-            type: "GET",
-            url,
-            success: function (response) {
-                debug.log("getJobOffersByStatus", response.data)
             },
             error: function (response) {
                 debug.error(xhr.responseJSON.message)
@@ -208,7 +192,7 @@
         });
     }
 
-    // getJobOffersByReceiverId()
+    getJobOffersByReceiverId()
     // getJobOfferById(4)
     // getJobOffersByStatus("Pending")
     // acceptJobOffer(4)

@@ -77,66 +77,130 @@ function renderSkills(skills) {
     return html
 }
 
-function renderStatus(data) {
-    if (data.interviews_count = 1) return "interviewed"
-    if (data.invitations_count = 1) return "Invited"
+function getStatus(interviews_count, invitations_count) {
+    if (invitations_count === 0 && interviews_count === 0) {
+        return "Added";
+    }
+
+    if (invitations_count === 1 && interviews_count === 0) {
+        return "Invited";
+    }
+
+    if (invitations_count === 1 && interviews_count === 1) {
+        return "Interview";
+    }
+
+    return "Unknown";
 }
 
 export function candidate(user) {
-    return `<tr data-id=${user.id}>
-                <td>
-                    <div class="d-flex gap-2">
-                        <h6 class="text-start">${user.name}</h6>
-                    </div>
-                </td>
-                <td class="d-none d-md-block">
-                    ${renderSkills(user.skills)}
-                </td>
-                <td>
-                    <div class="badge bg-primary">${renderStatus(user)}</div>
-                </td>
-                <td class="position-relative">
-                    <button type="button" class="btn btn-light border" data-bs-toggle="dropdown">
+    console.log(user);
+
+    let interviewsCount = user.interviews_count ?? 0;
+    let invitationsCount = user.invitations_count ?? 0;
+
+    // Handle interview record that exists without an invitation
+    if (interviewsCount === 1 && invitationsCount === 0) {
+        interviewsCount = 0;
+    }
+
+    const status = getStatus(
+        interviewsCount,
+        invitationsCount
+    );
+
+    return `
+        <tr data-id="${user.id}">
+            <td>
+                <div class="d-flex gap-2">
+                    <h6 class="text-start mb-0">
+                        ${user.name}
+                    </h6>
+                </div>
+            </td>
+
+            <td class="d-none d-md-table-cell">
+                ${renderSkills(user.skills)}
+            </td>
+
+            <td>
+                <div class="badge bg-primary text-white">
+                    ${status}
+                </div>
+            </td>
+
+            <td>
+                <div class="dropdown">
+                    <button
+                        type="button"
+                        class="btn btn-light border"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
                         <i class="fa-solid fa-ellipsis"></i>
                     </button>
-                    <div class="dropdown position-absolute top-0 end-0">
-                        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                            <li>
-                                <a target="_blank" href="${window.appConfig.baseURL}/profile/student/${user.id}" class="dropdown-item">
-                                    <i class="fa-solid fa-address-book"></i>
-                                    View Profile
-                                </a>
-                            </li>
-                            <!-- <li>
-                                <button data-id=${user.id} class="dropdown-item text-danger">
-                                    <i class="fa-solid fa-circle-minus"></i>
-                                    Cencel Invite
-                                </button>
-                            </li> -->
 
-                            <li>
-                                <button data-id=${user.id} class="dropdown-item btnShowModalAddInvite">
-                                    <i class="fa-regular fa-trash-can me-2"></i>
-                                    Invite
-                                </button>
-                            </li>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
 
-                            <li>
-                                <button data-id=${user.id} class="dropdown-item btnShowModalAddinterview">
-                                    <i class="fa-regular fa-trash-can me-2"></i>
-                                    Set Interview
-                                </button>
-                            </li>
+                        <!-- View Profile -->
+                        <li>
+                            <a
+                                target="_blank"
+                                href="${window.appConfig.baseURL}/profile/student/${user.id}"
+                                class="dropdown-item"
+                            >
+                                <i class="fa-solid fa-address-book me-2"></i>
+                                View Profile
+                            </a>
+                        </li>
 
-                            <li>
-                                <button data-id=${user.id} class="dropdown-item text-danger" id="btnDeletTalentRow">
-                                    <i class="fa-regular fa-trash-can me-2"></i>
-                                    Delete
-                                </button>
-                            </li>
+                        <!-- Cancel Invite -->
+                        <li class="${status === "Invited" ? "" : "d-none"}">
+                            <button
+                                type="button"
+                                data-id="${user.id}"
+                                class="dropdown-item text-danger btnCancelInvite"
+                            >
+                                <i class="fa-solid fa-circle-minus me-2"></i>
+                                Cancel Invite
+                            </button>
+                        </li>
+
+                        <!-- Invite -->
+                        <li class="${status === "Added" ? "" : "d-none"}">
+                            <button
+                                type="button"
+                                data-id="${user.id}"
+                                class="dropdown-item btnShowModalAddInvite"
+                            >
+                                <i class="fa-regular fa-envelope me-2"></i>
+                                Invite
+                            </button>
+                        </li>
+
+                        <!-- Set Interview -->
+                        <li class="${status === "Invited" ? "" : "d-none"}">
+                            <button
+                                type="button"
+                                data-id="${user.id}"
+                                class="dropdown-item btnShowModalAddInterview"
+                            >
+                                <i class="fa-regular fa-calendar me-2"></i>
+                                Set Interview
+                            </button>
+                        </li>
+
+                        <!-- Delete -->
+                        <!-- <li>
+                            <button type="button" data-id="${user.id}" class="dropdown-item text-danger btnDeleteTalentRow">
+                                <i class="fa-regular fa-trash-can me-2"></i>
+                                Delete
+                            </button>
+                        </li> -->
 
                         </ul>
-                    </div>
-                </td>
-            </tr>`
+                </div>
+            </td>
+        </tr>
+    `;
 }

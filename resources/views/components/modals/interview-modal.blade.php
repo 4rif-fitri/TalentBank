@@ -23,7 +23,7 @@
                             <label for="invite_position_title" class="form-label">
                                 Candidate
                             </label>
-
+                            <input type="text" id="invite_candidate_id" hidden>
                             <input type="text" class="form-control candidate_name" readonly>
                         </div>
 

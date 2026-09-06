@@ -1,5 +1,5 @@
 @extends('layouts.internship-layouts')
-
+<!-- FILTER BY VISIVILITY -->
 @section('css')
 <style>
     .talent-layout {
@@ -324,7 +324,7 @@
 
             results = await Promise.all(
                 myOrg.map(async org => {
-                    let response = await getPositionsByOrgId(org.id);
+                    let response = await getPositionsByOrgId(org.organization_id);
 
                     positions.push(response.data);
 
