@@ -18,6 +18,7 @@ import * as xvalidate from "./shared/utils/validation"
 
 window.xeducation = templateEducation;
 window.xvalidate = xvalidate;
+window.xalert = salert;
 
 window.modal = modal
 window.xmodal = modal
@@ -27,7 +28,6 @@ window.invitation = invitation;
 window.talent = talent;
 window.intervieww = interview;
 window.salert = salert;
-window.xalert = salert;
 window.format = format;
 window.debug = debug;
 window.xdebug = debug;

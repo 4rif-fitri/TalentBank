@@ -57,13 +57,13 @@ Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->
 Route::middleware('auth')->group(function () {
     Route::get('/', [internshipController::class, "index"])->name('home');
 
-    Route::prefix('student')->middleware('checkRole:Student')->group(function () {
-        Route::get('/', [internshipController::class, "studentIndex"])->name('student.index');
-        Route::get('/invitations', [internshipController::class, "invitations"])->name('student.invitations');
-        Route::get('/interviews', [internshipController::class, "interviews"])->name('student.interviews');
-        Route::get('/jobOffers', [internshipController::class, "jobOffers"])->name('student.jobOffers');
-        Route::get('/messages', [internshipController::class, "messages"])->name('student.messages');
-        Route::get('/settings', [internshipController::class, "settings"])->name('student.settings');
+    Route::middleware('checkRole:Student')->group(function () {
+        Route::get('/student', [internshipController::class, "studentIndex"])->name('student.index');
+        Route::get('/student/invitations', [internshipController::class, "invitations"])->name('student.invitations');
+        Route::get('/student/interviews', [internshipController::class, "interviews"])->name('student.interviews');
+        Route::get('/student/jobOffers', [internshipController::class, "jobOffers"])->name('student.jobOffers');
+        Route::get('/student/messages', [internshipController::class, "messages"])->name('student.messages');
+        Route::get('/student/settings', [internshipController::class, "settings"])->name('student.settings');
     });
 
     Route::prefix('recruiter')->middleware('checkRole:Recruiter')->group(function () {

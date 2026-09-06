@@ -164,6 +164,7 @@
 
 <script type="module">
 
+
     async function renderUserDetail(name, headline, location, programmes, email, phoneNo, profile_image, cover_image){
 
         stateProfile.name = name
@@ -258,8 +259,108 @@
         }
     }
 
+    function uploadProfileImage(formData) {
+        console.log("uploadProfileImage");
+
+        return $.ajax({
+            url: "{{ route('profile.uploadProfileImage') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        });
+    }
+
+    function uploadCoverImage(formData) {
+        console.log("uploadCoverImage");
+
+        return $.ajax({
+            url: "{{ route('profile.uploadCoverImage') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        });
+    }
+
+    async function uploadImage(event, fieldName, uploadApi) {
+        const file = event.target.files[0];
+
+        if (!file) return null;
+
+        if (xvalidate.validateFileImage(file)) return null;
+
+        const formData = new FormData();
+        formData.append(fieldName, file);
+
+        console.log({event, fieldName, uploadApi});
+
+        return
+
+        return await uploadApi(formData);
+    }
+
+    async function handleUpdateProfileImage(event) {
+
+        try {
+            const response = await uploadImage(event,'profile_image',uploadProfileImage);
+
+            if (!response) return;
+
+            xalert.fire('Success','Profile image uploaded successfully','success');
+
+        } catch (error) {
+            console.error( 'Failed to upload profile image:', + error);
+        }
+    }
+
+    async function handleUpdateCoverImage(event) {
+        const file = event.target.files[0];
+
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('cover_image', file);
+
+        $.ajax({
+            url: "{{ route('profile.uploadCoverImage') }}",
+            type: "POST",
+            data: formData,
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+
+            success: response => {
+                console.log('Success:', response);
+                xalert.fire('Success','Cover image uploaded successfully','success');
+            },
+
+            error: xhr => {
+                console.error('Upload failed:', xhr);
+                console.error('Response:', xhr.responseJSON);
+
+                xalert.fire(
+                    'Error',
+                    xhr.responseJSON?.message ||
+                    'Failed to upload cover image',
+                    'error'
+                );
+            }
+        });
+    }
+
     $(document).on('click', '.profile-tab', handleProfileTab);
     $(document).on("click", "#seeMoreActiveEducations", handleSeeMoreEdu)
+    $(document).on("change", "#profileImageInput", handleUpdateProfileImage)
+    $(document).on("change", "#coverImageInput", handleUpdateCoverImage)
 
 </script>
 @endpush
