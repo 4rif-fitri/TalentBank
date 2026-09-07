@@ -17,28 +17,23 @@ class EducationController extends Controller
     ) {
     }
 
-    private function validateEducationFields(Request $request): array
+    private function validateRequest(Request $request, array $overrides = []): array
     {
-        return $request->validate([
+        return $request->validate(array_merge([
             'programme_id' => ['required', 'exists:programmes,id'],
             'description' => ['nullable', 'string'],
             'cgpa' => ['nullable', 'numeric', 'between:0,4.00', 'decimal:0,2'],
-            'start_date' => ['nullable', 'date'],
-            'end_date' => ['nullable', 'date'],
+            'start_date' => ['required', 'date'],
+            'end_date' => ['required', 'date', 'after:start_date'],
             'enrollment_status' => ['required', 'string', Rule::in(AppConstants::ENROLLMENT_STATUS)],
 
             // media related validation
             'media' => ['nullable', 'array'],
-            'deleted_media_ids' => ['nullable', 'array'],
-            'deleted_media_ids.*' => ['integer', 'exists:media,id'],
 
             // skills related validation
             'new_skill_ids' => ['nullable', 'array'],
             'new_skill_ids.*' => ['integer', 'exists:skills,id'],
-            'updated_user_skills' => ['nullable', 'array'],
-            'deleted_user_skill_ids' => ['nullable', 'array'],
-            'deleted_user_skill_ids.*' => ['integer', 'exists:user_skills,id'],
-        ]);
+        ], $overrides));
     }
 
     /**
@@ -75,7 +70,8 @@ class EducationController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $validated = $this->validateEducationFields($request);
+        $validated = $this->validateRequest($request);
+
         $userProfileId = session('user_profile_id');
 
         $education = $this->educationService->createEducation($validated, $userProfileId);
@@ -92,7 +88,17 @@ class EducationController extends Controller
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $validated = $this->validateEducationFields($request);
+        $validated = $this->validateRequest($request, [
+            // media related validation
+            'deleted_media_ids' => ['nullable', 'array'],
+            'deleted_media_ids.*' => ['integer', 'exists:media,id'],
+
+            // skills related validation
+            'updated_user_skills' => ['nullable', 'array'],
+            'deleted_user_skill_ids' => ['nullable', 'array'],
+            'deleted_user_skill_ids.*' => ['integer', 'exists:user_skills,id'],
+        ]);
+
         $userProfileId = session('user_profile_id');
 
         $education = $this->educationService->updateEducation($id, $validated, $userProfileId);
