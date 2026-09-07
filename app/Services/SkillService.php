@@ -180,6 +180,10 @@ class SkillService
 
         // validate data given
         $userSkills = UserSkill::with('source')->whereIn('id', $userSkillIds)->get();
+
+        if ($userSkills->count() !== count($userSkillIds)) {
+            throw new Exception('There are some user skill IDs that were not found.', Response::HTTP_NOT_FOUND);
+        }
         $this->verifySkillOwnership($userSkills, $userProfileId);
         $this->checkUserSkillsExists($skillIds, $sourceType, $sourceId, $userSkillIds);
 

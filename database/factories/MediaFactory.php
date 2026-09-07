@@ -2,9 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Education;
 use App\Models\Media;
-use App\Models\Semester;
-use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,7 +29,7 @@ class MediaFactory extends Factory
                 'honors_award',
                 'certification',
             ]),
-            'source_id' => Semester::inRandomOrder()->first()->id,
+            'source_id' => Education::inRandomOrder()->first()->id,
             'media_type' => 'image',
             'file_name' => $this->faker->imageUrl,
             'title' => $this->faker->word(),
