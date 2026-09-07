@@ -180,16 +180,12 @@
     }
 
     function getJobOffersByStatus(status) {
-        let url = "{{ route('jobOffers.getJobOffersByStatusAndSenderId') }}"
-
-        let data = {
-            status
-        }
-
         $.ajax({
-            url,
+            url: "{{ route('jobOffers.getJobOffersByStatusAndSenderId') }}",
             type: "GET",
-            data,
+            data:{
+                status
+            },
             success: function (response) {
                 debug.log("getJobOffersByStatus", response.data);
 
@@ -205,17 +201,15 @@
         });
     }
 
-    function withdrawJobOffer(id) {
+    function handleWithdrawJobOffer() {
+        let id = $(this).data("id")
+
         let url = "{{ route('jobOffers.withdrawJobOffer', ['id' => '__ID__']) }}"
         url = url.replace('__ID__', id)
 
-        let data = {
-            '_method': "PUT"
-        }
-
         $.ajax({
             url,
-            data,
+            data:  { _method: "PUT" },
             type: "POST",
             headers: {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
@@ -229,36 +223,7 @@
         });
     }
 
-    function update(id) {
-        let url = "{{ route('jobOffers.update', ['id' => '__ID__']) }}"
-        url = url.replace('__ID__', id)
-
-        let data = {
-            '_token': $('meta[name="csrf-token"]').attr("content"),
-            'salary_amount': 67,
-            'salary_period': "a",
-            'start_date': "2000-1-10",
-            'end_date': "2000-1-11",
-            'terms_and_conditions': "Kerja Lembur",
-            'benefits': "Percutian Di Homestay",
-            'expires_at': "2027-1-1 00:00:00",
-            '_method': "PUT",
-        }
-
-        $.ajax({
-            url,
-            data,
-            type: "POST",
-            success: function (response) {
-                debug.log("update", response.data);
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
-        });
-    }
-
-    function store(inv_id) {
+    function handleAddJobOffer(inv_id) {
 
         let data = {
             '_token': $('meta[name="csrf-token"]').attr("content"),
@@ -277,7 +242,7 @@
             data,
             type: "POST",
             success: function (response) {
-                debug.log("update", response.data);
+                debug.log("store", response.data);
             },
             error: function (xhr) {
                 console.error(xhr.responseJSON.message)
@@ -285,61 +250,101 @@
         });
     }
 
-    // getJobOfferById(2)
-    getJobOffersByStatus(currentStatus)
-    // withdrawJobOffer(2)
-    // update(2)
-    // store(8)
-
-    $(document).on("click", ".nav-item", function () {
-        $(".nav-item button").removeClass("active text-primary").addClass("text-black");
-        $(this).find("button").removeClass("text-black").addClass("active text-primary");
+    function handleFilterJobOfferByStatus() {
         let status = $(this).data("status")
-        $(".shortlist-content").html(`<div class="border-0 p-3 d-flex flex-column align-items-center">
-                                            <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                                            <h4 class="mt-2">No Interview Selected Yet</h4>
-                                            <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                                                <i class="fa-solid fa-filter"></i>
-                                                Interview
-                                            </button>
-                                        </div>`)
+
+        $(".shortlist-content").html(xjobOffer.recruiter.noInterviewSelected())
 
         if (currentStatus == status) return
         currentStatus = status
         getJobOffersByStatus(currentStatus)
-    })
+    }
 
     function showModalEditJobOffer(){
         let id = $(this).data("id")
+        console.log(currentJobOffer);
+        $(".offer-candidate-name").text(`Candidate: ${currentJobOffer.receiver.name}`)
+        $("#jobOfferPositionName").text(`Position: ${currentJobOffer.position.position_title}`)
 
+        $("#jobOfferModal").find("#start_date").val(currentJobOffer.start_date)
+        $("#jobOfferModal").find("#end_date").val(currentJobOffer.end_date)
+
+        $("#jobOfferModal").find("#salary_amount").val(currentJobOffer.salary_amount)
+        $("#jobOfferModal").find("#salary_period").val(currentJobOffer.salary_period)
+        $("#jobOfferModal").find("#expires_at").val(currentJobOffer.expires_at.split(" ")[0])
+        $("#jobOfferModal").find("#benefits").val(currentJobOffer.benefits)
+        $("#jobOfferModal").find("#terms_and_conditions").val(currentJobOffer.terms_and_conditions)
+        $("#jobOfferModal").find("#job-offer-candicate-id").val(currentJobOffer.receiver.id)
+        $("#jobOfferModal").find("#QjobOfferPositionId").val(currentJobOffer.position.id)
+
+        $("#btnAddJobOffer").hide()
+        $("#btnUpdateJobOffer").show()
         xmodal.show("jobOfferModal")
     }
 
-    $(document).on("click", ".invitation-item", async function () {
+    async function handleJobOfferDetails() {
         let jobOfferId = $(this).data("id")
 
         try {
             let jobOfferResponse = await getJobOfferById(jobOfferId);
             let educationResponse = await getEducationByUserProfileId(jobOfferResponse.data.receiver.id);
 
+            currentJobOffer = jobOfferResponse.data
+            currentEducation = educationResponse.data
+
             $(".shortlist-content").empty();
             $(".shortlist-content").append(jobOffer.recruiter.mainContent(jobOfferResponse.data))
         } catch (error) {
             console.log(error);
         }
-    })
+    }
 
-    $(document).on("click", "#btnMessageStudent", function () {
+    function handleMessageStudent() {
         let id = $(this).data("id")
-    })
+    }
 
-    $(document).on("click", "#btnWithdrawJobOffer", function () {
-        let id = $(this).data("id")
-        withdrawJobOffer(id)
-    })
+    function handleUpdateJobOffer() {
+        let id = currentJobOffer.id
+        let url = "{{ route('jobOffers.update', ['id' => '__ID__']) }}"
+        url = url.replace('__ID__', id)
+
+        let data = {
+            '_token': $('meta[name="csrf-token"]').attr("content"),
+            'salary_amount': $("#salary_amount").val(),
+            'salary_period': $("#salary_period").val(),
+            'start_date': $("#start_date").val(),
+            'end_date': $("#end_date").val(),
+            'terms_and_conditions': $("#terms_and_conditions").val(),
+            'benefits': $("#benefits").val(),
+            'expires_at': $("#expires_at").val(),
+            '_method': "PUT",
+        }
+
+        $.ajax({
+            url,
+            data,
+            type: "POST",
+            success: function (response) {
+                debug.log("update", response.data);
+                xmodal.hide("jobOfferModal")
+                getJobOffersByStatus(currentStatus)
+                xalert.fire("Success", response.message, "success")
+
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+                xalert.fire("Error", xhr.responseJSON.message, "error")
+            }
+        });
+    }
 
     $(document).on("click", "#btnEditJobOffer", showModalEditJobOffer)
-
+    $(document).on("click", "#btnUpdateJobOffer", handleUpdateJobOffer)
+    $(document).on("click", "#btnWithdrawJobOffer", handleWithdrawJobOffer)
+    $(document).on("click", "#btnMessageStudent", handleMessageStudent)
+    $(document).on("click", ".invitation-item", handleJobOfferDetails)
+    $(document).on("click", ".nav-link", handleFilterJobOfferByStatus)
+    getJobOffersByStatus(currentStatus)
 
 </script>
 @endsection

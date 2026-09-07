@@ -100,13 +100,13 @@
         <aside class="shortlist-sidebar" id="listContainer">
 
             <div class="d-flex flex-column justify-content-between mb-3 pb-3">
-                <!-- <div class="d-flex justify-content-between w-100">
+                <div class="d-flex justify-content-between w-100">
                     <h5 class="m-0 fw-bold">Your invitation</h5>
                     <button type="button"
                         class="btnShowModalAddShortlist btn btn-outline-primary d-flex justify-content-center align-items-center">
                         <i class="fa-solid fa-plus fs-5"></i>
                     </button>
-                </div> -->
+                </div>
 
                 <ul class="nav nav-tabs">
                     <li data-status="Pending" class="nav-item">
@@ -346,50 +346,86 @@
 
     })
 
+    function handleUpdateInvitation(){
+        url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
+        url = url.replace("__ID__", id)
+
+        let formData = new FormData()
+        formData.append("expires_at", "2026-9-30 05:07:17")
+        formData.append("invitation_message", "NOBB")
+        formData.append("_method", "PUT")
+
+        $.ajax({
+            url,
+            data: formData,
+            type: "POST",
+            processData: false,
+            contentType: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            success: function (response) {
+                console.log("interviews.update", response)
+                salert.salert('Success', response.message, 'success');
+
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON.message)
+                salert.salert('Error', xhr.responseJSON.message, 'error');
+            }
+        });
+    }
+
     $(document).on("click", ".btn-edit-invitation", function () {
         let id = $(this).data('id');
-
-        bootstrap.Modal .getOrCreateInstance("#invitationModal").show()
-
 
         $("#invite_candidate").val(currentInv.receiver.name)
         $("#invite_position_title").val(currentInv.position.position_title)
         $("#expires_at").val(currentInv.expires_at)
         $("#invitation_message").val(currentInv.invitation_message)
 
+        $("#inviteForm").find("#btnAddInvitation").hide()
 
-        // url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
-        // url = url.replace("__ID__", id)
-
-        // let formData = new FormData()
-        // formData.append("expires_at", "2026-9-30 05:07:17")
-        // formData.append("invitation_message", "NOBB")
-        // formData.append("_method", "PUT")
-
-        // $.ajax({
-        //     url,
-        //     data: formData,
-        //     type: "POST",
-        //     processData: false,
-        //     contentType: false,
-        //     headers: {
-        //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-        //     },
-        //     success: function (response) {
-        //         console.log("interviews.update", response)
-        //         salert.salert('Success', response.message, 'success');
-
-        //     },
-        //     error: function (xhr) {
-        //         console.error(xhr.responseJSON.message)
-        //         salert.salert('Error', xhr.responseJSON.message, 'error');
-        //     }
-        // });
+        $("#inviteForm").find("#btnAddInvitation").hide()
+        $("#inviteForm").find("#btnUpdateInvitation").show()
+        xmodal.show("invitationModal")
     })
 
     function _store() {
 
     }
+
+    function handleUpdateInviteForm(e){
+        e.preventDefault();
+
+        let url = "{{ route('invitations.update', ['id' => '__ID__']) }}"
+        url = url.replace('__ID__', currentInv.id)
+
+        let data = {
+            _method:"PUT",
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            invitation_message: $("#invitation_message").val(),
+            expires_at: $("#expires_at").val()
+        }
+
+        console.log(data);
+
+        $.ajax({
+            url,
+            data,
+            type: "POST",
+            success: response => {
+                console.log(response);
+            },
+            error: xhr => {
+                console.log(xhr);
+            }
+        });
+
+
+    }
+
+    $(document).on("submit", "#inviteForm", handleUpdateInviteForm)
 
 </script>
 @endsection

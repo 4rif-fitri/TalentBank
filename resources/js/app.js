@@ -17,6 +17,7 @@ import * as templateEducation from "./features/education/education.js"
 import * as templateSkill from "./features/skills/skills.js"
 import * as templatelanguage from "./features/language/language.js"
 import * as templateSocialMedia from "./features/social-media/social-media.js"
+import * as templateJobOffer from "./features/job-offer/job-offer.js"
 import * as xvalidate from "./shared/utils/validation.js"
 
 window.xeducation = templateEducation;
@@ -25,6 +26,7 @@ window.xalert = salert;
 window.xskill = templateSkill;
 window.xlanguage = templatelanguage;
 window.xlink = templateSocialMedia;
+window.xjobOffer = templateJobOffer;
 
 window.modal = modal
 window.xmodal = modal

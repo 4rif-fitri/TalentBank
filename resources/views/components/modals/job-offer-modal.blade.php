@@ -55,11 +55,11 @@
                         </label>
 
                         <select class="form-select" id="salary_period">
-                            <option value="HOURLY">Hourly</option>
-                            <option value="DAILY">Daily</option>
-                            <option value="WEEKLY">Weekly</option>
-                            <option value="MONTHLY">Monthly</option>
-                            <option value="YEARLY">Yearly</option>
+                            <option value="Hourly">Hourly</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
                         </select>
                     </div>
 
