@@ -116,24 +116,24 @@
 
 @section('script')
 <script type="module">
-    let userInterviews
+    let currentInterviews = null
+    let currentInterview = null
     let currentStatus = "Scheduled"
 
-    function filterInterviewsbyStatus() {
-
-    }
-
-    function getInterviewsByReceiverId() {
-
+    function getInterviewsByStatusAndIntervieweeId(status){
         $.ajax({
-            url: "{{ route('invitations.getInvitationsByReceiverId') }}",
+            url: "{{ route('interviews.getInterviewsByStatusAndIntervieweeId',['status' => '__STATUS__']) }}".replace("__STATUS__", status),
             type: "GET",
+            data: { status:status },
             success: function (response) {
-                xdebug.line(response.data);
-                // userInterviews = response.data
+                xdebug.log("getInterviewsByStatusAndIntervieweeId", response.data);
+                currentInterviews = response.data
+
+                $(".invitation-list").empty()
+                currentInterviews.forEach(inv => $(".invitation-list").append(xinterview.student.sideList(inv)));
             },
             error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
+                xdebug.log(xhr.responseJSON.message)
             }
         });
     }
@@ -146,31 +146,36 @@
             type: "GET",
             url,
             success: function (response) {
-                debug.log("getInterviewById", response.data);
+                xdebug.log("getInterviewById", response.data);
+                currentInterview = response.data;
+
+                $("#shortlistContent").empty().append(xinterview.student.mainContent(currentInterview));
             },
             error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
+                xdebug.log(xhr.responseJSON.message)
             }
         });
     }
 
-    getInterviewsByReceiverId()
-    // getInterviewById(1)
-
-    function dataFilter(status) {
-        $(".invitation-list").empty()
-
-        userInterviews.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
-
-    }
-
-    $(document).on("click", ".nav-item", async function () {
+    function handleFilterToggle() {
         $(".nav-item button").removeClass("active text-primary").addClass("text-body");
         $(this).find("button").removeClass("text-body").addClass("active text-primary");
-        await getInterviewsByReceiverId()
         let status = $(this).data("status")
 
-        dataFilter(status)
-    });
+        if(status == currentStatus) return
+        currentStatus = status
+
+        getInterviewsByStatusAndIntervieweeId(status)
+    }
+
+    function handleInvitationClick() {
+        let id = $(this).data("id")
+        getInterviewById(id)
+    }
+
+    getInterviewsByStatusAndIntervieweeId(currentStatus)
+
+    $(document).on("click", ".nav-item", handleFilterToggle);
+    $(document).on("click", ".invitation-item", handleInvitationClick);
 </script>
 @endsection

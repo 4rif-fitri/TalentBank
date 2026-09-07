@@ -220,63 +220,38 @@
                     let columnClass = itemsPerSlide === 1 ? "col-12" : "col-6";
                     let $column = $("<div>").addClass(columnClass);
 
-                    $column.html(`
-                        <article
-                            class="education-item h-100 border rounded-3 p-3 position-relative">
+                    $column.html(`<article class="education-item h-100 border rounded-3 p-3 position-relative">
+                                    <button type="button"
+                                        class="btn btn-secondary icon btn-edit-education position-absolute top-0 end-0 m-2"
+                                        data-id="${education.id}">
+                                        <i class="fa-solid fa-pencil"></i>
+                                    </button>
 
-                            <button type="button"
-                                class="btn btn-secondary icon btn-edit-education position-absolute top-0 end-0 m-2"
-                                data-id="${education.id}">
-                                <i class="fa-solid fa-pencil"></i>
-                            </button>
+                                    <div class="pe-4">
+                                        <p class="h5 fw-bold mb-2">${education.programme?.organization?.company_name ?? ""}</p>
+                                        <p class="mb-1">${education.programme?.programme_name ?? ""}</p>
+                                        <p class="text-muted mb-2">${startDate} - ${endDate}</p>
+                                        <p class="mb-2">Grade: ${education.cgpa ?? "-"}</p>
+                                        <p class="mb-2">${education.description ?? ""}</p>
+                                        <div class="skills d-flex flex-wrap align-items-center">${asd(education.skills ?? "")}</div>
 
-                            <div class="pe-4">
-                                <p class="h5 fw-bold mb-2">
-                                    ${education.programme?.organization?.company_name ?? ""}
-                                </p>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            ${education.enrollment_status ? `
+                                                <span class="badge text-bg-primary">
+                                                    ${education.enrollment_status}
+                                                </span>
+                                            ` : ""}
 
-                                <p class="mb-1">
-                                    ${education.programme?.programme_name ?? ""}
-                                </p>
+                                            ${education.verification_status ? `
+                                                <span class="badge text-bg-success">
+                                                    ${education.verification_status}
+                                                </span>
+                                            ` : ""}
+                                        </div>
 
-                                <p class="text-muted mb-2">
-                                    ${startDate} - ${endDate}
-                                </p>
-
-                                <p class="mb-2">
-                                    Grade: ${education.cgpa ?? "-"}
-                                </p>
-
-                                <p class="mb-2">
-                                    ${education.description ?? ""}
-                                </p>
-
-								<div class="skills d-flex flex-wrap align-items-center">
-                                    ${asd(education.skills ?? "")}
-								</div>
-
-                                <div class="d-flex gap-2 flex-wrap">
-
-                                    ${education.enrollment_status ? `
-                                        <span class="badge text-bg-primary">
-                                            ${education.enrollment_status}
-                                        </span>
-                                    ` : ""}
-
-                                    ${education.verification_status ? `
-                                        <span class="badge text-bg-success">
-                                            ${education.verification_status}
-                                        </span>
-                                    ` : ""}
-
-                                </div>
-                            </div>
-                            <div class="images d-flex flex-wrap">
-                               ${tem(education.media, education.id)}
-                            </div>
-
-                        </article>
-                    `);
+                                    </div>
+                                    <div class="images d-flex flex-wrap">${tem(education.media, education.id)}</div>
+                                </article>`);
                     $row.append($column);
                 });
 
@@ -388,42 +363,19 @@
             $carouselInner.append(`
             <div class="carousel-item ${index === selectedIndex ? "active" : ""}">
 
-                <img
-                    src="${imageUrl}"
-                    class="d-block w-100"
-                    alt="${dt.title ?? dt.file_name}"
-                    style="
-                        height: max-content;
-                        object-fit: contain;
-                    "
-                >
+                <img src="${imageUrl}" class="d-block w-100" alt="${dt.title ?? dt.file_name}"
+                    style="height: max-content; object-fit: contain;">
 
-                ${dt.title || dt.description
-                    ? `
-                            <div
-                                class="carousel-caption d-block
-                                       bg-dark bg-opacity-75
-                                       rounded p-2">
+                ${dt.title || dt.description ? `
+                    <div class="carousel-caption d-block bg-dark bg-opacity-75 rounded p-2">
+                        ${dt.title ? `<h5>${dt.title}</h5>` : "" }
 
-                                ${dt.title
-                        ? `<h5>${dt.title}</h5>`
-                        : ""
-                    }
+                        ${dt.description ? `<p class="d-none d-md-block mb-0"> ${dt.description} </p>` : "" }
+                    </div>`
 
-                                ${dt.description
-                        ? `<p class="d-none d-md-block mb-0">
-                                            ${dt.description}
-                                           </p>`
-                        : ""
-                    }
-
-                            </div>
-                        `
                     : ""
                 }
-
-            </div>
-        `);
+            </div>`);
         });
     }
 

@@ -79,16 +79,16 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <button class="nav-link active text-primary">Awaiting</button>
+                        <button data-status="Pending" class="nav-link active text-primary">Pending</button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link text-body">Accepted</button>
+                        <button data-status="Accepted" class="nav-link text-body">Accepted</button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link text-body">Declined</button>
+                        <button data-status="Declined" class="nav-link text-body">Declined</button>
                     </li>
                     <li class="nav-item">
-                        <button class="nav-link text-body">Expired</button>
+                        <button data-status="Expired" class="nav-link text-body">Expired</button>
                     </li>
                 </ul>
             </div>
@@ -119,12 +119,22 @@
 
 @section('script')
 <script type="module">
-    function getJobOffersByReceiverId() {
+    let currentJobOffers = []
+    let currentJobOffer = null
+    let currentStatus = "Pending"
+
+    function getJobOffersByStatusAndReceiverId(status) {
         $.ajax({
             url: "{{ route('jobOffers.getJobOffersByStatusAndReceiverId') }}",
             type: "GET",
+            data: { status },
             success: function (response) {
-                debug.log("getJobOffersByReceiverId", response.data)
+                debug.log("getJobOffersByStatusAndReceiverId", response.data)
+
+                $(".invitation-list").empty()
+                response.data.forEach(invitation => {
+                    $(".invitation-list").append(xjobOffer.student.sideList(invitation))
+                })
             },
             error: function (xhr) {
                 debug.error(xhr.responseJSON.message)
@@ -141,6 +151,9 @@
             type: "GET",
             success: function (response) {
                 debug.log("getJobOfferById", response.data)
+
+                $("#shortlistContent").empty().append(xjobOffer.student.mainContent(response.data))
+
             },
             error: function (response) {
                 debug.error(xhr.responseJSON.message)
@@ -192,7 +205,30 @@
         });
     }
 
-    getJobOffersByReceiverId()
+    $(document).on("click", ".nav-item button", function () {
+        $(".nav-item button").removeClass("active text-primary").addClass("text-body");
+        $(this).find("button").removeClass("text-body").addClass("active text-primary");
+        let status = $(this).data("status")
+
+        if (status == currentStatus) return
+        currentStatus = status
+
+        getJobOffersByStatusAndReceiverId(status)
+    })
+
+    $(document).on("click", ".invitation-item ", function () {
+        $(this).addClass("active").siblings().removeClass("active")
+        $(".toggleFilter").removeClass("d-block").addClass("d-none")
+        let id = $(this).data("id")
+        getJobOfferById(id)
+    })
+
+    $(document).on("click", ".toggleFilter", function () {
+        $("body").toggleClass("filter-open");
+    });
+    getJobOffersByStatusAndReceiverId(currentStatus)
+
+    // getJobOffersByStatusAndReceiverId()
     // getJobOfferById(4)
     // getJobOffersByStatus("Pending")
     // acceptJobOffer(4)

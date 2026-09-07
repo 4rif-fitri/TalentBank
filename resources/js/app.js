@@ -14,6 +14,7 @@ import * as debug from './utils/debug.js';
 import * as modal from './utils/modal.js'
 
 import * as templateEducation from "./features/education/education.js"
+import * as templateInterview from "./features/interview/interview.js"
 import * as templateSkill from "./features/skills/skills.js"
 import * as templatelanguage from "./features/language/language.js"
 import * as templateSocialMedia from "./features/social-media/social-media.js"
@@ -27,6 +28,7 @@ window.xskill = templateSkill;
 window.xlanguage = templatelanguage;
 window.xlink = templateSocialMedia;
 window.xjobOffer = templateJobOffer;
+window.xinterview = templateInterview;
 
 window.modal = modal
 window.xmodal = modal
