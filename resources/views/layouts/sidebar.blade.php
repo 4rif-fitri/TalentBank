@@ -35,11 +35,11 @@
             label="Dashboard" />
         <x-sidebar-link :route="route('profile.student')" routeName="profile.student" icon="fa-solid fa-user"
             label="My Profile" />
-        <x-sidebar-link :route="route('student.settings')" routeName="student.settings" icon="fa-solid fa-user"
+        <x-sidebar-link :route="route('student.resume')" routeName="student.resume" icon="fa-solid fa-address-book"
             label="Resume" />
-        <x-sidebar-link :route="route('student.invitations')" routeName="student.invitations" icon="fa-solid fa-file"
+        <x-sidebar-link :route="route('student.invitations')" routeName="student.invitations" icon="fa-solid fa-envelope"
             label="Invitations" />
-        <x-sidebar-link :route="route('student.interviews')" routeName="student.interviews" icon="fa-solid fa-envelope"
+        <x-sidebar-link :route="route('student.interviews')" routeName="student.interviews" icon="fa-solid fa-calendar-days"
             label="Interviews" />
         <x-sidebar-link :route="route('student.jobOffers')" routeName="student.jobOffers" icon="fa-solid fa-briefcase"
             label="Job Offers" />
