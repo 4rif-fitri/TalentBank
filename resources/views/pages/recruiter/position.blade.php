@@ -605,7 +605,6 @@
         curruntCandidate = candidte
         $(".candidate_name").val(candidte.name)
 
-        toggleInterviewMode("");
 
         let today = new Date().toISOString().split("T")[0];
         $("#interview_date").attr("min", today).val(today);
@@ -853,7 +852,6 @@
     $(document).on("click", "#btnAddShortlist", handleAddShortlist)
     $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
     $(document).on("click", ".btnShowModalAddJobOffer", showJobOfferModal)
-
     $(document).on("click", "#btnAddJobOffer", handleAddJobOffer)
 
 </script>

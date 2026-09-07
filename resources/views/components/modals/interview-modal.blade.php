@@ -17,7 +17,7 @@
 
                 <div class="modal-body">
                     <div class="row">
-                        <input type="number invitation_id" class="form-control" hidden readonly>
+                        <input type="number" class="form-control invitation_id" hidden readonly>
 
                         <div class="col-md-12 mb-3">
                             <label for="invite_position_title" class="form-label">
@@ -75,7 +75,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-12 mb-3 d-none" id="div_meeting_url">
+                        <div class="col-md-12 mb-3" id="div_meeting_url">
                             <label for="meeting_url" class="form-label">
                                 Meeting Link / URL <span class="text-danger">*</span>
                             </label>
@@ -83,7 +83,7 @@
                                 placeholder="https://meet.google.com/xyz or https://zoom.us/j/xyz">
                         </div>
 
-                        <div class="col-md-12 mb-3 d-none" id="div_location">
+                        <div class="col-md-12 mb-3" id="div_location">
                             <label for="location" class="form-label">
                                 Physical Location <span class="text-danger">*</span>
                             </label>

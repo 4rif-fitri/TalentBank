@@ -60,7 +60,7 @@ export function mainContent(data, educations) {
                             <small class="text-muted d-block">${data.interviewee.location}</small>
                             <p class="fw-semibold">${educations[0].programme.organization.company_name}</p>
                             <small class="text-muted d-block ">${educations[0].programme.programme_name}</small>
-                            <div class="badge bg-primary">See More</div>
+                            <div class="badge bg-primary btnSeeMoreEducation">See More</div>
                         </div>
                     </div>
                     <div class="mb-3 border d-block d-xl-flex justify-content-between p-2">
@@ -77,7 +77,7 @@ export function mainContent(data, educations) {
                                 style="width: 2rem; height: 2rem; color: rgb(0, 0, 0); font-size: 1rem; border-radius: 50%;"></i>
                             <div>
                                 <small class="text-muted">Department</small>
-                                <h5 class="fw-semibold">${data.position.position_title}</h5>
+                                <h5 class="fw-semibold">${data.position.department}</h5>
                             </div>
                         </div>
                         <div class="d-flex gap-2 mb-2 mb-xl-0 align-items-center">
@@ -85,7 +85,7 @@ export function mainContent(data, educations) {
                                 style="width: 2rem; height: 2rem; color: rgb(0, 0, 0); font-size: 1rem; border-radius: 50%;"></i>
                             <div>
                                 <small class="text-muted">Employment type</small>
-                                <h5 class="fw-semibold">${data.position.position_title}</h5>
+                                <h5 class="fw-semibold">${data.position.employment_type}</h5>
                             </div>
                         </div>
                     </div>

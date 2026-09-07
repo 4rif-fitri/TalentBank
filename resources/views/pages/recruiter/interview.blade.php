@@ -104,17 +104,17 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
                 <ul class="nav nav-tabs">
-                    <li data-status="Scheduled" class="nav-item">
-                        <button class="nav-link active text-primary">Scheduled</button>
+                    <li class="nav-item">
+                        <button data-status="Scheduled" class="nav-link active text-primary">Scheduled</button>
                     </li>
-                    <li data-status="Completed" class="nav-item">
-                        <button class="nav-link text-black">Completed</button>
+                    <li class="nav-item">
+                        <button data-status="Completed" class="nav-link text-black">Completed</button>
                     </li>
-                    <li data-status="Cancelled" class="nav-item">
-                        <button class="nav-link text-black">Cancelled</button>
+                    <li class="nav-item">
+                        <button data-status="Cancelled" class="nav-link text-black">Cancelled</button>
                     </li>
-                    <li data-status="Rescheduled" class="nav-item">
-                        <button class="nav-link text-black">Rescheduled</button>
+                    <li class="nav-item">
+                        <button data-status="Rescheduled" class="nav-link text-black">Rescheduled</button>
                     </li>
                 </ul>
             </div>
@@ -139,37 +139,77 @@
 
 <div class="shortlist-overlay toggleFilter"></div>
 
+<x-interview-modal />
+<x-active-educations-modal />
 
 @endsection
 
 @section('script')
 <script type="module">
 
-    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
-         document.body.classList.toggle('filter-open');
-    });
+    let currentStatus
+    let currentInterview
+    let curreEducations
 
-    function getInterviewsByStatusAndInterviewerId(){
+    // ===== GET ======
+
+    function getInterviewsByStatusAndInterviewerId(status) {
         let url = "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}"
 
         $.ajax({
             url,
+            data:{ status },
             type: "GET",
-
             success: function (response) {
-                $("#shortlistList").empty()
+                debug.log("getInterviewsByStatusAndInterviewerId", response.data);
                 let interviews = response.data
+                $("#shortlistList").empty()
                 interviews.forEach(interview => {
                     $("#shortlistList").append(intervieww.sidebar(interview))
                 });
-            },
 
+            },
             error: function (xhr) {
-                console.error(xhr)
+                debug.error(xhr.responseJSON.message)
             }
         });
     }
-    getInterviewsByStatusAndInterviewerId()
+
+    async function getPositionsByOrgId(id) {
+        let url = "{{ route('positions.getPositionsByOrgId', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", id);
+
+        return await $.ajax({
+            url: url,
+            method: 'GET'
+        });
+    }
+
+    async function getProfileDataByProfileId() {
+        let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+        let response = await $.ajax({
+            url: url,
+            method: 'GET'
+        });
+
+        return response.data;
+    }
+
+    function getPositionById(id) {
+        let url = "{{ route('positions.getPositionById', ['id' => '__ID__']) }}"
+        url = url.replace("__ID__", id)
+        $.ajax({
+            url,
+            type: "GET",
+            success: function (response) {
+                debug.log("getPositionById", response.data)
+            },
+            error: function (xhr) {
+                debug.error(xhr.responseJSON.message)
+            }
+        });
+    }
 
     function getInterviewById(id) {
         let url = "{{ route('interviews.getInterviewById', ['id' => '__ID__']) }}";
@@ -191,25 +231,33 @@
         });
     }
 
+    // ===== GET ======
+
+    // ===== Handle ======
+
     async function handleSelectedInterview() {
         let id = $(this).data('id');
 
         try {
             let interviewDetail = await getInterviewById(id);
             let receiverId = interviewDetail.data.interviewee.id
+
             let listEducationReceiver = await getEducationByUserProfileId(receiverId);
+
+            curreEducations = listEducationReceiver.data
+            currentInterview = interviewDetail.data
 
             $(".shortlist-content").empty();
             $(".shortlist-content").append(intervieww.mainContent(interviewDetail.data, listEducationReceiver.data));
 
         } catch (xhr) {
-            console.error(xhr);
+            xalert.fire("Error", xhr.responseJSON.message, "error")
         }
     }
 
-    $(document).on("click", ".shortlist-item", handleSelectedInterview)
+    function completeInterview() {
+        let id = $(this).data("id")
 
-    function completeInterview(id) {
         let url = "{{ route('interviews.completeInterview',['id' => '__ID__']) }}"
         url = url.replace("__ID__", id)
 
@@ -223,15 +271,17 @@
             url,
             data,
             success: function (response) {
-                debug.log("completeInterview", response.data);
+                xalert.fire("Success", "Interview Completed", "success")
             },
             error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
+                xalert.fire("Error", xhr.responseJSON.message, "error")
             }
         });
     }
 
-    function cancelInterview(id) {
+    function cancelInterview() {
+        let id = $(this).data("id")
+
         let url = "{{ route('interviews.cancelInterview',['id' => '__ID__']) }}"
         url = url.replace("__ID__", id)
 
@@ -245,41 +295,29 @@
             url,
             data,
             success: function (response) {
-                debug.log("cancelInterview", response.data);
+                xalert.fire("Success", "Interview Cancelled", "success")
             },
             error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
+                xalert.fire("Error", xhr.responseJSON.message, "error")
             }
         });
     }
 
-    function getInterviewsBySenderId() {
+    function handleUpdateInterview(e) {
+        e.preventDefault();
 
-        $.ajax({
-            url: "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}",
-            type: "GET",
-            success: function (response) {
-                debug.log("getInterviewsBySenderId", response.data);
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
-        });
-    }
-
-    function update(id) {
-        url = "{{ route('interviews.update',['id' => '__ID__' ]) }}"
-        url = url.replace("__ID__", id)
+        let url = "{{ route('interviews.update',['id' => '__ID__' ]) }}"
+        url = url.replace("__ID__", currentInterview.id)
 
         let data = {
             "_token": $('meta[name="csrf-token"]').attr("content"),
             "_method": "PUT",
-            "scheduled_at": "2026-9-30 05:07:17",
-            "interview_mode": "Online",
-            "location": "",
-            "meeting_url": "http://127.0.0.1:8000/recruiter/invitations",
-            "recruiter_comment": "!!!",
-            "interview_result": "Passed",
+            "scheduled_at": $("#interviewModal #interview_date").val() + " " + $("#interviewModal #start_time").val(),
+            "interview_mode": $("input[name='interview_mode']:checked").val(),
+            "location": $("#location").val(),
+            "meeting_url": $("#meeting_url").val(),
+            "recruiter_comment": $("#recruiter_comment").val(),
+            "interview_result": currentInterview.interview_result
         }
 
         $.ajax({
@@ -287,10 +325,12 @@
             data,
             method: "POST",
             success: function (response) {
-                debug.log("update", response.data);
+                xalert.fire("Success", "Interview Updated", "success")
+                $("#inviteForm")[0].reset();
+                xmodal.hide("interviewModal")
             },
             error: function (xhr) {
-                console.error(xhr.responseJSON.message)
+                xalert.fire("Error", xhr.responseJSON.message, "error")
             }
         });
     }
@@ -320,145 +360,110 @@
         });
     }
 
-    function getInterviewsByStatus(status) {
-        let url = "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}"
-
-        $.ajax({
-            type: "GET",
-            url,
-            success: function (response) {
-                debug.log("getInterviewsByStatus", response.data);
-                let interviews = response.data
-                $("#shortlistList").empty()
-                interviews.forEach(interview => {
-                    $("#shortlistList").append(intervieww.sidebar(interview))
-                });
-
-            },
-            error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
-    }
-
-    function ggetInterviewById(id) {
-        let url = "{{ route('interviews.getInterviewById',['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
-
-        $.ajax({
-            type: "GET",
-            url,
-            success: function (response) {
-                debug.log("getInterviewById", response.data);
-            },
-            error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
-    }
-
-    let currentStatus
-    $(document).on("click", ".nav-item", function () {
+    function handleChnageStatus() {
         $(".nav-item button").removeClass("active text-primary").addClass("text-black");
         $(this).find("button").removeClass("text-black").addClass("active text-primary");
         let status = $(this).data("status")
-        $(".shortlist-content").html(`  <div class="border-0 p-3 d-flex flex-column align-items-center">
-                                            <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                                            <h4 class="mt-2">No Interview Selected Yet</h4>
-                                            <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                                                <i class="fa-solid fa-filter"></i>
-                                                Interview
-                                            </button>
-                                        </div>`)
+
+        $(".shortlist-content").html(xjobOffer.recruiter.noInterviewSelected())
+
         if (currentStatus == status) return
         currentStatus = status
-        getInterviewsByStatus(currentStatus)
-    });
-
-    $(document).on("click", "#btnMessageStudent", function () { })
-
-    $(document).on("click", "#btnReschedule", function () {
-        let id = $(this).data("id")
-    })
-
-    $(document).on("click", "#btnCencelInterview", function () {
-        let id = $(this).data("id")
-        cancelInterview(id)
-    })
-
-    $(document).on("click", "#btnCompletedInterview", function () {
-        let id = $(this).data("id")
-        completeInterview(id)
-    })
-
-    // If belum interview, nak update interview kene masukkan interview_result
-    // Apa func INTERVIEW_STATUS => Rescheduled
-
-    // getInterviewsBySenderId()
-    // completeInterview(3)
-    // cancelInterview(5)
-    // update(3)
-    // store(1)
-    // getInterviewsByStatus("Completed")
-    // ggetInterviewById(2)
-
-    async function getPositionsByOrgId(id) {
-        let url = "{{ route('positions.getPositionsByOrgId', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", id);
-
-        return await $.ajax({
-            url: url,
-            method: 'GET'
-        });
+        getInterviewsByStatusAndInterviewerId(currentStatus)
     }
 
-    async function getProfileDataByProfileId() {
-        let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", "{{ session('user_profile_id') }}");
-        let response = await $.ajax({
-            url: url,
-            method: 'GET'
-        });
-
-        return response.data;
+    function handleMessageStudent() {
+        let id = $(this).data("id")
     }
+
+    function handleRescheduleInterview() {
+        let id = $(this).data("id")
+    }
+
+    function toggleInterviewMode(mode) {
+        $("#div_meeting_url, #div_location").addClass("d-none");
+        $("#meeting_url, #location").prop("required", false);
+
+        if (mode === "Online") {
+            $("#div_meeting_url").removeClass("d-none");
+            $("#meeting_url").prop("required", true);
+        } else if (mode === "On-site") {
+            $("#div_location").removeClass("d-none");
+            $("#location").prop("required", true);
+        }
+    }
+
+    function showUpdateInterviewModal() {
+        let id = $(this).data("id")
+        console.log("currentinterview", currentInterview)
+        $("#invite_candidate_id").val(currentInterview.interviewee.id)
+        $(".candidate_name").val(currentInterview.interviewee.name)
+
+        $("#interview_date").val(currentInterview.scheduled_at.split(" ")[0])
+        $("#interview_time").val(currentInterview.scheduled_at.split(" ")[1])
+
+        toggleInterviewMode(currentInterview.interview_mode);
+
+        $("#recruiter_comment").val(currentInterview.recruiter_comment)
+        $("#meeting_url").val(currentInterview.meeting_url)
+        $("#location").val(currentInterview.location)
+
+        $("#btnAddInterview").hide()
+        $("#btnUpdateInterview").show()
+        xmodal.show("interviewModal")
+    }
+
+    function handleSeeMoreEducation() {
+        let educationList = curreEducations;
+        let modalBody = $("#activeEducationList");
+        modalBody.empty();
+
+        if (educationList.length === 0) {
+            modalBody.append("<p>No active educations found.</p>");
+        } else {
+            educationList.forEach(education => {
+                console.log("education", education)
+                let educationHtml = xeducation.student.template(education.programme);
+                modalBody.append(educationHtml);
+            });
+        }
+
+        xmodal.show("activeEducationsModal");
+    }
+
+    // ===== Handle ======
 
     async function loadData() {
         try {
             let profile = await getProfileDataByProfileId();
             let organizations = profile.organization_users;
-            console.log(organizations);
-
 
             let results = await Promise.all(
                 organizations.map(organization => getPositionsByOrgId(organization.organization_id))
             );
 
-            results.forEach(pos => console.group(pos))
-
+            getInterviewsByStatusAndInterviewerId("Scheduled")
 
         } catch (error) {
             console.error("Ralat semasa loadData:", error);
         }
     }
 
-    function getPositionById(id) {
-        let url = "{{ route('positions.getPositionById', ['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
-        $.ajax({
-            url,
-            type: "GET",
-            success: function (response) {
-                debug.log("getPositionById", response.data)
-            },
-            error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
-    }
-    // getPositionById(1)
-
     loadData()
-
+    $(document).on("click", ".btnSeeMoreEducation", handleSeeMoreEducation);
+    $(document).on("click", ".shortlist-item", handleSelectedInterview)
+    $(document).on("click", ".nav-item button", handleChnageStatus);
+    $(document).on("click", "#btnMessageStudent", handleMessageStudent)
+    $(document).on("click", "#btnCencelInterview", cancelInterview)
+    $(document).on("click", "#btnCompletedInterview", completeInterview)
+    $(document).on("click", "#btnReschedule", handleRescheduleInterview)
+    $(document).on("click","#btnUpdateInterview", showUpdateInterviewModal)
+    $(document).on("submit", "#inviteForm", handleUpdateInterview)
+    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
+        document.body.classList.toggle('filter-open');
+    });
+    $(document).on("change", "input[name='interview_mode']", function () {
+        toggleInterviewMode($(this).val());
+    });
 </script>
 @endsection

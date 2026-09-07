@@ -110,19 +110,19 @@
 
                 <ul class="nav nav-tabs">
                     <li data-status="Pending" class="nav-item">
-                        <button class="nav-link text-primary active">Pending</button>
+                        <button data-status="Pending" class="nav-link text-primary active">Pending</button>
                     </li>
                     <li data-status="Accepted" class="nav-item">
-                        <button class="nav-link text-black">Accepted</button>
+                        <button data-status="Accepted" class="nav-link text-black">Accepted</button>
                     </li>
                     <li data-status="Declined" class="nav-item">
-                        <button class="nav-link text-black">Declined</button>
+                        <button data-status="Declined" class="nav-link text-black">Declined</button>
                     </li>
                     <li data-status="Withdrawn" class="nav-item">
-                        <button class="nav-link text-black">Withdrawn</button>
+                        <button data-status="Withdrawn" class="nav-link text-black">Withdrawn</button>
                     </li>
                     <li data-status="Expired" class="nav-item">
-                        <button class="nav-link text-black">Expired</button>
+                        <button data-status="Expired" class="nav-link text-black">Expired</button>
                     </li>
                 </ul>
             </div>
@@ -252,7 +252,6 @@
 
     function handleFilterJobOfferByStatus() {
         let status = $(this).data("status")
-
         $(".shortlist-content").html(xjobOffer.recruiter.noInterviewSelected())
 
         if (currentStatus == status) return
