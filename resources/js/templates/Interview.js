@@ -1,12 +1,13 @@
 import { formatDateFull, formatDate, formatTime } from "../utils/format.js"
 
 export function sidebar(interview) {
+
     return `<div data-id=${interview.id} class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded">
                     <div role="button" class="d-flex align-items-center gap-3">
-                    <div class="bg-primary" style="width:4rem; border-radius: 50%; height:4rem; background-size: cover; background-image:url('${window.appConfig.profileImageUrl}/${interview.invitation.receiver.profile_image}')"></div>
+                    <div class="bg-primary" style="width:4rem; border-radius: 50%; height:4rem; background-size: cover; background-image:url('${window.appConfig.profileImageUrl}/${interview.interviewee.profile_image}')"></div>
                         <div class="flex-grow-1 d-flex flex-column">
-                            <p class="fw-semibold">${interview.invitation.receiver.name}</p>
-                            <p>${interview.invitation.position.position_title}</p>
+                            <p class="fw-semibold">${interview.interviewee.name}</p>
+                            <p>${interview.position.position_title}</p>
                             <smoll>${formatDateFull(interview.scheduled_at)}</smoll>
                         </div>
                     </div>
@@ -44,33 +45,31 @@ function conditionRendering(mode, data) {
 }
 
 export function mainContent(data, educations) {
+    console.log({ data, educations });
+
     return `<div class="row g-3 ">
                 <div class="h-100 border-0 p-3 position-relative">
 
                     <div class="mb-3 d-flex flex-xl-row flex-column gap-3">
                         <div class="bg-primary"
-                            style="width:6rem; height:6rem; border-radius: 50%; background-size: cover; background-image:url('${window.appConfig.profileImageUrl}/${data.invitation.receiver.profile_image}')">
+                            style="width:6rem; height:6rem; border-radius: 50%; background-size: cover; background-image:url('${window.appConfig.profileImageUrl}/${data.interviewee.profile_image}')">
                         </div>
 
                         <div>
-                            <h3 class="fw-semibold">${data.invitation.receiver.name}</h3>
-                            <p class="fw-semibold">Sofware inginer with Honor</p>
-                            <small class="text-muted d-block">Universiti Teknikal Malaysia Melaka(UTEM)</small>
+                            <h3 class="fw-semibold">${data.interviewee.name}</h3>
+                            <small class="text-muted d-block">${data.interviewee.location}</small>
+                            <p class="fw-semibold">${educations[0].programme.organization.company_name}</p>
+                            <small class="text-muted d-block ">${educations[0].programme.programme_name}</small>
                             <div class="badge bg-primary">See More</div>
-                            <small class="text-muted d-block">
-                                <i class="fa-solid fa-location-dot" style="color: rgb(0, 0, 0);"></i>
-                                Durian Tunggal, Malaka, Malaysia
-                            </small>
                         </div>
                     </div>
-
                     <div class="mb-3 border d-block d-xl-flex justify-content-between p-2">
                         <div class="d-flex gap-2 mb-2 mb-xl-0 align-items-center">
                             <i class="fa-solid fa-briefcase bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
                                 style="width: 2rem; height: 2rem; color: rgb(0, 0, 0); font-size: 1rem; border-radius: 50%;"></i>
                             <div>
                                 <small class="text-muted">Position</small>
-                                <h5 class="fw-semibold">${data.invitation.position.position_title}</h5>
+                                <h5 class="fw-semibold">${data.position.position_title}</h5>
                             </div>
                         </div>
                         <div class="d-flex gap-2 mb-2 mb-xl-0 align-items-center">
@@ -78,7 +77,7 @@ export function mainContent(data, educations) {
                                 style="width: 2rem; height: 2rem; color: rgb(0, 0, 0); font-size: 1rem; border-radius: 50%;"></i>
                             <div>
                                 <small class="text-muted">Department</small>
-                                <h5 class="fw-semibold">${data.invitation.position.department}</h5>
+                                <h5 class="fw-semibold">${data.position.position_title}</h5>
                             </div>
                         </div>
                         <div class="d-flex gap-2 mb-2 mb-xl-0 align-items-center">
@@ -86,7 +85,7 @@ export function mainContent(data, educations) {
                                 style="width: 2rem; height: 2rem; color: rgb(0, 0, 0); font-size: 1rem; border-radius: 50%;"></i>
                             <div>
                                 <small class="text-muted">Employment type</small>
-                                <h5 class="fw-semibold">${data.invitation.position.employment_type}</h5>
+                                <h5 class="fw-semibold">${data.position.position_title}</h5>
                             </div>
                         </div>
                     </div>
@@ -129,11 +128,11 @@ export function mainContent(data, educations) {
                                 <i class="fa-regular fa-message text-primary"></i>
                                 <p>Message Student</p>
                             </button>
-                            <button id="btnReschedule" data-id=${data.id}
+                            <!-- <button id="btnReschedule" data-id=${data.id}
                                 class="btn btn-outline-primary d-flex justify-content-center align-items-center gap-2">
                                 <i class="fa-regular fa-calendar-check text-primary"></i>
                                 <p>Reschedule</p>
-                            </button>
+                            </button> -->
                             <button id="btnCencelInterview" data-id="${data.id}"
                                 class="btn btn-outline-danger d-flex justify-content-center align-items-center gap-2">
                                 <i class="fa-solid fa-trash-can text-danger"></i>

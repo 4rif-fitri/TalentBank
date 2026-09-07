@@ -144,36 +144,32 @@
 
 @section('script')
 <script type="module">
-    function toggleFilter() {
-        document.body.classList.toggle('filter-open');
-    }
 
     $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
-        toggleFilter();
+         document.body.classList.toggle('filter-open');
     });
 
+    function getInterviewsByStatusAndInterviewerId(){
+        let url = "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}"
 
-    let url = "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}"
+        $.ajax({
+            url,
+            type: "GET",
 
-    $.ajax({
-        url,
-        type: "GET",
-        success: function (response) {
-            // console.log("getInterviewsBySenderId", response)
+            success: function (response) {
+                $("#shortlistList").empty()
+                let interviews = response.data
+                interviews.forEach(interview => {
+                    $("#shortlistList").append(intervieww.sidebar(interview))
+                });
+            },
 
-            $("#shortlistList").empty()
-            let interviews = response.data
-            interviews.forEach(interview => {
-                $("#shortlistList").append(intervieww.sidebar(interview))
-            });
-
-        },
-        error: function (xhr) {
-            console.error(xhr)
-
-        }
-    });
-
+            error: function (xhr) {
+                console.error(xhr)
+            }
+        });
+    }
+    getInterviewsByStatusAndInterviewerId()
 
     function getInterviewById(id) {
         let url = "{{ route('interviews.getInterviewById', ['id' => '__ID__']) }}";
@@ -200,11 +196,8 @@
 
         try {
             let interviewDetail = await getInterviewById(id);
-            let receiverId = interviewDetail.data.invitation.receiver.id
+            let receiverId = interviewDetail.data.interviewee.id
             let listEducationReceiver = await getEducationByUserProfileId(receiverId);
-
-            console.log("Interview:", interviewDetail);
-            console.log("Education:", listEducationReceiver);
 
             $(".shortlist-content").empty();
             $(".shortlist-content").append(intervieww.mainContent(interviewDetail.data, listEducationReceiver.data));
@@ -386,13 +379,11 @@
 
     $(document).on("click", "#btnReschedule", function () {
         let id = $(this).data("id")
-
     })
 
     $(document).on("click", "#btnCencelInterview", function () {
         let id = $(this).data("id")
         cancelInterview(id)
-
     })
 
     $(document).on("click", "#btnCompletedInterview", function () {
@@ -419,7 +410,9 @@
             url: url,
             method: 'GET'
         });
-    } async function getProfileDataByProfileId() {
+    }
+
+    async function getProfileDataByProfileId() {
         let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
         url = url.replace("__ID__", "{{ session('user_profile_id') }}");
         let response = await $.ajax({
@@ -448,7 +441,6 @@
             console.error("Ralat semasa loadData:", error);
         }
     }
-    loadData()
 
     function getPositionById(id) {
         let url = "{{ route('positions.getPositionById', ['id' => '__ID__']) }}"
@@ -464,6 +456,9 @@
             }
         });
     }
-    getPositionById(1)
+    // getPositionById(1)
+
+    loadData()
+
 </script>
 @endsection

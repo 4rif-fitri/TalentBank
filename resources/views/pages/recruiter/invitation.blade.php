@@ -156,11 +156,10 @@
 
 @section('script')
 <script type="module">
-    function toggleFilter() {
-        document.body.classList.toggle('filter-open');
-    }
 
-    $(document).on("click", ".toggleFilter", toggleFilter)
+    $(document).on("click", ".toggleFilter", function(){
+        document.body.classList.toggle('filter-open');
+    })
 </script>
 <script type="module">
 

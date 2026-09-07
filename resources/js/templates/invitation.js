@@ -14,8 +14,7 @@ function renderStatus(status) {
 }
 
 export function recruitmentInvitationList(inv) {
-    return `<div role="button" data-id=${inv.id} class="invitation-item d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded"
-                onclick="toggleFilter()">
+    return `<div role="button" data-id=${inv.id} class="invitation-item d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded">
                 <div class="d-flex align-items-center gap-3">
                     <div class="bg-primary" style="width:4rem; border-radius: 50%; height:4rem; background-size: cover; background-image:url('${window.appConfig.profileImageUrl}/${inv.receiver.profile_image}')"></div>
                     <div class="flex-grow-1 d-flex flex-column">

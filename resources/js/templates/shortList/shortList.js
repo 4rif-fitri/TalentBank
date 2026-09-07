@@ -66,10 +66,12 @@ export function detail(data) {
 
 function renderSkills(skills) {
     let html = ""
-
+    let limit = 4
     skills.forEach(skill => {
+        if (limit <= 0) return
+        limit -= 1
         html += `<div class="badge border text-black">
-                        <i class="fa-brands fa-laravel fa-lg"></i>
+                        <i class="${skill.icon_class_name} fa-lg"></i>
                         ${skill.skill_name}
                     </div>`
     });
@@ -77,37 +79,30 @@ function renderSkills(skills) {
     return html
 }
 
-function getStatus(interviews_count, invitations_count) {
-    if (invitations_count === 0 && interviews_count === 0) {
-        return "Added";
+function getStatus(interviewsCount, invitationsCount, jobOffersCount) {
+    if (jobOffersCount > 0) {
+        return "JobOffer";
     }
 
-    if (invitations_count === 1 && interviews_count === 0) {
-        return "Invited";
-    }
-
-    if (invitations_count === 1 && interviews_count === 1) {
+    if (interviewsCount > 0) {
         return "Interview";
     }
 
-    return "Unknown";
+    if (invitationsCount > 0) {
+        return "Invited";
+    }
+
+    return "Added";
 }
 
 export function candidate(user) {
-    console.log(user);
+    console.log({user});
 
     let interviewsCount = user.interviews_count ?? 0;
     let invitationsCount = user.invitations_count ?? 0;
+    let jobOfferCount = 0;
 
-    // Handle interview record that exists without an invitation
-    if (interviewsCount === 1 && invitationsCount === 0) {
-        interviewsCount = 0;
-    }
-
-    const status = getStatus(
-        interviewsCount,
-        invitationsCount
-    );
+    let status = getStatus(interviewsCount, invitationsCount, jobOfferCount);
 
     return `
         <tr data-id="${user.id}">
@@ -119,7 +114,7 @@ export function candidate(user) {
                 </div>
             </td>
 
-            <td class="d-none d-md-table-cell">
+            <td class="d-none d-md-table-cell d-flex gap-2">
                 ${renderSkills(user.skills)}
             </td>
 
@@ -144,61 +139,54 @@ export function candidate(user) {
 
                         <!-- View Profile -->
                         <li>
-                            <a
-                                target="_blank"
-                                href="${window.appConfig.baseURL}/profile/student/${user.id}"
-                                class="dropdown-item"
-                            >
-                                <i class="fa-solid fa-address-book me-2"></i>
+                            <a target="_blank" href="${window.appConfig.baseURL}/profile/student/${user.id}" class="dropdown-item">
                                 View Profile
                             </a>
                         </li>
 
-                        <!-- Cancel Invite -->
-                        <li class="${status === "Invited" ? "" : "d-none"}">
-                            <button
-                                type="button"
-                                data-id="${user.id}"
-                                class="dropdown-item text-danger btnCancelInvite"
-                            >
-                                <i class="fa-solid fa-circle-minus me-2"></i>
-                                Cancel Invite
+                        <!-- Set Invite -->
+                        <li class="${status === "Added" ? "" : "d-none"}">
+                            <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalAddInvite">
+                                Invite
                             </button>
                         </li>
 
-                        <!-- Invite -->
-                        <li class="${status === "Added" ? "" : "d-none"}">
-                            <button
-                                type="button"
-                                data-id="${user.id}"
-                                class="dropdown-item btnShowModalAddInvite"
-                            >
-                                <i class="fa-regular fa-envelope me-2"></i>
-                                Invite
+                        <!-- Cancel Invite -->
+                        <li class="${status === "Invited" ? "" : "d-none"}">
+                            <button type="button" data-id="${user.id}" class="dropdown-item text-danger btnCancelInvite">
+                                Withdraw Invite
                             </button>
                         </li>
 
                         <!-- Set Interview -->
                         <li class="${status === "Invited" ? "" : "d-none"}">
-                            <button
-                                type="button"
-                                data-id="${user.id}"
-                                class="dropdown-item btnShowModalAddInterview"
-                            >
-                                <i class="fa-regular fa-calendar me-2"></i>
+                            <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalAddInterview">
                                 Set Interview
                             </button>
                         </li>
 
-                        <!-- Delete -->
-                        <!-- <li>
-                            <button type="button" data-id="${user.id}" class="dropdown-item text-danger btnDeleteTalentRow">
-                                <i class="fa-regular fa-trash-can me-2"></i>
-                                Delete
+                        <!-- Cencel Interview -->
+                        <li class="${status === "Interview" ? "" : "d-none"}">
+                            <button type="button" data-id="${user.id}" class="dropdown-item text-danger btnCencelAddInterview">
+                                Withdraw Interview
                             </button>
-                        </li> -->
+                        </li>
 
-                        </ul>
+                        <!-- Set Job Offer -->
+                        <li class="${status === "Interview" ? "" : "d-none"}">
+                            <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalAddJobOffer">
+                                Create Job Offer
+                            </button>
+                        </li>
+
+                        <!-- Cencel JobOffer -->
+                        <li class="${status === "JobOffer" ? "" : "d-none"}">
+                            <button type="button" data-id="${user.id}" class="dropdown-item text-danger btnWithdrawJobOffer"
+                                Withdraw Job Offer
+                            </button>
+                        </li>
+
+                    </ul>
                 </div>
             </td>
         </tr>

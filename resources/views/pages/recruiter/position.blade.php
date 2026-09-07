@@ -133,6 +133,7 @@
 <x-modals.position-modal />
 <x-modals.invitation-modal />
 <x-modals.interview-modal />
+<x-modals.job-offer-modal />
 
 @endsection
 
@@ -144,6 +145,8 @@
     function toggleFilter() {
         document.body.classList.toggle('filter-open');
     }
+
+    // < ---- GET ------ >
 
     async function getProfileDataByProfileId() {
         let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
@@ -176,21 +179,9 @@
         });
     }
 
-    async function loadData() {
-        try {
-            let profile = await getProfileDataByProfileId();
-            let organizations = profile.organization_users;
+    // < ---- GET ------ >
 
-            let results = await Promise.all(
-                organizations.map(organization => getPositionsByOrgId(organization.organization_id))
-            );
-
-            shortListRender.sideBar(results)
-
-        } catch (error) {
-            console.error("Ralat semasa loadData:", error);
-        }
-    }
+    // < ---- STORE ------ >
 
     function storePosition(position_title, employment_type, vacancies, department, work_location, description) {
         let formData = new FormData()
@@ -233,6 +224,66 @@
         });
     }
 
+    function storeInterview(position_id, scheduled_at, interview_mode, location, meeting_url, recruiter_comment, interviewee_profile_id){
+        let data = {
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            position_id,
+            scheduled_at,
+            interview_mode,
+            location,
+            meeting_url,
+            recruiter_comment,
+            interviewee_profile_id
+        }
+
+        $.ajax({
+            url: "{{ route('interviews.store') }}",
+            type: "POST",
+            data,
+            success: response => {
+                console.log(response);
+            },
+            error: xhr => {
+                console.log(xhr);
+            }
+        });
+    }
+
+    function storeJobOffer(){
+        let data = {
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            salary_amount: $("#salary_amount").val(),
+            salary_period: $("#salary_period").val(),
+            start_date: $("#start_date").val(),
+            end_date: $("#end_date").val(),
+            terms_and_conditions: $("#terms_and_conditions").val(),
+            benefits: $("#benefits").val(),
+            expires_at: $("#expires_at").val(),
+            position_id: $("#jobOfferPositionId").val(),
+            receiver_profile_id: $("#job-offer-candicate-id").val()
+        }
+
+        $.ajax({
+            url: "{{ route('jobOffers.store') }}",
+            type: "POST",
+            data,
+            success: response => {
+                console.log(response);
+                xalert.fire("Success", response.message, "success")
+                xmodal.hide("jobOfferModal")
+            },
+            error: xhr => {
+                console.log(xhr.responseJSON.message);
+                xalert.fire("Error", xhr.responseJSON.message, "error")
+            }
+        });
+
+    }
+
+    // < ---- STORE ------ >
+
+    // < ---- UPDATE ------ >
+
     function updatePositions(id, position_title, employment_type, vacancies, department, work_location, description) {
         let url = "{{ route('positions.update', ['id' => '__ID__']) }}"
         url = url.replace("__ID__", id);
@@ -257,6 +308,8 @@
             },
         });
     }
+
+    // < ---- UPDATE ------ >
 
     async function handleClickShortlist() {
         let newPositionId = $(this).data('id');
@@ -321,15 +374,6 @@
             return
         }
 
-        // console.log({
-        //     position_title,
-        //     employment_type,
-        //     vacancies,
-        //     department,
-        //     work_location,
-        //     description
-        // });
-
         try {
 
             let response = await storePosition(position_title, employment_type, vacancies, department, work_location, description)
@@ -391,16 +435,6 @@
             salert.salert("Validation Error", "Please enter a work location", "warning");
             return
         }
-
-        console.log({
-            position_id,
-            position_title,
-            employment_type,
-            vacancies,
-            department,
-            work_location,
-            description
-        });
 
         try {
 
@@ -526,15 +560,13 @@
         });
     }
 
-    function handleShowModalAddShortlist(){
+    function showModalAddShortlist(){
         $("#btnAddShortlist").show()
         $("#btnUpdateShortlist").hide()
-        bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).show()
+        xmodal.show("shortlistModal")
     }
 
-    function btnShowModalUpdateShortlist(){
-        console.log(curruntPosition);
-
+    function showModalUpdateShortlist(){
         $("#shortlistModal #position_id").val(curruntPosition.id)
         $("#shortlistModal #position_title").val(curruntPosition.position_title)
         $("#shortlistModal #employment_type").val(curruntPosition.employment_type)
@@ -545,10 +577,10 @@
 
         $("#btnAddShortlist").hide()
         $("#btnUpdateShortlist").show()
-        bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).show()
+        xmodal.show("shortlistModal")
     }
 
-    function btnShowModalAddInvite(){
+    function showModalAddInvite(){
         $("#btnAddInvitation").show()
         $("#btnUpdateInvitation").hide()
 
@@ -562,7 +594,7 @@
         bootstrap.Modal .getOrCreateInstance($("#invitationModal")).show()
     }
 
-    function handleShowModalAddinterview(){
+    function showModalAddinterview(){
         $("#inviteForm")[0].reset();
         $("#invitation_id").val("");
 
@@ -588,7 +620,7 @@
         $("#btnAddInterview").show();
         $("#btnUpdateInterview").hide();
 
-        bootstrap.Modal.getOrCreateInstance($("#interviewModal")).show();
+        xmodal.show("interviewModal")
     }
 
     function handleAddInterview(){
@@ -711,26 +743,115 @@
         });
     }
 
+    async function loadData() {
+        try {
+            let profile = await getProfileDataByProfileId();
+            let organizations = profile.organization_users;
+
+            let results = await Promise.all(
+                organizations.map(organization => getPositionsByOrgId(organization.organization_id))
+            );
+
+            shortListRender.sideBar(results)
+
+        } catch (error) {
+            console.error("Ralat semasa loadData:", error);
+        }
+    }
+
+    function showJobOfferModal() {
+        let profileId = $(this).data("id");
+
+        let candidate = candidateList.find(user => user.id == profileId);
+
+        if (!candidate) {
+            console.error("Candidate not found:", profileId);
+            return;
+        }
+
+        curruntCandidate = candidate;
+
+        console.info("curruntPosition",curruntPosition);
+        console.info("curruntCandidate",curruntCandidate);
+
+        let $form = $("#jobOfferForm");
+
+        $(".offer-candidate-name").text(`Candidate: ${curruntCandidate.name}`);
+        $("#job-offer-candicate-id").val(curruntCandidate.id);
+
+        $("#jobOfferPositionName").text(`Position: ${curruntPosition.position_title}`);
+        $("#jobOfferPositionId").val(curruntPosition.id);
+
+        $("#btnUpdateJobOffer").hide()
+        $("#btnAddJobOffer").show()
+
+        xmodal.show("jobOfferModal");
+    }
+
+    function handleAddJobOffer(){
+        let salary_amount = $("#salary_amount").val()
+        let salary_period = $("#salary_period").val()
+        let start_date = $("#start_date").val()
+        let end_date = $("#end_date").val()
+        let terms_and_conditions = $("#terms_and_conditions").val()
+        let benefits = $("#benefits").val()
+        let expires_at = $("#expires_at").val()
+        let position_id = $("#jobOfferPositionId").val()
+        let receiver_profile_id = $("#job-offer-candicate-id").val()
+
+        if(!salary_amount || salary_amount == 0){
+            xalert.fire("Warning", "Please enter salary amount", "warning")
+            return
+        }
+
+        if(salary_period == ""){
+            xalert.fire("Warning", "Please select salary period", "warning")
+            return
+        }
+
+        if(!expires_at){
+            xalert.fire("Warning", "Please enter expires date", "warning")
+            return
+        }
+
+        if(!position_id){
+            xalert.fire("Warning", "Position id not found", "warning")
+            return
+        }
+
+        if(!receiver_profile_id){
+            xalert.fire("Warning", "Receiver profile id not found", "warning")
+            return
+        }
+
+        storeJobOffer()
+    }
+
     // $(document).on("click", "#btnAddInterview", handleAddInterview)
     // store()
     // getShortlistedPositionIds(2, 1)
     // _store(2, 11)
     // _delete(11)
+    $(document).ready(function(){
+        loadData()
+    });
 
     $(document).on("change", "input[name='interview_mode']", function () {
         toggleInterviewMode($(this).val());
     });
-
-    $(document).ready(loadData);
-    $(document).on("click", ".btnShowModalAddShortlist", handleShowModalAddShortlist);
-    $(document).on("click", ".btnShowModalUpdateShortlist", btnShowModalUpdateShortlist);
-    $(document).on("click", ".btnShowModalAddinterview", handleShowModalAddinterview);
-    $(document).on("click", ".btnShowModalAddInvite", btnShowModalAddInvite)
+    $(document).on("click", ".btnShowModalAddShortlist", showModalAddShortlist);
+    $(document).on("click", ".showModalUpdateShortlist", showModalUpdateShortlist);
+    $(document).on("click", ".btnShowModalAddInvite", showModalAddInvite)
+    $(document).on("click", ".btnShowModalAddInterview", showModalAddinterview);
     $(document).on("click", "#btnAddInvitation", handleAddInvitation)
     $(document).on("submit", "#inviteForm", handleInviteForm);
     $(document).on("click", ".shortlist-item", handleClickShortlist)
     $(document).on("click", ".toggleFilter", toggleFilter)
     $(document).on("click", "#btnAddShortlist", handleAddShortlist)
     $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
+    $(document).on("click", ".btnShowModalAddJobOffer", showJobOfferModal)
+
+    $(document).on("click", "#btnAddJobOffer", handleAddJobOffer)
+
 </script>
 @endsection

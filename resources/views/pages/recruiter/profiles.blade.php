@@ -1,5 +1,4 @@
 @extends('layouts.internship-layouts')
-<!-- FILTER BY VISIVILITY -->
 @section('css')
 <style>
     .talent-layout {
@@ -108,7 +107,7 @@
     <!-- Header & Toggle Button (Mobile) -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="m-0 fw-bold">Find University Talent</h3>
-        <button class="btn btn-primary d-lg-none btn-toggle-filter" onclick="toggleFilter()">
+        <button class="btn btn-primary d-lg-none btn-toggle-filter">
             <i class="fa-solid fa-filter"></i> Filters
         </button>
     </div>
@@ -188,7 +187,7 @@
     </div>
 </div>
 
-<div class="filter-overlay" onclick="toggleFilter()"></div>
+<div class="filter-overlay btn-toggle-filter"></div>
 
 <x-modals.shortlist-modal />
 
@@ -545,6 +544,7 @@
         $(document).on("click", ".talent-like", hanldeToggleLike)
         $(document).on("click", ".btnAddToShortlist", handleAddtoShortlist)
         $(document).on("submit", "#shortlistForm", handleAddToShortlist)
+        $(document).on("click", ".btn-toggle-filter", toggleFilter)
     })
 
 </script>
