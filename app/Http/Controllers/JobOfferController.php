@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\AppConstants;
 use App\Helpers\ApiResponse;
 use App\Services\JobOfferService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\Rule;
 
 class JobOfferController extends Controller
 {
@@ -42,20 +44,6 @@ class JobOfferController extends Controller
 
         return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
     }
-
-    /**
-     * Handles request to get job offers by status for the current user
-     *
-     * @param string $status
-     * @return JsonResponse
-     */
-    // public function getJobOffersByStatus(string $status): JsonResponse
-    // {
-    //     $userProfileId = session('user_profile_id');
-    //     $jobOffers = $this->jobOfferService->getJobOffersByStatus($status, $userProfileId);
-
-    //     return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
-    // }
 
     /**
      * Handles request to get job offer by job offer ID
@@ -108,7 +96,7 @@ class JobOfferController extends Controller
     {
         $validated = $request->validate([
             'salary_amount' => ['required', 'numeric', 'min:0'],
-            'salary_period' => ['required', 'string'],
+            'salary_period' => ['required', 'string', Rule::in(AppConstants::SALARY_PERIODS)],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'terms_and_conditions' => ['nullable', 'string'],
