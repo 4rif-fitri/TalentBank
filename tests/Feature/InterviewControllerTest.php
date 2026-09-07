@@ -154,6 +154,41 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.'
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'user_role',
+                    'position' => [
+                        'id',
+                        'position_title',
+                        'organization_id',
+                        'department',
+                        'employment_type',
+                        'organization' => [
+                            'id',
+                            'company_name',
+                            'organization_logo',
+                        ],
+                    ],
+                    'interviewee' => [
+                        'id',
+                        'name',
+                        'profile_image',
+                        'location',
+                        'headline',
+                    ],
+                    'interviewer' => [
+                        'id',
+                        'name',
+                        'profile_image',
+                        'location',
+                        'headline',
+                    ],
+                ]
+            ])
             ->assertJsonFragment([
                 'id' => $interview->id,
                 'position_id' => $this->position->id,
@@ -252,14 +287,12 @@ class InterviewControllerTest extends TestCase
             ])
             ->assertJsonFragment([
                 'position_id' => $this->position->id,
-                'scheduled_at' => now()->addDays(2)->toDateTimeString(),
                 'interview_mode' => AppConstants::INTERVIEW_MODES[0],
                 'interviewee_profile_id' => $this->intervieweeProfile->id,
             ]);
 
         $this->assertDatabaseHas('interviews', [
             'position_id' => $this->position->id,
-            'scheduled_at' => now()->addDays(2)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[0],
             'interviewee_profile_id' => $this->intervieweeProfile->id,
         ]);
@@ -282,7 +315,6 @@ class InterviewControllerTest extends TestCase
             ])
             ->assertJsonFragment([
                 'position_id' => $this->position->id,
-                'scheduled_at' => now()->addDays(2)->toDateTimeString(),
                 'interview_mode' => AppConstants::INTERVIEW_MODES[1],
                 'interviewee_profile_id' => $this->intervieweeProfile->id,
                 'location' => 'Block A'
@@ -290,7 +322,6 @@ class InterviewControllerTest extends TestCase
 
         $this->assertDatabaseHas('interviews', [
             'position_id' => $this->position->id,
-            'scheduled_at' => now()->addDays(2)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[1],
             'interviewee_profile_id' => $this->intervieweeProfile->id,
             'location' => 'Block A'

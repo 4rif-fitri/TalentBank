@@ -90,4 +90,9 @@ class UserProfile extends Model
     {
         return $this->hasMany(Interview::class, 'interviewee_profile_id');
     }
+
+    public function receivedJobOffers()
+    {
+        return $this->hasMany(JobOffer::class, 'receiver_profile_id');
+    }
 }

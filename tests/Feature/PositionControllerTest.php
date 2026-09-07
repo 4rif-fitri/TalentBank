@@ -152,6 +152,23 @@ class PositionControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.',
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'shortlist_users' => [
+                        '*' => [
+                            'id',
+                            'name',
+                            'location',
+                            'profile_image',
+                            'headline',
+                            'receivedInvitations',
+                            'receivedInterviews',
+                            'receivedJobOffers',
+                        ]
+                    ],
+                ]
+            ])
             ->assertJsonFragment([
                 'id' => $position->id,
                 'organization_id' => $this->organization->id,
