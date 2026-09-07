@@ -100,13 +100,13 @@
         <aside class="shortlist-sidebar" id="listContainer">
 
             <div class="d-flex flex-column justify-content-between mb-3 pb-3">
-                <!-- <div class="d-flex justify-content-between w-100">
-                    <h5 class="m-0 fw-bold">Your invitation</h5>
+                <div class="d-flex justify-content-between w-100">
+                    <h5 class="m-0 fw-bold">Your Job Offers</h5>
                     <button type="button"
                         class="btnShowModalAddShortlist btn btn-outline-primary d-flex justify-content-center align-items-center">
                         <i class="fa-solid fa-plus fs-5"></i>
                     </button>
-                </div> -->
+                </div>
 
                 <ul class="nav nav-tabs">
                     <li data-status="Pending" class="nav-item">
@@ -117,6 +117,9 @@
                     </li>
                     <li data-status="Declined" class="nav-item">
                         <button class="nav-link text-black">Declined</button>
+                    </li>
+                    <li data-status="Withdrawn" class="nav-item">
+                        <button class="nav-link text-black">Withdrawn</button>
                     </li>
                     <li data-status="Expired" class="nav-item">
                         <button class="nav-link text-black">Expired</button>
@@ -143,67 +146,50 @@
     </div>
 </div>
 <div class="shortlist-overlay toggleFilter"></div>
+<x-modals.job-offer-modal />
 
 @endsection
 
 @section('script')
 <script>
-
     let currentStatus = "Pending"
-
-    function toggleFilter() {
-        document.body.classList.toggle('filter-open');
-    }
+    let currentJobOffer
+    let currentEducation
 
     $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
-        toggleFilter();
+        document.body.classList.toggle('filter-open');
     });
 
-    function getJobOffersBySenderId() {
+    function getEducationByUserProfileId(id){
+        let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}"
+        url = url.replace('__ID__', id)
 
-        $.ajax({
-            url: "{{ route('jobOffers.getJobOffersByStatusAndSenderId') }}",
+        return $.ajax({
+            url,
             type: "GET",
-            success: function (response) {
-                debug.log("getJobOffersBySenderId", response.data);
-
-                let jobOffers = response.data
-                $("#recruitment-invitation-list").empty()
-                jobOffers.forEach(offer => {
-                    $("#recruitment-invitation-list").append(jobOffer.recruiter.sidebar(offer))
-                });
-
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
         });
     }
-
 
     function getJobOfferById(id) {
         let url = "{{ route('jobOffers.getJobOfferById', ['id' => '__ID__']) }}"
         url = url.replace('__ID__', id)
-        $.ajax({
+        return $.ajax({
             url,
             type: "GET",
-            success: function (response) {
-                debug.log("getJobOfferById", response.data);
-                $(".shortlist-content").empty();
-                $(".shortlist-content").append(jobOffer.recruiter.mainContent(response.data))
-
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
         });
     }
 
     function getJobOffersByStatus(status) {
         let url = "{{ route('jobOffers.getJobOffersByStatusAndSenderId') }}"
+
+        let data = {
+            status
+        }
+
         $.ajax({
             url,
             type: "GET",
+            data,
             success: function (response) {
                 debug.log("getJobOffersByStatus", response.data);
 
@@ -299,9 +285,8 @@
         });
     }
 
-    // getJobOffersBySenderId()
     // getJobOfferById(2)
-    // getJobOffersByStatus(currentStatus)
+    getJobOffersByStatus(currentStatus)
     // withdrawJobOffer(2)
     // update(2)
     // store(8)
@@ -324,11 +309,24 @@
         getJobOffersByStatus(currentStatus)
     })
 
-    $(document).on("click", ".invitation-item", function () {
+    function showModalEditJobOffer(){
         let id = $(this).data("id")
-        console.log(id);
 
-        getJobOfferById(id)
+        xmodal.show("jobOfferModal")
+    }
+
+    $(document).on("click", ".invitation-item", async function () {
+        let jobOfferId = $(this).data("id")
+
+        try {
+            let jobOfferResponse = await getJobOfferById(jobOfferId);
+            let educationResponse = await getEducationByUserProfileId(jobOfferResponse.data.receiver.id);
+
+            $(".shortlist-content").empty();
+            $(".shortlist-content").append(jobOffer.recruiter.mainContent(jobOfferResponse.data))
+        } catch (error) {
+            console.log(error);
+        }
     })
 
     $(document).on("click", "#btnMessageStudent", function () {
@@ -340,10 +338,7 @@
         withdrawJobOffer(id)
     })
 
-    $(document).on("click", "#btnEditJobOffer", function () {
-        let id = $(this).data("id")
-
-    })
+    $(document).on("click", "#btnEditJobOffer", showModalEditJobOffer)
 
 
 </script>

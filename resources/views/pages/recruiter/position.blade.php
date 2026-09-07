@@ -249,18 +249,18 @@
         });
     }
 
-    function storeJobOffer(){
+    function storeJobOffer($form){
         let data = {
             _token: $('meta[name="csrf-token"]').attr("content"),
-            salary_amount: $("#salary_amount").val(),
-            salary_period: $("#salary_period").val(),
-            start_date: $("#start_date").val(),
-            end_date: $("#end_date").val(),
-            terms_and_conditions: $("#terms_and_conditions").val(),
-            benefits: $("#benefits").val(),
-            expires_at: $("#expires_at").val(),
-            position_id: $("#jobOfferPositionId").val(),
-            receiver_profile_id: $("#job-offer-candicate-id").val()
+            salary_amount: $form.find("#salary_amount").val(),
+            salary_period: $form.find("#salary_period").val(),
+            start_date: $form.find("#start_date").val(),
+            end_date: $form.find("#end_date").val(),
+            terms_and_conditions: $form.find("#terms_and_conditions").val(),
+            benefits: $form.find("#benefits").val(),
+            expires_at: $form.find("#expires_at").val(),
+            position_id: $form.find("#jobOfferPositionId").val(),
+            receiver_profile_id: $form.find("#job-offer-candicate-id").val()
         }
 
         $.ajax({
@@ -789,15 +789,18 @@
     }
 
     function handleAddJobOffer(){
-        let salary_amount = $("#salary_amount").val()
-        let salary_period = $("#salary_period").val()
-        let start_date = $("#start_date").val()
-        let end_date = $("#end_date").val()
-        let terms_and_conditions = $("#terms_and_conditions").val()
-        let benefits = $("#benefits").val()
-        let expires_at = $("#expires_at").val()
-        let position_id = $("#jobOfferPositionId").val()
-        let receiver_profile_id = $("#job-offer-candicate-id").val()
+
+        let $form = $(this).parent().parent()
+
+        let salary_amount = $form.find("#salary_amount").val()
+        let salary_period = $form.find("#salary_period").val()
+        let start_date = $form.find("#start_date").val()
+        let end_date = $form.find("#end_date").val()
+        let terms_and_conditions = $form.find("#terms_and_conditions").val()
+        let benefits = $form.find("#benefits").val()
+        let expires_at = $form.find("#expires_at").val()
+        let position_id = $form.find("#jobOfferPositionId").val()
+        let receiver_profile_id = $form.find("#job-offer-candicate-id").val()
 
         if(!salary_amount || salary_amount == 0){
             xalert.fire("Warning", "Please enter salary amount", "warning")
@@ -824,7 +827,7 @@
             return
         }
 
-        storeJobOffer()
+        storeJobOffer($form)
     }
 
     // $(document).on("click", "#btnAddInterview", handleAddInterview)
