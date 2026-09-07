@@ -23,16 +23,17 @@ class MediaService
         if (!$file instanceof UploadedFile) {
             throw new Exception('File field must be of type UploadedFile.', Response::HTTP_BAD_REQUEST);
         }
+
+        if (!in_array($file->getMimeType(), $this->allowedMediaType)) {
+            throw new Exception('Invalid file type. File must either be ' . implode(', ', $this->allowedMediaType), Response::HTTP_BAD_REQUEST);
+        }
     }
 
     private function moveFileGetInsertRecord(array $data, string $filePath, UploadedFile $file, int $userProfileId): array
     {
+        $this->validateFileType($file);
+
         $fileMimeType = $file->getMimeType();
-
-        if (!in_array($fileMimeType, $this->allowedMediaType)) {
-            throw new Exception('Invalid file type. File must either be ' . implode(', ', $this->allowedMediaType), Response::HTTP_BAD_REQUEST);
-        }
-
         $filename = uniqid($data['source_name'] . '_') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
         $mediaType = str_starts_with($fileMimeType, 'application') ? 'pdf' : explode('/', $fileMimeType)[0];
         $file->storeAs($filePath, $filename, 'public');

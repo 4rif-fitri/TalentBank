@@ -96,8 +96,8 @@ class EducationService
             $education = Education::create([
                 'user_profile_id' => $userProfileId,
                 'programme_id' => $data['programme_id'],
-                'description' => $data['description'],
-                'cgpa' => $data['cgpa'],
+                'description' => $data['description'] ?? null,
+                'cgpa' => $data['cgpa'] ?? null,
                 'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
                 'enrollment_status' => $data['enrollment_status'],
@@ -106,7 +106,9 @@ class EducationService
 
             $this->uploadImages($education->id, $data, $userProfileId);
 
-            $this->skillService->createUserSkills($data['new_skill_ids'], 'education', $education->id);
+            if (isset($data['new_skill_ids'])) {
+                $this->skillService->createUserSkills($data['new_skill_ids'], 'education', $education->id);
+            }
 
             return $education;
         });
@@ -115,7 +117,8 @@ class EducationService
             'programme.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'programme.qualification',
             'programme.fieldOfStudy',
-            'media'
+            'media',
+            'skills'
         ]);
     }
 
@@ -134,15 +137,15 @@ class EducationService
         ])->first();
 
         if (!isset($education)) {
-            throw new Exception('Education data not found or access unauthorized.', Response::HTTP_FORBIDDEN);
+            throw new Exception('Education data not found or access unauthorized.', Response::HTTP_NOT_FOUND);
         }
 
         DB::transaction(function () use ($data, $education, $userProfileId) {
             // update education
             $education->update([
                 'programme_id' => $data['programme_id'],
-                'description' => $data['description'],
-                'cgpa' => $data['cgpa'],
+                'description' => $data['description'] ?? null,
+                'cgpa' => $data['cgpa'] ?? null,
                 'start_date' => $data['start_date'],
                 'end_date' => $data['end_date'],
                 'enrollment_status' => $data['enrollment_status'],
