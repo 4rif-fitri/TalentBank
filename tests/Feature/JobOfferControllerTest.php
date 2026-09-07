@@ -445,6 +445,27 @@ class JobOfferControllerTest extends TestCase
             ]);
     }
 
+    public function test_update_job_offer_fails_with_invalid_salary_period(): void
+    {
+        $jobOffer = JobOffer::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+            'offer_status' => AppConstants::JOB_OFFER_STATUS['PENDING'],
+        ]);
+
+        $response = $this->putJson(route('jobOffers.update', ['id' => $jobOffer->id]), $this->validJobOfferPayload([
+            'salary_period' => 'Invalid salary period'
+        ]));
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST,
+            ]);
+
+        $this->assertStringContainsString('salary period', $response->json('message'));
+    }
+
     public function test_receiver_can_accept_pending_job_offer(): void
     {
         $jobOffer = JobOffer::factory()->create([
