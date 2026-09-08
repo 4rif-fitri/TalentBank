@@ -119,28 +119,6 @@ class ProfileService
     }
 
     /**
-     * Returns user profiles that have been liked by the current user
-     * 
-     * @param int $userProfileId
-     * @return Paginator
-     */
-    // public function getLikedUserProfiles(int $userProfileId): Paginator
-    // {
-    //     return UserProfile::with([
-    //         'skills',
-    //         'programmes:' . self::PROGRAMME_RETURN_COLUMNS,
-    //         'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
-    //         'programmes.qualification',
-    //     ])
-    //         ->whereHas('likes', function ($query) use ($userProfileId) {
-    //             $query->where('liker_user_profile_id', $userProfileId);
-    //         })
-    //         ->where('id', '<>', $userProfileId)
-    //         ->select('id', 'name', 'location', 'headline', 'profile_image')
-    //         ->simplePaginate(6);
-    // }
-
-    /**
      * Update profile data of profile by profile ID.
      * Excluding password update.
      *

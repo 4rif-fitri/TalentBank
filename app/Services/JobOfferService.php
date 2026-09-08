@@ -117,31 +117,6 @@ class JobOfferService
     }
 
     /**
-     * Retrieves job offers matching the given status where the current user is the sender or receiver
-     *
-     * @param string $offerStatus
-     * @param int $userProfileId
-     * @return Collection
-     */
-    // public function getJobOffersByStatus(string $offerStatus, int $userProfileId): Collection
-    // {
-    //     return JobOffer::with([
-    //         'position:' . self::POSITION_RETURN_COLUMNS,
-    //         'sender:' . self::PROFILE_RETURN_COLUMNS,
-    //         'receiver:' . self::PROFILE_RETURN_COLUMNS,
-    //         'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
-    //     ])
-    //         ->where('offer_status', $offerStatus)
-    //         ->whereHas('', function ($query) use ($userProfileId) {
-    //             $query->where(function ($query) use ($userProfileId) {
-    //                 $query->where('sender_profile_id', $userProfileId)
-    //                     ->orWhere('receiver_profile_id', $userProfileId);
-    //             });
-    //         })
-    //         ->get();
-    // }
-
-    /**
      * Retrieves a job offer by job offer ID, accessible to either the sender or receiver
      *
      * @param int $jobOfferId
