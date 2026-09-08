@@ -25,6 +25,18 @@ class PositionControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const POSITION_RETURN_COLUMNS = [
+        'id',
+        'organization_id',
+        'user_profile_id',
+        'position_title',
+        'employment_type',
+        'department',
+        'work_location',
+        'vacancies',
+        'description',
+    ];
+
     private User $user;
     private UserProfile $adminProfile;
     private Organization $organization;
@@ -102,7 +114,14 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => self::POSITION_RETURN_COLUMNS,
+                ],
+            ])
+            ->assertJsonPath('data.0.organization_id', $this->organization->id)
+            ->assertJsonPath('data.0.user_profile_id', $this->adminProfile->id);
 
         $this->assertEquals(3, count($response->json()['data']));
     }
@@ -120,7 +139,14 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => self::POSITION_RETURN_COLUMNS
+                ],
+            ])
+            ->assertJsonPath('data.0.organization_id', $this->organization->id)
+            ->assertJsonPath('data.0.user_profile_id', $this->adminProfile->id);
 
         $this->assertEquals(2, count($response->json()['data']));
     }
@@ -173,7 +199,11 @@ class PositionControllerTest extends TestCase
                 'id' => $position->id,
                 'organization_id' => $this->organization->id,
                 'user_profile_id' => $this->adminProfile->id,
-            ]);
+            ])
+            ->assertJsonPath('data.id', $position->id)
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.shortlist_users', []);
     }
 
     public function test_get_position_by_id_fails_when_user_is_not_org_admin_of_position(): void
@@ -223,7 +253,14 @@ class PositionControllerTest extends TestCase
                 'organization_id' => $this->organization->id,
                 'position_title' => 'Backend Engineer',
                 'department' => 'Engineering',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => self::POSITION_RETURN_COLUMNS,
+            ])
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.position_title', 'Backend Engineer')
+            ->assertJsonPath('data.department', 'Engineering');
 
         $this->assertDatabaseHas('positions', [
             'organization_id' => $this->organization->id,
@@ -255,7 +292,14 @@ class PositionControllerTest extends TestCase
                 'organization_id' => $this->organization->id,
                 'position_title' => 'Backend Engineer',
                 'department' => 'Engineering',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => self::POSITION_RETURN_COLUMNS,
+            ])
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.position_title', 'Backend Engineer')
+            ->assertJsonPath('data.department', 'Engineering');
 
         $this->assertDatabaseHas('positions', [
             'organization_id' => $this->organization->id,
@@ -340,7 +384,16 @@ class PositionControllerTest extends TestCase
                 'position_title' => 'Senior Engineer',
                 'vacancies' => 3,
                 'description' => 'Updated description.'
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => self::POSITION_RETURN_COLUMNS,
+            ])
+            ->assertJsonPath('data.id', $position->id)
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.position_title', 'Senior Engineer')
+            ->assertJsonPath('data.vacancies', 3)
+            ->assertJsonPath('data.description', 'Updated description.');
 
         $this->assertDatabaseHas('positions', [
             'id' => $position->id,
@@ -377,7 +430,15 @@ class PositionControllerTest extends TestCase
                 'id' => $position->id,
                 'position_title' => 'Senior Engineer',
                 'vacancies' => 3,
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => self::POSITION_RETURN_COLUMNS,
+            ])
+            ->assertJsonPath('data.id', $position->id)
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.position_title', 'Senior Engineer')
+            ->assertJsonPath('data.vacancies', 3);
 
         $this->assertDatabaseHas('positions', [
             'id' => $position->id,

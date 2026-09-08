@@ -26,6 +26,10 @@ class InterviewControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const ORGANIZATION_RETURN_COLUMNS = ['id', 'company_name', 'organization_logo'];
+    private const PROFILE_RETURN_COLUMNS = ['id', 'name', 'profile_image', 'location', 'headline'];
+    private const POSITION_RETURN_COLUMNS = ['id', 'position_title', 'organization_id', 'department', 'employment_type'];
+
     private User $user;
     private UserProfile $interviewerProfile;
     private UserProfile $intervieweeProfile;
@@ -95,12 +99,38 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.'
             ])
-            ->assertJsonFragment([
-                'id' => $scheduledInterview->id,
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'position_id',
+                        'interviewer_profile_id',
+                        'interviewee_profile_id',
+                        'scheduled_at',
+                        'interview_mode',
+                        'location',
+                        'meeting_url',
+                        'interview_status',
+                        'interview_result',
+                        'recruiter_comment',
+                        'created_at',
+                        'updated_at',
+                        'position' => [
+                            'id',
+                            'position_title',
+                            'organization_id',
+                            'department',
+                            'employment_type',
+                            'organization' => self::ORGANIZATION_RETURN_COLUMNS
+                        ],
+                        'interviewee' => self::PROFILE_RETURN_COLUMNS,
+                    ]
+                ]
+            ])
+            ->assertJsonPath('data.0.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.0.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.0.interview_status', AppConstants::INTERVIEW_STATUS['SCHEDULED'])
+            ->assertJsonPath('data.0.position.id', $this->position->id);
     }
 
     public function test_interviewee_can_get_interviews_by_status(): void
@@ -130,12 +160,38 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.'
             ])
-            ->assertJsonFragment([
-                'id' => $completedInterview->id,
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'position_id',
+                        'interviewer_profile_id',
+                        'interviewee_profile_id',
+                        'scheduled_at',
+                        'interview_mode',
+                        'location',
+                        'meeting_url',
+                        'interview_status',
+                        'interview_result',
+                        'recruiter_comment',
+                        'created_at',
+                        'updated_at',
+                        'position' => [
+                            'id',
+                            'position_title',
+                            'organization_id',
+                            'department',
+                            'employment_type',
+                            'organization' => self::ORGANIZATION_RETURN_COLUMNS
+                        ],
+                        'interviewer' => self::PROFILE_RETURN_COLUMNS,
+                    ]
+                ]
+            ])
+            ->assertJsonPath('data.0.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.0.interviewer.id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.0.interview_status', AppConstants::INTERVIEW_STATUS['COMPLETED'])
+            ->assertJsonPath('data.0.position.id', $this->position->id);
     }
 
     public function test_user_can_get_interview_by_id_when_they_are_the_interviewer(): void
@@ -160,6 +216,15 @@ class InterviewControllerTest extends TestCase
                     'position_id',
                     'interviewer_profile_id',
                     'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
                     'user_role',
                     'position' => [
                         'id',
@@ -167,35 +232,18 @@ class InterviewControllerTest extends TestCase
                         'organization_id',
                         'department',
                         'employment_type',
-                        'organization' => [
-                            'id',
-                            'company_name',
-                            'organization_logo',
-                        ],
+                        'organization' => self::ORGANIZATION_RETURN_COLUMNS
                     ],
-                    'interviewee' => [
-                        'id',
-                        'name',
-                        'profile_image',
-                        'location',
-                        'headline',
-                    ],
-                    'interviewer' => [
-                        'id',
-                        'name',
-                        'profile_image',
-                        'location',
-                        'headline',
-                    ],
+                    'interviewer' => self::PROFILE_RETURN_COLUMNS,
+                    'interviewee' => self::PROFILE_RETURN_COLUMNS,
                 ]
             ])
-            ->assertJsonFragment([
-                'id' => $interview->id,
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-                'user_role' => 'interviewer'
-            ]);
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.interviewer.id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.user_role', 'interviewer')
+            ->assertJsonPath('data.position.id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id);
     }
 
     public function test_user_get_interview_by_id_returns_not_found_when_not_part_of_interview(): void
@@ -253,13 +301,44 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_CREATED,
                 'message' => 'Interview created successfully.',
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                    'position' => [
+                        'id',
+                        'position_title',
+                        'organization_id',
+                        'department',
+                        'employment_type',
+                    ],
+                    'interviewee' => self::PROFILE_RETURN_COLUMNS,
+                ]
+            ])
             ->assertJsonFragment([
                 'position_id' => $this->position->id,
                 'interviewer_profile_id' => $this->interviewerProfile->id,
                 'interviewee_profile_id' => $this->intervieweeProfile->id,
                 'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
                 'interview_result' => AppConstants::INTERVIEW_RESULTS['PENDING'],
-            ]);
+            ])
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_status', AppConstants::INTERVIEW_STATUS['SCHEDULED'])
+            ->assertJsonPath('data.interview_result', AppConstants::INTERVIEW_RESULTS['PENDING'])
+            ->assertJsonPath('data.position.id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id);
 
         $this->assertDatabaseHas('interviews', [
             'position_id' => $this->position->id,
@@ -285,11 +364,40 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_CREATED,
                 'message' => 'Interview created successfully.',
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                    'position' => [
+                        'id',
+                        'position_title',
+                        'organization_id',
+                        'department',
+                        'employment_type',
+                    ],
+                    'interviewee' => self::PROFILE_RETURN_COLUMNS,
+                ]
+            ])
             ->assertJsonFragment([
                 'position_id' => $this->position->id,
                 'interview_mode' => AppConstants::INTERVIEW_MODES[0],
                 'interviewee_profile_id' => $this->intervieweeProfile->id,
-            ]);
+            ])
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[0])
+            ->assertJsonPath('data.position.id', $this->position->id);
 
         $this->assertDatabaseHas('interviews', [
             'position_id' => $this->position->id,
@@ -313,12 +421,42 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_CREATED,
                 'message' => 'Interview created successfully.',
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                    'position' => [
+                        'id',
+                        'position_title',
+                        'organization_id',
+                        'department',
+                        'employment_type',
+                    ],
+                    'interviewee' => self::PROFILE_RETURN_COLUMNS,
+                ]
+            ])
             ->assertJsonFragment([
                 'position_id' => $this->position->id,
                 'interview_mode' => AppConstants::INTERVIEW_MODES[1],
                 'interviewee_profile_id' => $this->intervieweeProfile->id,
                 'location' => 'Block A'
-            ]);
+            ])
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[1])
+            ->assertJsonPath('data.location', 'Block A')
+            ->assertJsonPath('data.position.id', $this->position->id);
 
         $this->assertDatabaseHas('interviews', [
             'position_id' => $this->position->id,
@@ -384,6 +522,23 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Interview updated successfully.',
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
             ->assertJsonFragment([
                 'id' => $interview->id,
                 'interview_mode' => AppConstants::INTERVIEW_MODES[1],
@@ -391,7 +546,15 @@ class InterviewControllerTest extends TestCase
                 'meeting_url' => null,
                 'interview_result' => AppConstants::INTERVIEW_RESULTS['PASSED'],
                 'recruiter_comment' => 'Updated interview note.',
-            ]);
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[1])
+            ->assertJsonPath('data.location', 'HQ Room 3')
+            ->assertJsonPath('data.interview_result', AppConstants::INTERVIEW_RESULTS['PASSED'])
+            ->assertJsonPath('data.recruiter_comment', 'Updated interview note.');
 
         $this->assertDatabaseHas('interviews', [
             'id' => $interview->id,
@@ -453,7 +616,7 @@ class InterviewControllerTest extends TestCase
 
     public function test_update_interview_fails_with_invalid_interview_id(): void
     {
-        $interview = Interview::factory()->create([
+        Interview::factory()->create([
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -491,12 +654,34 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Interview marked as completed.',
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
             ->assertJsonFragment([
                 'position_id' => $this->position->id,
                 'interviewer_profile_id' => $this->interviewerProfile->id,
                 'interviewee_profile_id' => $this->intervieweeProfile->id,
                 'interview_status' => AppConstants::INTERVIEW_STATUS['COMPLETED'],
-            ]);
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_status', AppConstants::INTERVIEW_STATUS['COMPLETED']);
     }
 
     public function test_org_admin_can_cancel_scheduled_interview(): void
@@ -515,12 +700,34 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Interview cancelled.',
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
             ->assertJsonFragment([
                 'position_id' => $this->position->id,
                 'interviewer_profile_id' => $this->interviewerProfile->id,
                 'interviewee_profile_id' => $this->intervieweeProfile->id,
                 'interview_status' => AppConstants::INTERVIEW_STATUS['CANCELLED'],
-            ]);
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_status', AppConstants::INTERVIEW_STATUS['CANCELLED']);
     }
 
     public function test_complete_interview_fails_when_interview_status_is_not_scheduled(): void

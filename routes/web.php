@@ -103,7 +103,6 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     Route::prefix('profile')->group(function () {
         Route::get('/getAllStudentUserProfiles', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.getAllStudentUserProfiles');
         Route::get('/getProfileDataByProfileId/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
-        // Route::get('/getLikedUserProfiles', [ProfileController::class, 'getLikedUserProfiles'])->name('profile.getLikedUserProfiles');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('profile.updateAboutField');
         Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('profile.uploadProfileImage');
@@ -190,14 +189,13 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('invitations')->group(function () {
-        Route::get('/getInvitationsByReceiverId', [InvitationController::class, 'getInvitationsByReceiverId'])->name('invitations.getInvitationsByReceiverId');
+        Route::get('/getInvitationsByStatusAndReceiverId', [InvitationController::class, 'getInvitationsByStatusAndReceiverId'])->name('invitations.getInvitationsByStatusAndReceiverId');
         Route::get('/getInvitationById/{id}', [InvitationController::class, 'getInvitationById'])->name('invitations.getInvitationById');
         Route::put('/acceptInvitation/{id}', [InvitationController::class, 'acceptInvitation'])->name('invitations.acceptInvitation');
         Route::put('/rejectInvitation/{id}', [InvitationController::class, 'rejectInvitation'])->name('invitations.rejectInvitation');
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::get('/status/{status}', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId');
-            Route::get('/getInvitationsBySenderId', [InvitationController::class, 'getInvitationsBySenderId'])->name('invitations.getInvitationsBySenderId');
+            Route::get('/getInvitationsByStatusAndSenderId', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId');
             Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store');
             Route::put('/update/{id}', [InvitationController::class, 'update'])->name('invitations.update');
             Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.withdrawInvitation');
@@ -210,7 +208,6 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
             Route::get('/getInterviewsByStatusAndInterviewerId', [InterviewController::class, 'getInterviewsByStatusAndInterviewerId'])->name('interviews.getInterviewsByStatusAndInterviewerId');
-            // Route::get('/status/{status}', [InterviewController::class, 'getInterviewsByStatus'])->name('interviews.getInterviewsByStatus');
             Route::post('/store', [InterviewController::class, 'store'])->name('interviews.store');
             Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update');
             Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview');
@@ -221,7 +218,6 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     Route::prefix('job-offers')->group(function () {
         Route::get('/getJobOffersByStatusAndReceiverId', [JobOfferController::class, 'getJobOffersByStatusAndReceiverId'])->name('jobOffers.getJobOffersByStatusAndReceiverId');
         Route::get('/getJobOfferById/{id}', [JobOfferController::class, 'getJobOfferById'])->name('jobOffers.getJobOfferById');
-        // Route::get('/getJobOffersByStatus/{status}', [JobOfferController::class, 'getJobOffersByStatus'])->name('jobOffers.getJobOffersByStatus');
         Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer');
         Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer');
 
