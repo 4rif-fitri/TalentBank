@@ -10,11 +10,11 @@
         userId: @json(session('user_profile_id')),
         baseURL: "{{ url('/') }}",
         proficiencies: @json(\App\Constants\AppConstants:: PROFICIENCY_LEVELS),
-        semesterResultsFileUrl: "{{ asset(env('SEMESTER_RESULTS_FILE_URL')) }}",
-        coverImageUrl: "{{ asset(env('COVER_IMAGE_URL')) }}",
-        profileImageUrl: "{{ asset(env('PROFILE_IMAGE_URL')) }}",
-        educationFileUrl: "{{ asset(env('EDUCATION_FILE_URL')) }}",
-        organizationLogoUrl: "{{ asset(env('ORGANIZATION_LOGO_URL')) }}",
+        semesterResultsFileUrl: "{{ asset('storage/' . env('SEMESTER_RESULTS_FILE_URL')) }}",
+        coverImageUrl: "{{ asset('storage/' . env('COVER_IMAGE_URL')) }}",
+        profileImageUrl: "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}",
+        educationFileUrl: "{{ asset('storage/' . env('EDUCATION_FILE_URL')) }}",
+        organizationLogoUrl: "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}",
         assets: {
             coverImage: "{{ asset('cover-image-url') }}",
             profileImage: "{{ asset('profile-image-url') }}"
