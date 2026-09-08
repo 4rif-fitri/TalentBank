@@ -43,34 +43,34 @@ export function initProfileEvents() {
     // <=== Profile ===>
 
     // <=== Social media Link ===>
-    $(document).on('click', '#btnSocialMediaLink', showLinksSocialMediaModal);
-    $(document).on('click', '#addlink', handleAddRowSocialMediaLink);
-    $(document).on('click', '.btnCancelAdd', handleCencelAddLink);
-    $(document).on('click', '.btnAddSave', handleAddLink);
-    $(document).on('click', '.btnDeleteLink', handleDeleteLink);
-    $(document).on('click', '.btnEditLink', handleEditLink);
-    $(document).on('click', '.btnUpdateLink', handleUpdateLink);
-    $(document).on('click', '.social-media-option', handleSelectSocialMedia);
+    // $(document).on('click', '#btnSocialMediaLink', showLinksSocialMediaModal);
+    // $(document).on('click', '#addlink', handleAddRowSocialMediaLink);
+    // $(document).on('click', '.btnCancelAdd', handleCencelAddLink);
+    // $(document).on('click', '.btnAddSave', handleAddLink);
+    // $(document).on('click', '.btnDeleteLink', handleDeleteLink);
+    // $(document).on('click', '.btnEditLink', handleEditLink);
+    // $(document).on('click', '.btnUpdateLink', handleUpdateLink);
+    // $(document).on('click', '.social-media-option', handleSelectSocialMedia);
     // <=== Social media Link ===>
 
     // <=== Language ===>
-    $(document).on('click', '#btnLanguageLink', showLanguageMediaModal);
-    $(document).on('click', '#btnAddLanguage', handleAddLanguage);
-    $(document).on('click', '.btn-save-language', handleSaveAddLanguage);
-    $(document).on('click', '.btn-delete-language', handleDeleteLanguage);
-    $(document).on('click', '.btn-edit-language', handleEditLanguage);
-    $(document).on('click', '.btn-update-language', handleUpdateLanguage);
+    // $(document).on('click', '#btnLanguageLink', showLanguageMediaModal);
+    // $(document).on('click', '#btnAddLanguage', handleAddLanguage);
+    // $(document).on('click', '.btn-save-language', handleSaveAddLanguage);
+    // $(document).on('click', '.btn-delete-language', handleDeleteLanguage);
+    // $(document).on('click', '.btn-edit-language', handleEditLanguage);
+    // $(document).on('click', '.btn-update-language', handleUpdateLanguage);
     // <=== Language ===>
 
     // <=== Skill ===>
-    $(document).on('click', '#btnSkill', showSkillModal);
-    $(document).on('click', '#btnAddSkill', handleAddSkill);
-    $(document).on('click', '.btn-edit-skill', handleEditSkill);
-    $(document).on('click', '.btn-save-new-skill', handleSaveNewSkill);
-    $(document).on('click', '.btn-remove-skill', handleDeleteSkill);
-    $(document).on('click', '.btn-cencel-addSkill', handleCencelAddSkill);
-    $(document).on('click', '.btn-cancel-update-skill', handleCencelUpdateSkill);
-    $(document).on('click', '.btn-update-skill', handleUpdateSkill);
+    // $(document).on('click', '#btnSkill', showSkillModal);
+    // $(document).on('click', '#btnAddSkill', handleAddSkill);
+    // $(document).on('click', '.btn-edit-skill', handleEditSkill);
+    // $(document).on('click', '.btn-save-new-skill', handleSaveNewSkill);
+    // $(document).on('click', '.btn-remove-skill', handleDeleteSkill);
+    // $(document).on('click', '.btn-cencel-addSkill', handleCencelAddSkill);
+    // $(document).on('click', '.btn-cancel-update-skill', handleCencelUpdateSkill);
+    // $(document).on('click', '.btn-update-skill', handleUpdateSkill);
     // <=== Skill ===>
 
     // <=== Tab ===>

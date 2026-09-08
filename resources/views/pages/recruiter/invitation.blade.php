@@ -235,7 +235,6 @@
         });
 
     }
-    getInvitationsByStatusAndSenderId("Pending")
 
     function store() {
 
@@ -258,11 +257,10 @@
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
             success: function (response) {
-                console.log("interviews.store", response)
+                xalert.salert('Success', response.message, 'success');
             },
             error: function (xhr) {
-                console.error(xhr)
-
+                xalert.salert('Error', xhr.responseJSON.message, 'error');
             }
         });
 
@@ -322,7 +320,7 @@
                 },
                 success: function (response) {
                     console.log("interviews.update", response)
-                    salert.salert('Success', response.message, 'success');
+                    xalert.salert('Success', response.message, 'success');
 
                     $(`#recruitment-invitation-list .invitation-item[data-id="${response.data.id}"]`).remove();
 
@@ -338,8 +336,7 @@
 
                 },
                 error: function (xhr) {
-                    console.error(xhr.responseJSON.message)
-
+                    xalert.salert('Error', xhr.responseJSON.message, 'error');
                 }
             });
         });
@@ -365,13 +362,11 @@
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
             success: function (response) {
-                console.log("interviews.update", response)
-                salert.salert('Success', response.message, 'success');
+                xalert.salert('Success', response.message, 'success');
 
             },
             error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-                salert.salert('Error', xhr.responseJSON.message, 'error');
+                xalert.salert('Error', xhr.responseJSON.message, 'error');
             }
         });
     }
@@ -390,10 +385,6 @@
         $("#inviteForm").find("#btnUpdateInvitation").show()
         xmodal.show("invitationModal")
     })
-
-    function _store() {
-
-    }
 
     function handleUpdateInviteForm(e){
         e.preventDefault();
@@ -415,17 +406,20 @@
             data,
             type: "POST",
             success: response => {
-                console.log(response);
+                xalert.salert('Success', response.message, 'success');
+                xmodal.hide("invitationModal")
+                $("#inviteForm")[0].reset()
+
+
             },
             error: xhr => {
-                console.log(xhr);
+                xalert.salert('Error', xhr.responseJSON.message, 'error');
             }
         });
-
-
     }
 
     $(document).on("submit", "#inviteForm", handleUpdateInviteForm)
+    getInvitationsByStatusAndSenderId("Pending")
 
 </script>
 @endsection

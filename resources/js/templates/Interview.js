@@ -42,11 +42,12 @@ function conditionRendering(mode, data) {
     else if (mode == "Phone") {
         return ``
     }
+
+
+
 }
 
 export function mainContent(data, educations) {
-    console.log({ data, educations });
-
     return `<div class="row g-3 ">
                 <div class="h-100 border-0 p-3 position-relative">
 
