@@ -33,9 +33,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/home', function () {
-    return Inertia::render('Home');
-});
+
 
 Route::middleware('guest')->group(function () {
     // page routes
@@ -61,7 +59,10 @@ Route::middleware('auth')->post('/logout', [LoginController::class, 'logout'])->
 |
 */
 Route::middleware('auth')->group(function () {
-    Route::get('/', [internshipController::class, "index"])->name('home');
+    // Route::get('/', [internshipController::class, "index"])->name('home');
+    Route::get('/', function () {
+        return Inertia::render('Home');
+    });
 
     Route::middleware('checkRole:Student')->group(function () {
         Route::get('/student', [internshipController::class, "studentIndex"])->name('student.index');
@@ -104,9 +105,6 @@ Route::middleware('auth')->group(function () {
 | Here is where you can register API routes for your application.
 |
 */
-Route::get('/aaa', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.asd');
-
-
 Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(function () {
 
     Route::prefix('profile')->group(function () {

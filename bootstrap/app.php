@@ -5,10 +5,12 @@ use App\Http\Middleware\AjaxMiddleware;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\CheckRoleMiddleware;
 use App\Http\Middleware\GuestMiddleware;
+use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -23,6 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'guest' => GuestMiddleware::class,
             'checkRole' => CheckRoleMiddleware::class,
             'ajax' => AjaxMiddleware::class,
+            $middleware->web(append: [HandleInertiaRequests::class,])
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
