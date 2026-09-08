@@ -126,7 +126,7 @@
             type: "GET",
             data: { status:status },
             success: function (response) {
-                xdebug.log("getInterviewsByStatusAndIntervieweeId", response.data);
+                xdebug.log(status, response.data);
                 currentInterviews = response.data
 
                 $(".invitation-list").empty()

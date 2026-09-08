@@ -240,18 +240,16 @@
 
         url = "{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}"
         url = url.replace("__ID__", id)
-        formData = new FormData()
-        formData.append("_method", "PUT")
+
+        let data = {
+            _method: "PUT",
+            _token: $('meta[name="csrf-token"]').attr("content")
+        }
 
         $.ajax({
             url,
-            data: formData,
             type: "POST",
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
+            data: data,
             success: function (response) {
                 console.log("rejectInvitation", response)
                 salert.salert('Success', response.message, 'success');

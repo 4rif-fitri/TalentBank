@@ -12,13 +12,9 @@
         proficiencies: @json(\App\Constants\AppConstants:: PROFICIENCY_LEVELS),
         semesterResultsFileUrl: "{{ asset('storage/' . env('SEMESTER_RESULTS_FILE_URL')) }}",
         coverImageUrl: "{{ asset('storage/' . env('COVER_IMAGE_URL')) }}",
-        profileImageUrl: "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}",
-        educationFileUrl: "{{ asset('storage/' . env('EDUCATION_FILE_URL')) }}",
-        organizationLogoUrl: "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}",
-        assets: {
-            coverImage: "{{ asset('cover-image-url') }}",
-            profileImage: "{{ asset('profile-image-url') }}"
-        },
+        profileImageUrl: "{{ asset('storage/' .env('PROFILE_IMAGE_URL')) }}",
+        educationFileUrl: "{{ asset('storage/' .env('EDUCATION_FILE_URL')) }}",
+        organizationLogoUrl: "{{ asset('storage/' .env('ORGANIZATION_LOGO_URL')) }}",
         routes: {
             profile: {
                 show: "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}",
