@@ -30,7 +30,8 @@
 @push('scripts')
 <script>
 
-    document.addEventListener("DOMContentLoaded", function () {
+    $(document).ready(function(){
+
         let semesterResultsLoaded = false;
 
         function templateLoading() {

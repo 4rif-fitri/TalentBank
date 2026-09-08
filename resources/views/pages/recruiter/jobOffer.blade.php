@@ -130,16 +130,14 @@
             <div id="recruitment-invitation-list"></div>
         </aside>
 
-        <div class="shortlist-content bg-body flex-grow-1 p-2 rounded card">
-            <div class="row g-3" id="shortlistContent">
-                <div class="border-0 p-3 d-flex flex-column align-items-center">
-                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                    <h4 class="mt-2">No Interview Selected Yet</h4>
-                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                        <i class="fa-solid fa-filter"></i>
-                        Interview
-                    </button>
-                </div>
+        <div id="shortlistContent" class="shortlist-content flex-grow-1 p-2">
+            <div class="bg-body border-0 p-3 d-flex flex-column align-items-center">
+                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                <h4 class="mt-2">No Interview Selected Yet</h4>
+                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                    <i class="fa-solid fa-filter"></i>
+                    Interview
+                </button>
             </div>
         </div>
 
@@ -291,8 +289,12 @@
             currentJobOffer = jobOfferResponse.data
             currentEducation = educationResponse.data
 
+            console.log("currentJobOffer", currentJobOffer);
+            console.log("currentEducation", currentEducation);
+
+
             $(".shortlist-content").empty();
-            $(".shortlist-content").append(jobOffer.recruiter.mainContent(jobOfferResponse.data))
+            $(".shortlist-content").append(jobOffer.recruiter.mainContent(currentJobOffer, currentEducation))
         } catch (error) {
             console.log(error);
         }

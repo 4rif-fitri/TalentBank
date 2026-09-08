@@ -122,17 +122,17 @@
             <div id="shortlistList"></div>
         </aside>
 
-        <div class="shortlist-content bg-body flex-grow-1 p-2 rounded card">
-            <div class="row g-3" id="shortlistContent">
-                <div class="card shadow-sm border-0 p-3 d-flex justify-content-center align-items-center ">
-                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                    <h4 class="mt-2">No Interview Selected Yet</h4>
-                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                        <i class="fa-solid fa-filter"></i>
-                        Interview
-                    </button>
-                </div>
+        <div id="shortlistContent" class="shortlist-content flex-grow-1 p-2">
+
+            <div class="card bg-body shadow-sm border-0 p-3 d-flex justify-content-center align-items-center ">
+                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                <h4 class="mt-2">No Interview Selected Yet</h4>
+                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                    <i class="fa-solid fa-filter"></i>
+                    Interview
+                </button>
             </div>
+
         </div>
     </div>
 </div>
@@ -247,8 +247,11 @@
             curreEducations = listEducationReceiver.data
             currentInterview = interviewDetail.data
 
+            console.log("curreEducations", curreEducations);
+            console.log("currentInterview", currentInterview);
+
             $(".shortlist-content").empty();
-            $(".shortlist-content").append(intervieww.mainContent(interviewDetail.data, listEducationReceiver.data));
+            $(".shortlist-content").append(intervieww.mainContent(currentInterview, curreEducations));
 
         } catch (xhr) {
             xalert.fire("Error", xhr.responseJSON.message, "error")
