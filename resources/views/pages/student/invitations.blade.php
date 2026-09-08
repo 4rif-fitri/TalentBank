@@ -79,23 +79,20 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <ul class="nav nav-tabs">
-                    <li data-status="" class="nav-item">
-                        <button class="nav-link active text-primary">All</button>
+                    <li>
+                        <button data-status="Pending" class="nav-link text-body">Pending</button>
                     </li>
-                    <li data-status="Pending" class="nav-item">
-                        <button class="nav-link text-body">Pending</button>
+                    <li>
+                        <button data-status="Accepted" class="nav-link text-body">Accepted</button>
                     </li>
-                    <li data-status="Accepted" class="nav-item">
-                        <button class="nav-link text-body">Accepted</button>
+                    <li>
+                        <button data-status="Rejected" class="nav-link text-body">Rejected</button>
                     </li>
-                    <li data-status="Rejected" class="nav-item">
-                        <button class="nav-link text-body">Rejected</button>
+                    <li>
+                        <button data-status="Expired" class="nav-link text-body">Expired</button>
                     </li>
-                    <li data-status="Exprired" class="nav-item">
-                        <button class="nav-link text-body">Exprired</button>
-                    </li>
-                    <li data-status="Withdrawn" class="nav-item">
-                        <button class="nav-link text-body">Withdrawn</button>
+                    <li>
+                        <button data-status="Withdrawn" class="nav-link text-body">Withdrawn</button>
                     </li>
                 </ul>
             </div>
@@ -133,23 +130,7 @@
 <script type="module">
     let invitations
     let url
-    function getInvitationsByReceiverId() {
-        $.ajax({
-            url: "{{ route('invitations.getInvitationsByReceiverId') }}",
-            type: "GET",
-            success: function (response) {
-                console.log("getInvitationsByReceiverId", response)
-                $(".invitation-list").empty()
-                invitations = response.data
-                invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
-
-            },
-            error: function (xhr) {
-                console.error(xhr)
-            }
-        });
-    }
-    getInvitationsByReceiverId()
+    let currentStatus = "Pending"
 
     function getInvitationById(id) {
         url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
@@ -158,6 +139,24 @@
         return $.ajax({
             url,
             type: "GET"
+        });
+    }
+
+    function getInvitationsByStatusAndReceiverId(status) {
+        $.ajax({
+            url: "{{ route('invitations.getInvitationsByStatusAndReceiverId') }}",
+            type: "GET",
+            data: { status },
+            success: function (response) {
+                console.log("getInvitationsByStatusAndReceiverId", response)
+                $(".invitation-list").empty()
+                invitations = response.data
+                invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+
+            },
+            error: function (xhr) {
+                console.error(xhr)
+            }
         });
     }
 
@@ -299,14 +298,15 @@
         filted.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
     }
 
-    $(document).on("click", ".nav-item", function () {
+    function handleChangeStatus () {
+        let currentStatus = $(this).data("status")
+        getInvitationsByStatusAndReceiverId(currentStatus)
         $(".nav-item button").removeClass("active text-primary").addClass("text-body");
         $(this).find("button").removeClass("text-body").addClass("active text-primary");
+    }
 
-        let status = $(this).data("status")
-
-        dataFilter(status)
-    });
+    getInvitationsByStatusAndReceiverId(currentStatus)
+    $(document).on("click", ".nav-link", handleChangeStatus)
 
 </script>
 @endsection

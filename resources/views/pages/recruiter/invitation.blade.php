@@ -163,27 +163,9 @@
 
     let currentStatus = "Pending"
     let currentInv
-    let url = "{{ route('invitations.getInvitationsBySenderId', ['id' => '__ID__' ]) }}"
-    url = url.replace("__ID__", 1)
-
-    $.ajax({
-        url,
-        type: "GET",
-        success: function (response) {
-            console.log("getInvitationsBySenderId", response)
-            $("#recruitment-invitation-list").empty()
-            let invitations = response.data
-            invitations.forEach(inv => {
-                $("#recruitment-invitation-list").append(invitation.recruitmentInvitationList(inv))
-            });
-        },
-        error: function (xhr) {
-            console.error(xhr)
-        }
-    });
 
     function getInvitationById(id) {
-        url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
+        let url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
         url = url.replace("__ID__", id)
 
         return $.ajax({
@@ -208,11 +190,9 @@
         }
     }
 
-    $(document).on("click", ".invitation-item", handleSelectedInvitation)
-
     function getInvitationsByStatusAndSenderId(status) {
 
-        url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
+        let url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
         url = url.replace("__status__", status)
 
         $.ajax({
@@ -233,26 +213,27 @@
 
     }
 
-    function store() {
+    function handleAddInvitation(invitation_id, scheduled_date,
+        scheduled_hour, interview_mode,
+        location, meeting_url, recruiter_comment) {
 
-        url = "{{ route('interviews.store') }}"
-        let formData = new FormData()
-        formData.append("invitation_id", 6)
-        formData.append("scheduled_at", "2026-9-30 05:07:17")
-        formData.append("interview_mode", "Online")
-        formData.append("location", "")
-        formData.append("meeting_url", "http://127.0.0.1:8000/recruiter/invitations")
+        // let scheduled_at =
+
         formData.append("recruiter_comment", "recruiter_comment recruiter_comment")
 
+        let data = {
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            invitation_id,
+            scheduled_at,
+            interview_mode,
+            meeting_url,
+            recruiter_comment
+        }
+
         $.ajax({
-            url,
-            data: formData,
+            url: "{{ route('interviews.store') }}",
+            data,
             type: "POST",
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
             success: function (response) {
                 xalert.salert('Success', response.message, 'success');
             },
@@ -260,31 +241,32 @@
                 xalert.salert('Error', xhr.responseJSON.message, 'error');
             }
         });
-
     }
 
+
+    let templteNotSelect = `<div class="border-0 p-3 d-flex flex-column align-items-center">
+                                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                                <h4 class="mt-2">No Interview Selected Yet</h4>
+                                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                                    <i class="fa-solid fa-filter"></i>
+                                    Interview
+                                </button>
+                            </div>`
 
     $(document).on("click", ".nav-item", function () {
         $(".nav-item button").removeClass("active text-primary").addClass("text-black");
         $(this).find("button").removeClass("text-black").addClass("active text-primary");
         let status = $(this).data("status")
-        $("#shortlistContent").html(`  <div class="border-0 p-3 d-flex flex-column align-items-center">
-                                            <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                                            <h4 class="mt-2">No Interview Selected Yet</h4>
-                                            <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                                                <i class="fa-solid fa-filter"></i>
-                                                Interview
-                                            </button>
-                                        </div>`)
+
+        $("#shortlistContent").html(templteNotSelect)
+
         if (currentStatus == status) return
         currentStatus = status
 
         getInvitationsByStatusAndSenderId(status)
     });
 
-    $(document).on("click", ".btn-message-student", function () {
 
-    })
 
     $(document).on("click", ".btn-withdraw-invitation", function () {
 
@@ -300,7 +282,7 @@
 
             let id = $(this).data('id');
 
-            url = "{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}"
+            let url = "{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}"
             url = url.replace("__ID__", id)
 
             let formData = new FormData()
@@ -341,7 +323,7 @@
     })
 
     function handleUpdateInvitation(){
-        url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
+        let url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
         url = url.replace("__ID__", id)
 
         let formData = new FormData()
@@ -396,8 +378,6 @@
             expires_at: $("#expires_at").val()
         }
 
-        console.log(data);
-
         $.ajax({
             url,
             data,
@@ -407,7 +387,6 @@
                 xmodal.hide("invitationModal")
                 $("#inviteForm")[0].reset()
 
-
             },
             error: xhr => {
                 xalert.salert('Error', xhr.responseJSON.message, 'error');
@@ -415,6 +394,12 @@
         });
     }
 
+    function handleMessageStudent(){
+
+    }
+
+    $(document).on("click", ".btn-message-student", handleMessageStudent)
+    $(document).on("click", ".invitation-item", handleSelectedInvitation)
     $(document).on("submit", "#inviteForm", handleUpdateInviteForm)
     getInvitationsByStatusAndSenderId("Pending")
 
