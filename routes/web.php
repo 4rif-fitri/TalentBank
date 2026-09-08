@@ -4,7 +4,6 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\FacultyController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\internshipController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\InvitationController;
@@ -18,6 +17,9 @@ use App\Http\Controllers\ShortlistController;
 use App\Http\Controllers\SkillController;
 use App\Http\Controllers\SocialMediaLinkController;
 use App\Http\Controllers\UserLanguageController;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
 
 
 
@@ -30,6 +32,10 @@ use App\Http\Controllers\UserLanguageController;
 | such as login, registration, password resets, and session management.
 |
 */
+
+Route::get('/asd', function () {
+    return Inertia::render('Home');
+});
 
 Route::middleware('guest')->group(function () {
     // page routes
