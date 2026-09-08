@@ -33,7 +33,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/asd', function () {
+Route::get('/home', function () {
     return Inertia::render('Home');
 });
 
