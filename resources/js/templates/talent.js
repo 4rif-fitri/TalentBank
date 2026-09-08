@@ -39,7 +39,7 @@ export function talentCard(data) {
 
                 <div class="d-flex gap-2 student">
                     <div class="d-flex align-items-center gap-3 mb-3 mt-2">
-                        <img src="${window.appConfig.coverImageUrl}/${data.profile_image}" class="rounded" width="60" alt="Profile">
+                        <img src="${window.appConfig.profileImageUrl}/${data.profile_image}" class="rounded" width="60" alt="Profile">
                     </div>
                     <div class="mb-2 d-flex align-items-center flex-column" style="font-size: 12px;">
                         <h6 class="m-0 fw-bold profileName">${data.name}</h6>
