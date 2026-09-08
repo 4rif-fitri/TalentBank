@@ -57,36 +57,6 @@ class InvitationService
     }
 
     /**
-     * Returns invitations by receiver's user profile ID
-     * 
-     * @param int $receiverId
-     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Invitation>
-     */
-    public function getInvitationsByReceiverId(int $receiverId): Collection
-    {
-        return Invitation::with([
-            'position:' . self::POSITION_RETURN_COLUMNS,
-            'sender:' . self::PROFILE_RETURN_COLUMNS,
-            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
-        ])->where('receiver_profile_id', $receiverId)->get();
-    }
-
-    /**
-     * Returns invitations by sender's user profile ID
-     * 
-     * @param int $senderId
-     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Invitation>
-     */
-    public function getInvitationsBySenderId(int $senderId): Collection
-    {
-        return Invitation::with([
-            'position:' . self::POSITION_RETURN_COLUMNS,
-            'receiver:' . self::PROFILE_RETURN_COLUMNS,
-            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
-        ])->where('sender_profile_id', $senderId)->get();
-    }
-
-    /**
      * Returns an invitation based on invitation ID given
      * 
      * @param int $invitationId
@@ -119,13 +89,13 @@ class InvitationService
     }
 
     /**
-     * Returns invitations filtered by invitation status
+     * Returns invitations filtered by invitation status for sender's user profile
      * 
-     * @param string $invitationStatus
+     * @param ?string $invitationStatus
      * @param int $senderId
      * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Invitation>
      */
-    public function getInvitationsByStatusAndSenderId(string $invitationStatus, int $senderId): Collection
+    public function getInvitationsByStatusAndSenderId(?string $invitationStatus, int $senderId): Collection
     {
         if (!in_array($invitationStatus, AppConstants::INVITATION_STATUS)) {
             throw new Exception('Invalid invitation status provided.', Response::HTTP_BAD_REQUEST);
@@ -136,9 +106,37 @@ class InvitationService
             'receiver:' . self::PROFILE_RETURN_COLUMNS,
             'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
         ])
+            ->when(isset($invitationStatus), function ($query) use ($invitationStatus) {
+                $query->where('invitation_status', $invitationStatus);
+            })
             ->where([
-                'invitation_status' => $invitationStatus,
                 'sender_profile_id' => $senderId
+            ])->get();
+    }
+
+    /**
+     * Returns invitations filtered by invitation status for receiver's user profile
+     * 
+     * @param ?string $invitationStatus
+     * @param int $receiverId
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Invitation>
+     */
+    public function getInvitationsByStatusAndReceiverId(?string $invitationStatus, int $receiverId): Collection
+    {
+        if (!in_array($invitationStatus, AppConstants::INVITATION_STATUS)) {
+            throw new Exception('Invalid invitation status provided.', Response::HTTP_BAD_REQUEST);
+        }
+
+        return Invitation::with([
+            'position:' . self::POSITION_RETURN_COLUMNS,
+            'sender:' . self::PROFILE_RETURN_COLUMNS,
+            'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
+        ])
+            ->when(isset($invitationStatus), function ($query) use ($invitationStatus) {
+                $query->where('invitation_status', $invitationStatus);
+            })
+            ->where([
+                'receiver_profile_id' => $receiverId
             ])->get();
     }
 
@@ -153,7 +151,7 @@ class InvitationService
     public function createInvitation(array $data, int $senderId): Invitation
     {
         if ($data['receiver_profile_id'] === $senderId) {
-            throw new Exception('Users cannot send invitations to themselves.', Response::HTTP_BAD_REQUEST);
+            throw new Exception('Unable to send invitations to themselves.', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         // check if current user has an administrative role
@@ -168,7 +166,7 @@ class InvitationService
             ->exists();
 
         if (!$isUserOrgAdmin) {
-            throw new Exception('Unauthorized access.', Response::HTTP_FORBIDDEN);
+            throw new Exception('Unauthorized access to create invitation for this position.', Response::HTTP_FORBIDDEN);
         }
 
         // create a new invitation
