@@ -181,14 +181,14 @@
         $("#uni-name").text(stateProfile.programmes[0].organization.company_name)
         $("#programme").text(stateProfile.programmes[0].programme_name)
 
-        let defaultProfile = `{{ asset(env('PROFILE_IMAGE_URL')) }}/default.png`;
-        let profileUrl = `{{ asset(env('PROFILE_IMAGE_URL')) }}/${stateProfile.profile_image}`;
+        let defaultProfile = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/default.png`;
+        let profileUrl = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/${stateProfile.profile_image}`;
         let validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultProfile)
         $("#profileImage").css('background-image', `url("${validProfileUrl}")`);
 
-        defaultProfile = `{{ asset(env('COVER_IMAGE_URL')) }}/default.png`;
-        profileUrl = `{{ asset(env('COVER_IMAGE_URL')) }}/${stateProfile.cover_image}`;
-        validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultProfile)
+        let defaultCover = `{{ asset('storage/' . env('COVER_IMAGE_URL') . '/default.png') }}`;
+        profileUrl = `{{ asset('storage/' . env('COVER_IMAGE_URL')) }}/${stateProfile.cover_image}`;
+        validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultCover)
         $("#coverImage").css('background-image', `url("${validProfileUrl}")`);
     }
 
