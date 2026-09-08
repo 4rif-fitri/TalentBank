@@ -1,15 +1,31 @@
+import { useEffect, useState } from "react";
+import api from "../lib/axios";
+
 export default function Home() {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    const getData = async () => {
+        try {
+            const response = await api.get(
+                "/api/profile/getAllStudentUserProfiles",
+            );
+
+            console.log(response.data);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
-        <ul className="w-full bg-danger menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
-            <li>
-                <a>Item 1</a>
-            </li>
-            <li>
-                <a>Item 2</a>
-            </li>
-            <li>
-                <a>Item 3</a>
-            </li>
-        </ul>
+        <div>
+            <h1>TalentBank</h1>
+
+
+        </div>
     );
 }

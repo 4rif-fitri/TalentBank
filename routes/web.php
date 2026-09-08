@@ -104,6 +104,9 @@ Route::middleware('auth')->group(function () {
 | Here is where you can register API routes for your application.
 |
 */
+Route::get('/aaa', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.asd');
+
+
 Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(function () {
 
     Route::prefix('profile')->group(function () {
