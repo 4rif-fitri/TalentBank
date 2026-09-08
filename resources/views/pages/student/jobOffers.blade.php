@@ -85,10 +85,13 @@
                         <button data-status="Accepted" class="nav-link text-body">Accepted</button>
                     </li>
                     <li class="nav-item">
-                        <button data-status="Declined" class="nav-link text-body">Declined</button>
+                        <button data-status="Rejected" class="nav-link text-body">Rejected</button>
                     </li>
                     <li class="nav-item">
                         <button data-status="Expired" class="nav-link text-body">Expired</button>
+                    </li>
+                    <li class="nav-item">
+                        <button data-status="Withdrawn" class="nav-link text-body">Withdrawn</button>
                     </li>
                 </ul>
             </div>
@@ -152,7 +155,7 @@
             success: function (response) {
                 debug.log("getJobOfferById", response.data)
 
-                $("#shortlistContent").empty().append(xjobOffer.student.mainContent(response.data))
+                $("#shortlistContent").empty().append(xjobOffer.recruiter.mainContent(response.data))
 
             },
             error: function (response) {
@@ -175,10 +178,12 @@
             type: "POST",
             data,
             success: function (response) {
-                debug.log("acceptJobOffer", response.data)
+                xdebug.log("acceptJobOffer", response.data)
+                xalert.success("Job Offer Accepted", "You have successfully accepted the job offer.")
             },
             error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
+                xdebug.error(xhr.responseJSON.message)
+                xalert.error("Error", xhr.responseJSON.message)
             }
         });
     }
@@ -197,10 +202,12 @@
             data,
             type: "POST",
             success: function (response) {
-                debug.log("acceptJobOffer", response.data)
+                xdebug.log("rejectJobOffer", response.data)
+                xalert.success("Job Offer Rejected", "You have successfully rejected the job offer.")
             },
             error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
+                xdebug.error(xhr.responseJSON.message)
+                xalert.error("Error", xhr.responseJSON.message)
             }
         });
     }
@@ -227,6 +234,15 @@
         $("body").toggleClass("filter-open");
     });
     getJobOffersByStatusAndReceiverId(currentStatus)
+
+    $(document).on("click", ".btnAcceptInvitation", function () {
+        let id = $(this).data("id")
+        acceptJobOffer(id)
+    })
+    $(document).on("click", ".btnRejectInvitation", function () {
+        let id = $(this).data("id")
+        rejectJobOffer(id)
+    })
 
     // getJobOffersByStatusAndReceiverId()
     // getJobOfferById(4)

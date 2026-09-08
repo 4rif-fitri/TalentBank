@@ -61,6 +61,7 @@ export let student = {
                             <i class="fa-regular fa-message text-primary"></i>
                             Message Company
                         </button>
+                        <!--
                         <div class="btnContainer">
                             <button ${inv.invitation_status == "Pending" ? "" : "disabled"}  data-id=${inv.id} class="btn btn-outline-danger btnRejectInvitation">
                                 <i class="fa-regular fa-trash-can text-danger"></i>
@@ -71,7 +72,7 @@ export let student = {
                                 Accept Invitation
                             </button>
                         </div>
-
+                        -->
                     </div>
                 </div>
 
@@ -172,12 +173,12 @@ export let common = {
                             <i class="fa-solid fa-calendar-check bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
                                 style="width: 2rem; height: 2rem; color: rgb(0, 0, 0); font-size: 1rem; border-radius: 50%;"></i>
                             <div>
-                                <small class="text-muted">nterview mode</small>
+                                <small class="text-muted">Interview mode</small>
                                 <h5 class="fw-semibold">${data.interview_mode}</h5>
                             </div>
                         </div>
 
-                        ${conditionRendering(data.interview_mode, data)}
+                        ${this.conditionRendering(data.interview_mode, data)}
 
                     </div>
 
@@ -187,12 +188,12 @@ export let common = {
                             <div class="d-flex align-items-center gap-2 mb-2 mb-xl-0">
                                 <i class="fa-solid fa-calendar-check bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
                                     style="width: 2rem; height: 2rem; color: rgb(0, 0, 0); font-size: 1rem; border-radius: 50%;"></i>
-                                <small class="text-muted">${formatDate(data.scheduled_at)}</small>
+                                <small class="text-muted">${this.formatDate(data.scheduled_at)}</small>
                             </div>
                             <div class="d-flex align-items-center gap-2 mb-2 mb-xl-0">
                                 <i class="fa-solid fa-calendar-check bg-secondary text-white p-2 d-flex justify-content-center align-items-center"
                                     style="width: 2rem; height: 2rem; color: rgb(0, 0, 0); font-size: 1rem; border-radius: 50%;"></i>
-                                <small class="text-muted">${formatTime(data.scheduled_at)}</small>
+                                <small class="text-muted">${this.formatTime(data.scheduled_at)}</small>
                             </div>
                         </div>
                     </div>
