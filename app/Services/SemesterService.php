@@ -34,10 +34,6 @@ class SemesterService
             throw new Exception('No file path found for semester results uploads.', Response::HTTP_NOT_FOUND);
         }
 
-        if (explode('/', $file->getMimeType())[1] != 'pdf') {
-            throw new Exception('File must be in pdf format.', Response::HTTP_BAD_REQUEST);
-        }
-
         $data['source_name'] = 'semester';
         $data['source_id'] = $semesterId;
         $data['file_name'] = uniqid('semester_results_') . '_' . str_replace(' ', '_', $file->getClientOriginalName());
@@ -62,7 +58,7 @@ class SemesterService
         ])->exists();
 
         if ($semesterExists) {
-            throw new Exception('Given session for this semester already exists.', Response::HTTP_CONFLICT);
+            throw new Exception('Semester already exists for this session.', Response::HTTP_CONFLICT);
         }
 
         $semester = Semester::create([
@@ -91,6 +87,17 @@ class SemesterService
 
         if (!isset($semester)) {
             throw new Exception('No semester found or access unauthorized.', Response::HTTP_NOT_FOUND);
+        }
+
+        $semesterExists = Semester::where([
+            'education_id' => $semester->education_id,
+            'session' => $data['session']
+        ])
+            ->where('id', '<>', $semesterId)
+            ->exists();
+
+        if ($semesterExists) {
+            throw new Exception('Semester already exists for this session.', Response::HTTP_CONFLICT);
         }
 
         $semester->update([
