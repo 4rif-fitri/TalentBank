@@ -45,8 +45,8 @@
 
 </div>
 
-@push('scripts')
-<script>
+@push('childScript')
+<script type="module">
     function openImagePreview(images, selectedIndex = 0, modalTitle = "Image Preview") {
         console.log({ images, selectedIndex });
 
@@ -62,52 +62,55 @@
 
             $carouselInner.append(`
             <div class="carousel-item ${active}">
-                <img
-                    src="${image.url}"
-                    class="d-block w-100"
+                <img src="${image.url}" class="d-block w-100"
                     alt="${image.title ?? `Image ${index + 1}`}"
-                    style="
-                        max-height: 80vh;
-                        object-fit: contain;
-                    "
-                >
+                    style="max-height: 80vh; object-fit: contain;">
 
-                ${image.title || image.description
-                    ? `
-                            <div class="carousel-caption d-block bg-dark bg-opacity-75 rounded p-2">
-                                ${image.title
-                        ? `<h5>${image.title}</h5>`
-                        : ""
-                    }
+                    ${image.title || image.description ? `
+                        <div class="carousel-caption d-block bg-dark bg-opacity-75 rounded p-2">
+                            ${image.title ? `<h5>${image.title}</h5>` : ""}
 
-                                ${image.description
-                        ? `<p class="d-none d-md-block mb-0">
-                                            ${image.description}
-                                           </p>`
-                        : ""
-                    }
-                            </div>
-                        `
-                    : ""
-                }
-            </div>
-        `);
+                            ${image.description ? `<p class="d-none d-md-block mb-0">
+                                ${image.description} </p>` : ""}
+                        </div>` : "" }
+            </div>`);
         });
 
-        const carouselEl = document.getElementById("imagePreviewCarousel");
+        const carouselEl = document.getElementById("imagePreviewCarouselInner");
 
-        const carousel =
-            bootstrap.Carousel.getOrCreateInstance(carouselEl, {
-                interval: false
-            });
+        const carousel = bootstrap.Carousel.getOrCreateInstance(carouselEl, { interval: false });
 
         carousel.to(selectedIndex);
 
-        bootstrap.Modal
-            .getOrCreateInstance(
-                document.getElementById("imagePreviewModal")
-            )
-            .show();
+        xmodal.show("imagePreviewModal")
     }
+
+    function handlePreviewImage() {
+        let educationId = Number($(this).data("education-id"));
+        console.log(educationId);
+
+        let education = listEducation.find(
+            education => education.id === educationId
+        );
+
+        if (!education) return;
+
+        let images = (education.media ?? []).map(media => ({
+            url: `{{ asset('storage/' . env('EDUCATION_FILE_URL')) }}/${media.file_name}`,
+            title: media.title ?? "",
+            description: media.description ?? ""
+        }));
+
+        let selectedIndex = Number($(this).data("index") ?? 0);
+
+        openImagePreview(
+            images,
+            selectedIndex,
+            "Education Media"
+        );
+    }
+
+    $(document).on("click", ".image.education-preview-image", handlePreviewImage);
+
 </script>
 @endpush.

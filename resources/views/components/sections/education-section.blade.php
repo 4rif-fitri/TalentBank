@@ -50,6 +50,7 @@
 </section>
 
 <x-modals.education-modal />
+<x-modals.imagePreviewModal />
 
 @push('childScript')
 <script>
@@ -212,6 +213,13 @@
         let educationId = $(this).data("educationId");
         let currentEducation = listEducation.find(education => education.id === educationId);
         xmodal.show("educationModal");
+    }
+
+    function handlePreviewImage() {
+        let imageUrl = $(this).attr("src");
+        openImagePreview(imageUrl)
+
+        xmodal.show("imagePreviewModal");
     }
 
     $(document).on("click", ".btnEditEducation", handleEditEducation);
