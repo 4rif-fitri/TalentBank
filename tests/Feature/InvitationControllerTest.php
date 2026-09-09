@@ -391,6 +391,9 @@ class InvitationControllerTest extends TestCase
             ->assertJsonPath('data.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.receiver.id', $this->receiverProfile->id);
+
+        $this->assertDatabaseCount('invitations', 1)
+            ->assertDatabaseHas('invitations', $this->validInvitationPayload());
     }
 
     public function test_create_invitation_fails_without_required_fields(): void
@@ -402,6 +405,8 @@ class InvitationControllerTest extends TestCase
                 'status' => Response::HTTP_BAD_REQUEST,
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseEmpty('invitations');
     }
 
     public function test_create_invitation_fails_when_user_not_admin_of_current_org(): void
@@ -423,6 +428,8 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Unauthorized access to create invitation for this position.',
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseEmpty('invitations');
     }
 
     public function test_create_invitation_fails_when_user_sends_invitation_to_themselves(): void
@@ -437,6 +444,8 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Unable to send invitations to themselves.',
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseEmpty('invitations');
     }
 
     public function test_create_invitation_fails_with_expires_at_before_current_time(): void
@@ -451,7 +460,8 @@ class InvitationControllerTest extends TestCase
             ])
             ->assertJsonPath('data', null);
 
-        $this->assertStringContainsString('expires at', $response->json('message'));
+        $this->assertDatabaseEmpty('invitations')
+            ->assertStringContainsString('expires at', $response->json('message'));
     }
 
     public function test_create_invitation_fails_with_non_existing_position_id(): void
@@ -467,6 +477,7 @@ class InvitationControllerTest extends TestCase
             ->assertJsonPath('data', null);
 
         $this->assertStringContainsString('position id', $response->json('message'));
+        $this->assertDatabaseEmpty('invitations');
     }
 
     public function test_create_invitation_fails_with_position_id_of_other_org(): void
@@ -486,6 +497,8 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Unauthorized access to create invitation for this position.',
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseEmpty('invitations');
     }
 
     public function test_org_admin_can_update_invitation(): void
@@ -509,6 +522,14 @@ class InvitationControllerTest extends TestCase
             ->assertJsonPath('data.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.invitation_message', 'Updated message.');
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+            'invitation_message' => 'Updated message.',
+            'invitation_status' => AppConstants::INVITATION_STATUS['PENDING'],
+        ]);
     }
 
     public function test_org_admin_can_update_expired_invitation(): void
@@ -536,6 +557,12 @@ class InvitationControllerTest extends TestCase
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.invitation_message', 'Updated message.')
             ->assertJsonPath('data.invitation_status', AppConstants::INVITATION_STATUS['PENDING']);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'invitation_message' => 'Updated message.',
+            'invitation_status' => AppConstants::INVITATION_STATUS['PENDING'],
+        ]);
     }
 
     public function test_update_invitation_fails_without_required_fields(): void
@@ -549,11 +576,16 @@ class InvitationControllerTest extends TestCase
                 'status' => Response::HTTP_BAD_REQUEST,
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseCount('invitations', 1)
+            ->assertDatabaseHas('invitations', $this->validInvitationPayload([
+                'id' => $invitation->id
+            ]));
     }
 
     public function test_update_invitation_fails_with_non_existing_invitation_id(): void
     {
-        Invitation::factory()->create($this->validInvitationPayload());
+        $invitation = Invitation::factory()->create($this->validInvitationPayload());
 
         $response = $this->putJson(route('invitations.update', ['id' => 0]), [
             'invitation_message' => 'Updated message.',
@@ -566,6 +598,11 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation not found or access unauthorized.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseCount('invitations', 1)
+            ->assertDatabaseHas('invitations', $this->validInvitationPayload([
+                'id' => $invitation->id
+            ]));
     }
 
     public function test_update_invitation_fails_when_existing_invitation_status_is_not_pending_or_expired(): void
@@ -585,6 +622,11 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation accepted, rejected or withdrawn cannot be updated anymore.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('invitations', $this->validInvitationPayload([
+            'id' => $invitation->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['ACCEPTED']
+        ]));
     }
 
     public function test_update_invitation_fails_when_updating_other_sender_invitation(): void
@@ -606,6 +648,12 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation not found or access unauthorized.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('invitations', $this->validInvitationPayload([
+            'id' => $invitation->id,
+            'sender_profile_id' => $otherSenderProfile->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['PENDING']
+        ]));
     }
 
     public function test_update_invitation_fails_with_expires_at_before_current_time(): void
@@ -624,6 +672,10 @@ class InvitationControllerTest extends TestCase
             ->assertJsonPath('data', null);
 
         $this->assertStringContainsString('expires at', $response->json('message'));
+        $this->assertDatabaseHas('invitations', $this->validInvitationPayload([
+            'id' => $invitation->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['PENDING']
+        ]));
     }
 
     public function test_receiver_can_accept_invitation(): void
@@ -646,6 +698,12 @@ class InvitationControllerTest extends TestCase
             ])
             ->assertJsonPath('data.id', $invitation->id)
             ->assertJsonPath('data.invitation_status', AppConstants::INVITATION_STATUS['ACCEPTED']);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['ACCEPTED'],
+        ]);
     }
 
     public function test_receiver_accept_invitation_fails_with_non_existing_invitation_id(): void
@@ -664,6 +722,11 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation not found or access unauthorized.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseCount('invitations', 1)
+            ->assertDatabaseHas('invitations', [
+                'invitation_status' => AppConstants::INVITATION_STATUS['PENDING'],
+            ]);
     }
 
     public function test_receiver_accept_invitation_fails_when_existing_invitation_status_is_not_pending(): void
@@ -684,6 +747,11 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation accepted, rejected or withdrawn cannot be updated anymore.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['WITHDRAWN'],
+        ]);
     }
 
     public function test_accept_invitation_fails_when_user_is_not_receiver(): void
@@ -698,6 +766,12 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation not found or access unauthorized.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['PENDING'],
+        ]);
     }
 
     public function test_receiver_can_reject_invitation(): void
@@ -720,6 +794,12 @@ class InvitationControllerTest extends TestCase
             ])
             ->assertJsonPath('data.id', $invitation->id)
             ->assertJsonPath('data.invitation_status', AppConstants::INVITATION_STATUS['REJECTED']);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['REJECTED'],
+        ]);
     }
 
     public function test_receiver_reject_invitation_fails_with_non_existing_invitation_id(): void
@@ -738,6 +818,11 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation not found or access unauthorized.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseCount('invitations', 1)
+            ->assertDatabaseHas('invitations', [
+                'invitation_status' => AppConstants::INVITATION_STATUS['PENDING'],
+            ]);
     }
 
     public function test_receiver_reject_invitation_fails_when_existing_invitation_status_is_not_pending(): void
@@ -758,6 +843,11 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation accepted, rejected or withdrawn cannot be updated anymore.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['ACCEPTED'],
+        ]);
     }
 
     public function test_reject_invitation_fails_when_user_is_not_receiver(): void
@@ -772,6 +862,12 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation not found or access unauthorized.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['PENDING'],
+        ]);
     }
 
     public function test_sender_can_withdraw_invitation(): void
@@ -790,6 +886,12 @@ class InvitationControllerTest extends TestCase
             ])
             ->assertJsonPath('data.id', $invitation->id)
             ->assertJsonPath('data.invitation_status', AppConstants::INVITATION_STATUS['WITHDRAWN']);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['WITHDRAWN'],
+        ]);
     }
 
     public function test_sender_withdraw_invitation_fails_with_non_existing_invitation_id(): void
@@ -804,6 +906,11 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation not found or access unauthorized.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseCount('invitations', 1)
+            ->assertDatabaseHas('invitations', [
+                'invitation_status' => AppConstants::INVITATION_STATUS['PENDING'],
+            ]);
     }
 
     public function test_sender_withdraw_invitation_fails_when_existing_invitation_status_is_not_pending(): void
@@ -820,6 +927,12 @@ class InvitationControllerTest extends TestCase
                 'message' => 'Invitation accepted, rejected or withdrawn cannot be updated anymore.'
             ])
             ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('invitations', [
+            'id' => $invitation->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'invitation_status' => AppConstants::INVITATION_STATUS['ACCEPTED'],
+        ]);
     }
 
     public function test_withdraw_invitation_fails_when_user_is_not_sender(): void
