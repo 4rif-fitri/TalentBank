@@ -25,7 +25,7 @@ class OrganizationUserFactory extends Factory
             'organization_id' => Organization::inRandomOrder()->first()->id,
             'user_profile_id' => UserProfile::inRandomOrder()->first()->id,
             'role_id' => Role::inRandomOrder()->first()->id,
-            'status' => $this->faker->boolean()
+            'status' => 1
         ];
     }
 }

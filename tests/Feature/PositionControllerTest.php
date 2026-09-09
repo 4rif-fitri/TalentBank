@@ -319,6 +319,8 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('positions');
     }
 
     public function test_create_position_fails_with_invalid_employment_type(): void
@@ -331,6 +333,8 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('positions');
     }
 
     public function test_create_position_fails_when_organization_does_not_exist(): void
@@ -343,6 +347,8 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('positions');
     }
 
     public function test_create_position_fails_when_user_is_not_organization_admin(): void
@@ -356,6 +362,8 @@ class PositionControllerTest extends TestCase
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'Unauthorized access to create position.',
             ]);
+
+        $this->assertDatabaseEmpty('positions');
     }
 
     public function test_org_admin_can_update_position(): void
@@ -460,6 +468,12 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseHas('positions', [
+            'id' => $position->id,
+            'organization_id' => $this->organization->id,
+            'user_profile_id' => $this->adminProfile->id
+        ]);
     }
 
     public function test_update_position_fails_when_user_is_not_organization_admin(): void
@@ -478,10 +492,21 @@ class PositionControllerTest extends TestCase
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'Unauthorized access to update position.',
             ]);
+
+        $this->assertDatabaseHas('positions', [
+            'id' => $position->id,
+            'organization_id' => $this->organization->id,
+            'user_profile_id' => $this->adminProfile->id
+        ]);
     }
 
     public function test_update_position_fails_with_invalid_position_id(): void
     {
+        $position = Position::factory()->create([
+            'organization_id' => $this->organization->id,
+            'user_profile_id' => $this->adminProfile->id,
+        ]);
+
         $response = $this->putJson(route('positions.update', ['id' => 0]), $this->validPositionPayload());
 
         $response->assertStatus(Response::HTTP_NOT_FOUND)
@@ -489,5 +514,11 @@ class PositionControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Position not found.',
             ]);
+
+        $this->assertDatabaseHas('positions', [
+            'id' => $position->id,
+            'organization_id' => $this->organization->id,
+            'user_profile_id' => $this->adminProfile->id
+        ]);
     }
 }
