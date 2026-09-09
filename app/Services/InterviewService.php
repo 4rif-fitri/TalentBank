@@ -213,8 +213,8 @@ class InterviewService
             'interview_mode' => $data['interview_mode'],
             'location' => $data['location'],
             'meeting_url' => $data['meeting_url'],
-            'interview_result' => $data['interview_result'],
-            'recruiter_comment' => $data['recruiter_comment'],
+            'interview_result' => $data['interview_result'] ?? $interview->interview_result,
+            'recruiter_comment' => $data['recruiter_comment'] ?? null,
         ]);
 
         return $interview->unsetRelation('position');

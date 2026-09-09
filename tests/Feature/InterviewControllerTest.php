@@ -566,6 +566,228 @@ class InterviewControllerTest extends TestCase
         ]);
     }
 
+    public function test_org_admin_can_update_to_online_interview_without_nullable_fields_except_location(): void
+    {
+        $interview = Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+            'scheduled_at' => now()->addDays(7)->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Interview updated successfully.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[1])
+            ->assertJsonPath('data.location', 'HQ Room 3')
+            ->assertJsonPath('data.meeting_url', null);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+        ]);
+    }
+
+    public function test_org_admin_can_update_to_on_site_interview_without_nullable_fields_except_meeting_url(): void
+    {
+        $interview = Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://new.example.com/meet',
+            'scheduled_at' => now()->addDays(7)->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Interview updated successfully.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[0])
+            ->assertJsonPath('data.meeting_url', 'https://new.example.com/meet')
+            ->assertJsonPath('data.location', null);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://new.example.com/meet',
+        ]);
+    }
+
+    public function test_update_to_on_site_interview_fails_without_location(): void
+    {
+        $interview = Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'scheduled_at' => now()->addDays(7)->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST,
+            ])
+            ->assertJsonPath('data', null);
+
+        $this->assertStringContainsString('location', $response->json('message'));
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+        ]);
+    }
+
+    public function test_update_to_online_interview_fails_without_meeting_url(): void
+    {
+        $interview = Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'scheduled_at' => now()->addDays(7)->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST,
+            ])
+            ->assertJsonPath('data', null);
+
+        $this->assertStringContainsString('meeting url', $response->json('message'));
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+        ]);
+    }
+
+    public function test_update_interview_fails_without_required_fields(): void
+    {
+        $interview = Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+            'interview_result' => AppConstants::INTERVIEW_RESULTS['PENDING'],
+            'recruiter_comment' => 'Old note',
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]));
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST
+            ])
+            ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+            'interview_result' => AppConstants::INTERVIEW_RESULTS['PENDING'],
+            'recruiter_comment' => 'Old note',
+        ]);
+    }
+
     public function test_update_interview_fails_when_interview_is_completed(): void
     {
         $interview = Interview::factory()->create([

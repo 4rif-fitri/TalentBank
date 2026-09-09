@@ -52,14 +52,14 @@ class ShortlistController extends Controller
     /**
      * Handles request to delete shortlist entry
      * 
-     * @param int $shortlistId
+     * @param int $id
      * @return JsonResponse
      */
-    public function delete(int $shortlistId): JsonResponse
+    public function delete(int $id): JsonResponse
     {
         $userProfileId = session('user_profile_id');
-        $shortlist = $this->shortlistService->deleteShortlist($shortlistId, $userProfileId);
+        $shortlist = $this->shortlistService->deleteShortlist($id, $userProfileId);
 
-        return ApiResponse::success('User profile shortlisted successfully.', $shortlist)->toJsonResponse();
+        return ApiResponse::success('User profile removed successfully from shortlist.', $shortlist)->toJsonResponse();
     }
 }

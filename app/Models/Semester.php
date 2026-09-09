@@ -18,6 +18,10 @@ class Semester extends Model
         'updated_at',
     ];
 
+    protected $casts = [
+        'gpa' => 'decimal:2'
+    ];
+
     public function media()
     {
         return $this->morphOne(Media::class, 'source', 'source_name', 'source_id');
