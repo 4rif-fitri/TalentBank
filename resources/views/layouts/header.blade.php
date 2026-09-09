@@ -15,55 +15,6 @@
         profileImageUrl: "{{ asset('storage/' .env('PROFILE_IMAGE_URL')) }}",
         educationFileUrl: "{{ asset('storage/' .env('EDUCATION_FILE_URL')) }}",
         organizationLogoUrl: "{{ asset('storage/' .env('ORGANIZATION_LOGO_URL')) }}",
-        routes: {
-            profile: {
-                show: "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}",
-                update: "{{ route('profile.update') }}",
-                updateAbout: "{{ route('profile.updateAboutField') }}",
-                uploadProfileImage: "{{ route('profile.uploadProfileImage') }}",
-                uploadCoverImage: "{{ route('profile.uploadCoverImage') }}"
-            },
-            socialMedia: {
-                getAllSocialMedia: "{{ route('social-media.getAllSocialMedia') }}",
-                store: "{{ route('social-media.store') }}",
-                update: "{{ route('social-media.update', ['id' => '__ID__']) }}",
-                delete: "{{ route('social-media.delete', ['id' => '__ID__']) }}",
-            },
-            education: {
-                getEducationByUserProfileId: "{{ route('education.getEducationByUserProfileId',['id' => '__ID__']) }}",
-                getEducationById: "{{ route('education.getEducationById', ['id' => '__ID__']) }}",
-                educationStore: "{{ route('education.store') }}",
-                educationUpdate: "{{ route('education.update', ['id' => '__ID__']) }}",
-                educationDelete: "{{ route('education.delete', ['id' => '__ID__']) }}",
-                getAllFieldOfStudies: "{{ route('programme.getAllFieldOfStudies') }}",
-                getAllQualifications: "{{ route('programme.getAllQualifications') }}",
-            },
-            languages: {
-                getAllLanguages: "{{ route('languages.getAllLanguages') }}",
-                languagesStore: "{{ route('languages.store') }}",
-                languagesUpdate: "{{ route('languages.update',['id' => '__ID__']) }}",
-                languagesDelete: "{{ route('languages.delete',['id' => '__ID__']) }}",
-            },
-            skills: {
-                getAllSkills: "{{ route('skills.getAllSkills') }}",
-                skillsStore: "{{ route('skills.store') }}",
-                skillsUpdate: "{{ route('skills.update',['id' => '__ID__']) }}",
-                skillsDelete: "{{ route('skills.delete',['id' => '__ID__']) }}",
-            },
-            semesters: {
-                uploadResults: "{{ route('semester.uploadResults',['id' => '__ID__']) }}",
-                semesterStore: "{{ route('semester.store') }}",
-                semesterUpdate: "{{ route('semester.update',['id' => '__ID__']) }}",
-
-            },
-            programmes: {
-                getProgrammesByUserProfileId: "{{ route('programme.getProgrammesByUserProfileId',['id' => '__ID__']) }}",
-            },
-            organizations: {
-                getAllOrganizations: "{{ route('organization.getAllOrganizations') }}",
-            }
-        },
-
     };
 </script>
 

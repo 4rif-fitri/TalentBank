@@ -721,7 +721,7 @@
     }
 
     function _delete(id) {
-        let url = "{{ route('shortlists.delete', ['shortlistId' => '__ID__']) }}"
+        let url = "{{ route('shortlists.delete', ['id' => '__ID__']) }}"
         url = url.replace("__ID__", id)
 
         let data = {
