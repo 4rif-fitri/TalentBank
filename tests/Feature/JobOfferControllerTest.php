@@ -453,6 +453,8 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('job_offers');
     }
 
     public function test_create_job_offer_fails_with_expires_at_in_the_past(): void
@@ -465,6 +467,8 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('job_offers');
     }
 
     public function test_create_job_offer_fails_when_end_date_before_start_date(): void
@@ -478,6 +482,8 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('job_offers');
     }
 
     public function test_create_job_offer_fails_when_user_is_not_organization_admin(): void
@@ -506,6 +512,8 @@ class JobOfferControllerTest extends TestCase
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'Unauthorized access to create job offer.',
             ]);
+
+        $this->assertDatabaseEmpty('job_offers');
     }
 
     public function test_org_admin_can_update_job_offer(): void
@@ -825,6 +833,11 @@ class JobOfferControllerTest extends TestCase
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'message' => 'Job offer accepted, rejected or withdrawn cannot be updated anymore.',
             ]);
+
+        $this->assertDatabaseHas('job_offers', [
+            'id' => $jobOffer->id,
+            'offer_status' => AppConstants::JOB_OFFER_STATUS['WITHDRAWN'],
+        ]);
     }
 
     public function test_reject_job_offer_fails_when_status_is_not_pending(): void
@@ -845,6 +858,11 @@ class JobOfferControllerTest extends TestCase
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'message' => 'Job offer accepted, rejected or withdrawn cannot be updated anymore.',
             ]);
+
+        $this->assertDatabaseHas('job_offers', [
+            'id' => $jobOffer->id,
+            'offer_status' => AppConstants::JOB_OFFER_STATUS['ACCEPTED'],
+        ]);
     }
 
     public function test_withdraw_job_offer_fails_when_status_is_not_pending(): void
@@ -863,11 +881,16 @@ class JobOfferControllerTest extends TestCase
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'message' => 'Job offer accepted, rejected or withdrawn cannot be updated anymore.',
             ]);
+
+        $this->assertDatabaseHas('job_offers', [
+            'id' => $jobOffer->id,
+            'offer_status' => AppConstants::JOB_OFFER_STATUS['REJECTED'],
+        ]);
     }
 
     public function test_accept_job_offer_fails_with_invalid_job_offer_id(): void
     {
-        JobOffer::factory()->create([
+        $jobOffer = JobOffer::factory()->create([
             'position_id' => $this->position->id,
             'sender_profile_id' => $this->senderProfile->id,
             'receiver_profile_id' => $this->receiverProfile->id,
@@ -883,11 +906,16 @@ class JobOfferControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Job offer not found or access unauthorized.',
             ]);
+
+        $this->assertDatabaseHas('job_offers', [
+            'id' => $jobOffer->id,
+            'offer_status' => AppConstants::JOB_OFFER_STATUS['PENDING'],
+        ]);
     }
 
     public function test_reject_job_offer_fails_with_invalid_job_offer_id(): void
     {
-        JobOffer::factory()->create([
+        $jobOffer = JobOffer::factory()->create([
             'position_id' => $this->position->id,
             'sender_profile_id' => $this->senderProfile->id,
             'receiver_profile_id' => $this->receiverProfile->id,
@@ -903,11 +931,16 @@ class JobOfferControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Job offer not found or access unauthorized.',
             ]);
+
+        $this->assertDatabaseHas('job_offers', [
+            'id' => $jobOffer->id,
+            'offer_status' => AppConstants::JOB_OFFER_STATUS['PENDING'],
+        ]);
     }
 
     public function test_withdraw_job_offer_fails_with_invalid_job_offer_id(): void
     {
-        JobOffer::factory()->create([
+        $jobOffer = JobOffer::factory()->create([
             'position_id' => $this->position->id,
             'sender_profile_id' => $this->senderProfile->id,
             'receiver_profile_id' => $this->receiverProfile->id,
@@ -921,5 +954,10 @@ class JobOfferControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Job offer not found or access unauthorized.',
             ]);
+
+        $this->assertDatabaseHas('job_offers', [
+            'id' => $jobOffer->id,
+            'offer_status' => AppConstants::JOB_OFFER_STATUS['PENDING'],
+        ]);
     }
 }
