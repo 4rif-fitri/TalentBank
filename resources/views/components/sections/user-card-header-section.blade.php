@@ -248,6 +248,9 @@
             $("#mainTabContent").addClass("d-none");
             $("#resultTabContent").removeClass("d-none");
             $("#educationsTabContent").addClass("d-none");
+
+           $(document).trigger("loadResult");
+
         }
 
         if (target === "education") {
@@ -255,6 +258,8 @@
             $("#resultTabContent").addClass("d-none");
             $("#educationsTabContent").removeClass("d-none");
             // handleLoadEducations()
+
+
         }
     }
 

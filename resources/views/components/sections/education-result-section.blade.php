@@ -27,10 +27,9 @@
     </div>
 </section>
 
-@push('scripts')
-<script>
+@push('childScript')
 
-    $(document).ready(function(){
+<script>
 
         let semesterResultsLoaded = false;
 
@@ -161,9 +160,7 @@
             return `<span class="badge text-bg-secondary">No Result</span>`;
         }
 
-        function loadSemesterResults(forceReload = false) {
-            if (semesterResultsLoaded && !forceReload) return
-
+        function loadSemesterResults() {
             $("#semesterResultList").html(templateLoading());
 
             let url = "{{ route('programme.getProgrammesByUserProfileId', ['id' => '__ID__']) }}";
@@ -172,10 +169,9 @@
             $.ajax({
                 url: url,
                 type: "GET",
-                dataType: "json",
 
                 success: function (response) {
-                    // console.log("Semester result response:", response);
+                    console.log("Semester result response:", response);
                     let programmes = response.data ?? [];
                     renderSemesterResults(programmes);
                     semesterResultsLoaded = true;
@@ -281,15 +277,26 @@
             loadSemesterResults();
         });
 
-        window.refreshSemesterResults = function () {
-            semesterResultsLoaded = false;
-            loadSemesterResults(true);
-        };
 
         $(document).on("education:updated", function () {
             refreshSemesterResults();
         })
-    });
+
+        $(document).on("profile:loaded", function () {
+        })
+
+        function handleAddSemester(){
+            xmodal.show("semesterModal")
+        }
+
+        function handleAddResult(){
+            xmodal.show("addResultModal")
+        }
+
+        $(document).on("click", "#addSemester", handleAddSemester)
+        $(document).on("click","#addResult", handleAddResult)
+        loadSemesterResults();
+
 </script>
 
 @endpush

@@ -442,3 +442,101 @@ body.sidebar-collapsed .main-content {
         width: 220px;
     }
 }
+
+.user-card {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.user-card-left {
+    flex: 1;
+    min-width: 0;
+    /* penting untuk Owl Carousel */
+}
+
+.user-card-right {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 991px) {
+    .user-card {
+        flex-direction: column;
+    }
+
+    .user-card-left,
+    .user-card-right {
+        width: 100%;
+    }
+}
+
+#educationsContainer {
+    position: relative;
+    padding-bottom: 35px;
+}
+
+/* NAV */
+#educationsContainer .owl-nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+#educationsContainer .owl-nav button {
+    width: 38px;
+    height: 38px;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 50% !important;
+    background: #fff !important;
+    color: #333 !important;
+    font-size: 22px !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s ease;
+}
+
+#educationsContainer .owl-nav button:hover {
+    background: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: #fff !important;
+}
+
+#educationsContainer .owl-nav button.disabled {
+    opacity: .4;
+    cursor: not-allowed;
+}
+
+/* DOTS */
+#educationsContainer .owl-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+#educationsContainer .owl-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 50%;
+    background: #ced4da !important;
+    transition: all .2s ease;
+}
+
+#educationsContainer .owl-dot span {
+    display: none;
+}
+
+#educationsContainer .owl-dot.active {
+    width: 22px;
+    border-radius: 10px;
+    background: #0d6efd !important;
+}

@@ -13,7 +13,7 @@
 
         <x-sections.user-card-header-section />
 
-        <div id="mainTabContent">
+        <div id="mainTabContent" class="d-none">
             <x-sections.about-section />
         </div>
 
@@ -21,7 +21,7 @@
             <x-sections.education-result-section />
         </div>
 
-        <div id="educationsTabContent" class="d-none">
+        <div id="educationsTabContent">
             <x-sections.education-section />
         </div>
 
@@ -35,7 +35,6 @@
 </div>
 
 <x-modals.profile-modal />
-
 
 <x-modals.active-educations-modal />
 <x-modals.contact-information-modal />
@@ -74,5 +73,7 @@
         let profileId = Number(window.location.pathname.split('/').pop()) || "{{ session("user_profile_id") }}";
         getProfileDataByProfileId(profileId)
     })
+
+
 </script>
 @endsection
