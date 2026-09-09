@@ -186,12 +186,22 @@
 <script>
     let listOfOrganizations = [];
     let listOfSkills = [];
+    let deletedUserSkillIds = [];
 
     let existingEducationMedia = [];
     let deletedEducationMediaIds = [];
     let newEducationMedia = [];
 </script>
 <script type="module">
+    function getEducationDetail(eduId) {
+        let url = "{{ route('education.getEducationById', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", eduId);
+
+        return $.ajax({
+            url,
+            type: "GET",
+        });
+    }
 
     function getProgrammesByOrganization(id){
         let url = "{{ route('programme.getProgrammesByOrgId', ['orgId' => '__ID__']) }}"
@@ -283,51 +293,38 @@
 
         $("#btnSaveEducation").show();
         $("#btnDeleteEducation").show();
-
         $("#btnSaveEducation").text("Update");
-
         $("#educationId").val(eduId);
 
         try {
             let response = await getEducationDetail(eduId);
-
             if (!response) return;
-
             response = response.data;
-            $("#educationInstitution")
-                .val(response.programme.organization.id);
 
-            await getProgrammesByOrganizationId(
-                response.programme.organization.id,
-                response.programme.id
-            );
+            $("#educationInstitution").val(response.programme.organization.id);
 
-            // Other fields
+            await getProgrammesByOrganizationId(response.programme.organization.id, response.programme.id);
+
             $("#cgpaInput").val(response.cgpa);
             $("#descriptionInput").val(response.description);
+            $("#enrollmentStatus").val(response.enrollment_status ?? "Active");
 
-            $("#enrollmentStatus")
-                .val(response.enrollment_status ?? "Active");
-
-            // Skills
             $("#skillContainer").empty();
-
-            (response.skills ?? []).forEach(skill => {
+            response.skills.forEach(userSkill => {
                 $("#skillContainer").append(
-                    createSkillRow(skill.id)
+                    createSkillRow(userSkill.pivot.skill_id,userSkill.pivot.id)
                 );
             });
 
-            // Media
             $("#mediaFileInput").val("");
 
             existingEducationMedia = response.media ?? [];
             deletedEducationMediaIds = [];
             newEducationMedia = [];
+            deletedUserSkillIds = [];
 
             renderEducationMedia(existingEducationMedia);
 
-            // Dates
             xformat.setEducationDate(
                 response.start_date,
                 "#startMonth",
@@ -340,7 +337,6 @@
                 "#endYear"
             );
 
-            // Title
             $("#educationModal .modal-title")
                 .text("Edit Education");
 
@@ -349,16 +345,6 @@
         } catch (error) {
             console.error(error);
         }
-    }
-
-    function getEducationDetail(eduId) {
-        let url = "{{ route('education.getEducationById', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", eduId);
-
-        return $.ajax({
-            url,
-            type: "GET",
-        });
     }
 
     function getAllSkills() {
@@ -489,6 +475,7 @@
 
         return true;
     }
+
     function updateEducation(url, formData) {
 
         formData.append("_method", "PUT");
@@ -557,24 +544,44 @@
         return isValid;
     }
 
-    function createSkillRow(selectedSkillId = "") {
-        let skillOptions = `<option value="" disabled ${!selectedSkillId ? "selected" : ""}>Select Skill</option>`;
+    function createSkillRow(selectedSkillId = "", userSkillId = "") {
+        let skillOptions = `
+        <option value="" disabled ${!selectedSkillId ? "selected" : ""}>
+            Select Skill
+        </option>
+    `;
 
         listOfSkills.forEach(skill => {
-            let selected = String(skill.id) === String(selectedSkillId) ? "selected" : "";
+            let selected =
+                String(skill.id) === String(selectedSkillId)
+                    ? "selected"
+                    : "";
 
-            skillOptions += `<option value="${skill.id}" ${selected}>${skill.skill_name}</option>`;
+            skillOptions += `
+            <option value="${skill.id}" ${selected}>
+                ${skill.skill_name}
+            </option>
+        `;
         });
 
-        return `<div class="input-group skill-row mb-2">
-                    <select class="form-select form-select-sm skill-select" required>
-                        ${skillOptions}
-                    </select>
-                    <button type="button"
-                            class="btn btn-outline-danger remove-skill">
-                        <i class="fa-solid fa-trash"></i>
-                    </button>
-                </div>`;
+        return `
+        <div class="input-group skill-row mb-2">
+            <select
+                class="form-select form-select-sm skill-select"
+                data-user-skill-id="${userSkillId}"
+                required
+            >
+                ${skillOptions}
+            </select>
+
+            <button
+                type="button"
+                class="btn btn-outline-danger remove-skill"
+            >
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </div>
+    `;
     }
 
     function createEducation(formData) {
@@ -722,15 +729,37 @@
         formData.append("start_date", startDate);
         formData.append("end_date", endDate);
         formData.append("enrollment_status",$("#enrollmentStatus").val() || "Active");
-        $(".skill-select").each(function (index) {
-            let skillId = $(this).val();
 
-            if (skillId) {
+        $(".skill-row").each(function (index) {
+            let $select = $(this).find(".skill-select");
+
+            let userSkillId = $select.data("user-skill-id");
+            let skillId = $select.val();
+
+            if (!skillId) {
+                return;
+            }
+
+            // Existing UserSkill
+            if (userSkillId) {
                 formData.append(
                     `updated_user_skills[${index}][id]`,
+                    userSkillId
+                );
+
+                formData.append(
+                    `updated_user_skills[${index}][skill_id]`,
                     skillId
                 );
+
+                return;
             }
+
+            // New UserSkill
+            formData.append(
+                `new_skill_ids[${index}]`,
+                skillId
+            );
         });
 
         newEducationMedia.forEach((file, index) => {
@@ -741,6 +770,13 @@
             formData.append(
                 `deleted_media_ids[${index}]`,
                 mediaId
+            );
+        });
+
+        deletedUserSkillIds.forEach((userSkillId, index) => {
+            formData.append(
+                `deleted_user_skill_ids[${index}]`,
+                userSkillId
             );
         });
 
@@ -755,8 +791,19 @@
         createEducation(formData);
     }
 
-    function removeEducationSkill(){
-        $(this).closest(".skill-row").remove();
+    function handleDeleteEducationSkill(){
+        let $row = $(this).closest(".skill-row");
+        let userSkillId = $row.find(".skill-select").data("user-skill-id");
+
+        if (userSkillId) {
+            userSkillId = Number(userSkillId);
+
+            if (!deletedUserSkillIds.includes(userSkillId)) {
+                deletedUserSkillIds.push(userSkillId);
+            }
+        }
+
+        $row.remove();
     }
 
     $(document).on("click", "#addEducation", handleAddEducation);
@@ -768,7 +815,7 @@
     $(document).on("click", ".btn-remove-existing-media", handleRemoveExistingMedia);
     $(document).on("click", ".btn-remove-new-media", handleRemoveNewMedia);
     $(document).on("click", "#btnDeleteEducation", handleDeleteEducation);
-    $(document).on("click", ".remove-skill", removeEducationSkill);
+    $(document).on("click", ".remove-skill", handleDeleteEducationSkill);
 
     $(document).on("change", "#educationInstitution", function () {
             let organizationId = $(this).val();
