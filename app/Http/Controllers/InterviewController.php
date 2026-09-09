@@ -87,8 +87,8 @@ class InterviewController extends Controller
             'position_id' => ['required', 'integer', 'exists:positions,id'],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
-            'location' => ['nullable', 'string', 'required_if:interview_mode,On-site'],
-            'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,Online'],
+            'location' => ['nullable', 'string', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[1]],
+            'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[0]],
             'recruiter_comment' => ['nullable', 'string'],
             'interviewee_profile_id' => ['required', 'integer', 'exists:user_profiles,id'],
         ]);
@@ -111,8 +111,8 @@ class InterviewController extends Controller
         $validated = $request->validate([
             'scheduled_at' => ['required', 'date', 'after:now'],
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
-            'location' => ['nullable', 'string'],
-            'meeting_url' => ['nullable', 'string', 'url'],
+            'location' => ['nullable', 'string', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[1]],
+            'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[0]],
             'interview_result' => ['nullable', 'string', Rule::in(AppConstants::INTERVIEW_RESULTS)],
             'recruiter_comment' => ['nullable', 'string'],
         ]);
