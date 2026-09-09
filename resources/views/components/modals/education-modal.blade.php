@@ -545,43 +545,25 @@
     }
 
     function createSkillRow(selectedSkillId = "", userSkillId = "") {
-        let skillOptions = `
-        <option value="" disabled ${!selectedSkillId ? "selected" : ""}>
-            Select Skill
-        </option>
-    `;
+        let skillOptions = `<option value="" disabled ${!selectedSkillId ? "selected" : ""}>Select Skill</option>`;
 
         listOfSkills.forEach(skill => {
             let selected =
-                String(skill.id) === String(selectedSkillId)
-                    ? "selected"
-                    : "";
+                String(skill.id) === String(selectedSkillId) ? "selected" : "";
 
-            skillOptions += `
-            <option value="${skill.id}" ${selected}>
-                ${skill.skill_name}
-            </option>
-        `;
+            skillOptions += `<option value="${skill.id}" ${selected}>${skill.skill_name}</option>`;
         });
+        $("#skillContainer").append(`
+                <div class="input-group skill-row mb-2">
+                    <select class="form-select form-select-sm skill-select"
+                        data-user-skill-id="${userSkillId}" required>
+                        ${skillOptions}
+                    </select>
 
-        return `
-        <div class="input-group skill-row mb-2">
-            <select
-                class="form-select form-select-sm skill-select"
-                data-user-skill-id="${userSkillId}"
-                required
-            >
-                ${skillOptions}
-            </select>
-
-            <button
-                type="button"
-                class="btn btn-outline-danger remove-skill"
-            >
-                <i class="fa-solid fa-trash"></i>
-            </button>
-        </div>
-    `;
+                    <button type="button" class="btn btn-outline-danger remove-skill">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>`)
     }
 
     function createEducation(formData) {
@@ -736,30 +718,15 @@
             let userSkillId = $select.data("user-skill-id");
             let skillId = $select.val();
 
-            if (!skillId) {
-                return;
-            }
+            if (!skillId) return;
 
-            // Existing UserSkill
             if (userSkillId) {
-                formData.append(
-                    `updated_user_skills[${index}][id]`,
-                    userSkillId
-                );
-
-                formData.append(
-                    `updated_user_skills[${index}][skill_id]`,
-                    skillId
-                );
-
+                formData.append(`updated_user_skills[${index}][id]`, userSkillId);
+                formData.append(`updated_user_skills[${index}][skill_id]`,skillId);
                 return;
             }
 
-            // New UserSkill
-            formData.append(
-                `new_skill_ids[${index}]`,
-                skillId
-            );
+            formData.append(`new_skill_ids[${index}]`, skillId);
         });
 
         newEducationMedia.forEach((file, index) => {
@@ -767,10 +734,7 @@
         });
 
         deletedEducationMediaIds.forEach((mediaId, index) => {
-            formData.append(
-                `deleted_media_ids[${index}]`,
-                mediaId
-            );
+            formData.append(`deleted_media_ids[${index}]`, mediaId);
         });
 
         deletedUserSkillIds.forEach((userSkillId, index) => {
@@ -818,16 +782,16 @@
     $(document).on("click", ".remove-skill", handleDeleteEducationSkill);
 
     $(document).on("change", "#educationInstitution", function () {
-            let organizationId = $(this).val();
-            if (!organizationId) return;
-            getProgrammesByOrganizationId(organizationId);
-        });
+        let organizationId = $(this).val();
+        if (!organizationId) return;
+        getProgrammesByOrganizationId(organizationId);
+    });
+
     $(document).ready(async function () {
         await getAllOrganizations();
         await getAllSkills();
     });
-        $(document).on("click", "#addSkill", function () {
-            $("#skillContainer").append(createSkillRow());
-        });
+
+    $(document).on("click", "#addSkill", createSkillRow);
 </script>
 @endpush

@@ -4,23 +4,28 @@
         background-position: center;
         background-size: cover;
     }
-    #education{
+    #education, #semesterResults{
         overflow: hidden;
     }
 
-    #educationsContainer .card {
+    #educationsContainer .card,
+    #semesterResultList .card{
         height: 100%;
     }
 
-    #educationsContainer .owl-stage {
+    #educationsContainer .owl-stage,
+    #semesterResultList .owl-stage{
         display: flex;
     }
 
-    #educationsContainer .owl-item {
+    #educationsContainer .owl-item,
+    #semesterResultList .owl-item{
         display: flex;
     }
 
-    #educationsContainer .owl-item>div {
+    #educationsContainer .owl-item>div,
+    #semesterResultList .owl-item>div
+    {
         width: 100%;
     }
 </style>
@@ -107,7 +112,7 @@
         $carousel.empty(xeducation.common.noRecords());
 
         if (!educations || educations.length === 0) {
-            $carousel.html();
+            $carousel.html(xeducation.student.emptyEducation());
             return;
         }
 
@@ -206,7 +211,6 @@
     function handleEditEducation() {
         let educationId = $(this).data("educationId");
         let currentEducation = listEducation.find(education => education.id === educationId);
-
         xmodal.show("educationModal");
     }
 

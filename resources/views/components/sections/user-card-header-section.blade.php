@@ -178,8 +178,16 @@
         $("#name").text(stateProfile.name)
         $("#headline").text(stateProfile.headline)
         $("#profileLocation").text(stateProfile.location)
-        $("#uni-name").text(stateProfile.programmes[0].organization.company_name)
-        $("#programme").text(stateProfile.programmes[0].programme_name)
+
+        if(!stateProfile.programmes[0]){
+            $("#uni-name").hide()
+            $("#programme").hide()
+            $("#seeMoreActiveEducations").hide()
+        }else{
+            $("#uni-name").text(stateProfile.programmes[0]?.organization.company_name)
+            $("#programme").text(stateProfile.programmes[0]?.programme_name)
+        }
+
 
         let defaultProfile = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/default.png`;
         let profileUrl = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/${stateProfile.profile_image}`;

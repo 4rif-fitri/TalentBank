@@ -30,8 +30,13 @@ export let student = {
 
     emptyEducation: () => {
         return `<div class="carousel-item active">
-                    <p class="text-muted text-center py-5 mb-0">
-                    No education added yet</p>
+                    <h3 class="text-center">
+                        <i class="fw-semibold text-center fa-brands fa-google-scholar"></i>
+                    </h3>
+                    <p class="fw-semibold text-center">No Education</p>
+                    <p class="text-muted text-center">
+                        No education information is currently available.
+                    </p>
                 </div>`
     },
 

@@ -60,8 +60,8 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
+@push('childScript')
+<script type="module">
     $(document).on("click", "#addSemester", function () {
 
         let $form = $("#semesterForm");

@@ -13,7 +13,7 @@
 
         <x-sections.user-card-header-section />
 
-        <div id="mainTabContent" class="d-none">
+        <div id="mainTabContent">
             <x-sections.about-section />
         </div>
 
@@ -21,7 +21,7 @@
             <x-sections.education-result-section />
         </div>
 
-        <div id="educationsTabContent">
+        <div id="educationsTabContent" class="d-none">
             <x-sections.education-section />
         </div>
 

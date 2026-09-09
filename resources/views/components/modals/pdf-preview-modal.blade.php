@@ -44,7 +44,7 @@
 </div>
 
 
-@push('scripts')
+@push('childScript')
 
 <script>
 
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded",function () {
             return;
         }
 
-        const pdfModal = bootstrap.Modal .getOrCreateInstance(modalEl);
+        const pdfModal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
         $("#pdfPreviewModalLabel").text(`Semester ${semester} Result`);
         $("#pdfPreviewFrame").attr("src", "").addClass("d-none");

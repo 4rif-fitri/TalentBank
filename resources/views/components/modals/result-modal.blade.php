@@ -134,8 +134,8 @@
     </div>
 </form>
 
-@push('scripts')
-<script>
+@push('childScript')
+<script type="module">
     document.addEventListener('DOMContentLoaded', function () {
 
         let programmesData = [];
@@ -379,8 +379,6 @@
                     resetResultForm();
                     swalfire("Success", response.message ?? "File uploaded successfully", "success")
 
-                    // untuk refresh result list:
-                    refreshSemesterResults();
                 },
 
                 error: function (xhr) {

@@ -1,3 +1,89 @@
+<style>
+    #semesterResultList .owl-stage {
+        display: flex;
+    }
+
+    #semesterResultList .owl-item {
+        display: flex;
+    }
+
+    #semesterResultList .item {
+        width: 100%;
+    }
+
+    #semesterResultList .semester-programme-group {
+        height: 100%;
+    }
+
+     #semesterResultList {
+        position: relative;
+    }
+
+    #semesterResultList .owl-nav {
+        display: flex;
+        align-items: center;
+        position: absolute;
+        width: 100%;
+        gap: .5em;
+        justify-content: center;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    #semesterResultList .owl-nav button.owl-prev,
+    #semesterResultList .owl-nav button.owl-next {
+        pointer-events: auto;
+
+        width: 40px;
+        height: 40px;
+
+        border-radius: 50%;
+        border: 1px solid #dee2e6 !important;
+
+        background: #fff !important;
+        color: #0d6efd !important;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+        transition: all 0.2s ease;
+    }
+
+    #semesterResultList .owl-nav button.owl-prev:hover,
+    #semesterResultList .owl-nav button.owl-next:hover {
+        background: #0d6efd !important;
+        color: #fff !important;
+    }
+
+    #semesterResultList .owl-nav button span {
+        display: none;
+    }
+
+    #semesterResultList .owl-nav button i {
+        font-size: 16px;
+    }
+
+    #semesterResultList .owl-dots {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    #semesterResultList .owl-dot {
+        width: 8px;
+        height: 8px;
+        margin: 0 4px;
+        border-radius: 50%;
+        background: #dee2e6 !important;
+    }
+
+    #semesterResultList .owl-dot.active {
+        background: #0d6efd !important;
+    }
+
+</style>
 <section id="semesterResults">
     <div class="d-flex justify-content-between align-items-center">
         <h3 class="fw-bold mb-0">
@@ -18,7 +104,7 @@
         </div>
     </div>
     <hr>
-    <div id="semesterResultList">
+    <div id="semesterResultList" class="owl-carousel">
         <div class="text-center py-4 text-muted">
             <p class="mb-0">
                 Select Result tab to load semester results.
@@ -85,6 +171,7 @@
             let html = "";
             Object.values(groupedResults).forEach(programme => {
                 html += `
+                <div class="item">
                     <div class="semester-programme-group mb-4">
                         <div class="mb-3">
                             <h5 class="fw-bold mb-1">
@@ -101,11 +188,39 @@
                     html += createSemesterItem(semester);
                 });
 
-                html += `</div></div>`;
+                html += `</div></div></div>`;
             });
             return html
         }
+    function initializeSemesterCarousel() {
+        let $carousel = $("#semesterResultList");
 
+        if ($carousel.hasClass("owl-loaded")) {
+            $carousel.trigger("destroy.owl.carousel");
+            $carousel.removeClass("owl-loaded");
+            $carousel.find(".owl-stage-outer").children().unwrap();
+        }
+
+        $carousel.owlCarousel({
+            margin: 15,
+            nav: true,
+            dots: true,
+
+            navText: [
+                '<i class="fa-solid fa-chevron-left"></i>',
+                '<i class="fa-solid fa-chevron-right"></i>'
+            ],
+
+            responsive: {
+                0: {
+                    items: 1
+                },
+                992: {
+                    items: 2
+                },
+            }
+        });
+    }
         function templateResultArticle(semester, hasResult, resultButton) {
             return `
                 <article class="semester-result-item border rounded-3 p-3 mb-2">
@@ -143,13 +258,12 @@
 
         function templateButtonViewResult(fileUrl, semester) {
             return `
-                <button type="button"
-                    class="btn btn-outline-primary btn-sm btn-view-result"
+                <button type="button" class="btn btn-outline-primary btn-sm btn-view-result"
                     data-file-url="${escapeHtml(fileUrl)}"
-                    data-session="${escapeHtml(semester.session ?? "")}"
+                    data-session="${escapeHtml(semester.session ?? "")}">
                     <i class="fa-regular fa-file-pdf me-1"></i>
                     View Result
-                </button>`
+                </button>`;
         }
 
         function templateBadgeResultUploaded() {
@@ -190,8 +304,6 @@
 
         function renderSemesterResults(programmes) {
             let results = [];
-            // console.log(programmes);
-
             programmes.forEach(function (programme) {
 
                 (programme.education ?? []).forEach(function (education) {
@@ -223,16 +335,14 @@
             }
 
             $("#semesterResultList").html(renderGroupResult(results));
+
+            initializeSemesterCarousel()
         }
 
         function createSemesterItem(semester) {
-
             let media = getSemesterMedia(semester.media);
             let hasResult = media !== null;
             let resultButton;
-
-            // console.log("SEMESTER:", semester);
-            // console.log("MEDIA:", media);
 
             if (hasResult) {
                 let fileUrl = getMediaUrl(media);
@@ -256,10 +366,10 @@
 
         function getMediaUrl(media) {
             if (!media?.file_name) return null;
+            console.log(media);
 
-            let baseUrl = @json(url('/SEMESTER_RESULTS_FILE_URL'));
-            let fileName = String(media.file_name).replace(/^\/+/g, "");
-            return `${baseUrl}/${fileName}`;
+            let imageUrl = `{{ asset('storage/' . env('SEMESTER_RESULTS_FILE_URL')) }}/${media.file_name}`
+            return imageUrl
         }
 
         function escapeHtml(value) {
@@ -276,7 +386,6 @@
         $(".profile-tab[data-target='result']").on("click", function () {
             loadSemesterResults();
         });
-
 
         $(document).on("education:updated", function () {
         })
