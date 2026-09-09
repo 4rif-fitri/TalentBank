@@ -48,8 +48,11 @@
 
 @push('childScript')
 <script>
+    let listEducation = [];
     let currentEducation;
     let profileId;
+    let resizeTimer;
+
 </script>
 
 <script type="module">
@@ -63,23 +66,14 @@
             type: "GET",
             success: response => {
                 console.log("getEducationByUserProfileId",response);
-                renderEducationList(response.data ?? []);
+                listEducation = response.data ?? [];
+                renderEducationList(listEducation);
             },
             error: xhr => {
                 console.log(xhr);
             }
         });
     }
-
-
-    function renderSkills(skills) {
-        let html = "";
-        skills.forEach(data => {
-            html += `<div class="badge text-bg-secondary m-1">${data.skill_name}</div>`;
-        });
-        return html;
-    }
-
 
     function image(medias, educationId) {
         let html = "";
@@ -91,32 +85,9 @@
 
             if (index === 3 && medias.length > 4) {
                 let remaining = medias.length - 4;
-
-                html += `
-                    <div class="image rounded-1 m-1 d-flex justify-content-center align-items-center education-preview-image"
-                        style="width: 80px; height: 80px; background-image: url('${imageUrl}'); filter: brightness(.5); cursor: pointer;"
-                        data-education-id="${educationId}" data-slide-index="${index}">
-                        <h4 class="text-white m-0">
-                            +${remaining}
-                        </h4>
-                    </div>
-                `;
-
+                html += xeducation.student.educationCardImageLast(index,remaining, educationId, imageUrl)
             } else {
-
-                html += `
-                    <div
-                        class="image rounded-1 m-1 education-preview-image"
-                        style="
-                            width: 80px;
-                            height: 80px;
-                            background-image: url('${imageUrl}');
-                            cursor: pointer;
-                        "
-                        data-education-id="${educationId}"
-                        data-slide-index="${index}"
-                    ></div>
-                `;
+                html += xeducation.student.educationCardImage(index,educationId, imageUrl)
             }
         });
 
@@ -133,18 +104,10 @@
             $carousel.removeAttr("style");
         }
 
-        $carousel.empty();
+        $carousel.empty(xeducation.common.noRecords());
 
         if (!educations || educations.length === 0) {
-
-            $carousel.html(`
-            <div class="text-center py-4">
-                <p class="text-muted mb-0">
-                    No education records found.
-                </p>
-            </div>
-        `);
-
+            $carousel.html();
             return;
         }
 
@@ -152,32 +115,7 @@
 
         educations.forEach(education => {
             let htmlImage = image(education.media ?? [], education.id);
-
-            htmlEducation += `
-            <div class="h-100">
-                <div class="card p-3 h-100">
-
-                    <h5 class="card-title">
-                        ${education.programme?.organization?.company_name ?? ""}
-                    </h5>
-                    <p class="card-text mb-1">
-                        ${education.programme?.programme_name ?? ""}
-                    </p>
-                    <p class="card-text mb-1">
-                        ${education.start_date ?? ""} - ${education.end_date ?? ""}
-                    </p>
-                    <p class="card-text mb-1">
-                        ${education.description ?? ""}
-                    </p>
-                    <div class="skills d-flex flex-wrap align-items-start">
-                        ${renderSkills(education.skills ?? [])}
-                    </div>
-                    <div class="images d-flex flex-wrap mt-2">
-                        ${htmlImage}
-                    </div>
-                </div>
-
-            </div>`;
+            htmlEducation += xeducation.student.educationCard(education, htmlImage);
         });
 
         $carousel.html(htmlEducation);
@@ -228,13 +166,11 @@
             }
         });
     }
-    let resizeTimer;
 
     function handleScreenSize(){
         clearTimeout(resizeTimer);
 
         resizeTimer = setTimeout(function () {
-
             let $carousel = $("#educationsContainer");
 
             if ($carousel.hasClass("owl-loaded")) {
@@ -267,6 +203,14 @@
     }
 
 
+    function handleEditEducation() {
+        let educationId = $(this).data("educationId");
+        let currentEducation = listEducation.find(education => education.id === educationId);
+
+        xmodal.show("educationModal");
+    }
+
+    $(document).on("click", ".btnEditEducation", handleEditEducation);
     $(document).on("click","#menuToggle", handleScreenSize)
     $(document).on("click","#addEducation",showEducationModal);
     $(document).on("profile:loaded",function (event, data) {

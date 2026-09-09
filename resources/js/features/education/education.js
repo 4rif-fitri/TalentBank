@@ -117,6 +117,64 @@ export let student = {
 
         </article>`
     },
+    renderSkills: (skills) => {
+        let html = "";
+            skills.forEach(data => {
+                html += `<div class="badge text-bg-secondary m-1">${data.skill_name}</div>`;
+            });
+        return html;
+    },
+
+    educationCard: (education, htmlImage) => {
+        return `<div class="h-100 position-relative" data-educationId=${education.id}>
+                    <button type="button" class="icon-container btn z-3 btnEditEducation"
+                        data-education-id="${education.id}">
+                        <label class="btn icon bg-body shadow">
+                            <i class="fa-solid fa-pencil"></i>
+                        </label>
+                    </button>
+
+                    <div class="card p-3 h-100">
+                        <h5 class="card-title">
+                            ${education.programme?.organization?.company_name ?? ""}
+                        </h5>
+                        <p class="card-text mb-1">
+                            ${education.programme?.programme_name ?? ""}
+                        </p>
+                        <p class="card-text mb-1">
+                            ${xformat.formatDateShort(education.start_date) ?? ""} - ${xformat.formatDateShort(education.end_date) ?? ""}
+                        </p>
+                        <p class="card-text mb-1">
+                            ${education.description ?? ""}
+                        </p>
+                        <div class="skills d-flex flex-wrap align-items-start">
+                            ${xeducation.student.renderSkills(education.skills ?? [])}
+                        </div>
+                        <div class="images d-flex flex-wrap mt-2">
+                            ${htmlImage}
+                        </div>
+                    </div>
+                </div>`
+    },
+
+    educationCardImage: (index,educationId, imageUrl) => {
+        return `<div class="image rounded-1 m-1 education-preview-image"
+                    style="width: 80px; height: 80px; background-image: url('${imageUrl}'); cursor: pointer;"
+                    data-education-id="${educationId}"
+                    data-slide-index="${index}">
+                </div>`
+    },
+
+    educationCardImageLast: (index,remaining, educationId, imageUrl) => {
+        return `<div class="image rounded-1 m-1 d-flex justify-content-center align-items-center education-preview-image"
+                    style="width: 80px; height: 80px; background-image: url('${imageUrl}'); filter: brightness(.5); cursor: pointer;"
+                    data-education-id="${educationId}" data-slide-index="${index}">
+                    <h4 class="text-white m-0">
+                        +${remaining}
+                    </h4>
+                </div>`
+    },
+
 }
 
 export let recruiter = {
@@ -124,5 +182,11 @@ export let recruiter = {
 }
 
 export let common = {
-
+    noRecords: () => {
+        return `<div class="text-center py-4">
+                    <p class="text-muted mb-0">
+                        No education records found.
+                    </p>
+                </div>`
+    }
 }

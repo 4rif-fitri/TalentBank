@@ -279,7 +279,6 @@
 
 
         $(document).on("education:updated", function () {
-            refreshSemesterResults();
         })
 
         $(document).on("profile:loaded", function () {

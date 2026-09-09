@@ -196,7 +196,6 @@
 
                 $form[0].reset();
 
-                refreshSemesterResults();
             },
 
             error: function (xhr) {
