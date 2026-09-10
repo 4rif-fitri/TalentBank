@@ -149,76 +149,55 @@
 @endsection
 
 @section('script')
-<script>
+<script type="module">
     let currentStatus = "Pending"
     let currentJobOffer
     let currentEducation
 
-    function getEducationByUserProfileId(id){
-        let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}"
-        url = url.replace('__ID__', id)
-        return $.ajax({
-            url,
-            type: "GET",
-        });
-    }
+    async function getJobOffersByStatus(status) {
 
-    function getJobOfferById(id) {
-        let url = "{{ route('jobOffers.getJobOfferById', ['id' => '__ID__']) }}"
-        url = url.replace('__ID__', id)
-        return $.ajax({
-            url,
-            type: "GET",
-        });
-    }
-
-    function getJobOffersByStatus(status) {
-        $.ajax({
-            url: "{{ route('jobOffers.getJobOffersByStatusAndSenderId') }}",
-            type: "GET",
-            data:{
+        try {
+            let response = await xApiJobOffer.getJobOffersByStatusAndSenderId(
+                "{{ route('jobOffers.getJobOffersByStatusAndSenderId') }}",
                 status
-            },
-            success: function (response) {
-                debug.log("getJobOffersByStatus", response.data);
+            );
 
-                let jobOffers = response.data
-                $("#recruitment-invitation-list").empty()
-                jobOffers.forEach(offer => {
-                    let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + offer.receiver.profile_image
-                    $("#recruitment-invitation-list").append(xjobOffer.recruiter.sideBarItem(offer, imageUrl))
-                });
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
-        });
+            if(!response) return
+
+            debug.log("getJobOffersByStatus", response.data);
+
+            let jobOffers = response.data
+            $("#recruitment-invitation-list").empty()
+            jobOffers.forEach(offer => {
+                let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + offer.receiver.profile_image
+                $("#recruitment-invitation-list").append(xjobOffer.recruiter.sideBarItem(offer, imageUrl))
+            });
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function handleWithdrawJobOffer() {
+    async function handleWithdrawJobOffer() {
         let id = $(this).data("id")
 
-        let url = "{{ route('jobOffers.withdrawJobOffer', ['id' => '__ID__']) }}"
-        url = url.replace('__ID__', id)
+        let data = {
+            _method: "PUT",
+            _token: $('meta[name="csrf-token"]').attr("content")
+        }
 
-        $.ajax({
-            url,
-            data:  { _method: "PUT" },
-            type: "POST",
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
-            success: function (response) {
-                debug.log("getJobOffersByStatus", response.data);
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
-        });
+        try {
+            let response = await xApiJobOffer.withdrawJobOffer("{{ route('jobOffers.withdrawJobOffer', ['id' => '__ID__']) }}", id, data)
+            if(!response) return
+
+            debug.log("getJobOffersByStatus", response.data);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function handleAddJobOffer(inv_id) {
-
+    async function handleAddJobOffer(inv_id) {
         let data = {
             '_token': $('meta[name="csrf-token"]').attr("content"),
             "invitation_id": inv_id,
@@ -231,17 +210,15 @@
             "expires_at": "2027-1-1 00:00:00",
         }
 
-        $.ajax({
-            url: "{{ route('jobOffers.store') }}",
-            data,
-            type: "POST",
-            success: function (response) {
-                debug.log("store", response.data);
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
-        });
+        try {
+            let response = await xApiJobOffer.store("{{ route('jobOffers.store') }}")
+            if(!response) return
+
+            console.log(response);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function handleFilterJobOfferByStatus() {
@@ -279,8 +256,8 @@
         let jobOfferId = $(this).data("id")
 
         try {
-            let jobOfferResponse = await getJobOfferById(jobOfferId);
-            let educationResponse = await getEducationByUserProfileId(jobOfferResponse.data.receiver.id);
+            let jobOfferResponse = await xApiJobOffer.getJobOfferById("{{ route('jobOffers.getJobOfferById', ['id' => '__ID__']) }}", jobOfferId);
+            let educationResponse = await xApiEducation.getEducationByUserProfileId("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}", jobOfferResponse.data.receiver.id);
 
             currentJobOffer = jobOfferResponse.data
             currentEducation = educationResponse.data
@@ -299,10 +276,8 @@
         let id = $(this).data("id")
     }
 
-    function handleUpdateJobOffer() {
+    async function handleUpdateJobOffer() {
         let id = currentJobOffer.id
-        let url = "{{ route('jobOffers.update', ['id' => '__ID__']) }}"
-        url = url.replace('__ID__', id)
 
         let data = {
             '_token': $('meta[name="csrf-token"]').attr("content"),
@@ -316,22 +291,18 @@
             '_method': "PUT",
         }
 
-        $.ajax({
-            url,
-            data,
-            type: "POST",
-            success: function (response) {
-                debug.log("update", response.data);
-                xmodal.hide("jobOfferModal")
-                getJobOffersByStatus(currentStatus)
-                xalert.fire("Success", response.message, "success")
+        try {
+            let response = await xApiEducation.update("{{ route('jobOffers.update', ['id' => '__ID__']) }}", id, data)
+            if(!response) return
 
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-                xalert.fire("Error", xhr.responseJSON.message, "error")
-            }
-        });
+            debug.log("update", response.data);
+            xmodal.hide("jobOfferModal")
+            getJobOffersByStatus(currentStatus)
+            xalert.fire("Success", response.message, "success")
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     $(document).on("click", "#btnEditJobOffer", showModalEditJobOffer)

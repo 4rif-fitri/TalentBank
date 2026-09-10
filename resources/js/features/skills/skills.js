@@ -4,7 +4,6 @@ function getUserSkillId(skill) {
         "";
 }
 
-
 export let student = {
     rowSkill: (skill) => {
 

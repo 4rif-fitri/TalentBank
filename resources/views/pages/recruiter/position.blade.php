@@ -183,48 +183,52 @@
 
     // < ---- STORE ------ >
 
-    function storePosition(position_title, employment_type, vacancies, department, work_location, description) {
-        let formData = new FormData()
-        formData.append("organization_id", myData.organization_users[0].organization_id)
-        formData.append("position_title", position_title)
-        formData.append("employment_type", employment_type)
-        formData.append("department", department)
-        formData.append("work_location", work_location)
-        formData.append("vacancies", vacancies)
-        formData.append("description", description)
+    async function storePosition(position_title, employment_type, vacancies, department, work_location, description) {
 
-        return $.ajax({
-            url: "{{ route('positions.store') }}",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            }
-        });
+        let data = {
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            organization_id: myData.organization_users[0].organization_id,
+            position_title: position_title,
+            employment_type: employment_type,
+            department: department,
+            work_location: work_location,
+            vacancies: vacancies,
+            description: description
+        }
+
+        try {
+            let response = await xApiPosition.store("{{ route('positions.store') }}", data)
+            if(!response) return
+
+            console.log(response);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function storeInvitations(candidate_id, position_id, expires_at, invitation_message) {
-        let formData = new FormData()
-        formData.append("receiver_profile_id", candidate_id)
-        formData.append("invitation_message", invitation_message)
-        formData.append("expires_at", expires_at)
-        formData.append("position_id", position_id)
+    async function storeInvitations(candidate_id, position_id, expires_at, invitation_message) {
 
-        return $.ajax({
-            url: "{{ route('invitations.store') }}",
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            }
-        });
+        let data = {
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            receiver_profile_id: candidate_id,
+            invitation_message: invitation_message,
+            expires_at: expires_at,
+            position_id: position_id
+        }
+
+        try {
+            let response = await xApiInvite.store("{{ route('invitations.store') }}", data)
+            if(!response) return
+
+            console.log(response);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function storeInterview(position_id, scheduled_at, interview_mode, location, meeting_url, recruiter_comment, interviewee_profile_id){
+    async function storeInterview(position_id, scheduled_at, interview_mode, location, meeting_url, recruiter_comment, interviewee_profile_id){
         let data = {
             _token: $('meta[name="csrf-token"]').attr("content"),
             position_id,
@@ -236,20 +240,18 @@
             interviewee_profile_id
         }
 
-        $.ajax({
-            url: "{{ route('interviews.store') }}",
-            type: "POST",
-            data,
-            success: response => {
-                console.log(response);
-            },
-            error: xhr => {
-                console.log(xhr);
-            }
-        });
+        try {
+            let response = await xApiInterview.store("{{ route('interviews.store') }}",data)
+            if(!response) return
+            console.log(response);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function storeJobOffer($form){
+    async function storeJobOffer($form){
+
         let data = {
             _token: $('meta[name="csrf-token"]').attr("content"),
             salary_amount: $form.find("#salary_amount").val(),
@@ -263,50 +265,45 @@
             receiver_profile_id: $form.find("#job-offer-candicate-id").val()
         }
 
-        $.ajax({
-            url: "{{ route('jobOffers.store') }}",
-            type: "POST",
-            data,
-            success: response => {
-                console.log(response);
-                xalert.fire("Success", response.message, "success")
-                xmodal.hide("jobOfferModal")
-            },
-            error: xhr => {
-                console.log(xhr.responseJSON.message);
-                xalert.fire("Error", xhr.responseJSON.message, "error")
-            }
-        });
+        try {
+            let response = await xApiJobOffer.store("{{ route('jobOffers.store') }}", data)
+            if(!response) return
 
+            console.log(response);
+            xalert.fire("Success", response.message, "success")
+            xmodal.hide("jobOfferModal")
+
+        } catch (error) {
+            console.error(error);
+
+        }
     }
 
     // < ---- STORE ------ >
 
     // < ---- UPDATE ------ >
 
-    function updatePositions(id, position_title, employment_type, vacancies, department, work_location, description) {
-        let url = "{{ route('positions.update', ['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id);
-        let formData = new FormData()
-        formData.append("organization_id", myData.organization_users[0].organization_id)
-        formData.append("position_title", position_title)
-        formData.append("employment_type", employment_type)
-        formData.append("department", department)
-        formData.append("work_location", work_location)
-        formData.append("vacancies", vacancies)
-        formData.append("description", description)
-        formData.append("_method", "PUT");
+    async function updatePositions(id, position_title, employment_type, vacancies, department, work_location, description) {
+        let data = {
+            organization_id:myData.organization_users[0].organization_id,
+            position_title: position_title,
+            employment_type: employment_type,
+            department: department,
+            work_location: work_location,
+            vacancies: vacancies,
+            description: description,
+            _method: "PUT",
+            _token: $('meta[name="csrf-token"]').attr("content")
+        }
 
-        return $.ajax({
-            url: url,
-            type: "POST",
-            data: formData,
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
-        });
+        try {
+            let response = await xApiPosition.update("{{ route('positions.update', ['id' => '__ID__']) }}", id, data)
+            if(!response) return
+            console.log(response);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     // < ---- UPDATE ------ >
@@ -377,6 +374,7 @@
         try {
 
             let response = await storePosition(position_title, employment_type, vacancies, department, work_location, description)
+
             if (!response) return
 
             console.log(response);
@@ -517,7 +515,7 @@
         }
     }
 
-    function handleInviteForm(e){
+    async function handleInviteForm(e){
         e.preventDefault();
 
         let interviewMode = $('input[name="interview_mode"]:checked').val();
@@ -532,7 +530,8 @@
             interview_mode: interviewMode,
             location: $("#location").val(),
             meeting_url: $("#meeting_url").val(),
-            recruiter_comment: $("#recruiter_comment").val()
+            recruiter_comment: $("#recruiter_comment").val(),
+            _token: $('meta[name="csrf-token"]').attr("content")
         };
 
         if (!data.interview_mode) {
@@ -540,24 +539,18 @@
             return;
         }
 
-        $.ajax({
-            url: "{{ route('interviews.store') }}",
-            type: "POST",
-            data,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
-            success: function (response) {
-                bootstrap.Modal .getInstance($("#interviewModal")).hide();
-                salert.salert("Success", response.message, "success");
-                // Reload table/datatable jika perlu:
-                // table.ajax.reload();
-            },
-            error: function (xhr) {
-                const message = xhr.responseJSON?.message || "An error occurred while saving.";
-                salert.salert("Error", message, "error");
-            }
-        });
+        try {
+            let response = await xApiInterview.store("{{ route('interviews.store') }}", data)
+            if(!response) return
+
+            bootstrap.Modal .getInstance($("#interviewModal")).hide();
+            salert.salert("Success", response.message, "success");
+            // Reload table/datatable jika perlu:
+            // table.ajax.reload();
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function showModalAddShortlist(){
@@ -655,31 +648,6 @@
         //         xdebug.line(xhr)
         //     }
         // });
-    }
-
-    function store() {
-        let data = {
-            "_token": $('meta[name="csrf-token"]').attr("content"),
-            "organization_id": 1,
-            "position_title": "New Position 2025",
-            "employment_type": "Internship",
-            "department": "New Department 2025",
-            "work_location": "New Work Location 2025",
-            "vacancies": "5",
-            "description": "New Description 2025"
-        }
-
-        $.ajax({
-            url: "{{ route('positions.store') }}",
-            data,
-            method: "POST",
-            success: function (response) {
-                debug.log("store", response.data);
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
-        });
     }
 
     function getShortlistedPositionIds(profileId, orgId) {
@@ -832,11 +800,6 @@
         storeJobOffer($form)
     }
 
-    // $(document).on("click", "#btnAddInterview", handleAddInterview)
-    // store()
-    // getShortlistedPositionIds(2, 1)
-    // _store(2, 11)
-    // _delete(11)
     $(document).ready(function(){
         loadData()
     });
@@ -851,7 +814,7 @@
     $(document).on("click", "#btnAddInvitation", handleAddInvitation)
     $(document).on("submit", "#inviteForm", handleInviteForm);
     $(document).on("click", ".shortlist-item", handleClickShortlist)
-    $(document).on("click", ".toggleFilter", toggleFilter)
+    $(document).on("click", ".toggleFilter", toggle)
     $(document).on("click", "#btnAddShortlist", handleAddShortlist)
     $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
     $(document).on("click", ".btnShowModalAddJobOffer", showJobOfferModal)

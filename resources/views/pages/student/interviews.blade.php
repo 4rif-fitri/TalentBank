@@ -111,7 +111,7 @@
     </div>
 </div>
 
-<div class="filter-overlay" onclick="toggleFilter()"></div>
+<div class="filter-overlay"></div>
 @endsection
 
 @section('script')
@@ -120,46 +120,43 @@
     let currentInterview = null
     let currentStatus = "Scheduled"
 
-    function getInterviewsByStatusAndIntervieweeId(status){
-        $.ajax({
-            url: "{{ route('interviews.getInterviewsByStatusAndIntervieweeId',['status' => '__STATUS__']) }}".replace("__STATUS__", status),
-            type: "GET",
-            data: { status:status },
-            success: function (response) {
-                xdebug.log(status, response.data);
-                currentInterviews = response.data
+    async function getInterviewsByStatusAndIntervieweeId(status){
 
-                $(".invitation-list").empty()
-                currentInterviews.forEach(inv =>{
-                    let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + inv.position.organization.organization_logo
-                    $(".invitation-list").append(xinterview.student.sideList(inv, imageUrl))
-                });
-            },
-            error: function (xhr) {
-                xdebug.log(xhr.responseJSON.message)
-            }
-        });
+        try {
+            let response = await xApiInterview.getInterviewsByStatusAndIntervieweeId(
+                "{{ route('interviews.getInterviewsByStatusAndIntervieweeId') }}",
+                status
+            )
+
+            if(!response) return
+
+            currentInterviews = response.data
+
+            $(".invitation-list").empty()
+            currentInterviews.forEach(inv => {
+                let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + inv.position.organization.organization_logo
+                $(".invitation-list").append(xinterview.student.sideList(inv, imageUrl))
+            });
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function handleInvitationClick() {
+    async function handleInvitationClick() {
         let id = $(this).data("id")
 
-        let url = "{{ route('interviews.getInterviewById',['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
+        try {
+            let response = await xApiInterview.getInterviewById( "{{ route('interviews.getInterviewById',['id' => '__ID__']) }}", id)
+            if(!response) return
 
-        $.ajax({
-            type: "GET",
-            url,
-            success: function (response) {
-                xdebug.log("getInterviewById", response.data);
-                currentInterview = response.data;
-                let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + currentInterview.position.organization.organization_logo
-                $("#shortlistContent").html(xinterview.student.mainContent(currentInterview, imageUrl));
-            },
-            error: function (xhr) {
-                xdebug.log(xhr.responseJSON.message)
-            }
-        });
+            currentInterview = response.data;
+            let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + currentInterview.position.organization.organization_logo
+            $("#shortlistContent").html(xinterview.student.mainContent(currentInterview, imageUrl));
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function handleFilterToggle() {
@@ -173,7 +170,9 @@
         getInterviewsByStatusAndIntervieweeId(status)
     }
 
+    getInterviewsByStatusAndIntervieweeId(status)
+    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay, .filter-overlay, .list-item', toggle);
     $(document).on("click", ".nav-item", handleFilterToggle);
-    $(document).on("click", ".invitation-item", handleInvitationClick);
+    $(document).on("click", ".invitation-item, .list-item", handleInvitationClick);
 </script>
 @endsection

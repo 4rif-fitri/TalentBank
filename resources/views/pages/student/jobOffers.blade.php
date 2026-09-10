@@ -123,98 +123,76 @@
     let currentJobOffer = null
     let currentStatus = "Pending"
 
-    function getJobOffersByStatusAndReceiverId(status) {
-        $.ajax({
-            url: "{{ route('jobOffers.getJobOffersByStatusAndReceiverId') }}",
-            type: "GET",
-            data: { status },
-            success: function (response) {
-                debug.log("getJobOffersByStatusAndReceiverId", response.data)
+    async function getJobOffersByStatusAndReceiverId(status) {
 
-                $(".invitation-list").empty()
-                response.data.forEach(offer => {
-                    let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + offer.position.organization.organization_logo
-                    $(".invitation-list").append(xcommon.studentSideBar(offer, imageUrl))
-                })
-            },
-            error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
-    }
+        try {
+            let response = await xApiJobOffer.getJobOffersByStatusAndReceiverId("{{ route('jobOffers.getJobOffersByStatusAndReceiverId') }}", status)
+            if(!response) return
 
-    function getJobOfferById(id) {
-        let url = "{{ route('jobOffers.getJobOfferById', ['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
+            $(".invitation-list").empty()
 
-        $.ajax({
-            url,
-            type: "GET",
-            success: function (response) {
-                debug.log("getJobOfferById", response.data)
-                let offer = response.data
-                console.log({offer});
-
+            response.data.forEach(offer => {
                 let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + offer.position.organization.organization_logo
-                $("#shortlistContent").html(xjobOffer.student.mainContent(response.data, imageUrl))
+                $(".invitation-list").append(xcommon.studentSideBar(offer, imageUrl))
+            })
 
-            },
-            error: function (response) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function handleAcceptJobOffer() {
-        let id = $(this).data("id")
+    async function getJobOfferById(id) {
+        try {
+            let response = await xApiJobOffer.getJobOfferById("{{ route('jobOffers.getJobOfferById', ['id' => '__ID__']) }}",id)
+            if(!response) return
 
-        let url = "{{ route('jobOffers.acceptJobOffer', ['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
+            let offer = response.data
+
+            let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + offer.position.organization.organization_logo
+            $("#shortlistContent").html(xjobOffer.student.mainContent(response.data, imageUrl))
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function handleAcceptJobOffer() {
+        let id = $(this).data("id")
 
         let data = {
             "_method": "PUT",
             "_token": $('meta[name="csrf-token"]').attr("content"),
         }
 
-        $.ajax({
-            url,
-            type: "POST",
-            data,
-            success: function (response) {
-                xdebug.log("acceptJobOffer", response.data)
-                xalert.success("Job Offer Accepted", "You have successfully accepted the job offer.")
-            },
-            error: function (xhr) {
-                xdebug.error(xhr.responseJSON.message)
-                xalert.error("Error", xhr.responseJSON.message)
-            }
-        });
+        try {
+            let response = await xApiJobOffer.acceptJobOffer("{{ route('jobOffers.acceptJobOffer', ['id' => '__ID__']) }}", id, data)
+            if (!response) return
+
+            xalert.success("Job Offer Accepted", "You have successfully accepted the job offer.")
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function handleRejectJobOffer() {
+    async function handleRejectJobOffer() {
         let id = $(this).data("id")
-
-        let url = "{{ route('jobOffers.rejectJobOffer', ['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
 
         let data = {
             "_method": "PUT",
             "_token": $('meta[name="csrf-token"]').attr("content"),
         }
 
-        $.ajax({
-            url,
-            data,
-            type: "POST",
-            success: function (response) {
-                xdebug.log("rejectJobOffer", response.data)
-                xalert.success("Job Offer Rejected", "You have successfully rejected the job offer.")
-            },
-            error: function (xhr) {
-                xdebug.error(xhr.responseJSON.message)
-                xalert.error("Error", xhr.responseJSON.message)
-            }
-        });
+        try {
+            let response = await xApiJobOffer.rejectJobOffer("{{ route('jobOffers.rejectJobOffer', ['id' => '__ID__']) }}", id, data)
+            if (!response) return
+
+            xalert.success("Job Offer rejected", "You have successfully rejected the job offer.")
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function handleChangeStatus () {
@@ -235,14 +213,11 @@
         getJobOfferById(id)
     }
 
-    $(document).on("click", ".toggleFilter", function () {
-        $("body").toggleClass("filter-open");
-    });
-
+    $(document).on("click", ".toggleFilter, .invitation-item, .list-item", toggle);
+    $(document).on("click", ".nav-item button", handleChangeStatus)
     $(document).on("click", ".invitation-item ", handleJobOfferDetail)
     $(document).on("click", ".btnAcceptInvitation", handleAcceptJobOffer)
     $(document).on("click", ".btnRejectInvitation", handleRejectJobOffer)
-    $(document).on("click", ".nav-item button", handleChangeStatus)
     getJobOffersByStatusAndReceiverId(currentStatus)
 
 </script>

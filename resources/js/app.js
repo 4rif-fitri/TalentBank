@@ -26,6 +26,20 @@ import * as templateCommon from "./features/common/common.js"
 import * as xvalidate from "./shared/utils/validation.js"
 import * as xformat from "./shared/utils/format.js"
 
+import * as xApiInvite from "./features/invitation/api.js"
+import * as xApiInterview from "./features/interview/api.js"
+import * as xApiJobOffer from "./features/job-offer/api.js"
+import * as xApiPosition from "./features/position/api.js"
+import * as xApiEducation from "./features/education/api.js"
+import * as xApiProfile from "./features/profile/api.js"
+
+window.xApiProfile = xApiProfile
+window.xApiInvite = xApiInvite
+window.xApiInterview = xApiInterview
+window.xApiJobOffer = xApiJobOffer
+window.xApiPosition = xApiPosition
+window.xApiEducation = xApiEducation
+
 window.xvalidate = xvalidate;
 window.xformat = xformat;
 window.xeducation = templateEducation;
@@ -53,3 +67,6 @@ window.xdebug = debug;
 window.jobOffer = jobOffer;
 window.bootstrap = bootstrap;
 
+window.toggle = () => {
+    document.body.classList.toggle('filter-open');
+}

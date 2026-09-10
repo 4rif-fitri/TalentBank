@@ -1,4 +1,4 @@
-import { formatDate } from "../../utils/format.js"
+import { formatDate } from "../../shared/utils/format.js"
 
 function renderStatus(status) {
     let class_name = ""

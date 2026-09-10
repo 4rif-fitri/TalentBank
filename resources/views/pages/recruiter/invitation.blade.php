@@ -158,31 +158,19 @@
     let currentInv
     let currentInviteEducatios
 
-    function getInvitationById(id) {
-        let url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
-        url = url.replace("__ID__", id)
-        return $.ajax({
-            url,
-            type: "GET",
-        });
-    }
-
-    function getEducationById(id) {
-        let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", id);
-        return $.ajax({
-            url,
-            type: "GET"
-        });
-    }
 
     async function handleSelectedInvitation() {
         let id = $(this).data('id');
 
         try {
-            let inv = await getInvitationById(id)
+            let inv = await xApiInvite.getInvitationById("{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}", id);
+            if(!inv) return
+
             currentInv = inv.data
-            currentInviteEducatios = await getEducationById(currentInv.receiver.id)
+
+            currentInviteEducatios = await xApiEducation.getEducationById("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}",currentInv.receiver.id)
+            if(!currentInviteEducatios) return
+
             currentInviteEducatios = currentInviteEducatios.data
             let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentInv.receiver.profile_image
 
@@ -193,58 +181,57 @@
         }
     }
 
-    function getInvitationsByStatusAndSenderId(status) {
+    async function getInvitationsByStatusAndSenderId(status) {
 
-        let url = "{{ route('invitations.getInvitationsByStatusAndSenderId', ['status' => '__status__' ]) }}"
-        url = url.replace("__status__", status)
+        try {
+            let response = await xApiInvite.getInvitationsByStatusAndSenderId("{{ route('invitations.getInvitationsByStatusAndSenderId') }}", status)
 
-        $.ajax({
-            url,
-            type: "GET",
-            success: function (response) {
-                console.log("getInvitationsByStatus", response)
-                let invitations = response.data
-                $("#recruitment-invitation-list").empty()
-                invitations.forEach(inv => {
-                    let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + inv.receiver.profile_image
-                    $("#recruitment-invitation-list").append(xinvitation.recruiter.recruitmentInvitationList(inv, imageUrl))
-                });
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
-        });
-    }
+            let invitations = response.data
+            $("#recruitment-invitation-list").empty()
+            invitations.forEach(inv => {
+                let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + inv.receiver.profile_image
+                $("#recruitment-invitation-list").append(xinvitation.recruiter.recruitmentInvitationList(inv, imageUrl))
+            });
 
-    function handleAddInvitation(invitation_id, scheduled_date,
-        scheduled_hour, interview_mode,
-        location, meeting_url, recruiter_comment) {
-
-        // let scheduled_at =
-
-        formData.append("recruiter_comment", "recruiter_comment recruiter_comment")
-
-        let data = {
-            _token: $('meta[name="csrf-token"]').attr("content"),
-            invitation_id,
-            scheduled_at,
-            interview_mode,
-            meeting_url,
-            recruiter_comment
+        } catch (error) {
+            console.error(error);
         }
-
-        $.ajax({
-            url: "{{ route('interviews.store') }}",
-            data,
-            type: "POST",
-            success: function (response) {
-                xalert.salert('Success', response.message, 'success');
-            },
-            error: function (xhr) {
-                xalert.salert('Error', xhr.responseJSON.message, 'error');
-            }
-        });
     }
+
+    // function handleAddInvitation(
+    //     invitation_id, scheduled_date,
+    //     scheduled_hour, interview_mode,
+    //     location, meeting_url,
+    //     recruiter_comment
+    // ) {
+
+
+
+    //     // let scheduled_at =
+
+    //     formData.append("recruiter_comment", "recruiter_comment recruiter_comment")
+
+    //     let data = {
+    //         _token: $('meta[name="csrf-token"]').attr("content"),
+    //         invitation_id,
+    //         scheduled_at,
+    //         interview_mode,
+    //         meeting_url,
+    //         recruiter_comment
+    //     }
+
+    //     $.ajax({
+    //         url: "{{ route('interviews.store') }}",
+    //         data,
+    //         type: "POST",
+    //         success: function (response) {
+    //             xalert.salert('Success', response.message, 'success');
+    //         },
+    //         error: function (xhr) {
+    //             xalert.salert('Error', xhr.responseJSON.message, 'error');
+    //         }
+    //     });
+    // }
 
     function handleChangeStatus(){
         $(".nav-item button").removeClass("active text-primary").addClass("text-black");
@@ -268,68 +255,30 @@
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Withdraw it!"
-        }).then((result) => {
-
+        }).then( async (result) => {
             if (!result) return
 
             let id = $(this).data('id');
 
-            let url = "{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}"
-            url = url.replace("__ID__", id)
+            let data = {
+                _method: "PUT",
+                _token:  $('meta[name="csrf-token"]').attr("content")
+            }
 
-            let formData = new FormData()
-            formData.append("_method", "PUT")
+            try {
+                let response =  await xApiInvite.withdrawInvitation("{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}", id, data)
+                if(!response) return
 
-            $.ajax({
-                url,
-                data: formData,
-                type: "POST",
-                processData: false,
-                contentType: false,
-                headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-                },
-                success: function (response) {
-                    console.log("interviews.update", response)
-                    xalert.salert('Success', response.message, 'success');
-
-                    $(`#recruitment-invitation-list .invitation-item[data-id="${response.data.id}"]`).remove();
-
-                    $("#shortlistContent").html(xcommon.noSelected("No Invitation Selected Yet","","btn-toggle-filter toggleFilter","Invitation"))
-                    getInvitationsByStatusAndSenderId(currentStatus)
-
-                },
-                error: function (xhr) {
-                    xalert.salert('Error', xhr.responseJSON.message, 'error');
-                }
-            });
-        });
-    }
-
-    function handleUpdateInvitation(){
-        let url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
-        url = url.replace("__ID__", id)
-
-        let formData = new FormData()
-        formData.append("expires_at", "2026-9-30 05:07:17")
-        formData.append("invitation_message", "NOBB")
-        formData.append("_method", "PUT")
-
-        $.ajax({
-            url,
-            data: formData,
-            type: "POST",
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
-            success: function (response) {
+                console.log("interviews.update", response)
                 xalert.salert('Success', response.message, 'success');
 
-            },
-            error: function (xhr) {
-                xalert.salert('Error', xhr.responseJSON.message, 'error');
+                $(`#recruitment-invitation-list .invitation-item[data-id="${response.data.id}"]`).remove();
+
+                $("#shortlistContent").html(xcommon.noSelected("No Invitation Selected Yet","","btn-toggle-filter toggleFilter","Invitation"))
+                getInvitationsByStatusAndSenderId(currentStatus)
+
+            } catch (error) {
+                console.error(error);
             }
         });
     }
@@ -349,11 +298,8 @@
         xmodal.show("invitationModal")
     }
 
-    function handleUpdateInviteForm(e){
+    async function handleUpdateInviteForm(e){
         e.preventDefault();
-
-        let url = "{{ route('invitations.update', ['id' => '__ID__']) }}"
-        url = url.replace('__ID__', currentInv.id)
 
         let data = {
             _method:"PUT",
@@ -362,20 +308,17 @@
             expires_at: $("#expires_at").val()
         }
 
-        $.ajax({
-            url,
-            data,
-            type: "POST",
-            success: response => {
-                xalert.salert('Success', response.message, 'success');
-                xmodal.hide("invitationModal")
-                $("#inviteForm")[0].reset()
+        try {
+            let response = await xApiInvite.update("{{ route('invitations.update', ['id' => '__ID__']) }}", currentInv.id, data)
+            if(!response) return
 
-            },
-            error: xhr => {
-                xalert.salert('Error', xhr.responseJSON.message, 'error');
-            }
-        });
+            xalert.salert('Success', response.message, 'success');
+            xmodal.hide("invitationModal")
+            $("#inviteForm")[0].reset()
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function handleMessageStudent(){

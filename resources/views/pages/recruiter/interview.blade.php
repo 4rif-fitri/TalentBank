@@ -153,72 +153,22 @@
 
     // ===== GET ======
 
-    function getInterviewsByStatusAndInterviewerId(status) {
-        let url = "{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}"
+    async function getInterviewsByStatusAndInterviewerId(status) {
 
-        $.ajax({
-            url,
-            data:{ status },
-            type: "GET",
-            success: function (response) {
-                debug.log("getInterviewsByStatusAndInterviewerId", response.data);
-                let interviews = response.data
-                $("#shortlistList").empty()
-                interviews.forEach(interview => {
-                    $("#shortlistList").append(intervieww.sidebar(interview))
-                });
+        try {
+            let response = await xApiInterview.getInterviewsByStatusAndInterviewerId("{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}", status)
+            if(!response) return
 
-            },
-            error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
-    }
+            debug.log("getInterviewsByStatusAndInterviewerId", response.data);
+            let interviews = response.data
+            $("#shortlistList").empty()
+            interviews.forEach(interview => {
+                $("#shortlistList").append(intervieww.sidebar(interview))
+            });
 
-    async function getPositionsByOrgId(id) {
-        let url = "{{ route('positions.getPositionsByOrgId', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", id);
-
-        return await $.ajax({
-            url: url,
-            method: 'GET'
-        });
-    }
-
-    async function getProfileDataByProfileId() {
-        let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", "{{ session('user_profile_id') }}");
-        let response = await $.ajax({
-            url: url,
-            method: 'GET'
-        });
-
-        return response.data;
-    }
-
-    function getPositionById(id) {
-        let url = "{{ route('positions.getPositionById', ['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
-        $.ajax({
-            url,
-            type: "GET",
-            success: function (response) {
-                debug.log("getPositionById", response.data)
-            },
-            error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
-    }
-
-    function getInterviewById(id) {
-        let url = "{{ route('interviews.getInterviewById', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", id);
-
-        return $.ajax({
-            url: url,
-            type: "GET"
-        });
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function getEducationByUserProfileId(id) {
@@ -239,7 +189,7 @@
         let id = $(this).data('id');
 
         try {
-            let interviewDetail = await getInterviewById(id);
+            let interviewDetail = await xApiInterview.getInterviewById("{{ route('interviews.getInterviewById', ['id' => '__ID__']) }}",id);
             let receiverId = interviewDetail.data.interviewee.id
 
             let listEducationReceiver = await getEducationByUserProfileId(receiverId);
@@ -258,59 +208,46 @@
         }
     }
 
-    function completeInterview() {
+    async function completeInterview() {
         let id = $(this).data("id")
-
-        let url = "{{ route('interviews.completeInterview',['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
 
         let data = {
             '_token': $('meta[name="csrf-token"]').attr("content"),
             '_method': "PUT"
         }
 
-        $.ajax({
-            type: "POST",
-            url,
-            data,
-            success: function (response) {
-                xalert.fire("Success", "Interview Completed", "success")
-            },
-            error: function (xhr) {
-                xalert.fire("Error", xhr.responseJSON.message, "error")
-            }
-        });
+        try {
+            let response = await xApiInterview.completeInterview("{{ route('interviews.completeInterview',['id' => '__ID__']) }}", id, data)
+            if(!response) return
+
+            xalert.fire("Success", "Interview Completed", "success")
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function cancelInterview() {
+    async function cancelInterview() {
         let id = $(this).data("id")
-
-        let url = "{{ route('interviews.cancelInterview',['id' => '__ID__']) }}"
-        url = url.replace("__ID__", id)
 
         let data = {
             '_token': $('meta[name="csrf-token"]').attr("content"),
             '_method': "PUT"
         }
 
-        $.ajax({
-            type: "POST",
-            url,
-            data,
-            success: function (response) {
-                xalert.fire("Success", "Interview Cancelled", "success")
-            },
-            error: function (xhr) {
-                xalert.fire("Error", xhr.responseJSON.message, "error")
-            }
-        });
+        try {
+            let response = await xApiInterview.cancelInterview("{{ route('interviews.cancelInterview',['id' => '__ID__']) }}", id, data)
+            if (!response) return
+
+            xalert.fire("Success", "Interview Completed", "success")
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function handleUpdateInterview(e) {
+    async function handleUpdateInterview(e) {
         e.preventDefault();
-
-        let url = "{{ route('interviews.update',['id' => '__ID__' ]) }}"
-        url = url.replace("__ID__", currentInterview.id)
 
         let data = {
             "_token": $('meta[name="csrf-token"]').attr("content"),
@@ -323,22 +260,25 @@
             "interview_result": currentInterview.interview_result
         }
 
-        $.ajax({
-            url,
-            data,
-            method: "POST",
-            success: function (response) {
-                xalert.fire("Success", "Interview Updated", "success")
-                $("#inviteForm")[0].reset();
-                xmodal.hide("interviewModal")
-            },
-            error: function (xhr) {
-                xalert.fire("Error", xhr.responseJSON.message, "error")
-            }
-        });
+        try {
+            let response = await xApiInterview.update(
+                "{{ route('interviews.update',['id' => '__ID__' ]) }}",
+                currentInterview.id,
+                data
+            )
+
+            if(!response) return
+
+            xalert.fire("Success", "Interview Updated", "success")
+            $("#inviteForm")[0].reset();
+            xmodal.hide("interviewModal")
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function store(id) {
+    async function handleAddInterview(id) {
         let data = {
             "_token": $('meta[name="csrf-token"]').attr("content"),
             "scheduled_at": "2026-9-30 05:07:17",
@@ -350,17 +290,14 @@
             "invitation_id": id
         }
 
-        $.ajax({
-            url: "{{ route('interviews.store') }}",
-            data,
-            method: "POST",
-            success: function (response) {
-                debug.log("store", response.data);
-            },
-            error: function (xhr) {
-                console.error(xhr.responseJSON.message)
-            }
-        });
+        try {
+            let response = await xApiInterview.store("{{ route('interviews.store') }}", data)
+            if(!response) return
+
+            console.log(response);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function handleChnageStatus() {
@@ -434,15 +371,14 @@
         xmodal.show("activeEducationsModal");
     }
 
-    // ===== Handle ======
-
     async function loadData() {
         try {
-            let profile = await getProfileDataByProfileId();
-            let organizations = profile.organization_users;
+            let id = "{{ session('user_profile_id') }}"
+            let profile = await xApiProfile.getProfileDataByProfileId("{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}", id);
+            let organizations = profile.data.organization_users;
 
             let results = await Promise.all(
-                organizations.map(organization => getPositionsByOrgId(organization.organization_id))
+                organizations.map(organization => xApiPosition.getPositionsByOrgId("{{ route('positions.getPositionsByOrgId', ['id' => '__ID__']) }}", organization.organization_id))
             );
 
             getInterviewsByStatusAndInterviewerId("Scheduled")
@@ -462,9 +398,7 @@
     $(document).on("click", "#btnReschedule", handleRescheduleInterview)
     $(document).on("click","#btnUpdateInterview", showUpdateInterviewModal)
     $(document).on("submit", "#inviteForm", handleUpdateInterview)
-    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
-        document.body.classList.toggle('filter-open');
-    });
+    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', toggle);
     $(document).on("change", "input[name='interview_mode']", function () {
         toggleInterviewMode($(this).val());
     });

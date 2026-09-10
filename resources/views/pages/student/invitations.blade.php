@@ -32,6 +32,10 @@
     }
 
     @media (max-width: 768px) {
+        .results-panel {
+            padding: 0rem;
+        }
+
         .talent-layout {
             display: block;
         }
@@ -50,7 +54,7 @@
         }
 
         body.filter-open .filter-panel {
-            transform: translateY(10%);
+            transform: translateY(0%);
             border-radius: 14px;
         }
 
@@ -126,53 +130,33 @@
     let invitations
     let url
     let currentStatus = "Pending"
-    const statusOrder = {
-        Pending: 1,
-        Accepted: 2,
-        Rejected: 3,
-        Expired: 4,
-        Withdrawn: 5
-    };
 
-    function getInvitationById(id) {
-        url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
-        url = url.replace("__ID__", id)
-        return $.ajax({
-            url,
-            type: "GET"
-        });
-    }
+    async function getInvitationsByStatusAndReceiverId(status) {
+        try {
+            let response = await xApiInvite.getInvitationsByStatusAndReceiverId("{{ route('invitations.getInvitationsByStatusAndReceiverId') }}",status)
+            if(!response) return
 
-    function getInvitationsByStatusAndReceiverId(status) {
-        $.ajax({
-            url: "{{ route('invitations.getInvitationsByStatusAndReceiverId') }}",
-            type: "GET",
-            data: { status },
-            success: function (response) {
-                console.log("getInvitationsByStatusAndReceiverId", response)
-                $(".invitation-list").empty()
-                invitations = response.data
+            console.log("getInvitationsByStatusAndReceiverId", response)
+            $(".invitation-list").empty()
+            invitations = response.data
 
-                invitations.forEach(inv =>{
-                    let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + inv.position.organization.organization_logo
-                    $(".invitation-list").append(xcommon.studentSideBar(inv, imageUrl));
-                })
+            invitations.forEach(inv =>{
+                let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + inv.position.organization.organization_logo
+                $(".invitation-list").append(xcommon.studentSideBar(inv, imageUrl));
+            })
 
-            },
-            error: function (xhr) {
-                console.error(xhr)
-            }
-        });
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     async function handleSelectedInvitation() {
         let id = $(this).data('id');
 
         try {
-            let invitationDetail = await getInvitationById(id);
-            console.log(invitationDetail);
-
+            let invitationDetail = await xApiInvite.getInvitationById("{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}",id);
             $("#shortlistContent").empty()
+
             let invitation = invitationDetail.data
             let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + invitation.position.organization.organization_logo
             $("#shortlistContent").append(xinvitation.student.mainContent(invitation, imageUrl))
@@ -182,123 +166,55 @@
         }
     }
 
-    function disabledButton(id) {
-        $(".btnContainer")
-            .html(`<button disabled data-id=${id} class="btn btn-outline-danger btnRejectInvitation">
-                    <i class="fa-regular fa-trash-can text-danger"></i>
-                    Decline
-                </button>
-                <button disabled data-id=${id} class="btn btn-outline-primary btnAcceptInvitation">
-                    <i class="fa-solid fa-pen text-primary"></i>
-                    Accept Invitation
-                </button>`)
-    }
-
-    function handleAcceptInvitation () {
+    async function handleAcceptInvitation () {
         let id = $(this).data("id")
-        let $btn = $(this)
-        url = "{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}"
-        url = url.replace("__ID__", id)
-        let formData = new FormData()
-        formData.append("_method", "PUT")
-
-        $.ajax({
-            url,
-            data: formData,
-            type: "POST",
-            processData: false,
-            contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
-            success: function (response) {
-                console.log("acceptInvitation", response)
-                disabledButton(id)
-                let target = invitations.find(inv => inv.id == id);
-                if (target) {
-                    target.invitation_status = "Accepted";
-                }
-
-                salert.salert('Success', response.message, 'success');
-                $(`.invitation-item[data-id="${id}"]`).remove()
-                $("#shortlistContent").html(`<div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
-                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                    <h4 class="mt-2">Select Interview</h4>
-                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                        <i class="fa-solid fa-filter"></i>
-                        Interview
-                    </button>
-                </div>`)
-
-            },
-            error: function (xhr) {
-                console.error(xhr)
-                salert.salert('Error', xhr.responseJSON?.message, 'error');
-            }
-        });
-    }
-
-    function handleRejectInvitation () {
-        let id = $(this).data("id")
-
-        url = "{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}"
-        url = url.replace("__ID__", id)
 
         let data = {
             _method: "PUT",
             _token: $('meta[name="csrf-token"]').attr("content")
         }
 
-        $.ajax({
-            url,
-            type: "POST",
-            data: data,
-            success: function (response) {
-                console.log("rejectInvitation", response)
-                salert.salert('Success', response.message, 'success');
-                disabledButton(id)
-                let target = invitations.find(inv => inv.id == id);
-                if (target) {
-                    target.invitation_status = "Rejected";
-                }
+        try {
+            let response = await xApiInvite.acceptInvitation("{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}", id, data)
+            if(!response) return
 
-                salert.salert('Success', response.message, 'success');
-                $(`.invitation-item[data-id="${id}"]`).remove()
-                $("#shortlistContent").html(`<div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
-                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                    <h4 class="mt-2">Select Interview</h4>
-                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                        <i class="fa-solid fa-filter"></i>
-                        Interview
-                    </button>
-                </div>`)
-            },
-            error: function (xhr) {
-                console.error(xhr)
-                salert.salert('Error', xhr.responseJSON?.message, 'error');
-            }
-        });
+            xalert.fire('Success', response.message, 'success');
+
+            $(`.invitation-item[data-id="${id}"]`).remove()
+            $("#shortlistContent").empty()
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    function dataFilter(status) {
-        $(".invitation-list").empty()
+    async function handleRejectInvitation () {
+        let id = $(this).data("id")
 
-        invitations.sort((a, b) => statusOrder[a.invitation_status] - statusOrder[b.invitation_status]);
-
-        if (status == "") {
-            invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
-            return;
+        let data = {
+            _method: "PUT",
+            _token: $('meta[name="csrf-token"]').attr("content")
         }
 
-        let filted = invitations.filter(inv => inv.invitation_status == status)
-        filted.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+        try {
+            let response = await xApiInvite.rejectInvitation("{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}", id, data)
+            if(!response) return
+
+            xalert.fire('Success', response.message, 'success');
+
+            $(`.invitation-item[data-id="${id}"]`).remove()
+            $("#shortlistContent").empty()
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function handleChangeStatus () {
         let currentStatus = $(this).data("status")
-        getInvitationsByStatusAndReceiverId(currentStatus)
         $(".nav-item button").removeClass("active text-primary").addClass("text-body");
         $(this).find("button").removeClass("text-body").addClass("active text-primary");
+        getInvitationsByStatusAndReceiverId(currentStatus)
     }
 
     getInvitationsByStatusAndReceiverId(currentStatus)

@@ -1,4 +1,5 @@
-import { formatDate } from "../../utils/format.js"
+import { formatDate } from "../../shared/utils/format.js"
+
 function renderStatus(status) {
     let class_name = ""
     if (status.invitation_status == "Scheduled") class_name = "text-warning bg-warning-subtle border-warning"
