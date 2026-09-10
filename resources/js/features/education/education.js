@@ -183,7 +183,23 @@ export let student = {
 }
 
 export let recruiter = {
+    template: (education) => {
+        return `<div class="alert alert-primary d-flex gap-2" role="button"
+                    data-programme-id="${education.id}">
 
+                    <div class="bg-body d-flex justify-content-center align-items-center"
+                        style="width: 40px; height: 40px; border-radius: 50%;">
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+
+                    <div>
+                        <p>${education.programme.organization.company_name ?? 'Unknown Institution'}</p>
+                        <p>${education.programme.programme_name ?? ''}</p>
+                        <p>${education.programme.programme_level ?? ''}</p>
+                        <p>${education.programme.duration_years ?? ''} Years</p>
+                    </div>
+                </div>`;
+    },
 }
 
 export let common = {

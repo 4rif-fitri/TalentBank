@@ -403,6 +403,8 @@
                 type: "GET",
                 success: function (response) {
                     let datas = response.data.data
+                    console.log(datas);
+
                     current_page = response.data.current_page
                     last_page = response.data.last_page
                     $("#total-found").text(`${response.data.total} students found`)

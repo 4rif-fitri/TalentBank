@@ -69,7 +69,7 @@
 <div class="content p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
-        <h3 class="m-0 fw-bold">Recruitment Invitation</h3>
+        <h3 class="m-0 fw-bold">Job Offers</h3>
     </div>
 
     <div class="talent-layout">

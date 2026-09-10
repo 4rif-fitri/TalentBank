@@ -284,3 +284,32 @@ a {
 @view-transition {
     navigation: auto;
 }
+.thum-image {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+}
+
+.list-item-container .list-item:hover {
+    border: 1px solid #6d7eca !important;
+    color: #6d7eca;
+
+    small {
+        color: #6d7eca !important;
+    }
+}
+
+.list-item-container .list-item.active {
+    border: 1px solid #5267c4 !important;
+    color: #5267c4;
+
+    small {
+        color: #5267c4 !important;
+    }
+}
+
+.thum-image-lg {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+}

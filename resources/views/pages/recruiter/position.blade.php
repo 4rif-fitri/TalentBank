@@ -751,6 +751,9 @@
                 organizations.map(organization => getPositionsByOrgId(organization.organization_id))
             );
 
+            console.log(results);
+
+
             shortListRender.sideBar(results)
 
         } catch (error) {

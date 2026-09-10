@@ -134,10 +134,10 @@
 
             <div class="card bg-body border-0 p-3 d-flex flex-column align-items-center">
                 <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                <h4 class="mt-2">No Interview Selected Yet</h4>
+                <h4 class="mt-2">No Invitation Selected Yet</h4>
                 <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
                     <i class="fa-solid fa-filter"></i>
-                    Interview
+                    Invitations
                 </button>
             </div>
 
@@ -149,28 +149,30 @@
 <div class="shortlist-overlay toggleFilter"></div>
 
 <x-modals.invitation-modal />
-
+<x-modals.active-educations-modal />
 @endsection
 
 @section('script')
 <script type="module">
-
-    $(document).on("click", ".toggleFilter", function(){
-        document.body.classList.toggle('filter-open');
-    })
-</script>
-<script type="module">
-
     let currentStatus = "Pending"
     let currentInv
+    let currentInviteEducatios
 
     function getInvitationById(id) {
         let url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
         url = url.replace("__ID__", id)
-
         return $.ajax({
             url,
             type: "GET",
+        });
+    }
+
+    function getEducationById(id) {
+        let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", id);
+        return $.ajax({
+            url,
+            type: "GET"
         });
     }
 
@@ -179,11 +181,13 @@
 
         try {
             let inv = await getInvitationById(id)
-            console.log(inv);
             currentInv = inv.data
+            currentInviteEducatios = await getEducationById(currentInv.receiver.id)
+            currentInviteEducatios = currentInviteEducatios.data
+            let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentInv.receiver.profile_image
 
             $("#shortlistContent").empty()
-            $("#shortlistContent").append(invitation.mainContent(inv.data))
+            $("#shortlistContent").append(invitation.mainContent(inv.data, imageUrl, currentInviteEducatios))
 
         } catch (xhr) {
             console.error(xhr);
@@ -210,7 +214,6 @@
                 console.error(xhr.responseJSON.message)
             }
         });
-
     }
 
     function handleAddInvitation(invitation_id, scheduled_date,
@@ -243,33 +246,20 @@
         });
     }
 
-
-    let templteNotSelect = `<div class="border-0 p-3 d-flex flex-column align-items-center">
-                                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                                <h4 class="mt-2">No Interview Selected Yet</h4>
-                                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                                    <i class="fa-solid fa-filter"></i>
-                                    Interview
-                                </button>
-                            </div>`
-
-    $(document).on("click", ".nav-item", function () {
+    function handleChangeStatus(){
         $(".nav-item button").removeClass("active text-primary").addClass("text-black");
         $(this).find("button").removeClass("text-black").addClass("active text-primary");
         let status = $(this).data("status")
 
-        $("#shortlistContent").html(templteNotSelect)
+        $("#shortlistContent").html(xinvitation.recruiter.notInvitationSelected())
 
         if (currentStatus == status) return
         currentStatus = status
 
         getInvitationsByStatusAndSenderId(status)
-    });
+    }
 
-
-
-    $(document).on("click", ".btn-withdraw-invitation", function () {
-
+    function handleWithdrawInvitation(id) {
         Swal.fire({
             title: "Are you sure?",
             text: "You won't be able to revert this!",
@@ -277,8 +267,10 @@
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            confirmButtonText: "Yes, Withdraw it!"
         }).then((result) => {
+
+            if (!result) return
 
             let id = $(this).data('id');
 
@@ -303,14 +295,7 @@
 
                     $(`#recruitment-invitation-list .invitation-item[data-id="${response.data.id}"]`).remove();
 
-                    $("#shortlistContent").html(`<div class="border-0 p-3 d-flex flex-column align-items-center">
-                                                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                                                <h4 class="mt-2">No Interview Selected Yet</h4>
-                                                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                                                    <i class="fa-solid fa-filter"></i>
-                                                    Interview
-                                                </button>
-                                            </div>`)
+                    $("#shortlistContent").html(xinvitation.recruiter.sennderInvitatinNoSelected())
                     getInvitationsByStatusAndSenderId(currentStatus)
 
                 },
@@ -319,8 +304,7 @@
                 }
             });
         });
-
-    })
+    }
 
     function handleUpdateInvitation(){
         let url = "{{ route('invitations.update',['id' => '__ID__' ]) }}"
@@ -350,7 +334,7 @@
         });
     }
 
-    $(document).on("click", ".btn-edit-invitation", function () {
+    function handleEditInvite() {
         let id = $(this).data('id');
 
         $("#invite_candidate").val(currentInv.receiver.name)
@@ -363,7 +347,7 @@
         $("#inviteForm").find("#btnAddInvitation").hide()
         $("#inviteForm").find("#btnUpdateInvitation").show()
         xmodal.show("invitationModal")
-    })
+    }
 
     function handleUpdateInviteForm(e){
         e.preventDefault();
@@ -398,9 +382,31 @@
 
     }
 
+    function handleSeeMoreEdu() {
+        xmodal.show("activeEducationsModal")
+        $("#activeEducationList").empty()
+        console.log({ currentInviteEducatios });
+
+        if (currentInviteEducatios.length == 0) {
+            $("#activeEducationList").append(xeducation.student.emptyEducation())
+
+        } else {
+            currentInviteEducatios.forEach(programme => {
+                $("#activeEducationList").append(xeducation.recruiter.template(programme))
+            });
+        }
+    }
+
+    $(document).on("click", ".nav-item", handleChangeStatus)
+    $(document).on("click", ".btn-withdraw-invitation", handleWithdrawInvitation)
+    $(document).on("click", ".btn-edit-invitation", handleEditInvite)
+    $(document).on("click", ".btnSeeMore", handleSeeMoreEdu)
     $(document).on("click", ".btn-message-student", handleMessageStudent)
     $(document).on("click", ".invitation-item", handleSelectedInvitation)
     $(document).on("submit", "#inviteForm", handleUpdateInviteForm)
+    $(document).on("click", ".toggleFilter", function () {
+        document.body.classList.toggle('filter-open');
+    })
     getInvitationsByStatusAndSenderId("Pending")
 
 </script>
