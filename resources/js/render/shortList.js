@@ -1,7 +1,7 @@
 export function sideBar(results) {
     $("#shortlistList").empty();
 
-    if (results != []) {
+    if (results.length != 0) {
         results.forEach(response => {
             response.data.forEach(position => {
                 $("#shortlistList").append(shortListTemplate.sideBar(position));

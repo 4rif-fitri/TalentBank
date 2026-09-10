@@ -171,16 +171,6 @@
         }
     }
 
-    function getEducationByUserProfileId(id) {
-        let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", id);
-
-        return $.ajax({
-            url: url,
-            type: "GET"
-        });
-    }
-
     // ===== GET ======
 
     // ===== Handle ======
@@ -192,7 +182,7 @@
             let interviewDetail = await xApiInterview.getInterviewById("{{ route('interviews.getInterviewById', ['id' => '__ID__']) }}",id);
             let receiverId = interviewDetail.data.interviewee.id
 
-            let listEducationReceiver = await getEducationByUserProfileId(receiverId);
+            let listEducationReceiver = await xApiEducation.getEducationByUserProfileId("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}", receiverId);
 
             curreEducations = listEducationReceiver.data
             currentInterview = interviewDetail.data
@@ -362,7 +352,6 @@
             modalBody.append("<p>No active educations found.</p>");
         } else {
             educationList.forEach(education => {
-                console.log("education", education)
                 let educationHtml = xeducation.student.template(education.programme);
                 modalBody.append(educationHtml);
             });
@@ -389,7 +378,7 @@
     }
 
     loadData()
-    $(document).on("click", ".btnSeeMoreEducation", handleSeeMoreEducation);
+    $(document).on("click", ".btnSeeMore", handleSeeMoreEducation);
     $(document).on("click", ".shortlist-item", handleSelectedInterview)
     $(document).on("click", ".nav-item button", handleChnageStatus);
     $(document).on("click", "#btnMessageStudent", handleMessageStudent)

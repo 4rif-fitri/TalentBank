@@ -149,34 +149,14 @@
     // < ---- GET ------ >
 
     async function getProfileDataByProfileId() {
-        let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+        let url =
+        url = url.replace("__ID__", );
         let response = await $.ajax({
             url: url,
             method: 'GET'
         });
         myData = response.data;
         return response.data;
-    }
-
-    async function getPositionById(id) {
-        let url = "{{ route('positions.getPositionById', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", id);
-
-        return await $.ajax({
-            url: url,
-            method: 'GET'
-        });
-    }
-
-    async function getPositionsByOrgId(id) {
-        let url = "{{ route('positions.getPositionsByOrgId', ['id' => '__ID__']) }}";
-        url = url.replace("__ID__", id);
-
-        return await $.ajax({
-            url: url,
-            method: 'GET'
-        });
     }
 
     // < ---- GET ------ >
@@ -320,7 +300,7 @@
 
             $(this).addClass("active")
 
-            let response = await getPositionById(positionId)
+            let response = await xApiPosition.getPositionById("{{ route('positions.getPositionById', ['id' => '__ID__']) }}",positionId)
             if (!response) return
             console.log(response.data);
             curruntPosition = response.data
@@ -650,21 +630,17 @@
         // });
     }
 
-    function getShortlistedPositionIds(profileId, orgId) {
-        let url = "{{ route('shortlists.getShortlistedPositionIds',['profileId' => '__profileId__','orgId' => '__orgId__' ]) }}"
-        url = url.replace("__orgId__", orgId)
-        url = url.replace("__profileId__", profileId)
+    async function getShortlistedPositionIds(profileId, orgId) {
 
-        $.ajax({
-            url,
-            type: "GET",
-            success: function (response) {
-                debug.log("getShortlistedPositionIds", response.data);
-            },
-            error: function (xhr) {
-                debug.error(xhr.responseJSON.message)
-            }
-        });
+        try {
+            let response = await xApiPosition.getShortlistedPositionIds("{{ route('shortlists.getShortlistedPositionIds',['profileId' => '__profileId__','orgId' => '__orgId__' ]) }}")
+            if(!response) return
+
+            debug.log("getShortlistedPositionIds", response.data);
+
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     function _store(user_profile_id, position_id) {
@@ -712,20 +688,35 @@
 
     async function loadData() {
         try {
-            let profile = await getProfileDataByProfileId();
-            let organizations = profile.organization_users;
 
-            let results = await Promise.all(
-                organizations.map(organization => getPositionsByOrgId(organization.organization_id))
+            let profile = await xApiProfile.getProfileDataByProfileId(
+                "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}",
+                "{{ session('user_profile_id') }}"
             );
 
-            console.log(results);
+            let organizations = profile.data.organization_users;
 
+            let results = await Promise.all(
+                organizations.map(organization => {
 
-            shortListRender.sideBar(results)
+                    let orgId = organization.organization_id;
+
+                    return xApiPosition.getPositionsByOrgId(
+                        "{{ route('positions.getPositionsByOrgId', ['id' => '__ID__']) }}",
+                        orgId
+                    );
+
+                })
+            );
+
+            console.log("RESULTS:", results);
+
+            shortListRender.sideBar(results);
 
         } catch (error) {
+
             console.error("Ralat semasa loadData:", error);
+
         }
     }
 

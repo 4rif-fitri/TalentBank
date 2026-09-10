@@ -130,21 +130,14 @@
             <div id="recruitment-invitation-list" class="d-flex flex-column gap-2"></div>
         </aside>
 
-        <div id="shortlistContent" class="shortlist-content flex-grow-1 p-2">
-            <div class="bg-body border-0 p-3 d-flex flex-column align-items-center">
-                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                <h4 class="mt-2">No Interview Selected Yet</h4>
-                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                    <i class="fa-solid fa-filter"></i>
-                    Interview
-                </button>
-            </div>
-        </div>
+        <div id="shortlistContent" class="shortlist-content flex-grow-1 p-2"></div>
 
     </div>
 </div>
 <div class="shortlist-overlay toggleFilter"></div>
+
 <x-modals.job-offer-modal />
+<x-active-educations-modal />
 
 @endsection
 
@@ -190,7 +183,9 @@
             let response = await xApiJobOffer.withdrawJobOffer("{{ route('jobOffers.withdrawJobOffer', ['id' => '__ID__']) }}", id, data)
             if(!response) return
 
-            debug.log("getJobOffersByStatus", response.data);
+            $(`#recruitment-invitation-list .list-item[data-id="${response.data.id}"]`).remove();
+            $(".results-panel").html(xcommon.noSelected("No Job Offer Selected","","btn-toggle-filter toggleFilter","Interview"))
+            xalert.success(response.message)
 
         } catch (error) {
             console.error(error);
@@ -223,8 +218,7 @@
 
     function handleFilterJobOfferByStatus() {
         let status = $(this).data("status")
-        $(".shortlist-content").html(xcommon.noSelected(""))
-
+        $(".shortlist-content").html(xcommon.noSelected("No Job Offer Selected", "", "btn-toggle-filter toggleFilter", "Interview"))
         if (currentStatus == status) return
         currentStatus = status
         getJobOffersByStatus(currentStatus)
@@ -233,19 +227,20 @@
     function showModalEditJobOffer(){
         let id = $(this).data("id")
         console.log(currentJobOffer);
-        $(".offer-candidate-name").text(`Candidate: ${currentJobOffer.receiver.name}`)
-        $("#jobOfferPositionName").text(`Position: ${currentJobOffer.position.position_title}`)
 
-        $("#jobOfferModal").find("#start_date").val(currentJobOffer.start_date)
-        $("#jobOfferModal").find("#end_date").val(currentJobOffer.end_date)
+        $(this).find(".offer-candidate-name").text(`Candidate: ${currentJobOffer.receiver.name}`)
+        $(this).find("#jobOfferPositionName").text(`Position: ${currentJobOffer.position.position_title}`)
 
-        $("#jobOfferModal").find("#salary_amount").val(currentJobOffer.salary_amount)
-        $("#jobOfferModal").find("#salary_period").val(currentJobOffer.salary_period)
-        $("#jobOfferModal").find("#expires_at").val(currentJobOffer.expires_at.split(" ")[0])
-        $("#jobOfferModal").find("#benefits").val(currentJobOffer.benefits)
-        $("#jobOfferModal").find("#terms_and_conditions").val(currentJobOffer.terms_and_conditions)
-        $("#jobOfferModal").find("#job-offer-candicate-id").val(currentJobOffer.receiver.id)
-        $("#jobOfferModal").find("#QjobOfferPositionId").val(currentJobOffer.position.id)
+        $(this).find("#start_date").val(currentJobOffer.start_date)
+        $(this).find("#end_date").val(currentJobOffer.end_date)
+
+        $(this).find("#salary_amount").val(currentJobOffer.salary_amount)
+        $(this).find("#salary_period").val(currentJobOffer.salary_period)
+        $(this).find("#expires_at").val(currentJobOffer.expires_at.split(" ")[0])
+        $(this).find("#benefits").val(currentJobOffer.benefits)
+        $(this).find("#terms_and_conditions").val(currentJobOffer.terms_and_conditions)
+        $(this).find("#job-offer-candicate-id").val(currentJobOffer.receiver.id)
+        $(this).find("#QjobOfferPositionId").val(currentJobOffer.position.id)
 
         $("#btnAddJobOffer").hide()
         $("#btnUpdateJobOffer").show()
@@ -295,22 +290,51 @@
             let response = await xApiEducation.update("{{ route('jobOffers.update', ['id' => '__ID__']) }}", id, data)
             if(!response) return
 
-            debug.log("update", response.data);
-            xmodal.hide("jobOfferModal")
             getJobOffersByStatus(currentStatus)
-            xalert.fire("Success", response.message, "success")
+
+
+
+            xalert.success(response.message)
+            xmodal.hide("jobOfferModal")
 
         } catch (error) {
             console.error(error);
         }
     }
 
+    function handleSeeMoreEducation() {
+            let educationList = currentEducation;
+            let modalBody = $("#activeEducationList");
+            modalBody.empty();
+
+            if (educationList.length === 0) {
+                modalBody.append("<p>No active educations found.</p>");
+            } else {
+                educationList.forEach(education => {
+                    let educationHtml = xeducation.student.template(education.programme);
+                    modalBody.append(educationHtml);
+                });
+            }
+
+            xmodal.show("activeEducationsModal");
+        }
+
+    $(document).on("click", ".btnSeeMore", handleSeeMoreEducation)
+
     $(document).on("click", "#btnEditJobOffer", showModalEditJobOffer)
-    $(document).on("click", "#btnUpdateJo1bOffer", handleUpdateJobOffer)
+
+    $(document).on("click", "#btnUpdateJobOffer", handleUpdateJobOffer)
+
     $(document).on("click", "#btnWithdrawJobOffer", handleWithdrawJobOffer)
+
     $(document).on("click", "#btnMessageStudent", handleMessageStudent)
+
     $(document).on("click", ".list-item", handleJobOfferDetails)
+
     $(document).on("click", ".nav-link", handleFilterJobOfferByStatus)
+
+    $(".shortlist-content").html(xcommon.noSelected("No Job Offer Selected", "", "btn-toggle-filter toggleFilter", "Interview"))
+
     getJobOffersByStatus(currentStatus)
         $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
             document.body.classList.toggle('filter-open');
