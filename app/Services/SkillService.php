@@ -9,10 +9,20 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use \Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class SkillService
 {
     private const CACHE_TIME_HOURS = 1;
+
+    private const SOURCE_TYPE_TABLE_NAMES = [
+        'user_profile' => 'user_profiles',
+        'education' => 'education',
+        'experience' => 'experience',
+        'project' => 'projects',
+        'honors_award' => 'honors_awards',
+        'certification' => 'certifications'
+    ];
 
     private function verifySkillOwnership(UserSkill|Collection $userSkills, int $userProfileId): void
     {
@@ -69,6 +79,17 @@ class SkillService
         }
     }
 
+    private function checkIsSourceExists(string $sourceType, int $sourceId)
+    {
+        $isSourceExists = DB::table(self::SOURCE_TYPE_TABLE_NAMES[$sourceType])
+            ->where('id', $sourceId)
+            ->exists();
+
+        if (!$isSourceExists) {
+            throw new Exception('Source not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+    }
+
     /**
      * Returns all skills available
      * 
@@ -92,6 +113,8 @@ class SkillService
     {
         // check if user skill already exists
         $this->checkUserSkillsExists($data['skill_id'], $data['source_type'], $data['source_id']);
+
+        $this->checkIsSourceExists($data['source_type'], $data['source_id']);
 
         // create a new user skill
         $userSkill = UserSkill::create([
@@ -121,6 +144,8 @@ class SkillService
 
         // check if user skill already exists
         $this->checkUserSkillsExists($data, $sourceType, $sourceId);
+
+        $this->checkIsSourceExists($sourceType, $sourceId);
 
         foreach ($data as $newSkillId) {
             $insertRecord[] = [
@@ -184,8 +209,10 @@ class SkillService
         if ($userSkills->count() !== count($userSkillIds)) {
             throw new Exception('There are some user skill IDs that were not found.', Response::HTTP_NOT_FOUND);
         }
+
         $this->verifySkillOwnership($userSkills, $userProfileId);
         $this->checkUserSkillsExists($skillIds, $sourceType, $sourceId, $userSkillIds);
+        $this->checkIsSourceExists($sourceType, $sourceId);
 
         // prepare array to update
         foreach ($data as $userSkill) {
