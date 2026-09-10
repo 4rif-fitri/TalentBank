@@ -127,7 +127,7 @@
                 </ul>
             </div>
 
-            <div id="recruitment-invitation-list"></div>
+            <div id="recruitment-invitation-list" class="d-flex flex-column gap-2"></div>
         </aside>
 
         <div id="shortlistContent" class="shortlist-content flex-grow-1 p-2">
@@ -154,14 +154,9 @@
     let currentJobOffer
     let currentEducation
 
-    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
-        document.body.classList.toggle('filter-open');
-    });
-
     function getEducationByUserProfileId(id){
         let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}"
         url = url.replace('__ID__', id)
-
         return $.ajax({
             url,
             type: "GET",
@@ -190,7 +185,8 @@
                 let jobOffers = response.data
                 $("#recruitment-invitation-list").empty()
                 jobOffers.forEach(offer => {
-                    $("#recruitment-invitation-list").append(jobOffer.recruiter.sidebar(offer))
+                    let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + offer.receiver.profile_image
+                    $("#recruitment-invitation-list").append(xjobOffer.recruiter.sideBarItem(offer, imageUrl))
                 });
             },
             error: function (xhr) {
@@ -250,7 +246,7 @@
 
     function handleFilterJobOfferByStatus() {
         let status = $(this).data("status")
-        $(".shortlist-content").html(xjobOffer.recruiter.noInterviewSelected())
+        $(".shortlist-content").html(xcommon.noSelected(""))
 
         if (currentStatus == status) return
         currentStatus = status
@@ -288,13 +284,12 @@
 
             currentJobOffer = jobOfferResponse.data
             currentEducation = educationResponse.data
+            let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentJobOffer.receiver.profile_image
 
             console.log("currentJobOffer", currentJobOffer);
             console.log("currentEducation", currentEducation);
 
-
-            $(".shortlist-content").empty();
-            $(".shortlist-content").append(jobOffer.recruiter.mainContent(currentJobOffer, currentEducation))
+            $(".shortlist-content").html(xjobOffer.recruiter.mainContent(currentJobOffer, imageUrl, currentEducation))
         } catch (error) {
             console.log(error);
         }
@@ -340,12 +335,14 @@
     }
 
     $(document).on("click", "#btnEditJobOffer", showModalEditJobOffer)
-    $(document).on("click", "#btnUpdateJobOffer", handleUpdateJobOffer)
+    $(document).on("click", "#btnUpdateJo1bOffer", handleUpdateJobOffer)
     $(document).on("click", "#btnWithdrawJobOffer", handleWithdrawJobOffer)
     $(document).on("click", "#btnMessageStudent", handleMessageStudent)
-    $(document).on("click", ".invitation-item", handleJobOfferDetails)
+    $(document).on("click", ".list-item", handleJobOfferDetails)
     $(document).on("click", ".nav-link", handleFilterJobOfferByStatus)
     getJobOffersByStatus(currentStatus)
-
+        $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', function () {
+            document.body.classList.toggle('filter-open');
+        });
 </script>
 @endsection

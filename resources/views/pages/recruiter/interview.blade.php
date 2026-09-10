@@ -246,15 +246,15 @@
 
             curreEducations = listEducationReceiver.data
             currentInterview = interviewDetail.data
+            let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentInterview.interviewee.profile_image
 
             console.log("curreEducations", curreEducations);
             console.log("currentInterview", currentInterview);
-
-            $(".shortlist-content").empty();
-            $(".shortlist-content").append(intervieww.mainContent(currentInterview, curreEducations));
+            $(".shortlist-content").html(xinterview.recruiter.mainContent(currentInterview, imageUrl, curreEducations));
 
         } catch (xhr) {
-            xalert.fire("Error", xhr.responseJSON.message, "error")
+            console.error(xhr);
+
         }
     }
 

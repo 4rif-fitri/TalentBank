@@ -63,7 +63,7 @@
         }
     }
 
-    .shortlist-item:hover {
+    .list-item:hover {
         border: 1px solid #6d7eca !important;
         color: #6d7eca;
 
@@ -73,7 +73,7 @@
 
     }
 
-    .shortlist-item.active {
+    .list-item.active {
         border: 1px solid #5267c4 !important;
         color: #5267c4;
 
@@ -99,7 +99,7 @@
 
         <aside class="shortlist-sidebar" id="listContainer">
 
-            <div class="d-flex flex-column justify-content-between mb-3 pb-3">
+            <div class="d-flex flex-column justify-content-between mb-1 pb-1">
                 <div class="d-flex justify-content-between w-100">
                     <h5 class="m-0 fw-bold">Your invitation</h5>
                     <button type="button"
@@ -127,7 +127,7 @@
                 </ul>
             </div>
 
-            <div id="recruitment-invitation-list"></div>
+            <div id="recruitment-invitation-list" class="p-2 d-flex gap-2 flex-column"></div>
         </aside>
 
         <div id="shortlistContent" class="shortlist-content flex-grow-1 p-2">
@@ -186,8 +186,7 @@
             currentInviteEducatios = currentInviteEducatios.data
             let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentInv.receiver.profile_image
 
-            $("#shortlistContent").empty()
-            $("#shortlistContent").append(invitation.mainContent(inv.data, imageUrl, currentInviteEducatios))
+            $("#shortlistContent").html(xinvitation.recruiter.mainContent(inv.data, imageUrl, currentInviteEducatios))
 
         } catch (xhr) {
             console.error(xhr);
@@ -207,7 +206,8 @@
                 let invitations = response.data
                 $("#recruitment-invitation-list").empty()
                 invitations.forEach(inv => {
-                    $("#recruitment-invitation-list").append(invitation.recruitmentInvitationList(inv))
+                    let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + inv.receiver.profile_image
+                    $("#recruitment-invitation-list").append(xinvitation.recruiter.recruitmentInvitationList(inv, imageUrl))
                 });
             },
             error: function (xhr) {
@@ -251,7 +251,7 @@
         $(this).find("button").removeClass("text-black").addClass("active text-primary");
         let status = $(this).data("status")
 
-        $("#shortlistContent").html(xinvitation.recruiter.notInvitationSelected())
+        $("#shortlistContent").html(xcommon.noSelected("No Invitation Selected Yet", "", "btn-toggle-filter toggleFilter", "Invitation"))
 
         if (currentStatus == status) return
         currentStatus = status
@@ -295,7 +295,7 @@
 
                     $(`#recruitment-invitation-list .invitation-item[data-id="${response.data.id}"]`).remove();
 
-                    $("#shortlistContent").html(xinvitation.recruiter.sennderInvitatinNoSelected())
+                    $("#shortlistContent").html(xcommon.noSelected("No Invitation Selected Yet","","btn-toggle-filter toggleFilter","Invitation"))
                     getInvitationsByStatusAndSenderId(currentStatus)
 
                 },

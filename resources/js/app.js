@@ -21,6 +21,7 @@ import * as templatelanguage from "./features/language/language.js"
 import * as templateSocialMedia from "./features/social-media/social-media.js"
 import * as templateJobOffer from "./features/job-offer/job-offer.js"
 import * as templateInvitation from "./features/invitation/invitation.js"
+import * as templateCommon from "./features/common/common.js"
 
 import * as xvalidate from "./shared/utils/validation.js"
 import * as xformat from "./shared/utils/format.js"
@@ -36,6 +37,7 @@ window.xlink = templateSocialMedia;
 window.xjobOffer = templateJobOffer;
 window.xinterview = templateInterview;
 window.xinvitation = templateInvitation;
+window.xcommon = templateCommon
 
 window.modal = modal
 window.xmodal = modal
