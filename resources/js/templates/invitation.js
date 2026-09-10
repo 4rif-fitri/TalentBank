@@ -129,7 +129,7 @@ export function mainContent(invitation, imageUrl, educatios) {
 }
 
 export function reciverInvitationList(inv) {
-    return `<div role="button" data-id=${inv.id} class="invitation-item d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded" >
+    return `<div role="button" data-id=${inv.id} class="invitation-item btn-toggle-filter d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded" >
                 <div class="d-flex align-items-center gap-3">
                     <div class="flex-grow-1 d-flex flex-column">
                         <h4 class="fw-semibold">${inv.position.organization.company_name}</h4>

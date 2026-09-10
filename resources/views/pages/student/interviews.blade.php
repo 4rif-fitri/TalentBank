@@ -130,7 +130,10 @@
                 currentInterviews = response.data
 
                 $(".invitation-list").empty()
-                currentInterviews.forEach(inv => $(".invitation-list").append(xinterview.student.sideList(inv)));
+                currentInterviews.forEach(inv =>{
+                    let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + inv.position.organization.organization_logo
+                    $(".invitation-list").append(xinterview.student.sideList(inv, imageUrl))
+                });
             },
             error: function (xhr) {
                 xdebug.log(xhr.responseJSON.message)
@@ -138,7 +141,9 @@
         });
     }
 
-    function getInterviewById(id) {
+    function handleInvitationClick() {
+        let id = $(this).data("id")
+
         let url = "{{ route('interviews.getInterviewById',['id' => '__ID__']) }}"
         url = url.replace("__ID__", id)
 
@@ -148,8 +153,8 @@
             success: function (response) {
                 xdebug.log("getInterviewById", response.data);
                 currentInterview = response.data;
-
-                $("#shortlistContent").empty().append(xinterview.student.mainContent(currentInterview));
+                let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + currentInterview.position.organization.organization_logo
+                $("#shortlistContent").html(xinterview.student.mainContent(currentInterview, imageUrl));
             },
             error: function (xhr) {
                 xdebug.log(xhr.responseJSON.message)
@@ -167,13 +172,6 @@
 
         getInterviewsByStatusAndIntervieweeId(status)
     }
-
-    function handleInvitationClick() {
-        let id = $(this).data("id")
-        getInterviewById(id)
-    }
-
-    getInterviewsByStatusAndIntervieweeId(currentStatus)
 
     $(document).on("click", ".nav-item", handleFilterToggle);
     $(document).on("click", ".invitation-item", handleInvitationClick);

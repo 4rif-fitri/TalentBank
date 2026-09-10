@@ -97,12 +97,12 @@
                 </ul>
             </div>
 
-            <div class="invitation-list"></div>
+            <div class="invitation-list d-flex flex-column gap-2 p"></div>
 
         </aside>
 
         <div class="filter-panel flex-grow-1">
-            <div class="row g-3 " id="shortlistContent">
+            <div class="row g-3" id="shortlistContent">
 
                 <div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
                     <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
@@ -118,24 +118,25 @@
     </div>
 </div>
 
-<div class="filter-overlay" onclick="toggleFilter()"></div>
+<div class="filter-overlay"></div>
 @endsection
 
 @section('script')
-<script>
-    function toggleFilter() {
-        document.body.classList.toggle('filter-open');
-    }
-</script>
 <script type="module">
     let invitations
     let url
     let currentStatus = "Pending"
+    const statusOrder = {
+        Pending: 1,
+        Accepted: 2,
+        Rejected: 3,
+        Expired: 4,
+        Withdrawn: 5
+    };
 
     function getInvitationById(id) {
         url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
         url = url.replace("__ID__", id)
-
         return $.ajax({
             url,
             type: "GET"
@@ -151,7 +152,11 @@
                 console.log("getInvitationsByStatusAndReceiverId", response)
                 $(".invitation-list").empty()
                 invitations = response.data
-                invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
+
+                invitations.forEach(inv =>{
+                    let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + inv.position.organization.organization_logo
+                    $(".invitation-list").append(xcommon.studentSideBar(inv, imageUrl));
+                })
 
             },
             error: function (xhr) {
@@ -168,15 +173,14 @@
             console.log(invitationDetail);
 
             $("#shortlistContent").empty()
-            $("#shortlistContent").append(invitation.reciverInvitatinMainContent(invitationDetail.data))
+            let invitation = invitationDetail.data
+            let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + invitation.position.organization.organization_logo
+            $("#shortlistContent").append(xinvitation.student.mainContent(invitation, imageUrl))
 
         } catch (error) {
             console.error(error);
         }
     }
-
-
-    $(document).on("click", ".invitation-item", handleSelectedInvitation)
 
     function disabledButton(id) {
         $(".btnContainer")
@@ -190,7 +194,7 @@
                 </button>`)
     }
 
-    $(document).on("click", ".btnAcceptInvitation", function () {
+    function handleAcceptInvitation () {
         let id = $(this).data("id")
         let $btn = $(this)
         url = "{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}"
@@ -232,9 +236,9 @@
                 salert.salert('Error', xhr.responseJSON?.message, 'error');
             }
         });
-    })
+    }
 
-    $(document).on("click", ".btnRejectInvitation", function () {
+    function handleRejectInvitation () {
         let id = $(this).data("id")
 
         url = "{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}"
@@ -274,15 +278,7 @@
                 salert.salert('Error', xhr.responseJSON?.message, 'error');
             }
         });
-    })
-
-    const statusOrder = {
-        Pending: 1,
-        Accepted: 2,
-        Rejected: 3,
-        Expired: 4,
-        Withdrawn: 5
-    };
+    }
 
     function dataFilter(status) {
         $(".invitation-list").empty()
@@ -306,7 +302,14 @@
     }
 
     getInvitationsByStatusAndReceiverId(currentStatus)
+
+    $(document).on("click", ".invitation-item", handleSelectedInvitation)
+    $(document).on("click", ".btnAcceptInvitation", handleAcceptInvitation)
     $(document).on("click", ".nav-link", handleChangeStatus)
+    $(document).on("click", ".btnRejectInvitation", handleRejectInvitation)
+    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay, .filter-overlay, .list-item', function () {
+        document.body.classList.toggle('filter-open');
+    });
 
 </script>
 @endsection

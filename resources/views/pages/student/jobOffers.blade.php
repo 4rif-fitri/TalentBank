@@ -11,7 +11,6 @@
     .filter-panel {
         width: 350px;
         background-color: white !important;
-        padding: 20px;
         border-radius: 12px;
         box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
         flex-shrink: 0;
@@ -100,19 +99,17 @@
 
         </aside>
 
-        <div class="filter-panel flex-grow-1">
-            <div class="row g-3 " id="shortlistContent">
+        <div class="filter-panel flex-grow-1" id="shortlistContent">
 
-                <div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
-                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                    <h4 class="mt-2">No Interview Selected Yet</h4>
-                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                        <i class="fa-solid fa-filter"></i>
-                        Interview
-                    </button>
-                </div>
-
+            <div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
+                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+                <h4 class="mt-2">No Interview Selected Yet</h4>
+                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+                    <i class="fa-solid fa-filter"></i>
+                    Interview
+                </button>
             </div>
+
         </div>
     </div>
 </div>
@@ -135,8 +132,9 @@
                 debug.log("getJobOffersByStatusAndReceiverId", response.data)
 
                 $(".invitation-list").empty()
-                response.data.forEach(invitation => {
-                    $(".invitation-list").append(xjobOffer.student.sideList(invitation))
+                response.data.forEach(offer => {
+                    let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + offer.position.organization.organization_logo
+                    $(".invitation-list").append(xcommon.studentSideBar(offer, imageUrl))
                 })
             },
             error: function (xhr) {
@@ -154,8 +152,11 @@
             type: "GET",
             success: function (response) {
                 debug.log("getJobOfferById", response.data)
+                let offer = response.data
+                console.log({offer});
 
-                $("#shortlistContent").empty().append(xjobOffer.recruiter.mainContent(response.data))
+                let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + offer.position.organization.organization_logo
+                $("#shortlistContent").html(xjobOffer.student.mainContent(response.data, imageUrl))
 
             },
             error: function (response) {
@@ -164,7 +165,9 @@
         });
     }
 
-    function acceptJobOffer(id) {
+    function handleAcceptJobOffer() {
+        let id = $(this).data("id")
+
         let url = "{{ route('jobOffers.acceptJobOffer', ['id' => '__ID__']) }}"
         url = url.replace("__ID__", id)
 
@@ -188,7 +191,9 @@
         });
     }
 
-    function rejectJobOffer(id) {
+    function handleRejectJobOffer() {
+        let id = $(this).data("id")
+
         let url = "{{ route('jobOffers.rejectJobOffer', ['id' => '__ID__']) }}"
         url = url.replace("__ID__", id)
 
@@ -212,7 +217,7 @@
         });
     }
 
-    $(document).on("click", ".nav-item button", function () {
+    function handleChangeStatus () {
         $(".nav-item button").removeClass("active text-primary").addClass("text-body");
         $(this).find("button").removeClass("text-body").addClass("active text-primary");
         let status = $(this).data("status")
@@ -221,33 +226,24 @@
         currentStatus = status
 
         getJobOffersByStatusAndReceiverId(status)
-    })
+    }
 
-    $(document).on("click", ".invitation-item ", function () {
+    function handleJobOfferDetail () {
         $(this).addClass("active").siblings().removeClass("active")
         $(".toggleFilter").removeClass("d-block").addClass("d-none")
         let id = $(this).data("id")
         getJobOfferById(id)
-    })
+    }
 
     $(document).on("click", ".toggleFilter", function () {
         $("body").toggleClass("filter-open");
     });
+
+    $(document).on("click", ".invitation-item ", handleJobOfferDetail)
+    $(document).on("click", ".btnAcceptInvitation", handleAcceptJobOffer)
+    $(document).on("click", ".btnRejectInvitation", handleRejectJobOffer)
+    $(document).on("click", ".nav-item button", handleChangeStatus)
     getJobOffersByStatusAndReceiverId(currentStatus)
 
-    $(document).on("click", ".btnAcceptInvitation", function () {
-        let id = $(this).data("id")
-        acceptJobOffer(id)
-    })
-    $(document).on("click", ".btnRejectInvitation", function () {
-        let id = $(this).data("id")
-        rejectJobOffer(id)
-    })
-
-    // getJobOffersByStatusAndReceiverId()
-    // getJobOfferById(4)
-    // getJobOffersByStatus("Pending")
-    // acceptJobOffer(4)
-    // rejectJobOffer(4)
 </script>
 @endsection
