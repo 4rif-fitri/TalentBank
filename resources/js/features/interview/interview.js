@@ -1,4 +1,4 @@
-import { formatDate } from "../../shared/utils/format.js"
+import { formatDate, formatDateShort, formatDateTime } from "../../shared/utils/format.js"
 
 function renderStatus(status) {
     let class_name = ""
@@ -145,46 +145,121 @@ export let recruiter = {
                             ${educatios[0]?.programme?.programme_name ? `<div role="button" class="badge bg-primary btnSeeMore">See More</div>` : ""}
                         </div>
                     </div>
-                    <div class="border-0 mb-4">
-                        <div class="row g-3">
-                            <div class="h-100">
-                                <div class="row">
-                                    <div class="col-lg-6 col-12 card-body p-3">
-                                        <small class="text-primary fw-semibold text-uppercase">Job Opportunity</small>
+                    <div class="row">
+                        <div class="col-lg-6 col-12 card-body p-3">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td class="col-3">
                                         <small class="text-muted d-block">Company</small>
-                                        <div class="fw-semibold">${invitation.position.organization.company_name}</div>
+                                    </td>
+                                    <td class="col-9">
+                                        <div>${invitation.position.organization.company_name}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-3">
                                         <small class="text-muted d-block">Position</small>
-                                        <span class="fw-semibold">${invitation.position.position_title}</span>
-                                    </div>
-                                    <div class="col-lg-6 col-12 p-3">
-                                        <div class=" bg-body">
-                                            <small class="text-muted d-block">Message</small>
-                                            <span class="fw-semibold">${invitation.invitation_message}</span>
-                                            <hr>
-                                            <small class="text-muted d-block">Sent By</small>
-                                            <span class="fw-semibold">${invitation.interviewer.name}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body p-1 ">
-                        <h6 class="fw-bold ">Invitation Details</h6>
+                                    </td>
+                                    <td class="col-9">
+                                        <span>${invitation.position.position_title}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-3">
+                                        <small class="text-muted d-block">Department</small>
+                                    </td>
+                                    <td class="col-9">
+                                        <span>${invitation.position.department}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Interview mode</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${invitation.interview_mode}</span>
+                                        </td>
+                                    </tr>
 
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Status</span>
-                            <div class="badge ${statusClass}">${invitation.invitation_status}</div>
-                        </div>
+                                    ${invitation.interview_mode === "Online" ? `
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Interview Link</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${invitation.meeting_url}</span>
+                                            </td>
+                                        </tr>` : ""}
 
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Sent</span>
-                            <span class="fw-semibold">${(invitation.created_at).split(" ")[0]}</>
-                        </div>
+                                    ${invitation.interview_mode === "On-site" ? `
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Interview location</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${invitation.location}</span>
+                                            </td>
+                                        </tr>` : ""}
 
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Expires</span>
-                            <span class="fw-semibold">${invitation.expires_at}</span>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-6 col-12 card-body p-3">
+                            <table class="table">
+                                <tbody>
+
+
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Ceheduled</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${formatDateTime(invitation.scheduled_at)}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Interview result</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.interview_result}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Interview status</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.interview_status}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Recruiter comment</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.recruiter_comment}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Create at</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${formatDate(invitation.created_at)}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Create by</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${invitation.interviewee.name}</span>
+                                        </td>
+                                    </tr>
+                                </body>
+                            </table>
                         </div>
                     </div>
                     <hr>
@@ -195,20 +270,21 @@ export let recruiter = {
 
                         <div class="d-flex flex-column flex-lg-row gap-2">
                             <button class="btn btn-primary btn-message-student">
-                                <i class="fa-solid fa-message me-2"></i>
                                 Message Student
                             </button>
 
-                            <button data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"}
+                            <button id="btnCencelInterview" data-id="${invitation.id}" ${invitation.interview_status === "Scheduled" ? "" : "disabled"}
                                 class="btn-withdraw-invitation btn btn-outline-danger">
-                                <i class="fa-regular fa-trash-can me-2"></i>
-                                Withdraw Invitation
-
+                                Cencel
                             </button>
 
-                            <button data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"}
+                            <button id="btnCompletedInterview" data-id="${invitation.id}" ${invitation.interview_status === "Scheduled" ? "" : "disabled"}
+                                class="btn-withdraw-invitation btn btn-outline-success">
+                                Completed
+                            </button>
+
+                            <button id="btnUpdateInterview" data-id="${invitation.id}"
                                 class="btn-edit-invitation btn btn-outline-primary">
-                                <i class="fa-solid fa-pen me-2"></i>
                                 Edit Invitation
                             </button>
 

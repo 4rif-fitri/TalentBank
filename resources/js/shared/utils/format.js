@@ -56,3 +56,13 @@ export function buildValidDate(month, year) {
     if (!month) return `${year}-01-01`;
     return `${year}-${month}-01`;
 }
+export function formatDateTime(date) {
+    return new Date(date).toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true
+    });
+}

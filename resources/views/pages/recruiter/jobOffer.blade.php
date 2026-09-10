@@ -292,8 +292,6 @@
 
             getJobOffersByStatus(currentStatus)
 
-
-
             xalert.success(response.message)
             xmodal.hide("jobOfferModal")
 

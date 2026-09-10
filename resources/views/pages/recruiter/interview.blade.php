@@ -210,6 +210,9 @@
             let response = await xApiInterview.completeInterview("{{ route('interviews.completeInterview',['id' => '__ID__']) }}", id, data)
             if(!response) return
 
+            $(`#shortlistList .shortlist-item[data-id="${response.data.id}"]`).remove();
+            $(".results-panel").html(xcommon.noSelected("No Job Offer Selected", "", "btn-toggle-filter toggleFilter", "Interview"))
+
             xalert.fire("Success", "Interview Completed", "success")
 
         } catch (error) {
@@ -228,6 +231,9 @@
         try {
             let response = await xApiInterview.cancelInterview("{{ route('interviews.cancelInterview',['id' => '__ID__']) }}", id, data)
             if (!response) return
+
+            $(`#shortlistList .shortlist-item[data-id="${response.data.id}"]`).remove();
+            $(".results-panel").html(xcommon.noSelected("No Job Offer Selected", "", "btn-toggle-filter toggleFilter", "Interview"))
 
             xalert.fire("Success", "Interview Completed", "success")
 
@@ -379,15 +385,25 @@
 
     loadData()
     $(document).on("click", ".btnSeeMore", handleSeeMoreEducation);
+
     $(document).on("click", ".shortlist-item", handleSelectedInterview)
+
     $(document).on("click", ".nav-item button", handleChnageStatus);
+
     $(document).on("click", "#btnMessageStudent", handleMessageStudent)
+
     $(document).on("click", "#btnCencelInterview", cancelInterview)
+
     $(document).on("click", "#btnCompletedInterview", completeInterview)
+
     $(document).on("click", "#btnReschedule", handleRescheduleInterview)
+
     $(document).on("click","#btnUpdateInterview", showUpdateInterviewModal)
+
     $(document).on("submit", "#inviteForm", handleUpdateInterview)
+
     $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', toggle);
+
     $(document).on("change", "input[name='interview_mode']", function () {
         toggleInterviewMode($(this).val());
     });
