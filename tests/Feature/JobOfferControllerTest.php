@@ -77,6 +77,7 @@ class JobOfferControllerTest extends TestCase
     private function validJobOfferPayload(array $overrides = []): array
     {
         return array_merge([
+            'title' => 'Software Engineer Offer',
             'position_id' => $this->position->id,
             'receiver_profile_id' => $this->receiverProfile->id,
             'salary_amount' => 5500.00,
@@ -124,6 +125,7 @@ class JobOfferControllerTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
+                        'title',
                         'position_id',
                         'sender_profile_id',
                         'receiver_profile_id',
@@ -146,6 +148,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.0.id', $pendingOffer->id)
+            ->assertJsonPath('data.0.title', $pendingOffer->title)
             ->assertJsonPath('data.0.position_id', $this->position->id)
             ->assertJsonPath('data.0.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.0.receiver_profile_id', $this->receiverProfile->id)
@@ -196,6 +199,7 @@ class JobOfferControllerTest extends TestCase
                 'data' => [
                     '*' => [
                         'id',
+                        'title',
                         'position_id',
                         'sender_profile_id',
                         'receiver_profile_id',
@@ -218,6 +222,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.0.id', $acceptedOffer->id)
+            ->assertJsonPath('data.0.title', $acceptedOffer->title)
             ->assertJsonPath('data.0.position_id', $this->position->id)
             ->assertJsonPath('data.0.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.0.receiver_profile_id', $this->receiverProfile->id)
@@ -257,6 +262,7 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'id',
+                    'title',
                     'position_id',
                     'sender_profile_id',
                     'receiver_profile_id',
@@ -282,6 +288,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.id', $jobOffer->id)
+            ->assertJsonPath('data.title', $jobOffer->title)
             ->assertJsonPath('data.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.user_role', 'sender')
@@ -319,6 +326,7 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'id',
+                    'title',
                     'position_id',
                     'sender_profile_id',
                     'receiver_profile_id',
@@ -344,6 +352,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.id', $jobOffer->id)
+            ->assertJsonPath('data.title', $jobOffer->title)
             ->assertJsonPath('data.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.user_role', 'receiver')
@@ -351,6 +360,115 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonPath('data.position.organization.id', $this->organization->id)
             ->assertJsonPath('data.sender.id', $this->senderProfile->id)
             ->assertJsonPath('data.receiver.id', $this->receiverProfile->id);
+    }
+
+    public function test_sender_can_get_job_offers_by_position_id_and_receiver_id(): void
+    {
+        $jobOffer = JobOffer::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+        ]);
+
+        JobOffer::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+        ]);
+
+        $response = $this->getJson(route('interviews.getJobOffersByPositionIdAndReceiverId', [
+            'receiverId' => $this->receiverProfile->id,
+            'positionId' => $this->position->id,
+        ]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'title',
+                        'position_id',
+                        'title',
+                    ],
+                ],
+            ])
+            ->assertJsonPath('data.0.id', $jobOffer->id)
+            ->assertJsonPath('data.0.position_id', $jobOffer->position_id)
+            ->assertJsonPath('data.0.title', $jobOffer->title);
+
+        $this->assertCount(2, $response->json('data'));
+    }
+
+    public function test_get_job_offers_by_position_id_and_receiver_id_fails_with_non_existing_position_id(): void
+    {
+        JobOffer::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+        ]);
+
+        $response = $this->getJson(route('interviews.getJobOffersByPositionIdAndReceiverId', [
+            'receiverId' => $this->receiverProfile->id,
+            'positionId' => 0,
+        ]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Position not found with given ID.',
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_get_job_offers_by_position_id_and_receiver_id_fails_when_user_is_not_admin_of_current_org(): void
+    {
+        $this->withSession([
+            'user_profile_id' => $this->receiverProfile->id,
+            'roles' => ['Organization Admin'],
+        ]);
+
+        JobOffer::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+        ]);
+
+        $response = $this->getJson(route('interviews.getJobOffersByPositionIdAndReceiverId', [
+            'receiverId' => $this->receiverProfile->id,
+            'positionId' => $this->position->id,
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'Unauthorized access to get job offers.',
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_get_job_offers_by_position_id_and_receiver_id_fails_with_non_existing_receiver_id(): void
+    {
+        JobOffer::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id,
+        ]);
+
+        $response = $this->getJson(route('interviews.getJobOffersByPositionIdAndReceiverId', [
+            'receiverId' => 0,
+            'positionId' => $this->position->id,
+        ]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'User profile not found with given ID.',
+            ])
+            ->assertJsonPath('data', null);
     }
 
     public function test_get_job_offer_by_id_returns_not_found_when_not_part_of_offer(): void
@@ -404,12 +522,14 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonFragment([
                 'position_id' => $this->position->id,
                 'receiver_profile_id' => $this->receiverProfile->id,
+                'title' => 'Software Engineer Offer',
                 'salary_period' => AppConstants::SALARY_PERIODS['MONTHLY'],
             ])
             ->assertJsonStructure([
                 'data' => [
                     'id',
                     'position_id',
+                    'title',
                     'sender_profile_id',
                     'receiver_profile_id',
                     'salary_amount',
@@ -429,6 +549,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.title', 'Software Engineer Offer')
             ->assertJsonPath('data.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.salary_period', AppConstants::SALARY_PERIODS['MONTHLY'])
@@ -440,6 +561,7 @@ class JobOfferControllerTest extends TestCase
             'position_id' => $this->position->id,
             'sender_profile_id' => $this->senderProfile->id,
             'receiver_profile_id' => $this->receiverProfile->id,
+            'title' => 'Software Engineer Offer',
             'offer_status' => AppConstants::JOB_OFFER_STATUS['PENDING'],
             'salary_period' => AppConstants::SALARY_PERIODS['MONTHLY'],
         ]);
@@ -539,12 +661,14 @@ class JobOfferControllerTest extends TestCase
             ])
             ->assertJsonFragment([
                 'id' => $jobOffer->id,
+                'title' => 'Software Engineer Offer',
                 'salary_amount' => 6000,
                 'terms_and_conditions' => 'Updated terms.',
             ])
             ->assertJsonStructure([
                 'data' => [
                     'id',
+                    'title',
                     'position_id',
                     'sender_profile_id',
                     'receiver_profile_id',
@@ -561,6 +685,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.id', $jobOffer->id)
+            ->assertJsonPath('data.title', 'Software Engineer Offer')
             ->assertJsonPath('data.position_id', $this->position->id)
             ->assertJsonPath('data.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
@@ -569,6 +694,7 @@ class JobOfferControllerTest extends TestCase
 
         $this->assertDatabaseHas('job_offers', [
             'id' => $jobOffer->id,
+            'title' => 'Software Engineer Offer',
             'salary_amount' => 6000,
             'terms_and_conditions' => 'Updated terms.',
         ]);
@@ -692,6 +818,7 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'id',
+                    'title',
                     'position_id',
                     'sender_profile_id',
                     'receiver_profile_id',
@@ -708,6 +835,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.id', $jobOffer->id)
+            ->assertJsonPath('data.title', $jobOffer->title)
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.offer_status', AppConstants::JOB_OFFER_STATUS['ACCEPTED']);
 
@@ -742,6 +870,7 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'id',
+                    'title',
                     'position_id',
                     'sender_profile_id',
                     'receiver_profile_id',
@@ -758,6 +887,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.id', $jobOffer->id)
+            ->assertJsonPath('data.title', $jobOffer->title)
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.offer_status', AppConstants::JOB_OFFER_STATUS['REJECTED']);
 
@@ -790,6 +920,7 @@ class JobOfferControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'id',
+                    'title',
                     'position_id',
                     'sender_profile_id',
                     'receiver_profile_id',
@@ -806,6 +937,7 @@ class JobOfferControllerTest extends TestCase
                 ],
             ])
             ->assertJsonPath('data.id', $jobOffer->id)
+            ->assertJsonPath('data.title', $jobOffer->title)
             ->assertJsonPath('data.sender_profile_id', $this->senderProfile->id)
             ->assertJsonPath('data.offer_status', AppConstants::JOB_OFFER_STATUS['WITHDRAWN']);
 

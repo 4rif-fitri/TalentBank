@@ -21,6 +21,7 @@ class InterviewFactory extends Factory
     public function definition(): array
     {
         return [
+            'title' => fake()->sentence(),
             'scheduled_at' => fake()->dateTimeBetween('now', '+1 month'),
             'interview_mode' => fake()->randomElement(AppConstants::INTERVIEW_MODES),
             'location' => null,

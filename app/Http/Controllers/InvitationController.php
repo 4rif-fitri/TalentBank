@@ -16,30 +16,6 @@ class InvitationController extends Controller
     }
 
     /**
-     * Handles request to get invitations receiver's user profile ID
-     * 
-     * @return JsonResponse
-     */
-    // public function getInvitationsByReceiverId(): JsonResponse
-    // {
-    //     $userProfileId = session('user_profile_id');
-    //     $invitations = $this->invitationService->getInvitationsByReceiverId($userProfileId);
-    //     return ApiResponse::success('Success.', $invitations)->toJsonResponse();
-    // }
-
-    // /**
-    //  * Handles request to get invitations sender's user profile ID
-    //  * 
-    //  * @return JsonResponse
-    //  */
-    // public function getInvitationsBySenderId(): JsonResponse
-    // {
-    //     $userProfileId = session('user_profile_id');
-    //     $invitations = $this->invitationService->getInvitationsBySenderId($userProfileId);
-    //     return ApiResponse::success('Success.', $invitations)->toJsonResponse();
-    // }
-
-    /**
      * Handles request to get invitation by invitation ID
      * 
      * @param int $id
@@ -81,6 +57,20 @@ class InvitationController extends Controller
     }
 
     /**
+     * Handles request to get invitations by position ID and receiver's profile ID
+     * 
+     * @param int $receiverId
+     * @param int $positionId
+     * @return JsonResponse
+     */
+    public function getInvitationsByPositionIdAndReceiverId(int $receiverId, int $positionId): JsonResponse
+    {
+        $currentUserProfileId = session('user_profile_id');
+        $invitations = $this->invitationService->getInvitationsByPositionIdAndReceiverId($receiverId, $positionId, $currentUserProfileId);
+        return ApiResponse::success('Success.', $invitations)->toJsonResponse();
+    }
+
+    /**
      * Handles request to create new invitation
      * 
      * @param Request $request
@@ -89,6 +79,7 @@ class InvitationController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'receiver_profile_id' => ['required', 'integer', 'exists:user_profiles,id'],
             'invitation_message' => ['required', 'string'],
             'expires_at' => ['required', 'date', 'after:now'],
@@ -112,6 +103,7 @@ class InvitationController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'invitation_message' => ['required', 'string', 'max:1000'],
             'expires_at' => ['required', 'date', 'after:now'],
         ]);

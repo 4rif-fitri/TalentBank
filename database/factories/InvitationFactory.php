@@ -21,6 +21,7 @@ class InvitationFactory extends Factory
     public function definition(): array
     {
         return [
+            'title' => fake()->sentence(),
             'sender_profile_id' => UserProfile::inRandomOrder()->first()->id,
             'receiver_profile_id' => UserProfile::inRandomOrder()->first()->id,
             'invitation_message' => fake()->paragraph(),
