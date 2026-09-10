@@ -258,9 +258,6 @@
             currentEducation = educationResponse.data
             let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentJobOffer.receiver.profile_image
 
-            console.log("currentJobOffer", currentJobOffer);
-            console.log("currentEducation", currentEducation);
-
             $(".shortlist-content").html(xjobOffer.recruiter.mainContent(currentJobOffer, imageUrl, currentEducation))
         } catch (error) {
             console.log(error);

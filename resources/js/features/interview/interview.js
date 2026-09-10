@@ -208,8 +208,6 @@ export let recruiter = {
                         <div class="col-lg-6 col-12 card-body p-3">
                             <table class="table">
                                 <tbody>
-
-
                                     <tr>
                                         <td class="col-3">
                                             <small class="text-muted d-block">Ceheduled</small>

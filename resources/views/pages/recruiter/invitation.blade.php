@@ -167,6 +167,7 @@
             if(!inv) return
 
             currentInv = inv.data
+            console.log(currentInv);
 
             currentInviteEducatios = await xApiEducation.getEducationById("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}",currentInv.receiver.id)
             if(!currentInviteEducatios) return
@@ -256,7 +257,8 @@
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Withdraw it!"
         }).then( async (result) => {
-            if (!result) return
+
+            if (!result.isConfirmed) return;
 
             let id = $(this).data('id');
 
@@ -311,6 +313,8 @@
         try {
             let response = await xApiInvite.update("{{ route('invitations.update', ['id' => '__ID__']) }}", currentInv.id, data)
             if(!response) return
+
+
 
             xalert.salert('Success', response.message, 'success');
             xmodal.hide("invitationModal")

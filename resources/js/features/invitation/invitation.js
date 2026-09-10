@@ -32,6 +32,58 @@ export let student = {
                             <p>${invitation.receiver.location ?? "Location not specified"}</p>
                         </div>
                     </div>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td class="col-3">
+                                    <small class="text-muted d-block">Company</small>
+                                </td>
+                                <td class="col-9">
+                                    <span>${invitation.position.organization.company_name}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-3">
+                                    <small class="text-muted d-block">Position</small>
+                                </td>
+                                <td class="col-9">
+                                    <div>${invitation.interview_result}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-3">
+                                    <small class="text-muted d-block">Interview status</small>
+                                </td>
+                                <td class="col-9">
+                                    <div>${invitation.interview_status}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-3">
+                                    <small class="text-muted d-block">Recruiter comment</small>
+                                </td>
+                                <td class="col-9">
+                                    <div>${invitation.recruiter_comment}</div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-3">
+                                    <small class="text-muted d-block">Create at</small>
+                                </td>
+                                <td class="col-9">
+                                    <span>${formatDate(invitation.created_at)}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="col-3">
+                                    <small class="text-muted d-block">Create by</small>
+                                </td>
+                                <td class="col-9">
+                                    <span>${invitation.interviewee.name}</span>
+                                </td>
+                            </tr>
+                        </body>
+                    </table>
                     <div class="border-0 mb-4">
                         <div class="row g-3">
                             <div class="h-100">
@@ -162,49 +214,100 @@ export let recruiter = {
                             ${educatios[0]?.programme?.programme_name ? `<div role="button" class="badge bg-primary btnSeeMore">See More</div>` : ""}
                         </div>
                     </div>
-                    <div class="border-0 mb-4">
-                        <div class="row g-3">
-                            <div class="h-100">
-                                <div class="row">
-                                    <div class="col-lg-6 col-12 card-body p-3">
-                                        <small class="text-primary fw-semibold text-uppercase">Job Opportunity</small>
-                                        <small class="text-muted d-block">Company</small>
-                                        <div class="fw-semibold">${invitation.position.organization.company_name}</div>
-                                        <small class="text-muted d-block">Position</small>
-                                        <span class="fw-semibold">${invitation.position.position_title}</span>
-                                    </div>
-                                    <div class="col-lg-6 col-12 p-3">
-                                        <div class=" bg-body">
-                                            <small class="text-muted d-block">Message</small>
-                                            <span class="fw-semibold">${invitation.invitation_message}</span>
-                                            <hr>
-                                            <small class="text-muted d-block">Sent By</small>
-                                            <span class="fw-semibold">${invitation.sender.name}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                      <div class="row">
+                        <div class="col-lg-6 col-12 card-body p-3">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Company</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${invitation.position.organization.company_name}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Position</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.position.position_title}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                         <td class="col-3">
+                                             <small class="text-muted d-block">Department</small>
+                                         </td>
+                                         <td class="col-9">
+                                             <div>${invitation.position.department}</div>
+                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Employment type</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.position.employment_type}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Work location</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.position.work_location}</div>
+                                        </td>
+                                    </tr>
+                                    </body>
+                                </table>
+                            </div>
+                            <div class="col-lg-6 col-12 card-body p-3">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Invitation status</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <div>${invitation.invitation_status}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Message</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <div>${invitation.invitation_message}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Sent</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${formatDate(invitation.created_at)}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Expires</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${formatDate(invitation.expires_at)}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Create by</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${invitation.sender.name}</span>
+                                            </td>
+                                        </tr>
+                                    </body>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-body p-1 ">
-                        <h6 class="fw-bold ">Invitation Details</h6>
-
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Status</span>
-                            <div class="badge ${statusClass}">${invitation.invitation_status}</div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Sent</span>
-                            <span class="fw-semibold">${(invitation.created_at).split(" ")[0]}</>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Expires</span>
-                            <span class="fw-semibold">${invitation.expires_at}</span>
-                        </div>
-                    </div>
-                    <hr>
                     <div class="card-body p-3">
                         <h5 class="fw-bold mb-3">
                             Actions
