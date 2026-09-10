@@ -88,6 +88,7 @@ class InvitationControllerTest extends TestCase
     private function validInvitationPayload(array $overrides = []): array
     {
         return array_merge([
+            'title' => 'Invitation for Software Engineer Position',
             'sender_profile_id' => $this->senderProfile->id,
             'receiver_profile_id' => $this->receiverProfile->id,
             'invitation_message' => 'We would love to have you join our organization as part of our growing engineering team.',
@@ -371,6 +372,132 @@ class InvitationControllerTest extends TestCase
             ->assertJsonPath('data', null);
     }
 
+    public function test_sender_can_get_invitations_by_position_id_and_receiver_id(): void
+    {
+        $invitation = Invitation::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id
+        ]);
+
+        Invitation::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id
+        ]);
+
+        $response = $this->getJson(route('invitations.getInvitationsByPositionIdAndReceiverId', [
+            'positionId' => $this->position->id,
+            'receiverId' => $this->receiverProfile->id
+        ]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.'
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'position_id',
+                        'title'
+                    ]
+                ]
+            ])
+            ->assertJsonPath('data.0.id', $invitation->id)
+            ->assertJsonPath('data.0.position_id', $invitation->position_id)
+            ->assertJsonPath('data.0.title', $invitation->title);
+
+        $this->assertCount(2, $response->json('data'));
+    }
+
+    public function test_get_invitations_by_position_id_and_receiver_id_fails_with_non_existing_position_id(): void
+    {
+        Invitation::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id
+        ]);
+
+        Invitation::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id
+        ]);
+
+        $response = $this->getJson(route('invitations.getInvitationsByPositionIdAndReceiverId', [
+            'positionId' => 0,
+            'receiverId' => $this->receiverProfile->id
+        ]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Position not found with given ID.'
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_get_invitations_by_position_id_and_receiver_id_fails_when_user_is_not_admin_of_current_org(): void
+    {
+        $this->withSession([
+            'user_profile_id' => $this->receiverProfile->id,
+            'roles' => ['Organization Admin']
+        ]);
+
+        Invitation::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id
+        ]);
+
+        Invitation::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id
+        ]);
+
+        $response = $this->getJson(route('invitations.getInvitationsByPositionIdAndReceiverId', [
+            'positionId' => $this->position->id,
+            'receiverId' => $this->receiverProfile->id
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'Unauthorized access to get invitations.'
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_get_invitations_by_position_id_and_receiver_id_fails_with_non_existing_receiver_id(): void
+    {
+        Invitation::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id
+        ]);
+
+        Invitation::factory()->create([
+            'position_id' => $this->position->id,
+            'sender_profile_id' => $this->senderProfile->id,
+            'receiver_profile_id' => $this->receiverProfile->id
+        ]);
+
+        $response = $this->getJson(route('invitations.getInvitationsByPositionIdAndReceiverId', [
+            'positionId' => $this->position->id,
+            'receiverId' => 0
+        ]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'User profile not found with given ID.'
+            ])
+            ->assertJsonPath('data', null);
+    }
+
     public function test_org_admin_can_create_invitation(): void
     {
         $response = $this->postJson(route('invitations.store'), $this->validInvitationPayload());
@@ -506,6 +633,7 @@ class InvitationControllerTest extends TestCase
         $invitation = Invitation::factory()->create($this->validInvitationPayload());
 
         $response = $this->putJson(route('invitations.update', ['id' => $invitation->id]), [
+            'title' => 'Updated title.',
             'invitation_message' => 'Updated message.',
             'expires_at' => now()->addDays(3)->toDateTimeString(),
         ]);
@@ -525,6 +653,7 @@ class InvitationControllerTest extends TestCase
 
         $this->assertDatabaseHas('invitations', [
             'id' => $invitation->id,
+            'title' => 'Updated title.',
             'sender_profile_id' => $this->senderProfile->id,
             'receiver_profile_id' => $this->receiverProfile->id,
             'invitation_message' => 'Updated message.',
@@ -540,6 +669,7 @@ class InvitationControllerTest extends TestCase
         ]));
 
         $response = $this->putJson(route('invitations.update', ['id' => $invitation->id]), [
+            'title' => 'Updated title.',
             'invitation_message' => 'Updated message.',
             'expires_at' => now()->addDays(3)->toDateTimeString(),
         ]);
@@ -560,6 +690,7 @@ class InvitationControllerTest extends TestCase
 
         $this->assertDatabaseHas('invitations', [
             'id' => $invitation->id,
+            'title' => 'Updated title.',
             'invitation_message' => 'Updated message.',
             'invitation_status' => AppConstants::INVITATION_STATUS['PENDING'],
         ]);
@@ -588,6 +719,7 @@ class InvitationControllerTest extends TestCase
         $invitation = Invitation::factory()->create($this->validInvitationPayload());
 
         $response = $this->putJson(route('invitations.update', ['id' => 0]), [
+            'title' => 'Updated title.',
             'invitation_message' => 'Updated message.',
             'expires_at' => now()->addDays(3)->toDateTimeString(),
         ]);
@@ -612,6 +744,7 @@ class InvitationControllerTest extends TestCase
         ]));
 
         $response = $this->putJson(route('invitations.update', ['id' => $invitation->id]), [
+            'title' => 'Updated title.',
             'invitation_message' => 'Updated message.',
             'expires_at' => now()->addDays(3)->toDateTimeString(),
         ]);
@@ -638,6 +771,7 @@ class InvitationControllerTest extends TestCase
         ]));
 
         $response = $this->putJson(route('invitations.update', ['id' => $invitation->id]), [
+            'title' => 'Updated title.',
             'invitation_message' => 'Updated message.',
             'expires_at' => now()->addDays(3)->toDateTimeString(),
         ]);
@@ -661,6 +795,7 @@ class InvitationControllerTest extends TestCase
         $invitation = Invitation::factory()->create($this->validInvitationPayload());
 
         $response = $this->putJson(route('invitations.update', ['id' => $invitation->id]), [
+            'title' => 'Updated title.',
             'invitation_message' => 'Updated message.',
             'expires_at' => now()->subDay()->toDateTimeString(),
         ]);

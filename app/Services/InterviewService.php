@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Constants\AppConstants;
 use App\Helpers\CheckOrgRoleHelper;
 use App\Models\Interview;
+use App\Models\Position;
+use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -128,27 +130,43 @@ class InterviewService
     }
 
     /**
-     * Returns interview filtered by interview status
+     * Returns interviews filtered by position ID and interviewee's profile ID
      * 
-     * @param string $interviewStatus
-     * @param int $userProfileId
+     * @param int $intervieweeId
+     * @param int $positionId
+     * @param int $currentUserProfileId
      * @throws Exception
      * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Interview>
      */
-    // public function getInterviewsByStatus(string $interviewStatus, int $userProfileId): Collection
-    // {
-    //     if (!in_array($interviewStatus, AppConstants::INTERVIEW_STATUS)) {
-    //         throw new Exception('Invalid interview status.', Response::HTTP_BAD_REQUEST);
-    //     }
+    public function getInterviewsByPositionIdAndIntervieweeId(int $intervieweeId, int $positionId, int $currentUserProfileId): Collection
+    {
+        $position = Position::select('id', 'organization_id')->find($positionId);
 
-    //     return Interview::with([
-    //         'position:' . self::POSITION_RETURN_COLUMNS,
-    //         'interviewee:' . self::PROFILE_RETURN_COLUMNS,
-    //         'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
-    //     ])
-    //         ->where('interview_status', $interviewStatus)
-    //         ->get();
-    // }
+        if (!isset($position)) {
+            throw new Exception('Position not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $userProfileExists = UserProfile::where('id', $intervieweeId)->exists();
+
+        if (!$userProfileExists) {
+            throw new Exception('User profile not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserOrgAdmin = CheckOrgRoleHelper::userHasRoles($currentUserProfileId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
+
+        if (!$isUserOrgAdmin) {
+            throw new Exception('Unauthorized access to get interviews.', Response::HTTP_FORBIDDEN);
+        }
+
+        $invitations = Interview::where([
+            'position_id' => $positionId,
+            'interviewee_profile_id' => $intervieweeId
+        ])
+            ->select('id', 'position_id', 'title')
+            ->get();
+
+        return $invitations;
+    }
 
     /**
      * Creates a new interview
@@ -171,6 +189,7 @@ class InterviewService
 
         // create interview
         $interview = Interview::create([
+            'title' => $data['title'],
             'scheduled_at' => $data['scheduled_at'],
             'interview_mode' => $data['interview_mode'],
             'location' => $data['location'] ?? null,
@@ -209,6 +228,7 @@ class InterviewService
         }
 
         $interview->update([
+            'title' => $data['title'],
             'scheduled_at' => $data['scheduled_at'],
             'interview_mode' => $data['interview_mode'],
             'location' => $data['location'],

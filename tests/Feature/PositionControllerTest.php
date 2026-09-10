@@ -3,10 +3,14 @@
 namespace Tests\Feature;
 
 use App\Constants\AppConstants;
+use App\Models\Interview;
+use App\Models\Invitation;
+use App\Models\JobOffer;
 use App\Models\Organization;
 use App\Models\OrganizationUser;
 use App\Models\Position;
 use App\Models\Role;
+use App\Models\Shortlist;
 use App\Models\User;
 use App\Models\UserProfile;
 use Database\Seeders\FacultySeeder;
@@ -171,6 +175,28 @@ class PositionControllerTest extends TestCase
             'user_profile_id' => $this->adminProfile->id,
         ]);
 
+        $otherProfile = UserProfile::factory()->create();
+
+        Shortlist::create([
+            'user_profile_id' => $otherProfile->id,
+            'position_id' => $position->id
+        ]);
+
+        Invitation::factory()->create([
+            'position_id' => $position->id,
+            'receiver_profile_id' => $otherProfile->id
+        ]);
+
+        Interview::factory()->create([
+            'position_id' => $position->id,
+            'interviewee_profile_id' => $otherProfile->id
+        ]);
+
+        JobOffer::factory()->create([
+            'position_id' => $position->id,
+            'receiver_profile_id' => $otherProfile->id
+        ]);
+
         $response = $this->getJson(route('positions.getPositionById', ['id' => $position->id]));
 
         $response->assertStatus(Response::HTTP_OK)
@@ -188,22 +214,20 @@ class PositionControllerTest extends TestCase
                             'location',
                             'profile_image',
                             'headline',
-                            'receivedInvitations',
-                            'receivedInterviews',
-                            'receivedJobOffers',
+                            'invitations_count',
+                            'interviews_count',
+                            'job_offers_count',
                         ]
                     ],
                 ]
             ])
-            ->assertJsonFragment([
-                'id' => $position->id,
-                'organization_id' => $this->organization->id,
-                'user_profile_id' => $this->adminProfile->id,
-            ])
             ->assertJsonPath('data.id', $position->id)
             ->assertJsonPath('data.organization_id', $this->organization->id)
             ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
-            ->assertJsonPath('data.shortlist_users', []);
+            ->assertJsonPath('data.shortlist_users.0.id', $otherProfile->id)
+            ->assertJsonPath('data.shortlist_users.0.invitations_count', 1)
+            ->assertJsonPath('data.shortlist_users.0.interviews_count', 1)
+            ->assertJsonPath('data.shortlist_users.0.job_offers_count', 1);
     }
 
     public function test_get_position_by_id_fails_when_user_is_not_org_admin_of_position(): void

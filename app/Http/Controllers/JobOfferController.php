@@ -60,6 +60,20 @@ class JobOfferController extends Controller
     }
 
     /**
+     * Handles request to get job offers by position ID and receiver's profile ID
+     * 
+     * @param int $receiverId
+     * @param int $positionId
+     * @return JsonResponse
+     */
+    public function getJobOffersByPositionIdAndReceiverId(int $receiverId, int $positionId): JsonResponse
+    {
+        $currentUserProfileId = session('user_profile_id');
+        $jobOffers = $this->jobOfferService->getJobOffersByPositionIdAndReceiverId($receiverId, $positionId, $currentUserProfileId);
+        return ApiResponse::success('Success.', $jobOffers)->toJsonResponse();
+    }
+
+    /**
      * Handles request to create a new job offer
      *
      * @param Request $request
@@ -68,6 +82,7 @@ class JobOfferController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'salary_amount' => ['required', 'numeric', 'min:0'],
             'salary_period' => ['required', 'string'],
             'start_date' => ['nullable', 'date'],
@@ -95,6 +110,7 @@ class JobOfferController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'salary_amount' => ['required', 'numeric', 'min:0'],
             'salary_period' => ['required', 'string', Rule::in(AppConstants::SALARY_PERIODS)],
             'start_date' => ['nullable', 'date'],

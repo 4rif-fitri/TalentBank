@@ -195,6 +195,9 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
             Route::get('/getInvitationsByStatusAndSenderId', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId');
+            Route::get('/getInvitationsByPositionIdAndReceiverId/{receiverId}/{positionId}', [InvitationController::class, 'getInvitationsByPositionIdAndReceiverId'])
+                ->where(['receiverId' => '[0-9]+', 'positionId' => '[0-9]+'])
+                ->name('invitations.getInvitationsByPositionIdAndReceiverId');
             Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store');
             Route::put('/update/{id}', [InvitationController::class, 'update'])->name('invitations.update');
             Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.withdrawInvitation');
@@ -207,6 +210,9 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
             Route::get('/getInterviewsByStatusAndInterviewerId', [InterviewController::class, 'getInterviewsByStatusAndInterviewerId'])->name('interviews.getInterviewsByStatusAndInterviewerId');
+            Route::get('/getInterviewsByPositionIdAndIntervieweeId/{intervieweeId}/{positionId}', [InterviewController::class, 'getInterviewsByPositionIdAndIntervieweeId'])
+                ->where(['intervieweeId' => '[0-9]+', 'positionId' => '[0-9]+'])
+                ->name('interviews.getInterviewsByPositionIdAndIntervieweeId');
             Route::post('/store', [InterviewController::class, 'store'])->name('interviews.store');
             Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update');
             Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview');
@@ -222,6 +228,9 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
             Route::get('/getJobOffersByStatusAndSenderId', [JobOfferController::class, 'getJobOffersByStatusAndSenderId'])->name('jobOffers.getJobOffersByStatusAndSenderId');
+            Route::get('/getJobOffersByPositionIdAndReceiverId/{receiverId}/{positionId}', [JobOfferController::class, 'getJobOffersByPositionIdAndReceiverId'])
+                ->where(['receiverId' => '[0-9]+', 'positionId' => '[0-9]+'])
+                ->name('interviews.getJobOffersByPositionIdAndReceiverId');
             Route::post('/store', [JobOfferController::class, 'store'])->name('jobOffers.store');
             Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update');
             Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer');
