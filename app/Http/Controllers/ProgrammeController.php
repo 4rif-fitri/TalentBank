@@ -29,7 +29,7 @@ class ProgrammeController extends Controller
 
         $programmes = $this->programmeService->getProgrammesByUserProfileId($id, $search, $session);
 
-        return ApiResponse::success('Success', $programmes)->toJsonResponse();
+        return ApiResponse::success('Success.', $programmes)->toJsonResponse();
     }
 
     /**
