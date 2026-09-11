@@ -248,13 +248,14 @@
         let data = {
             "_token": $('meta[name="csrf-token"]').attr("content"),
             "_method": "PUT",
-            "scheduled_at": $("#interviewModal #interview_date").val() + " " + $("#interviewModal #start_time").val(),
+            "scheduled_at": $("#interviewModal #interview_date").val() + " " + $("#interviewModal #start_time").val() + ":00",
             "interview_mode": $("input[name='interview_mode']:checked").val(),
             "location": $("#location").val(),
             "meeting_url": $("#meeting_url").val(),
             "recruiter_comment": $("#recruiter_comment").val(),
             "interview_result": currentInterview.interview_result
         }
+        console.log(data);
 
         try {
             let response = await xApiInterview.update(
@@ -264,6 +265,8 @@
             )
 
             if(!response) return
+
+            console.log(response);
 
             xalert.fire("Success", "Interview Updated", "success")
             $("#inviteForm")[0].reset();
@@ -317,26 +320,42 @@
     }
 
     function toggleInterviewMode(mode) {
-        $("#div_meeting_url, #div_location").addClass("d-none");
-        $("#meeting_url, #location").prop("required", false);
+        const isOnline = mode === "Online";
+        const isOnSite = mode === "On-site";
+        const isPhone  = mode === "Phone";
 
-        if (mode === "Online") {
-            $("#div_meeting_url").removeClass("d-none");
-            $("#meeting_url").prop("required", true);
-        } else if (mode === "On-site") {
-            $("#div_location").removeClass("d-none");
-            $("#location").prop("required", true);
-        }
+        $("#div_meeting_url").toggleClass("d-none", !isOnline);
+        $("#div_location").toggleClass("d-none", !isOnSite);
+        $("#div_phone").toggleClass("d-none", !isPhone);
+
+        $("#mode_online").prop("checked", isOnline);
+        $("#mode_onsite").prop("checked", isOnSite);
+        $("#mode_phone").prop("checked", isPhone);
+
+        $("#meeting_url").prop("required", isOnline);
+        $("#location").prop("required", isOnSite);
+        $("#phone_number").prop("required", isPhone);
+
+        if (!isOnline) $("#meeting_url").val("");
+        if (!isOnSite) $("#location").val("");
+        if (!isPhone)  $("#phone_number").val("");
     }
 
     function showUpdateInterviewModal() {
         let id = $(this).data("id")
         console.log("currentinterview", currentInterview)
+
+        console.log({currentInterview});
+
         $("#invite_candidate_id").val(currentInterview.interviewee.id)
         $(".candidate_name").val(currentInterview.interviewee.name)
 
         $("#interview_date").val(currentInterview.scheduled_at.split(" ")[0])
-        $("#interview_time").val(currentInterview.scheduled_at.split(" ")[1])
+        $("#start_time").val(currentInterview.scheduled_at.split(" ")[1].substring(0, 5))
+
+        $("#mode_online").prop("checked", currentInterview.interview_mode == "Online")
+        $("#mode_onsite").prop("checked", currentInterview.interview_mode == "On-site")
+        $("#mode_phone").prop("checked", currentInterview.interview_mode == "Phone")
 
         toggleInterviewMode(currentInterview.interview_mode);
 

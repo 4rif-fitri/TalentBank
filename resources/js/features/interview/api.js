@@ -50,3 +50,12 @@ export function store(url, data) {
         data
     });
 }
+
+export function update(url, id, data) {
+    url = url.replace("__ID__", id)
+    return $.ajax({
+        url,
+        type: "POST",
+        data
+    });
+}

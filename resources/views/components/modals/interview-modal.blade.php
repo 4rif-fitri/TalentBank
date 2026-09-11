@@ -111,7 +111,7 @@
                     <button type="submit" id="btnAddInterview" class="btn btn-primary">
                         Save
                     </button>
-                    <button type="submit" id="btnUpdateInterview" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary">
                         Update
                     </button>
 
