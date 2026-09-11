@@ -1,17 +1,15 @@
 import * as bootstrap from 'bootstrap';
 
-window.bootstrap = bootstrap;
-
-import * as templateEducation from "./features/education/education.js"
-import * as templateImage from "./features/image/image.js"
-import * as templateInterview from "./features/interview/interview.js"
-import * as templateSkill from "./features/skills/skills.js"
-import * as templatelanguage from "./features/language/language.js"
-import * as templateSocialMedia from "./features/social-media/social-media.js"
-import * as templateJobOffer from "./features/job-offer/job-offer.js"
-import * as templateInvitation from "./features/invitation/invitation.js"
-import * as templateCommon from "./features/common/common.js"
-import * as templateShortList from "./features/shortList/shortList.js"
+import * as templateEducation from "./features/education/template.js"
+import * as templateImage from "./features/image/template.js"
+import * as templateInterview from "./features/interview/template.js"
+import * as templateSkill from "./features/skills/template.js"
+import * as templatelanguage from "./features/language/template.js"
+import * as templateSocialMedia from "./features/social-media/template.js"
+import * as templateJobOffer from "./features/job-offer/template.js"
+import * as templateInvitation from "./features/invitation/template.js"
+import * as templateCommon from "./features/common/template.js"
+import * as templateShortList from "./features/shortList/template.js"
 
 import * as xvalidate from "./shared/utils/validation.js"
 import * as xformat from "./shared/utils/format.js"
