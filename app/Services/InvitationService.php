@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Constants\AppConstants;
+use App\Helpers\CheckOrgRoleHelper;
 use App\Models\Invitation;
 use App\Models\Position;
+use App\Models\UserProfile;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Response;
@@ -141,6 +143,45 @@ class InvitationService
     }
 
     /**
+     * Returns invitations filtered by position ID and receiver's profile ID
+     * 
+     * @param int $receiverId
+     * @param int $positionId
+     * @param int $currentUserProfileId
+     * @throws Exception
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, Invitation>
+     */
+    public function getInvitationsByPositionIdAndReceiverId(int $receiverId, int $positionId, int $currentUserProfileId): Collection
+    {
+        $position = Position::select('id', 'organization_id')->find($positionId);
+
+        if (!isset($position)) {
+            throw new Exception('Position not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $userProfileExists = UserProfile::where('id', $receiverId)->exists();
+
+        if (!$userProfileExists) {
+            throw new Exception('User profile not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserOrgAdmin = CheckOrgRoleHelper::userHasRoles($currentUserProfileId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
+
+        if (!$isUserOrgAdmin) {
+            throw new Exception('Unauthorized access to get invitations.', Response::HTTP_FORBIDDEN);
+        }
+
+        $invitations = Invitation::where([
+            'position_id' => $positionId,
+            'receiver_profile_id' => $receiverId
+        ])
+            ->select('id', 'position_id', 'title')
+            ->get();
+
+        return $invitations;
+    }
+
+    /**
      * Creates a new invitation
      * 
      * @param array $data
@@ -171,6 +212,7 @@ class InvitationService
 
         // create a new invitation
         $invitation = Invitation::create([
+            'title' => $data['title'],
             'sender_profile_id' => $senderId,
             'receiver_profile_id' => $data['receiver_profile_id'],
             'invitation_message' => $data['invitation_message'],
@@ -198,6 +240,7 @@ class InvitationService
         $invitation = $this->getInvitationModel($invitationId, 'sender_profile_id', $senderId);
 
         $dataToUpdate = [
+            'title' => $data['title'],
             'invitation_message' => $data['invitation_message'],
             'expires_at' => $data['expires_at'],
             'updated_at' => now()

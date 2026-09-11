@@ -6,6 +6,7 @@ use App\Constants\AppConstants;
 use App\Helpers\CheckOrgRoleHelper;
 use App\Models\JobOffer;
 use App\Models\Position;
+use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -148,6 +149,45 @@ class JobOfferService
     }
 
     /**
+     * Returns job offers filtered by position ID and receiver's profile ID
+     * 
+     * @param int $receiverId
+     * @param int $positionId
+     * @param int $currentUserProfileId
+     * @throws Exception
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, JobOffer>
+     */
+    public function getJobOffersByPositionIdAndReceiverId(int $receiverId, int $positionId, int $currentUserProfileId): Collection
+    {
+        $position = Position::select('id', 'organization_id')->find($positionId);
+
+        if (!isset($position)) {
+            throw new Exception('Position not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $userProfileExists = UserProfile::where('id', $receiverId)->exists();
+
+        if (!$userProfileExists) {
+            throw new Exception('User profile not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserOrgAdmin = CheckOrgRoleHelper::userHasRoles($currentUserProfileId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
+
+        if (!$isUserOrgAdmin) {
+            throw new Exception('Unauthorized access to get job offers.', Response::HTTP_FORBIDDEN);
+        }
+
+        $invitations = JobOffer::where([
+            'position_id' => $positionId,
+            'receiver_profile_id' => $receiverId
+        ])
+            ->select('id', 'position_id', 'title')
+            ->get();
+
+        return $invitations;
+    }
+
+    /**
      * Creates a new job offer for the position
      *
      * @param array $data
@@ -168,6 +208,7 @@ class JobOfferService
 
         // create job offer
         $jobOffer = JobOffer::create([
+            'title' => $data['title'],
             'position_id' => $data['position_id'],
             'sender_profile_id' => $senderId,
             'receiver_profile_id' => $data['receiver_profile_id'],
@@ -211,6 +252,7 @@ class JobOfferService
         }
 
         $jobOffer->update([
+            'title' => $data['title'],
             'salary_amount' => $data['salary_amount'],
             'salary_period' => $data['salary_period'],
             'start_date' => $data['start_date'] ?? null,

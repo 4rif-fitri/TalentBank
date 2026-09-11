@@ -62,18 +62,18 @@ class InterviewController extends Controller
     }
 
     /**
-     * Handles request to get interview by status
+     * Handles request to get interviews by position ID and interviewee's profile ID
      * 
-     * @param string $status
+     * @param int $intervieweeId
+     * @param int $positionId
      * @return JsonResponse
      */
-    // public function getInterviewsByStatus(string $status): JsonResponse
-    // {
-    //     $userProfileId = session('user_profile_id');
-    //     $interviews = $this->interviewService->getInterviewsByStatus($status, $userProfileId);
-
-    //     return ApiResponse::success('Success.', $interviews)->toJsonResponse();
-    // }
+    public function getInterviewsByPositionIdAndIntervieweeId(int $intervieweeId, int $positionId): JsonResponse
+    {
+        $currentUserProfileId = session('user_profile_id');
+        $interviews = $this->interviewService->getInterviewsByPositionIdAndIntervieweeId($intervieweeId, $positionId, $currentUserProfileId);
+        return ApiResponse::success('Success.', $interviews)->toJsonResponse();
+    }
 
     /**
      * Handles request to create a new interview
@@ -84,6 +84,7 @@ class InterviewController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'position_id' => ['required', 'integer', 'exists:positions,id'],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
@@ -109,6 +110,7 @@ class InterviewController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
             'location' => ['nullable', 'string', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[1]],

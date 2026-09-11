@@ -11,6 +11,7 @@ class JobOffer extends Model
     use HasFactory;
 
     protected $fillable = [
+        'title',
         'salary_amount',
         'salary_period',
         'start_date',

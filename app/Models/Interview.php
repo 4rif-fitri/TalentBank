@@ -11,6 +11,7 @@ class Interview extends Model
     use HasFactory;
 
     protected $fillable = [
+        'title',
         'scheduled_at',
         'interview_mode',
         'location',
