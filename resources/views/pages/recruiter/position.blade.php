@@ -306,7 +306,7 @@
             curruntPosition = response.data
             candidateList = response.data.shortlist_users
 
-            shortListRender.detail(response.data)
+            xshortList.detail(response.data)
 
         } catch (error) {
             console.error(error);
@@ -362,7 +362,7 @@
             form[0].reset();
             bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).hide();
 
-            shortListRender.appendNew(response.data)
+            xshortList.appendNew(response.data)
 
         } catch (xhr) {
             console.error(xhr);
@@ -634,7 +634,7 @@
             let response = await xApiPosition.getShortlistedPositionIds("{{ route('shortlists.getShortlistedPositionIds',['profileId' => '__profileId__','orgId' => '__orgId__' ]) }}")
             if(!response) return
 
-            debug.log("getShortlistedPositionIds", response.data);
+            console.log(response);
 
         } catch (error) {
             console.error(error);
@@ -654,7 +654,8 @@
             data,
             method: "POST",
             success: function (response) {
-                debug.log("store", response.data);
+                console.log(response);
+
             },
             error: function (xhr) {
                 console.error(xhr.responseJSON.message)
@@ -676,7 +677,8 @@
             data,
             type: "POST",
             success: function (response) {
-                debug.log("store", response.data);
+                console.log(response);
+
             },
             error: function (xhr) {
                 console.error(xhr.responseJSON.message)
@@ -709,7 +711,7 @@
 
             console.log("RESULTS:", results);
 
-            shortListRender.sideBar(results);
+            xshortList.sideBar(results);
 
         } catch (error) {
 

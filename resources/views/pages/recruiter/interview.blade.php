@@ -159,11 +159,10 @@
             let response = await xApiInterview.getInterviewsByStatusAndInterviewerId("{{ route('interviews.getInterviewsByStatusAndInterviewerId') }}", status)
             if(!response) return
 
-            debug.log("getInterviewsByStatusAndInterviewerId", response.data);
             let interviews = response.data
             $("#shortlistList").empty()
             interviews.forEach(interview => {
-                $("#shortlistList").append(intervieww.sidebar(interview))
+                $("#shortlistList").append(xinterview.recruiter.sidebar(interview))
             });
 
         } catch (error) {

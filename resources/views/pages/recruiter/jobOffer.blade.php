@@ -157,8 +157,6 @@
 
             if(!response) return
 
-            debug.log("getJobOffersByStatus", response.data);
-
             let jobOffers = response.data
             $("#recruitment-invitation-list").empty()
             jobOffers.forEach(offer => {

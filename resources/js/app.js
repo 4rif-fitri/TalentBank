@@ -11,6 +11,7 @@ import * as templateSocialMedia from "./features/social-media/social-media.js"
 import * as templateJobOffer from "./features/job-offer/job-offer.js"
 import * as templateInvitation from "./features/invitation/invitation.js"
 import * as templateCommon from "./features/common/common.js"
+import * as templateShortList from "./features/shortList/shortList.js"
 
 import * as xvalidate from "./shared/utils/validation.js"
 import * as xformat from "./shared/utils/format.js"
@@ -33,7 +34,12 @@ window.xApiEducation = xApiEducation
 
 window.xvalidate = xvalidate;
 window.xformat = xformat;
+window.xmodal = xmodal
+window.xalert = xalert
+
+window.xcommon = templateCommon
 window.xeducation = templateEducation;
+window.xshortList = templateShortList
 window.ximage = templateImage
 window.xskill = templateSkill;
 window.xlanguage = templatelanguage;
@@ -41,12 +47,7 @@ window.xlink = templateSocialMedia;
 window.xjobOffer = templateJobOffer;
 window.xinterview = templateInterview;
 window.xinvitation = templateInvitation;
-window.xcommon = templateCommon
-window.xmodal = xmodal
-window.xalert = xalert
 
 window.bootstrap = bootstrap;
 
-window.toggle = () => {
-    document.body.classList.toggle('filter-open');
-}
+window.toggle = () => document.body.classList.toggle('filter-open')
