@@ -411,7 +411,7 @@
 
                     $("#talent-cards").empty()
                     datas.forEach(data => {
-                        $("#talent-cards").append(talent.talentCard(data))
+                        $("#talent-cards").append(xprofile.student.talentCard(data))
                     })
 
                     renderPagination()
@@ -451,7 +451,7 @@
                     xalert.alert("Error", xhr.responseJSON.message, "error")
                 },
                 complete: function () {
-                    modal.hide("shortlistModal")
+                    xmodal.hide("shortlistModal")
                 }
             });
         }

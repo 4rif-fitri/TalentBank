@@ -42,8 +42,7 @@ export let student = {
                             <div class="thum-image-lg" style="background-image: url('${imageUrl}');background-position: center; background-size: cover; background-repeat: no-repeat;"></div>
                         </div>
                         <div class="">
-                            <h4 class="fw-semibold">${invitation.receiver.name}</h4>
-                            <p>${invitation.receiver.location ?? "Location not specified"}</p>
+                            <h4 class="fw-semibold">${invitation.position.organization.company_name}</h4>
                         </div>
                     </div>
                     <div class="row">
@@ -318,7 +317,6 @@ export let recruiter = {
                                 </table>
                             </div>
                         </div>
-                    </div>
                     <div class="card-body p-3">
                         <h5 class="fw-bold mb-3">
                             Actions
