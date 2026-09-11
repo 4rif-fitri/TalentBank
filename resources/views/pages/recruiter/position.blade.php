@@ -621,11 +621,9 @@
         //     type: "POST",
         //     data,
         //     success: function (response) {
-        //         xdebug.line(response)
 
         //     },
         //     error: xhr => {
-        //         xdebug.line(xhr)
         //     }
         // });
     }

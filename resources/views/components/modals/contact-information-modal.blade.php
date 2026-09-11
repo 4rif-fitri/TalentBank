@@ -70,12 +70,10 @@
             data,
             success: function (response) {
                 xmodal.hide("editContactInformationModal")
-                xdebug.line(response.data)
                 xalert.fire("Success", response.message, "success")
                 $(document).trigger("profile:state:updated", [response.data])
             },
             error: xhr => {
-                xdebug.line(xhr.responseJSON.message)
             }
         });
 

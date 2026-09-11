@@ -486,7 +486,6 @@
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
                 success: function (response) {
-                    xdebug.line(response)
                     button.parent().parent().parent().remove()
                     let likeCounnt = parseInt($("#total-found").text())
                     likeCounnt -= 1

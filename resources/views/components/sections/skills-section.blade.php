@@ -32,7 +32,6 @@
             url: "{{ route('skills.getAllSkills') }}",
             type: "GET",
             success: response => {
-                xdebug.line(response)
                 stateSkills.allSkill = response.data
 
                 stateSkills.allSkill.forEach(skill => {
@@ -41,7 +40,6 @@
 
             },
             error: xhr => {
-                xdebug.line(response)
             }
         });
     }

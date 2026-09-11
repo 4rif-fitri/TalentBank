@@ -62,11 +62,9 @@
                 url,
                 type: "GET",
                 success: function (response) {
-                    xdebug.log("Profile", response.data)
                     $(document).trigger("profile:loaded", [response.data])
                 },
                 error: xhr =>{
-                    xdebug.line(xhr.responseJSON.message)
                 }
             });
         }
