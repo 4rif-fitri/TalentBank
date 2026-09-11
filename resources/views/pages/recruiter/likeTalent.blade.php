@@ -513,7 +513,7 @@
             let id = $(this).data("id")
             let name = $(this).data("name")
 
-            modal.show("shortlistModal")
+            xmodal.show("shortlistModal")
 
             $('#candidateId').val(id)
             $('#candidateName').val(name)

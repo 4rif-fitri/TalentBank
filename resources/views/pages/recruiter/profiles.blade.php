@@ -411,7 +411,7 @@
 
                     $("#talent-cards").empty()
                     datas.forEach(data => {
-                        $("#talent-cards").append(talent.talentCard(data))
+                        $("#talent-cards").append(xprofile.student.talentCard(data))
                     })
 
                     renderPagination()
@@ -517,7 +517,7 @@
             let id = $(this).data("id")
             let name = $(this).data("name")
 
-            modal.show("shortlistModal")
+            xmodal.show("shortlistModal")
 
             $('#candidateId').val(id)
             $('#candidateName').val(name)

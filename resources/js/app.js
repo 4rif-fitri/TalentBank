@@ -10,6 +10,7 @@ import * as templateJobOffer from "./features/job-offer/template.js"
 import * as templateInvitation from "./features/invitation/template.js"
 import * as templateCommon from "./features/common/template.js"
 import * as templateShortList from "./features/shortList/template.js"
+import * as templateProfile from "./features/profile/template.js"
 
 import * as xvalidate from "./shared/utils/validation.js"
 import * as xformat from "./shared/utils/format.js"
@@ -45,6 +46,7 @@ window.xlink = templateSocialMedia;
 window.xjobOffer = templateJobOffer;
 window.xinterview = templateInterview;
 window.xinvitation = templateInvitation;
+window.xprofile = templateProfile
 
 window.bootstrap = bootstrap;
 
