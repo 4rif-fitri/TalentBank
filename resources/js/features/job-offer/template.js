@@ -45,7 +45,7 @@ export let student = {
                             <div class="thum-image-lg" style="background-image: url('${imageUrl}');background-position: center; background-size: cover; background-repeat: no-repeat;"></div>
                         </div>
                         <div class="">
-                            <h4 class="fw-semibold">${invitation.receiver.name}</h4>
+                            <h4 class="fw-semibold">${invitation.position.organization.company_name}</h4>
                         </div>
                     </div>
                     <div class="row">
