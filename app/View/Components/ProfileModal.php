@@ -21,6 +21,6 @@ class ProfileModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.profile-modal');
+        return view('components.modals.profile-modal');
     }
 }

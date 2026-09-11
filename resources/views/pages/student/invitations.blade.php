@@ -27,11 +27,16 @@
     }
 
     .results-panel {
+        width: 400px !important;
         padding: 1rem;
         background-color: #fff;
     }
 
     @media (max-width: 768px) {
+        .results-panel {
+            padding: 0rem;
+        }
+
         .talent-layout {
             display: block;
         }
@@ -50,7 +55,7 @@
         }
 
         body.filter-open .filter-panel {
-            transform: translateY(10%);
+            transform: translateY(0%);
             border-radius: 14px;
         }
 
@@ -66,6 +71,7 @@
 @endsection
 
 @section('content')
+
 <div class="content p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
@@ -78,30 +84,30 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <button class="nav-link active text-primary">All</button>
+                    <li>
+                        <button data-status="Pending" class="nav-link text-body">Pending</button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link text-body">Pending</button>
+                    <li>
+                        <button data-status="Accepted" class="nav-link text-body">Accepted</button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link text-body">Accepted</button>
+                    <li>
+                        <button data-status="Rejected" class="nav-link text-body">Rejected</button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link text-body">Dealined</button>
+                    <li>
+                        <button data-status="Expired" class="nav-link text-body">Expired</button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link text-body">Exprired</button>
+                    <li>
+                        <button data-status="Withdrawn" class="nav-link text-body">Withdrawn</button>
                     </li>
                 </ul>
             </div>
 
-            <div class="invitation-list"></div>
+            <div class="invitation-list d-flex flex-column gap-2 p-2"></div>
 
         </aside>
 
         <div class="filter-panel flex-grow-1">
-            <div class="row g-3 " id="shortlistContent">
+            <div class="row g-3" id="shortlistContent">
 
                 <div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
                     <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
@@ -117,110 +123,110 @@
     </div>
 </div>
 
-<!-- Overlay Gelap untuk Mobile -->
-<div class="filter-overlay" onclick="toggleFilter()"></div>
+<div class="filter-overlay"></div>
 @endsection
 
 @section('script')
-<script>
-    function toggleFilter() {
-        document.body.classList.toggle('filter-open');
-    }
-</script>
-<script>
-    $.ajax({
-        url: "{{ route('invitations.getInvitationsByReceiverId') }}",
-        type: "GET",
-        success: function (response) {
-            console.log("getInvitationsByReceiverId", response)
+<script type="module">
+    let invitations
+    let url
+    let currentStatus = "Pending"
+
+    async function getInvitationsByStatusAndReceiverId(status) {
+        try {
+            let response = await xApiInvite.getInvitationsByStatusAndReceiverId("{{ route('invitations.getInvitationsByStatusAndReceiverId') }}",status)
+            if(!response) return
+
+            console.log("getInvitationsByStatusAndReceiverId", response)
             $(".invitation-list").empty()
-            let invitations = response.data
+            invitations = response.data
 
-            invitations.forEach(inv => $(".invitation-list").append(invitation.reciverInvitationList(inv)));
-        },
-        error: function (xhr) {
-            console.error(xhr)
+            invitations.forEach(inv =>{
+                let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + inv.position.organization.organization_logo
+                $(".invitation-list").append(xinvitation.student.sideList(inv, imageUrl));
+            })
 
+        } catch (error) {
+            console.error(error)
         }
-    });
-
-    function getInvitationById(id) {
-        url = "{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}"
-        url = url.replace("__ID__", id)
-
-        return $.ajax({
-            url,
-            type: "GET"
-        });
     }
 
     async function handleSelectedInvitation() {
         let id = $(this).data('id');
 
         try {
-            let invitationDetail = await getInvitationById(id);
-            console.log(invitationDetail);
-
+            let invitationDetail = await xApiInvite.getInvitationById("{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}",id);
             $("#shortlistContent").empty()
-            $("#shortlistContent").append(invitation.reciverInvitatinMainContent(invitationDetail.data))
+
+            let invitation = invitationDetail.data
+            let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + invitation.position.organization.organization_logo
+            $("#shortlistContent").append(xinvitation.student.mainContent(invitation, imageUrl))
 
         } catch (error) {
             console.error(error);
-
         }
     }
 
+    async function handleAcceptInvitation () {
+        let id = $(this).data("id")
+
+        let data = {
+            _method: "PUT",
+            _token: $('meta[name="csrf-token"]').attr("content")
+        }
+
+        try {
+            let response = await xApiInvite.acceptInvitation("{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}", id, data)
+            if(!response) return
+
+            xalert.fire('Success', response.message, 'success');
+
+            $(`.invitation-item[data-id="${id}"]`).remove()
+            $("#shortlistContent").empty()
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function handleRejectInvitation () {
+        let id = $(this).data("id")
+
+        let data = {
+            _method: "PUT",
+            _token: $('meta[name="csrf-token"]').attr("content")
+        }
+
+        try {
+            let response = await xApiInvite.rejectInvitation("{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}", id, data)
+            if(!response) return
+
+            xalert.fire('Success', response.message, 'success');
+
+            $(`.invitation-item[data-id="${id}"]`).remove()
+            $("#shortlistContent").empty()
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function handleChangeStatus () {
+        let currentStatus = $(this).data("status")
+        $(".nav-item button").removeClass("active text-primary").addClass("text-body");
+        $(this).find("button").removeClass("text-body").addClass("active text-primary");
+        getInvitationsByStatusAndReceiverId(currentStatus)
+    }
+
+    getInvitationsByStatusAndReceiverId(currentStatus)
 
     $(document).on("click", ".invitation-item", handleSelectedInvitation)
-
-
-    // // Once update only
-    // url = "{{ route('invitations.acceptInvitation', ['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 6)
-    // let formData = new FormData()
-    // formData.append("_method", "PUT")
-
-    // $.ajax({
-    //     url,
-    //     data: formData,
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("acceptInvitation", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
-
-    //     }
-    // });
-
-    // // Once update only
-    // url = "{{ route('invitations.rejectInvitation', ['id' => '__ID__' ]) }}"
-    // url = url.replace("__ID__", 7)
-    // formData = new FormData()
-    // formData.append("_method", "PUT")
-
-    // $.ajax({
-    //     url,
-    //     data: formData,
-    //     type: "POST",
-    //     processData: false,
-    //     contentType: false,
-    //     headers: {
-    //         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-    //     },
-    //     success: function (response) {
-    //         console.log("rejectInvitation", response)
-    //     },
-    //     error: function (xhr) {
-    //         console.error(xhr)
-
-    //     }
-    // });
+    $(document).on("click", "#btnAcceptInvitation", handleAcceptInvitation)
+    $(document).on("click", "#btnRejectInvitation", handleRejectInvitation)
+    $(document).on("click", ".nav-link", handleChangeStatus)
+    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay, .filter-overlay, .list-item', function () {
+        document.body.classList.toggle('filter-open');
+    });
 
 </script>
 @endsection

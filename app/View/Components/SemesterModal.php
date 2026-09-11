@@ -21,6 +21,6 @@ class SemesterModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.semester-modal');
+        return view('components.modals.semester-modal');
     }
 }

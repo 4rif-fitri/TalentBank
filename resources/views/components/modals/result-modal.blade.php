@@ -134,15 +134,15 @@
     </div>
 </form>
 
-@push('scripts')
-<script>
+@push('childScript')
+<script type="module">
     document.addEventListener('DOMContentLoaded', function () {
 
         let programmesData = [];
         let addResultModalEl = document.getElementById('addResultModal');
         if (!addResultModalEl) return;
 
-        let addResultModal = bootstrap.Modal.getOrCreateInstance(addResultModalEl);
+        let addResultModal = bootstrap.Modal .getOrCreateInstance(addResultModalEl);
 
         $("#addResult").on("click", function () {
             resetResultForm();
@@ -379,8 +379,6 @@
                     resetResultForm();
                     swalfire("Success", response.message ?? "File uploaded successfully", "success")
 
-                    // untuk refresh result list:
-                    refreshSemesterResults();
                 },
 
                 error: function (xhr) {

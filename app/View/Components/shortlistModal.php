@@ -21,6 +21,6 @@ class shortlistModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.shortlist-modal');
+        return view('components.modals.shortlist-modal');
     }
 }

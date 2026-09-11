@@ -60,8 +60,8 @@
     </div>
 </div>
 
-@push('scripts')
-<script>
+@push('childScript')
+<script type="module">
     $(document).on("click", "#addSemester", function () {
 
         let $form = $("#semesterForm");
@@ -133,7 +133,7 @@
         });
 
 
-        let semesterModal = bootstrap.Modal.getOrCreateInstance(
+        let semesterModal = bootstrap.Modal .getOrCreateInstance(
             $("#semesterModal")[0]
         );
 
@@ -188,7 +188,7 @@
                     "success"
                 );
 
-                let semesterModal = bootstrap.Modal.getInstance(
+                let semesterModal = bootstrap.Modal .getInstance(
                     $("#semesterModal")[0]
                 );
 
@@ -196,7 +196,6 @@
 
                 $form[0].reset();
 
-                refreshSemesterResults();
             },
 
             error: function (xhr) {
@@ -250,7 +249,7 @@
         $("#semesterModal .modal-title").text("Edit Semester");
         $("#semesterForm button[type='submit']").text("Update");
 
-        let semesterModal = bootstrap.Modal.getOrCreateInstance(
+        let semesterModal = bootstrap.Modal .getOrCreateInstance(
             $("#semesterModal")[0]
         );
 

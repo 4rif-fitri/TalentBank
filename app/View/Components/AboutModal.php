@@ -21,6 +21,6 @@ class AboutModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.about-modal');
+        return view('components.modals.about-modal');
     }
 }

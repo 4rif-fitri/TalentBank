@@ -19,8 +19,7 @@ class EducationService
     public function __construct(
         private readonly MediaService $mediaService,
         private readonly SkillService $skillService
-    ) {
-    }
+    ) {}
 
     private function uploadImages(int $educationId, array $data, int $userProfileId): void
     {
@@ -39,7 +38,7 @@ class EducationService
 
     /**
      * Gets all education by user profile ID
-     * 
+     *
      * @param int $userProfileId
      * @throws Exception
      * @return Collection<int, Education>|\Illuminate\Support\Collection<int, \stdClass>
@@ -60,7 +59,7 @@ class EducationService
 
     /**
      * Get education by education ID
-     * 
+     *
      * @param int $id
      * @throws Exception
      * @return Education
@@ -86,7 +85,7 @@ class EducationService
 
     /**
      * Creates a new education for current user
-     * 
+     *
      * @param array $data
      * @return Education
      */
@@ -124,7 +123,7 @@ class EducationService
 
     /**
      * Creates a new education for current user
-     * 
+     *
      * @param int $educationId
      * @param array $data
      * @return Education
@@ -156,15 +155,15 @@ class EducationService
 
             // update skills
             if (!empty($data['new_skill_ids'])) {
-                $this->skillService->createUserSkills($data['new_skill_ids'], 'education', $education->id);
+                $this->skillService->createUserSkills($data['new_skill_ids'] ?? [], 'education', $education->id);
             }
 
             if (!empty($data['updated_user_skills'])) {
-                $this->skillService->updateUserSkills($data['updated_user_skills'], $userProfileId, 'education', $education->id);
+                $this->skillService->updateUserSkills($data['updated_user_skills'] ?? [], $userProfileId, 'education', $education->id);
             }
 
             if (!empty($data['deleted_user_skill_ids'])) {
-                $this->skillService->deleteUserSkillsByIds($data['deleted_user_skill_ids'], $userProfileId);
+                $this->skillService->deleteUserSkillsByIds($data['deleted_user_skill_ids'] ?? [], $userProfileId);
             }
         });
 
@@ -180,7 +179,7 @@ class EducationService
     /**
      * Delete an existing education
      * (any semesters and media (attached to semester) attached to it will be deleted as well)
-     * 
+     *
      * @param int $educationId
      * @return bool|
      */
@@ -210,6 +209,4 @@ class EducationService
 
         return $result;
     }
-
-
 }

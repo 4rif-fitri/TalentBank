@@ -60,6 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::middleware('checkRole:Student')->group(function () {
         Route::get('/student', [internshipController::class, "studentIndex"])->name('student.index');
         Route::get('/student/invitations', [internshipController::class, "invitations"])->name('student.invitations');
+        Route::get('/student/resume', [internshipController::class, "resume"])->name('student.resume');
         Route::get('/student/interviews', [internshipController::class, "interviews"])->name('student.interviews');
         Route::get('/student/jobOffers', [internshipController::class, "jobOffers"])->name('student.jobOffers');
         Route::get('/student/messages', [internshipController::class, "messages"])->name('student.messages');
@@ -68,15 +69,15 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('checkRole:Recruiter')->group(function () {
         Route::get('/recruiter', [internshipController::class, "recruiterIndex"])->name('recruiter.index');
-        Route::get('/recruiter/shortlist', [internshipController::class, "recruiterShortlists"])->name('recruiter.shortlists');
-        Route::get('/recruiter/talents', [internshipController::class, "recruiterTalents"])->name('recruiter.talents');
-        Route::get('/recruiter/savedTalent', [internshipController::class, "recruiterSavedTalent"])->name('recruiter.savedTalent');
-        Route::get('/recruiter/invitations', [internshipController::class, "recruiterInvitations"])->name('recruiter.invitations');
-        Route::get('/recruiter/interviews', [internshipController::class, "recruiterInterviews"])->name('recruiter.interviews');
-        Route::get('/recruiter/jobOffers', [internshipController::class, "recruiterJobOffers"])->name('recruiter.jobOffers');
+        Route::get('/recruiter/position', [internshipController::class, "recruiterPosition"])->name('recruiter.position');
+        Route::get('/recruiter/profiles', [internshipController::class, "recruiterProfiles"])->name('recruiter.profiles');
+        Route::get('/recruiter/likeTalent', [internshipController::class, "recruiterLikeTalent"])->name('recruiter.likeTalent');
+        Route::get('/recruiter/invitation', [internshipController::class, "recruiterInvitation"])->name('recruiter.invitation');
+        Route::get('/recruiter/interview', [internshipController::class, "recruiterInterview"])->name('recruiter.interview');
+        Route::get('/recruiter/jobOffer', [internshipController::class, "recruiterJobOffers"])->name('recruiter.jobOffer');
         Route::get('/recruiter/hiredTalent', [internshipController::class, "recruiterHiredTalent"])->name('recruiter.hiredTalent');
-        Route::get('/recruiter/messages', [internshipController::class, "recruiterMessages"])->name('recruiter.messages');
-        Route::get('/recruiter/settings', [internshipController::class, "recruiterSettings"])->name('recruiter.settings');
+        Route::get('/recruiter/message', [internshipController::class, "recruiterMessage"])->name('recruiter.message');
+        Route::get('/recruiter/setting', [internshipController::class, "recruiterSetting"])->name('recruiter.setting');
     });
 
     Route::prefix('profile')->group(function () {

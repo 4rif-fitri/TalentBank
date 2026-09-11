@@ -187,7 +187,7 @@
         formData.append("profile_image", file);
 
         $.ajax({
-            url: "{{ route('update.uploadProfileImage') }}",
+            url: "{{ route('profile.uploadProfileImage') }}",
             type: "POST",
             data: formData,
             processData: false,
@@ -215,7 +215,7 @@
         formData.append("cover_image", file);
 
         $.ajax({
-            url: "{{ route('update.uploadCoverImage') }}",
+            url: "{{ route('profile.uploadCoverImage') }}",
             type: "POST",
             data: formData,
             processData: false,

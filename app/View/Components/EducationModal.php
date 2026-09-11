@@ -21,6 +21,6 @@ class EducationModal extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.education-modal');
+        return view('components.modals.education-modal');
     }
 }

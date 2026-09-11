@@ -25,6 +25,5 @@ class UserSeeder extends Seeder
         //     'name' => 'Alumni',
         //     'email' => 'alumni@example.com',
         // ]);
-        User::factory()->count(20)->create();
     }
 }

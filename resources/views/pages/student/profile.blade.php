@@ -2,36 +2,41 @@
 
 @section('content')
 
-<div class="user-card">
+<div class="user-card ">
+    @if(array_intersect(session('roles') ?? [], ['Recruiter']))
+    <div class="position-fixed z-3 p-2 rounded-2" style="right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5);">
+        <button class="btn btn-primary">Add to Shortlist</button>
+    </div>
+    @endif
 
     <div class="user-card-left">
 
-        <x-sections.userCardHeader />
+        <x-sections.user-card-header-section />
 
         <div id="mainTabContent">
-            <x-sections.about />
+            <x-sections.about-section />
         </div>
 
         <div id="resultTabContent" class="d-none">
-            <x-sections.education-result />
+            <x-sections.education-result-section />
         </div>
 
         <div id="educationsTabContent" class="d-none">
-            <x-sections.education />
+            <x-sections.education-section />
         </div>
 
     </div>
 
     <div class="user-card-right">
-        <x-sections.contact-information />
-        <x-sections.languages />
-        <x-sections.skills />
+        <x-sections.contact-information-section />
+        <x-sections.languages-section />
+        <x-sections.skills-section />
     </div>
 </div>
 
-<x-modals.active-educations-modal />
 <x-modals.profile-modal />
-<x-modals.about-modal />
+
+<x-modals.active-educations-modal />
 <x-modals.contact-information-modal />
 <x-modals.social-media-link-modal />
 <x-modals.languages-modal />
@@ -44,5 +49,29 @@
 @endsection
 
 @section('script')
-@vite('resources/js/student/index.js')
+<!-- @vite('resources/js/student/index.js') -->
+<script>
+
+    $(document).ready( function (){
+
+        function getProfileDataByProfileId (id){
+            let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}"
+            url = url.replace("__ID__", id)
+
+            $.ajax({
+                url,
+                type: "GET",
+                success: function (response) {
+                    $(document).trigger("profile:loaded", [response.data])
+                },
+                error: xhr =>{
+                }
+            });
+        }
+        let profileId = Number(window.location.pathname.split('/').pop()) || "{{ session("user_profile_id") }}";
+        getProfileDataByProfileId(profileId)
+    })
+
+
+</script>
 @endsection
