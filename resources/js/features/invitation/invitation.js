@@ -2,17 +2,31 @@ import { formatDate } from "../../shared/utils/format.js"
 
 function renderStatus(status) {
     let class_name = ""
-    if (status.invitation_status == "Pending") class_name = "text-warning bg-warning-subtle border-warning"
-    if (status.invitation_status == "Accepted") class_name = "text-success bg-success-subtle border-success"
-    if (status.invitation_status == "Rejected") class_name = "text-danger bg-danger-subtle border-danger"
-    if (status.invitation_status == "Exprired") class_name = "text-secondary bg-secondary-subtle border-secondary"
-    if (status.invitation_status == "Withdrawn") class_name = "text-secondary bg-secondary-subtle border-secondary"
+    if (status == "Pending") class_name = "text-warning bg-warning-subtle border-warning"
+    if (status == "Accepted") class_name = "text-success bg-success-subtle border-success"
+    if (status == "Rejected") class_name = "text-danger bg-danger-subtle border-danger"
+    if (status == "Exprired") class_name = "text-secondary bg-secondary-subtle border-secondary"
+    if (status == "Withdrawn") class_name = "text-secondary bg-secondary-subtle border-secondary"
 
     return `<div class="badge border-2 ${class_name} w-75">
-                ${status.invitation_status}
+                ${status}
             </div>`
 }
 export let student = {
+    sideList(invite, imageUrl){
+        return `<div data-id="${invite.id}" role="button" class="invitation-item list-item row border p-2 rounded-2">
+                <div class="col-3 d-flex align-items-center">
+                    <div class="thum-image" style="background-image: url('${imageUrl}'); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
+                </div>
+                <div class="col-9 d-flex flex-column">
+                    <h5 class="fw-semibold student-name">${invite.position.organization.company_name}</h5>
+                    <h6 class="student-position">${invite.position.position_title}</h6>
+                    ${renderStatus(invite.invitation_status)}
+                    <small class="text-muted">expires ${formatDate(invite.expires_at)}</small>
+                </div>
+            </div>`
+    },
+
     mainContent(invitation, imageUrl) {
         const statusClass = {
             Pending: "text-warning text-warning bg-warning-subtle",
@@ -23,7 +37,7 @@ export let student = {
 
             return `<div class="results-panel flex-grow-1">
                 <div class="bg-body p-4">
-                    <div class="d-flex flex-column flex-lg-row gap-3 bg-light p-3 rounded rounded-2 border">
+                    <div class="d-flex flex-column flex-lg-row gap-3 bg-light p-3 rounded rounded-2 border align-items-center">
                         <div class=" d-flex align-items-center">
                             <div class="thum-image-lg" style="background-image: url('${imageUrl}');background-position: center; background-size: cover; background-repeat: no-repeat;"></div>
                         </div>
@@ -32,101 +46,101 @@ export let student = {
                             <p>${invitation.receiver.location ?? "Location not specified"}</p>
                         </div>
                     </div>
-                    <table class="table">
-                        <tbody>
-                            <tr>
-                                <td class="col-3">
-                                    <small class="text-muted d-block">Company</small>
-                                </td>
-                                <td class="col-9">
-                                    <span>${invitation.position.organization.company_name}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-3">
-                                    <small class="text-muted d-block">Position</small>
-                                </td>
-                                <td class="col-9">
-                                    <div>${invitation.interview_result}</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-3">
-                                    <small class="text-muted d-block">Interview status</small>
-                                </td>
-                                <td class="col-9">
-                                    <div>${invitation.interview_status}</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-3">
-                                    <small class="text-muted d-block">Recruiter comment</small>
-                                </td>
-                                <td class="col-9">
-                                    <div>${invitation.recruiter_comment}</div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-3">
-                                    <small class="text-muted d-block">Create at</small>
-                                </td>
-                                <td class="col-9">
-                                    <span>${formatDate(invitation.created_at)}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="col-3">
-                                    <small class="text-muted d-block">Create by</small>
-                                </td>
-                                <td class="col-9">
-                                    <span>${invitation.interviewee.name}</span>
-                                </td>
-                            </tr>
-                        </body>
-                    </table>
-                    <div class="border-0 mb-4">
-                        <div class="row g-3">
-                            <div class="h-100">
-                                <div class="row">
-                                    <div class="col-lg-6 col-12 card-body p-3">
-                                        <small class="text-primary fw-semibold text-uppercase">Job Opportunity</small>
-                                        <small class="text-muted d-block">Company</small>
-                                        <div class="fw-semibold">${invitation.position.organization.company_name}</div>
-                                        <small class="text-muted d-block">Position</small>
-                                        <span class="fw-semibold">${invitation.position.position_title}</span>
-                                    </div>
-                                    <div class="col-lg-6 col-12 p-3">
-                                        <div class=" bg-body">
-                                            <small class="text-muted d-block">Message</small>
-                                            <span class="fw-semibold">${invitation.invitation_message}</span>
-                                            <hr>
-                                            <small class="text-muted d-block">Sent By</small>
-                                            <span class="fw-semibold">${invitation.sender.name}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="row">
+                        <div clmds="col-lg-6 col-12 card-body p-3">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Company</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${invitation.position.organization.company_name}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Position</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.position.position_title}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                         <td class="col-3">
+                                             <small class="text-muted d-block">Department</small>
+                                         </td>
+                                         <td class="col-9">
+                                             <div>${invitation.position.department}</div>
+                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Employment type</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.position.employment_type}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Work location</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.position.work_location}</div>
+                                        </td>
+                                    </tr>
+                                    </body>
+                                </table>
+                            </div>
+                            <div class="col-md-6 col-12 card-body p-3">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Invitation status</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <div>${renderStatus(invitation.invitation_status)}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Message</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <div>${invitation.invitation_message}</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Sent</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${formatDate(invitation.created_at)}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Expires</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${formatDate(invitation.expires_at)}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Create by</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${invitation.sender.name}</span>
+                                            </td>
+                                        </tr>
+                                    </body>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body p-1 ">
-                        <h6 class="fw-bold ">Invitation Details</h6>
-
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Status</span>
-                            <div class="badge ${statusClass}">${invitation.invitation_status}</div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Sent</span>
-                            <span class="fw-semibold">${(invitation.created_at).split(" ")[0]}</>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Expires</span>
-                            <span class="fw-semibold">${invitation.expires_at}</span>
-                        </div>
-                    </div>
-                    <hr>
                     <div class="card-body p-3">
                         <h5 class="fw-bold mb-3">
                             Actions
@@ -134,28 +148,24 @@ export let student = {
 
                         <div class="d-flex flex-column flex-lg-row gap-2">
                             <button class="btn btn-primary btn-message-student">
-                                <i class="fa-solid fa-message me-2"></i>
                                 Message Student
                             </button>
 
-                            <button data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"}
+                            <button id="btnRejectInvitation" data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"}
                                 class="btn-withdraw-invitation btn btn-outline-danger">
-                                <i class="fa-regular fa-trash-can me-2"></i>
-                                Withdraw Invitation
-
+                                Reject Invitation
                             </button>
 
-                            <button data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"}
+                            <button id="btnAcceptInvitation" data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"}
                                 class="btn-edit-invitation btn btn-outline-primary">
-                                <i class="fa-solid fa-pen me-2"></i>
-                                Edit Invitation
+                                Accept Invitation
                             </button>
 
                         </div>
                     </div>
                 </div>
             </div>`
-        }
+    }
 }
 
 export let recruiter = {
@@ -187,7 +197,7 @@ export let recruiter = {
                     <div class="col-9 d-flex flex-column">
                         <h5 class="fw-semibold student-name">${invite.receiver.name}</h5>
                         <h6 class="student-position">${invite.position.position_title}</h6>
-                        ${renderStatus(invite)}
+                        ${renderStatus(invite.invitation_status)}
                         <small class="text-muted">expires ${formatDate(invite.expires_at)}</small>
                     </div>
                 </div>`
@@ -214,7 +224,7 @@ export let recruiter = {
                             ${educatios[0]?.programme?.programme_name ? `<div role="button" class="badge bg-primary btnSeeMore">See More</div>` : ""}
                         </div>
                     </div>
-                      <div class="row">
+                    <div class="row">
                         <div class="col-lg-6 col-12 card-body p-3">
                             <table class="table">
                                 <tbody>
@@ -308,6 +318,7 @@ export let recruiter = {
                                 </table>
                             </div>
                         </div>
+                    </div>
                     <div class="card-body p-3">
                         <h5 class="fw-bold mb-3">
                             Actions

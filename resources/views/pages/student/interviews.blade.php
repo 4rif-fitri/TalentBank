@@ -90,7 +90,7 @@
                 </ul>
             </div>
 
-            <div class="invitation-list"></div>
+            <div class="invitation-list p-2 d-flex gap-2 flex-column"></div>
 
         </aside>
 
@@ -170,7 +170,7 @@
         getInterviewsByStatusAndIntervieweeId(status)
     }
 
-    getInterviewsByStatusAndIntervieweeId(status)
+    getInterviewsByStatusAndIntervieweeId("Scheduled")
     $(document).on('click', '.btn-toggle-filter, .shortlist-overlay, .filter-overlay, .list-item', toggle);
     $(document).on("click", ".nav-item", handleFilterToggle);
     $(document).on("click", ".invitation-item, .list-item", handleInvitationClick);

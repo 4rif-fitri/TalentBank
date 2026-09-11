@@ -27,6 +27,7 @@
     }
 
     .results-panel {
+        width: 400px !important;
         padding: 1rem;
         background-color: #fff;
     }
@@ -101,7 +102,7 @@
                 </ul>
             </div>
 
-            <div class="invitation-list d-flex flex-column gap-2 p"></div>
+            <div class="invitation-list d-flex flex-column gap-2 p-2"></div>
 
         </aside>
 
@@ -142,7 +143,7 @@
 
             invitations.forEach(inv =>{
                 let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + inv.position.organization.organization_logo
-                $(".invitation-list").append(xcommon.studentSideBar(inv, imageUrl));
+                $(".invitation-list").append(xinvitation.student.sideList(inv, imageUrl));
             })
 
         } catch (error) {
@@ -220,9 +221,9 @@
     getInvitationsByStatusAndReceiverId(currentStatus)
 
     $(document).on("click", ".invitation-item", handleSelectedInvitation)
-    $(document).on("click", ".btnAcceptInvitation", handleAcceptInvitation)
+    $(document).on("click", "#btnAcceptInvitation", handleAcceptInvitation)
+    $(document).on("click", "#btnRejectInvitation", handleRejectInvitation)
     $(document).on("click", ".nav-link", handleChangeStatus)
-    $(document).on("click", ".btnRejectInvitation", handleRejectInvitation)
     $(document).on('click', '.btn-toggle-filter, .shortlist-overlay, .filter-overlay, .list-item', function () {
         document.body.classList.toggle('filter-open');
     });

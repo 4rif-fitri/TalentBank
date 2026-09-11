@@ -2,11 +2,11 @@ import { formatDate, formatDateShort, formatDateTime } from "../../shared/utils/
 
 function renderStatus(status) {
     let class_name = ""
-    if (status.invitation_status == "Scheduled") class_name = "text-warning bg-warning-subtle border-warning"
-    if (status.invitation_status == "Accepted") class_name = "text-success bg-success-subtle border-success"
-    if (status.invitation_status == "Rejected") class_name = "text-danger bg-danger-subtle border-danger"
-    if (status.invitation_status == "Exprired") class_name = "text-secondary bg-secondary-subtle border-secondary"
-    if (status.invitation_status == "Withdrawn") class_name = "text-secondary bg-secondary-subtle border-secondary"
+    if (status == "Scheduled" || status == "Pending") class_name = "text-warning bg-warning-subtle border-warning"
+    if (status == "Completed" || status == "Passed") class_name = "text-success bg-success-subtle border-success"
+    if (status == "Cancelled" || status == "Failed") class_name = "text-danger bg-danger-subtle border-danger"
+    if (status == "Exprired") class_name = "text-secondary bg-secondary-subtle border-secondary"
+    if (status == "Withdrawn") class_name = "text-secondary bg-secondary-subtle border-secondary"
 
     return `<div class="badge text-success border-2 ${class_name} w-75">
                 ${status}
@@ -40,7 +40,7 @@ export let student = {
 
         return `<div class="results-panel flex-grow-1">
                 <div class="bg-body p-4">
-                    <div class="d-flex flex-column flex-lg-row gap-3 bg-light p-3 rounded rounded-2 border">
+                    <div class="d-flex flex-column flex-lg-row gap-3 bg-light p-3 rounded rounded-2 border align-items-center">
                         <div class=" d-flex align-items-center">
                             <div class="thum-image-lg" style="background-image: url('${imageUrl}');background-position: center; background-size: cover; background-repeat: no-repeat;"></div>
                         </div>
@@ -48,49 +48,121 @@ export let student = {
                             <h4 class="fw-semibold">${invitation.position.organization.company_name}</h4>
                         </div>
                     </div>
-                    <div class="border-0 mb-4">
-                        <div class="row g-3">
-                            <div class="h-100">
-                                <div class="row">
-                                    <div class="col-lg-6 col-12 card-body p-3">
-                                        <small class="text-primary fw-semibold text-uppercase">Job Opportunity</small>
+                    <div class="row">
+                        <div class="col-lg-6 col-12 card-body p-3">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td class="col-3">
                                         <small class="text-muted d-block">Company</small>
-                                        <div class="fw-semibold">${invitation.position.organization.company_name}</div>
+                                    </td>
+                                    <td class="col-9">
+                                        <div>${invitation.position.organization.company_name}</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-3">
                                         <small class="text-muted d-block">Position</small>
-                                        <span class="fw-semibold">${invitation.position.position_title}</span>
-                                    </div>
-                                    <div class="col-lg-6 col-12 p-3">
-                                        <div class=" bg-body">
-                                            <small class="text-muted d-block">Message</small>
-                                            <span class="fw-semibold">${invitation.invitation_message}</span>
-                                            <hr>
-                                            <small class="text-muted d-block">Sent By</small>
-                                            <span class="fw-semibold">${invitation.interviewer.name}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                                    </td>
+                                    <td class="col-9">
+                                        <span>${invitation.position.position_title}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-3">
+                                        <small class="text-muted d-block">Department</small>
+                                    </td>
+                                    <td class="col-9">
+                                        <span>${invitation.position.department}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Interview mode</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${invitation.interview_mode}</span>
+                                        </td>
+                                    </tr>
+
+                                    ${invitation.interview_mode === "Online" ? `
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Interview Link</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${invitation.meeting_url}</span>
+                                            </td>
+                                        </tr>` : ""}
+
+                                    ${invitation.interview_mode === "On-site" ? `
+                                        <tr>
+                                            <td class="col-3">
+                                                <small class="text-muted d-block">Interview location</small>
+                                            </td>
+                                            <td class="col-9">
+                                                <span>${invitation.location}</span>
+                                            </td>
+                                        </tr>` : ""}
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-lg-6 col-12 card-body p-3">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Ceheduled</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${formatDateTime(invitation.scheduled_at)}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Interview result</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${renderStatus(invitation.interview_result)}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Interview status</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${renderStatus(invitation.interview_status)}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Recruiter comment</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <div>${invitation.recruiter_comment}</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Create at</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${formatDate(invitation.created_at)}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="col-3">
+                                            <small class="text-muted d-block">Create by</small>
+                                        </td>
+                                        <td class="col-9">
+                                            <span>${invitation.interviewee.name}</span>
+                                        </td>
+                                    </tr>
+                                </body>
+                            </table>
                         </div>
                     </div>
-                    <div class="card-body p-1 ">
-                        <h6 class="fw-bold ">Invitation Details</h6>
-
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Status</span>
-                            <div class="badge ${statusClass}">${invitation.invitation_status}</div>
-                        </div>
-
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">Sent</span>
-                            <span class="fw-semibold">${(invitation.created_at).split(" ")[0]}</>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <span class="text-muted">Expires</span>
-                            <span class="fw-semibold">${invitation.expires_at}</span>
-                        </div>
-                    </div>
-                    <hr>
                     <div class="card-body p-3">
                         <h5 class="fw-bold mb-3">
                             Actions
@@ -101,20 +173,6 @@ export let student = {
                                 <i class="fa-solid fa-message me-2"></i>
                                 Message Student
                             </button>
-
-                            <button data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"}
-                                class="btn-withdraw-invitation btn btn-outline-danger">
-                                <i class="fa-regular fa-trash-can me-2"></i>
-                                Withdraw Invitation
-
-                            </button>
-
-                            <button data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"}
-                                class="btn-edit-invitation btn btn-outline-primary">
-                                <i class="fa-solid fa-pen me-2"></i>
-                                Edit Invitation
-                            </button>
-
                         </div>
                     </div>
                 </div>
@@ -260,7 +318,6 @@ export let recruiter = {
                             </table>
                         </div>
                     </div>
-                    <hr>
                     <div class="card-body p-3">
                         <h5 class="fw-bold mb-3">
                             Actions

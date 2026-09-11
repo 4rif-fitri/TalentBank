@@ -26,6 +26,7 @@
     }
 
     .results-panel {
+        width: 400px;
         padding: 1rem;
         background-color: #fff;
     }
@@ -95,7 +96,7 @@
                 </ul>
             </div>
 
-            <div class="invitation-list"></div>
+            <div class="invitation-list p-2 d-flex flex-column gap-2"></div>
 
         </aside>
 
@@ -132,8 +133,10 @@
             $(".invitation-list").empty()
 
             response.data.forEach(offer => {
+                console.log(offer);
+
                 let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + offer.position.organization.organization_logo
-                $(".invitation-list").append(xcommon.studentSideBar(offer, imageUrl))
+                $(".invitation-list").append(xjobOffer.student.sideList(offer, imageUrl))
             })
 
 
@@ -216,8 +219,8 @@
     $(document).on("click", ".toggleFilter, .invitation-item, .list-item", toggle);
     $(document).on("click", ".nav-item button", handleChangeStatus)
     $(document).on("click", ".invitation-item ", handleJobOfferDetail)
-    $(document).on("click", ".btnAcceptInvitation", handleAcceptJobOffer)
-    $(document).on("click", ".btnRejectInvitation", handleRejectJobOffer)
+    $(document).on("click", "#btnAcceptInvitation", handleAcceptJobOffer)
+    $(document).on("click", "#btnRejectInvitation", handleRejectJobOffer)
     getJobOffersByStatusAndReceiverId(currentStatus)
 
 </script>

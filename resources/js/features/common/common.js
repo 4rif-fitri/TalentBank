@@ -2,14 +2,14 @@ import {formatDate} from "../../shared/utils/format.js"
 
 function renderStatus(status) {
     let class_name = ""
-    if (status.invitation_status == "Pending") class_name = "bg-warning text-white"
-    if (status.invitation_status == "Accepted") class_name = "bg-success text-white"
-    if (status.invitation_status == "Rejected") class_name = "bg-danger text-white"
-    if (status.invitation_status == "Exprired") class_name = "bg-danger text-white"
-    if (status.invitation_status == "Withdrawn") class_name = "bg-danger text-white"
+    if (status == "Pending") class_name = "bg-warning text-white"
+    if (status == "Accepted") class_name = "bg-success text-white"
+    if (status == "Rejected") class_name = "bg-danger text-white"
+    if (status == "Exprired") class_name = "bg-danger text-white"
+    if (status == "Withdrawn") class_name = "bg-danger text-white"
 
     return `<div class="badge text-success border-2 ${class_name} w-75">
-                ${status.invitation_status}
+                ${status}
             </div>`
 }
 
@@ -26,7 +26,7 @@ export function noSelected(title = "", desc = "", classTarget = "", btnText = ""
 }
 
 export function studentSideBar(invite,imageUrl){
-    return `<div data-id="${invite.id}" role="button" class="invitation-item list-item row border p-2 rounded-2">
+    return `<div data-id="${invite.id}" role="button" class="invitation-item list-item row border p-2 rounded-2 align-items-center">
                 <div class="col-3 d-flex align-items-center">
                     <div class="thum-image" style="background-image: url('${imageUrl}'); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
                 </div>
