@@ -13,19 +13,27 @@
                 </button>
             </div>
 
-            <form id="inviteForm">
+            <form id="interviewForm">
 
                 <div class="modal-body">
                     <div class="row">
                         <input type="number" class="form-control invitation_id" hidden readonly>
 
                         <div class="col-md-12 mb-3">
-                            <label for="invite_position_title" class="form-label">
+                            <label for="invite_candidate_id" class="form-label">
                                 Candidate
                             </label>
                             <input type="text" id="invite_candidate_id" hidden>
                             <input type="text" class="form-control candidate_name" readonly>
                         </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="invite_title" class="form-label">
+                                Title
+                            </label>
+                            <input type="text" id="invite_title" required>
+                        </div>
+
 
                         <div class="col-md-6 mb-3">
                             <label for="expires_at" class="form-label">
@@ -108,11 +116,8 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         Cancel
                     </button>
-                    <button type="submit" id="btnAddInterview" class="btn btn-primary">
+                    <button type="button" id="btnAddInterview" class="btn btn-primary">
                         Save
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        Update
                     </button>
 
                 </div>

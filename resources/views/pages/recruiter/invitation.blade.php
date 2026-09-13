@@ -389,9 +389,7 @@
             getInvitationsByStatusAndSenderId("Pending");
 
         } else {
-
             handleSelectedInvitationn(id);
-
         }
 
     });

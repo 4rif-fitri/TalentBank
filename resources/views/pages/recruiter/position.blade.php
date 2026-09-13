@@ -204,7 +204,7 @@
         }
     }
 
-    async function storeInterview(position_id, scheduled_at, interview_mode, location, meeting_url, recruiter_comment, interviewee_profile_id){
+    async function storeInterview(position_id, scheduled_at, interview_mode, location, meeting_url, recruiter_comment, interviewee_profile_id, title){
         let data = {
             _token: $('meta[name="csrf-token"]').attr("content"),
             position_id,
@@ -213,15 +213,22 @@
             location,
             meeting_url,
             recruiter_comment,
-            interviewee_profile_id
+            interviewee_profile_id,
+            title
         }
+
+        console.table(data);
+
 
         try {
             let response = await xApiInterview.store("{{ route('interviews.store') }}",data)
             if(!response) return
 
+            xalert.success("Success", response.message)
+            xmodal.hide("interviewModal")
         } catch (error) {
             console.error(error);
+            xalert.error("Faild", error.responseJSON.message)
         }
     }
 
@@ -544,8 +551,9 @@
         }
     }
 
+
     function showModalAddShortlist(){
-        $("#btnAddShortlist").show()
+        $("#listInvitationModal").hide()
         $("#btnUpdateShortlist").hide()
         xmodal.show("shortlistModal")
     }
@@ -574,7 +582,26 @@
         $("#invite_candidate").val(candidte.name)
         $("#invite_position_title").val(curruntPosition.position_title)
         $("#invite_position_id").val(curruntPosition.id)
-        bootstrap.Modal .getOrCreateInstance($("#invitationModal")).show()
+        xmodal.show("invitationModal")
+    }
+
+    let currentUserId
+    function showModalAddInviteId() {
+        $("#btnAddInvitation").show()
+        $("#btnUpdateInvitation").hide()
+
+        let profileId = currentUserId
+
+        let candidte = candidateList.find(user => user.id == profileId)
+        console.error(candidte);
+
+        $("#invite_candidate_id").val(profileId)
+        $("#invite_candidate").val(candidte.name)
+        $("#invite_position_title").val(curruntPosition.position_title)
+        $("#invite_position_id").val(curruntPosition.id)
+        xmodal.show("invitationModal")
+        xmodal.hide("listInvitationModal")
+
     }
 
     function showModalAddinterview(){
@@ -604,6 +631,39 @@
 
         xmodal.show("interviewModal")
     }
+
+        function showModalAddintervieww() {
+                $("#inviteForm")[0].reset();
+                $("#invitation_id").val("");
+
+                $(".invitation_id").val(curruntPosition.id)
+
+                let profileId = currentUserId
+                let candidte = candidateList.find(user => user.id == profileId)
+                curruntCandidate = candidte
+                console.log(profileId);
+                console.log(candidateList);
+
+                $(".candidate_name").val(candidte.name)
+
+
+                let today = new Date().toISOString().split("T")[0];
+                $("#interview_date").attr("min", today).val(today);
+                $("#start_time").val("10:00");
+
+                let candidateName = $(this).data("candidate-name") || "";
+                let candidateId = $(this).data("candidate-id") || "";
+                $("#invite_candidate").val(candidateName);
+                $("#invite_candidate_id").val(candidateId);
+
+                $("#interviewModalLabel").text("Schedule Interview");
+                $("#btnAddInterview").show();
+                $("#btnUpdateInterview").hide();
+
+                xmodal.show("interviewModal")
+                xmodal.hide("listInterviewModal")
+                $("#btnUpdateInterview").hide()
+            }
 
     function handleAddInterview(){
 
@@ -825,9 +885,11 @@ function tem(invite) {
     return `<div data - id="${invite.id}" class="alert alert-light d-flex justify-content-between" >
                 ${ invite.title }
                  <div>
+                    <!--
                     <button class="btn btn-danger btnWithdrawInvite btn-withdraw-invitation" data-id="${invite.id}">
                         Withdraw
                     </button>
+                    -->
                     <a href="${withdrawUrl}" class="btn btn-primary" data-id="${invite.id}">
                         Edit
                     </a>
@@ -835,12 +897,32 @@ function tem(invite) {
             </div>`;
 }
 
+    function temm(interview) {
+        let withdrawUrl = "{{ route('recruiter.interview.id', ['id' => '__ID__']) }}"
+            .replace('__ID__', interview.id);
+
+        return `<div data - id="${interview.id}" class="alert alert-light d-flex justify-content-between" >
+                ${interview.title}
+                 <div>
+                    <!--
+                    <button class="btn btn-danger btnWithdrawInvite btn-withdraw-invitation" data-id="${interview.id}">
+                        Withdraw
+                    </button>
+                    -->
+                    <a href="${withdrawUrl}" class="btn btn-primary" data-id="${interview.id}">
+                        Edit
+                    </a>
+                </div>
+            </div>`;
+    }
 
 
     function handleShowModalListInvite(){
-        xmodal.show("listInvitationModal")
         let userId = $(this).data("id");
         let positionId = curruntPosition.id
+        currentUserId = userId
+
+        xmodal.show("listInvitationModal")
 
         let url = "{{ route('invitations.getInvitationsByPositionIdAndReceiverId', ['receiverId' => '__RECEIVER_ID__','positionId' => '__POSITION_ID__'])}}";
         url = url
@@ -858,7 +940,7 @@ function tem(invite) {
                     html += tem(invite)
                 });
                 $(".listItemsContainer").html(html)
-
+                $("listInterviewModal").show()
             },
             error: xhr => {
                 console.log(xhr);
@@ -867,7 +949,34 @@ function tem(invite) {
     }
 
     function handleShowModalListInterview(){
-        xmodal.show("listInterviewModal")
+        let userId = $(this).data("id");
+        let positionId = curruntPosition.id
+        currentUserId = userId
+
+        let url = "{{ route('interviews.getInterviewsByPositionIdAndIntervieweeId', ['intervieweeId' => '__INTERVIEWEE_ID__','positionId' => '__POSITION_ID__'])}}";
+
+        url = url
+            .replace("__INTERVIEWEE_ID__", userId)
+            .replace("__POSITION_ID__", positionId);
+
+        $.ajax({
+            url,
+            type: "GET",
+            success: response => {
+                console.error(response);
+                let listOfInvite = response.data
+                let html = ""
+                listOfInvite.forEach(invite => {
+                    console.log(invite);
+                    html += temm(invite)
+                });
+                $(".listInterviewaContainer").html(html)
+                xmodal.show("listInterviewModal")
+            },
+            error: xhr => {
+                console.log(xhr);
+            }
+        });
 
     }
 
@@ -916,6 +1025,7 @@ function tem(invite) {
     $(document).on("click", ".showModalUpdateShortlist", showModalUpdateShortlist);
     $(document).on("click", ".btnShowModalAddInvite", showModalAddInvite)
     $(document).on("click", ".btnShowModalAddInterview", showModalAddinterview);
+    $(document).on("click", ".btnShowModalAddIntervieww", showModalAddintervieww);
     $(document).on("click", "#btnAddInvitation", handleAddInvitation)
     $(document).on("submit", "#inviteForm", handleInviteForm);
     $(document).on("click", ".shortlist-item", handleClickShortlist)
@@ -924,7 +1034,7 @@ function tem(invite) {
     $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
     $(document).on("click", ".btnShowModalAddJobOffer", showJobOfferModal)
     $(document).on("click", "#btnAddJobOffer", handleAddJobOffer)
-
+    $(document).on("click", ".btnShowModalAddInvitee", showModalAddInviteId)
     $(document).on("click", ".btnShowModalUpdateShortlist", handleEditPosition)
 
     $(document).on("click", "#btnCloseModalPosition", handleCloseModalPosition)
@@ -933,7 +1043,63 @@ function tem(invite) {
     $(document).on("click", ".btnShowModalListInterview", handleShowModalListInterview)
     $(document).on("click", ".btnShowModalListJobOffer", handleShowModalListJobOffer)
 
+    $(document).on("change", 'input[name="interview_mode"]', function () {
 
+        const mode = $(this).val();
+
+        $("#div_meeting_url, #div_location").hide();
+
+        $("#meeting_url, #location").prop("required", false);
+
+        // Clear unused fields
+        $("#meeting_url").val("");
+        $("#location").val("");
+
+        if (mode === "Online") {
+
+            $("#div_meeting_url").show();
+            $("#meeting_url").prop("required", true);
+
+        } else if (mode === "On-site") {
+
+            $("#div_location").show();
+            $("#location").prop("required", true);
+        }
+    });
+
+    $(document).on("click", "#btnAddInterview", function () {
+
+        const form = $("#interviewForm")[0];
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const scheduled_at =
+            $("#interview_date").val() + " " + $("#start_time").val();
+
+        const interview_mode =
+            $('input[name="interview_mode"]:checked').val();
+
+        const meeting_url = $("#meeting_url").val();
+        const location = $("#location").val();
+        const recruiter_comment = $("#recruiter_comment").val();
+        let title =  $("#invite_title").val();
+
+            console.error(title);
+
+        storeInterview(
+            curruntPosition.id,
+            scheduled_at,
+            interview_mode,
+            location,
+            meeting_url,
+            recruiter_comment,
+            currentUserId,
+            title
+        );
+    });
 
     $(document).ready(loadData);
     $(document).on("change", "input[name='interview_mode']", function () {

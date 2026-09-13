@@ -4,23 +4,20 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
 
-            <div class="modal-header">
+            <div class="modal-header d-flex justify-content-between">
                 <h5 class="modal-title" id="interviewModalLabel">
                     list Interview
                 </h5>
+                <button class="btn btn-primary btnShowModalAddIntervieww">
+                    Add Interview
+                </button>
             </div>
             <div class="modal-body">
-
+                <div class="listInterviewaContainer"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    Cancel
-                </button>
-                <button type="submit" id="btnAddInterview" class="btn btn-primary">
-                    Save
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    Update
+                    Close
                 </button>
             </div>
         </div>

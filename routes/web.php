@@ -75,6 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/recruiter/invitation', [internshipController::class, "recruiterInvitation"])->name('recruiter.invitation');
         Route::get('/recruiter/invitation/{id}', [internshipController::class, "recruiterInvitation"])->name('recruiter.invitation.id');
         Route::get('/recruiter/interview', [internshipController::class, "recruiterInterview"])->name('recruiter.interview');
+        Route::get('/recruiter/interview/{id}', [internshipController::class, "recruiterInterview"])->name('recruiter.interview.id');
         Route::get('/recruiter/jobOffer', [internshipController::class, "recruiterJobOffers"])->name('recruiter.jobOffer');
         Route::get('/recruiter/hiredTalent', [internshipController::class, "recruiterHiredTalent"])->name('recruiter.hiredTalent');
         Route::get('/recruiter/message', [internshipController::class, "recruiterMessage"])->name('recruiter.message');

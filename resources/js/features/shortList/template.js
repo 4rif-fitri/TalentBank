@@ -115,6 +115,8 @@ export function detail(data) {
     if (!data.shortlist_users) return
 
     data.shortlist_users.forEach(user => {
+        console.log({ user });
+
         let interviewsCount = user.interviews_count ?? 0;
         let invitationsCount = user.invitations_count ?? 0;
         let jobOfferCount = 0;
@@ -154,36 +156,51 @@ export function detail(data) {
 
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
 
-                                <!-- View Profile -->
-                                <li class="list-item-view-profile">
-                                    <a target="_blank" href="${window.appConfig.baseURL}/profile/student/${user.id}" class="dropdown-item">
-                                        View Profile
-                                    </a>
-                                </li>
+    <!-- View Profile -->
+    <li class="list-item-view-profile">
+        <a
+            target="_blank"
+            href="${window.appConfig.baseURL}/profile/student/${user.id}"
+            class="dropdown-item"
+        >
+            View Profile
+        </a>
+    </li>
 
-                                <!-- Set Invite -->
-                                <li class="${status === "Added" || status === "Invited" ? "" : "d-none"} list-item-add-invite">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalListInvite">
-                                        List Invite
-                                    </button>
-                                </li>
+    <!-- List Invitation -->
+    <li class="list-item-add-invite">
+        <button
+            type="button"
+            data-id="${user.id}"
+            class="dropdown-item btnShowModalListInvite"
+        >
+            List Invite
+        </button>
+    </li>
 
-                                <!-- Set Interview -->
-                                <li class="${status === "Invited" || status === "JobOffer" ? "" : "d-none"} list-item-add-interview">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalListInterview">
-                                        List Interview
-                                    </button>
-                                </li>
+    <!-- List Interview -->
+    <li class="${user.invitations_count > 0 ? "" : "d-none"} list-item-add-interview">
+        <button
+            type="button"
+            data-id="${user.id}"
+            class="dropdown-item btnShowModalListInterview"
+        >
+            List Interview
+        </button>
+    </li>
 
+    <!-- List Job Offer -->
+    <li class="${user.interviews_count > 0 ? "" : "d-none"} list-item-add-jobOffer">
+        <button
+            type="button"
+            data-id="${user.id}"
+            class="dropdown-item btnShowModalListJobOffer"
+        >
+            List Job Offer
+        </button>
+    </li>
 
-                                <!-- Set Job Offer -->
-                                <li class="${status === "JobOffer" ? "" : "d-none"} list-item-add-jobOffer">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalListJobOffer">
-                                        List Job Offer
-                                    </button>
-                                </li>
-
-                            </ul>
+</ul>
                         </div>
                     </td>
                 </tr>`

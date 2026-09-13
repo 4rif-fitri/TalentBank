@@ -4,10 +4,15 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
 
-            <div class="modal-header">
+            <div class="modal-header d-flex justify-content-between">
                 <h5 class="modal-title" id="inviteModalLabel">
                     Invite Candidate
                 </h5>
+
+                <button class="btn btn-primary btnShowModalAddInvitee">
+                    Add invite
+                </button>
+
             </div>
             <div class="modal-body">
 
