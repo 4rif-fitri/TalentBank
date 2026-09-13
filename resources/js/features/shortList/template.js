@@ -119,7 +119,7 @@ export function detail(data) {
 
         let interviewsCount = user.interviews_count ?? 0;
         let invitationsCount = user.invitations_count ?? 0;
-        let jobOfferCount = 0;
+        let jobOfferCount = user.job_offers_count ?? 0;
         let status = getStatus(interviewsCount, invitationsCount, jobOfferCount);
 
         $("#tableDetail").append(

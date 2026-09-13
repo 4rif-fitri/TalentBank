@@ -133,6 +133,7 @@
 <x-modals.position-modal />
 <x-modals.invitation-modal />
 <x-modals.interview-modal />
+<x-modals.job-offer-modal />
 
 <x-modals.list-interview-modal />
 <x-modals.list-invitation-modal />
@@ -244,7 +245,8 @@
             benefits: $form.find("#benefits").val(),
             expires_at: $form.find("#expires_at").val(),
             position_id: $form.find("#jobOfferPositionId").val(),
-            receiver_profile_id: $form.find("#job-offer-candicate-id").val()
+            receiver_profile_id: $form.find("#job-offer-candicate-id").val(),
+            title: $form.find("#job-offer-title").val()
         }
 
         try {
@@ -667,7 +669,6 @@
 
     function handleAddInterview(){
 
-
         let interviewMode = $('input[name="interview_mode"]:checked').val();
 
         let interviewDate = $("#interview_date").val();
@@ -783,76 +784,76 @@
         }
     }
 
-    function showJobOfferModal() {
-        let profileId = $(this).data("id");
+    // function showJobOfferModal() {
+    //     let profileId = $(this).data("id");
 
-        let candidate = candidateList.find(user => user.id == profileId);
+    //     let candidate = candidateList.find(user => user.id == profileId);
 
-        if (!candidate) {
-            console.error("Candidate not found:", profileId);
-            return;
-        }
+    //     if (!candidate) {
+    //         console.error("Candidate not found:", profileId);
+    //         return;
+    //     }
 
-        curruntCandidate = candidate;
+    //     curruntCandidate = candidate;
 
-        console.info("curruntPosition",curruntPosition);
-        console.info("curruntCandidate",curruntCandidate);
+    //     console.info("curruntPosition",curruntPosition);
+    //     console.info("curruntCandidate",curruntCandidate);
 
-        let $form = $("#jobOfferForm");
+    //     let $form = $("#jobOfferForm");
 
-        $(".offer-candidate-name").text(`Candidate: ${curruntCandidate.name}`);
-        $("#job-offer-candicate-id").val(curruntCandidate.id);
+    //     $(".offer-candidate-name").text(`Candidate: ${curruntCandidate.name}`);
+    //     $("#job-offer-candicate-id").val(curruntCandidate.id);
 
-        $("#jobOfferPositionName").text(`Position: ${curruntPosition.position_title}`);
-        $("#jobOfferPositionId").val(curruntPosition.id);
+    //     $("#jobOfferPositionName").text(`Position: ${curruntPosition.position_title}`);
+    //     $("#jobOfferPositionId").val(curruntPosition.id);
 
-        $("#btnUpdateJobOffer").hide()
-        $("#btnAddJobOffer").show()
+    //     $("#btnUpdateJobOffer").hide()
+    //     $("#btnAddJobOffer").show()
 
-        xmodal.show("jobOfferModal");
-    }
+    //     xmodal.show("jobOfferModal");
+    // }
 
-    function handleAddJobOffer(){
+    // function handleAddJobOffer(){
 
-        let $form = $(this).parent().parent()
+    //     let $form = $(this).parent().parent()
 
-        let salary_amount = $form.find("#salary_amount").val()
-        let salary_period = $form.find("#salary_period").val()
-        let start_date = $form.find("#start_date").val()
-        let end_date = $form.find("#end_date").val()
-        let terms_and_conditions = $form.find("#terms_and_conditions").val()
-        let benefits = $form.find("#benefits").val()
-        let expires_at = $form.find("#expires_at").val()
-        let position_id = $form.find("#jobOfferPositionId").val()
-        let receiver_profile_id = $form.find("#job-offer-candicate-id").val()
+    //     let salary_amount = $form.find("#salary_amount").val()
+    //     let salary_period = $form.find("#salary_period").val()
+    //     let start_date = $form.find("#start_date").val()
+    //     let end_date = $form.find("#end_date").val()
+    //     let terms_and_conditions = $form.find("#terms_and_conditions").val()
+    //     let benefits = $form.find("#benefits").val()
+    //     let expires_at = $form.find("#expires_at").val()
+    //     let position_id = $form.find("#jobOfferPositionId").val()
+    //     let receiver_profile_id = $form.find("#job-offer-candicate-id").val()
 
-        if(!salary_amount || salary_amount == 0){
-            xalert.fire("Warning", "Please enter salary amount", "warning")
-            return
-        }
+    //     if(!salary_amount || salary_amount == 0){
+    //         xalert.fire("Warning", "Please enter salary amount", "warning")
+    //         return
+    //     }
 
-        if(salary_period == ""){
-            xalert.fire("Warning", "Please select salary period", "warning")
-            return
-        }
+    //     if(salary_period == ""){
+    //         xalert.fire("Warning", "Please select salary period", "warning")
+    //         return
+    //     }
 
-        if(!expires_at){
-            xalert.fire("Warning", "Please enter expires date", "warning")
-            return
-        }
+    //     if(!expires_at){
+    //         xalert.fire("Warning", "Please enter expires date", "warning")
+    //         return
+    //     }
 
-        if(!position_id){
-            xalert.fire("Warning", "Position id not found", "warning")
-            return
-        }
+    //     if(!position_id){
+    //         xalert.fire("Warning", "Position id not found", "warning")
+    //         return
+    //     }
 
-        if(!receiver_profile_id){
-            xalert.fire("Warning", "Receiver profile id not found", "warning")
-            return
-        }
+    //     if(!receiver_profile_id){
+    //         xalert.fire("Warning", "Receiver profile id not found", "warning")
+    //         return
+    //     }
 
-        storeJobOffer($form)
-    }
+    //     storeJobOffer($form)
+    // }
 
     async function handleEditPosition (){
         console.log(curruntPosition);
@@ -916,7 +917,24 @@ function tem(invite) {
             </div>`;
     }
 
+        function temmm(interview) {
+            let withdrawUrl = "{{ route('recruiter.jobOffer.id', ['id' => '__ID__']) }}"
+                .replace('__ID__', interview.id);
 
+            return `<div data - id="${interview.id}" class="alert alert-light d-flex justify-content-between" >
+                ${interview.title}
+                 <div>
+                    <!--
+                    <button class="btn btn-danger btnWithdrawInvite btn-withdraw-invitation" data-id="${interview.id}">
+                        Withdraw
+                    </button>
+                    -->
+                    <a href="${withdrawUrl}" class="btn btn-primary" data-id="${interview.id}">
+                        Edit
+                    </a>
+                </div>
+            </div>`;
+        }
     function handleShowModalListInvite(){
         let userId = $(this).data("id");
         let positionId = curruntPosition.id
@@ -982,7 +1000,32 @@ function tem(invite) {
 
     function handleShowModalListJobOffer(){
         xmodal.show("listJobOfferModal")
+        let userId = $(this).data("id");
+        let positionId = curruntPosition.id
+        currentUserId = userId
 
+       let url = "{{ route('interviews.getJobOffersByPositionIdAndReceiverId', ['receiverId' => '__RECEIVER_ID__','positionId' => '__POSITION_ID__'])}}";
+        url = url
+            .replace("__RECEIVER_ID__", currentUserId)
+            .replace("__POSITION_ID__", positionId);
+
+        return $.ajax({
+            url,
+            type: "GET",
+            success: response => {
+                let listOfInvite = response.data
+                let html = ""
+                listOfInvite.forEach(invite => {
+                    console.log(invite);
+                    html += temmm(invite)
+                });
+                $(".listOffersContainer").html(html)
+                xmodal.show("listJobOfferModal")
+            },
+            error: xhr => {
+                console.log(xhr);
+            }
+        });
     }
 
     function handleWithdrawInvitation() {
@@ -1018,7 +1061,160 @@ function tem(invite) {
             }
         });
     }
+    function handleAddJobOffer() {
 
+        const $form = $("#jobOfferForm");
+
+        const salary_amount =
+            $form.find("#salary_amount").val();
+
+        const salary_period =
+            $form.find("#salary_period").val();
+
+        const start_date =
+            $form.find("#start_date").val();
+
+        const end_date =
+            $form.find("#end_date").val();
+
+        const terms_and_conditions =
+            $form.find("#terms_and_conditions").val();
+
+        const benefits =
+            $form.find("#benefits").val();
+
+        const expires_at =
+            $form.find("#expires_at").val();
+
+        const position_id =
+            $form.find("#jobOfferPositionId").val();
+
+        const receiver_profile_id =
+            $form.find("#job-offer-candicate-id").val();
+
+        const title =
+            $form.find("#job-offer-title").val();
+
+        if (!salary_amount || Number(salary_amount) <= 0) {
+            xalert.fire(
+                "Warning",
+                "Please enter a valid salary amount.",
+                "warning"
+            );
+            return;
+        }
+
+        if (!salary_period) {
+            xalert.fire(
+                "Warning",
+                "Please select salary period.",
+                "warning"
+            );
+            return;
+        }
+
+        if (!start_date) {
+            xalert.fire(
+                "Warning",
+                "Please select start date.",
+                "warning"
+            );
+            return;
+        }
+
+        if (!end_date) {
+            xalert.fire(
+                "Warning",
+                "Please select end date.",
+                "warning"
+            );
+            return;
+        }
+
+        if (end_date < start_date) {
+            xalert.fire(
+                "Warning",
+                "End date cannot be before start date.",
+                "warning"
+            );
+            return;
+        }
+
+        if (!expires_at) {
+            xalert.fire(
+                "Warning",
+                "Please enter expiration date.",
+                "warning"
+            );
+            return;
+        }
+
+        if (!position_id) {
+            xalert.fire(
+                "Warning",
+                "Position ID not found.",
+                "warning"
+            );
+            return;
+        }
+
+        if (!receiver_profile_id) {
+            xalert.fire(
+                "Warning",
+                "Receiver profile ID not found.",
+                "warning"
+            );
+            return;
+        }
+
+        storeJobOffer($form);
+    }
+
+    function showJobOfferModal() {
+        const profileId = $(this).data("id");
+
+        const candidate = candidateList.find(
+            user => user.id == profileId
+        );
+
+        if (!candidate) {
+            console.error("Candidate not found:", profileId);
+            return;
+        }
+
+        curruntCandidate = candidate;
+        currentUserId = profileId;
+
+        const $form = $("#jobOfferForm");
+
+        // Reset form
+        $form[0].reset();
+
+        // Candidate
+        $(".offer-candidate-name").text(
+            `Candidate: ${candidate.name}`
+        );
+
+        $("#job-offer-candicate-id").val(candidate.id);
+
+        // Position
+        $("#jobOfferPositionName").text(
+            `Position: ${curruntPosition.position_title}`
+        );
+
+        $("#jobOfferPositionId").val(
+            curruntPosition.id
+        );
+
+        // Mode
+        $("#btnAddJobOffer").removeClass("d-none");
+        $("#btnUpdateJobOffer").addClass("d-none");
+
+        $("#btnCencelAddJobOffer").removeClass("d-none");
+        $("#btnCencelupdateJobOffer").addClass("d-none");
+
+        xmodal.show("jobOfferModal");
+    }
     $(document).on("click", ".btn-withdraw-invitation", handleWithdrawInvitation)
 
     $(document).on("click", ".btnShowModalAddShortlist", showModalAddShortlist);
@@ -1026,7 +1222,49 @@ function tem(invite) {
     $(document).on("click", ".btnShowModalAddInvite", showModalAddInvite)
     $(document).on("click", ".btnShowModalAddInterview", showModalAddinterview);
     $(document).on("click", ".btnShowModalAddIntervieww", showModalAddintervieww);
-    $(document).on("click", "#btnAddInvitation", handleAddInvitation)
+    $(document).on("click", ".btnShowModalAddOffer", function () {
+
+        const profileId = currentUserId;
+
+        console.log("currentUserId:", profileId);
+
+        const candidate = candidateList.find(
+            user => user.id == profileId
+        );
+
+        if (!candidate) {
+            console.error("Candidate not found:", profileId);
+            return;
+        }
+
+        curruntCandidate = candidate;
+
+        $(".offer-candidate-name").text(
+            `Candidate: ${candidate.name}`
+        );
+
+        $("#job-offer-candicate-id").val(candidate.id);
+
+        $("#jobOfferPositionName").text(
+            `Position: ${curruntPosition.position_title}`
+        );
+
+        $("#jobOfferPositionId").val(curruntPosition.id);
+
+        $("#start_date").val("");
+        $("#end_date").val("");
+        $("#salary_amount").val("");
+        $("#salary_period").val("Hourly");
+        $("#expires_at").val("");
+        $("#benefits").val("");
+        $("#terms_and_conditions").val("");
+
+        $("#btnAddJobOffer").removeClass("d-none");
+        $("#btnUpdateJobOffer").addClass("d-none");
+
+        xmodal.hide("listJobOfferModal");
+        xmodal.show("jobOfferModal");
+    }); $(document).on("click", "#btnAddInvitation", handleAddInvitation)
     $(document).on("submit", "#inviteForm", handleInviteForm);
     $(document).on("click", ".shortlist-item", handleClickShortlist)
     $(document).on("click", ".toggleFilter", toggle)
