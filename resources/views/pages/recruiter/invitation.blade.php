@@ -182,6 +182,29 @@
         }
     }
 
+        async function handleSelectedInvitationn(id) {
+
+                try {
+                    let inv = await xApiInvite.getInvitationById("{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}", id);
+                    if (!inv) return
+
+                    currentInv = inv.data
+                    console.log(currentInv);
+
+                    currentInviteEducatios = await xApiEducation.getEducationById("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}", currentInv.receiver.id)
+                    if (!currentInviteEducatios) return
+
+                    currentInviteEducatios = currentInviteEducatios.data
+                    let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentInv.receiver.profile_image
+
+                    $("#shortlistContent").html(xinvitation.recruiter.mainContent(inv.data, imageUrl, currentInviteEducatios))
+
+                } catch (xhr) {
+                    console.error(xhr);
+                }
+            }
+
+
     async function getInvitationsByStatusAndSenderId(status) {
 
         try {
@@ -256,6 +279,7 @@
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Withdraw it!"
+
         }).then( async (result) => {
 
             if (!result.isConfirmed) return;
@@ -354,7 +378,25 @@
     $(document).on("click", ".toggleFilter", function () {
         document.body.classList.toggle('filter-open');
     })
-    getInvitationsByStatusAndSenderId("Pending")
+
+    $(document).ready(function () {
+
+        const pathParts = window.location.pathname.split('/');
+        const id = pathParts[pathParts.length - 1];
+
+        if (!id) {
+
+            getInvitationsByStatusAndSenderId("Pending");
+
+        } else {
+
+            handleSelectedInvitationn(id);
+
+        }
+
+    });
+
+
 
 </script>
 @endsection

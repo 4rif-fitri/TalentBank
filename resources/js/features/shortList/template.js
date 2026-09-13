@@ -162,14 +162,14 @@ export function detail(data) {
                                 </li>
 
                                 <!-- Set Invite -->
-                                <li class="${status === "Added" ? "" : "d-none"} list-item-add-invite">
+                                <li class="${status === "Added" || status === "Invited" ? "" : "d-none"} list-item-add-invite">
                                     <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalListInvite">
                                         List Invite
                                     </button>
                                 </li>
 
                                 <!-- Set Interview -->
-                                <li class="${status === "Invited" ? "" : "d-none"} list-item-add-interview">
+                                <li class="${status === "Invited" || status === "JobOffer" ? "" : "d-none"} list-item-add-interview">
                                     <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalListInterview">
                                         List Interview
                                     </button>

@@ -307,6 +307,8 @@
             let response = await xApiPosition.getPositionById("{{ route('positions.getPositionById', ['id' => '__ID__']) }}",positionId)
             if (!response) return
             curruntPosition = response.data
+            console.log(curruntPosition);
+
             candidateList = response.data.shortlist_users
 
             xshortList.detail(response.data)
@@ -810,12 +812,58 @@
 
     function handleCloseModalPosition(){
         xmodal.hide("shortlistModal")
+
         $("#shortlistModal").find("form")[0].reset();
     }
 
+    let listInvite
+
+function tem(invite) {
+    let withdrawUrl = "{{ route('recruiter.invitation.id', ['id' => '__ID__']) }}"
+        .replace('__ID__', invite.id);
+
+    return `<div data - id="${invite.id}" class="alert alert-light d-flex justify-content-between" >
+                ${ invite.title }
+                 <div>
+                    <button class="btn btn-danger btnWithdrawInvite btn-withdraw-invitation" data-id="${invite.id}">
+                        Withdraw
+                    </button>
+                    <a href="${withdrawUrl}" class="btn btn-primary" data-id="${invite.id}">
+                        Edit
+                    </a>
+                </div>
+            </div>`;
+}
+
+
+
     function handleShowModalListInvite(){
         xmodal.show("listInvitationModal")
+        let userId = $(this).data("id");
+        let positionId = curruntPosition.id
 
+        let url = "{{ route('invitations.getInvitationsByPositionIdAndReceiverId', ['receiverId' => '__RECEIVER_ID__','positionId' => '__POSITION_ID__'])}}";
+        url = url
+            .replace("__RECEIVER_ID__", userId)
+            .replace("__POSITION_ID__", positionId);
+
+        return $.ajax({
+            url,
+            type: "GET",
+            success: response => {
+                let listOfInvite = response.data
+                let html = ""
+                listOfInvite.forEach(invite => {
+                    console.log(invite);
+                    html += tem(invite)
+                });
+                $(".listItemsContainer").html(html)
+
+            },
+            error: xhr => {
+                console.log(xhr);
+            }
+        });
     }
 
     function handleShowModalListInterview(){
@@ -827,6 +875,42 @@
         xmodal.show("listJobOfferModal")
 
     }
+
+    function handleWithdrawInvitation() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Withdraw it!"
+
+        }).then(async (result) => {
+
+            if (!result.isConfirmed) return;
+
+            let id = $(this).data('id');
+
+            let data = {
+                _method: "PUT",
+                _token: $('meta[name="csrf-token"]').attr("content")
+            }
+
+            try {
+                let response = await xApiInvite.withdrawInvitation("{{ route('invitations.withdrawInvitation',['id' => '__ID__' ]) }}", id, data)
+                if (!response) return
+
+                xalert.salert('Success', response.message, 'success');
+                xmodal.hide("listInvitationModal")
+
+            } catch (error) {
+                xalert.error('Error', error.responseJSON.message);
+            }
+        });
+    }
+
+    $(document).on("click", ".btn-withdraw-invitation", handleWithdrawInvitation)
 
     $(document).on("click", ".btnShowModalAddShortlist", showModalAddShortlist);
     $(document).on("click", ".showModalUpdateShortlist", showModalUpdateShortlist);
@@ -840,12 +924,16 @@
     $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
     $(document).on("click", ".btnShowModalAddJobOffer", showJobOfferModal)
     $(document).on("click", "#btnAddJobOffer", handleAddJobOffer)
+
     $(document).on("click", ".btnShowModalUpdateShortlist", handleEditPosition)
+
     $(document).on("click", "#btnCloseModalPosition", handleCloseModalPosition)
 
     $(document).on("click", ".btnShowModalListInvite", handleShowModalListInvite)
     $(document).on("click", ".btnShowModalListInterview", handleShowModalListInterview)
     $(document).on("click", ".btnShowModalListJobOffer", handleShowModalListJobOffer)
+
+
 
     $(document).ready(loadData);
     $(document).on("change", "input[name='interview_mode']", function () {
