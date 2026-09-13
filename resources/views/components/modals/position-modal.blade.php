@@ -86,7 +86,7 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button class="btn btn-secondary" id="btnCloseModalPosition" data-bs-dismiss="modal">
                         Cancel
                     </button>
 

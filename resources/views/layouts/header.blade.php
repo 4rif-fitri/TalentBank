@@ -6,8 +6,6 @@
 
 <script>
     window.appConfig = {
-        role: @json(session('roles')[0]),
-        userId: @json(session('user_profile_id')),
         baseURL: "{{ url('/') }}",
         proficiencies: @json(\App\Constants\AppConstants:: PROFICIENCY_LEVELS),
         semesterResultsFileUrl: "{{ asset('storage/' . env('SEMESTER_RESULTS_FILE_URL')) }}",

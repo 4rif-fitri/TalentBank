@@ -133,7 +133,10 @@
 <x-modals.position-modal />
 <x-modals.invitation-modal />
 <x-modals.interview-modal />
-<x-modals.job-offer-modal />
+
+<x-modals.list-interview-modal />
+<x-modals.list-invitation-modal />
+<x-modals.list-jobOffer-modal />
 
 @endsection
 
@@ -141,25 +144,6 @@
 <script type="module">
 
     let myData, positionId, curruntPosition, candidateList, curruntCandidate
-
-    function toggleFilter() {
-        document.body.classList.toggle('filter-open');
-    }
-
-    // < ---- GET ------ >
-
-    async function getProfileDataByProfileId() {
-        let url =
-        url = url.replace("__ID__", );
-        let response = await $.ajax({
-            url: url,
-            method: 'GET'
-        });
-        myData = response.data;
-        return response.data;
-    }
-
-    // < ---- GET ------ >
 
     // < ---- STORE ------ >
 
@@ -180,28 +164,40 @@
             let response = await xApiPosition.store("{{ route('positions.store') }}", data)
             if(!response) return
 
-            console.log(response);
+            xalert.success("Success", response.message)
+            handleCloseModalPosition()
+
+            loadData()
 
         } catch (error) {
             console.error(error);
         }
     }
 
-    async function storeInvitations(candidate_id, position_id, expires_at, invitation_message) {
+    async function storeInvitations(candidate_id, position_id, expires_at, invitation_message, title) {
 
         let data = {
             _token: $('meta[name="csrf-token"]').attr("content"),
             receiver_profile_id: candidate_id,
             invitation_message: invitation_message,
             expires_at: expires_at,
-            position_id: position_id
+            position_id: position_id,
+            title
         }
 
         try {
             let response = await xApiInvite.store("{{ route('invitations.store') }}", data)
             if(!response) return
 
-            console.log(response);
+            let $row = $("#tableDetail").find(`tr[data-id=${response.data.receiver.id}]`);
+            $row.find(".text-status").text("Invited")
+            $row.find(".list-item-add-invite").hide()
+            $row.find(".list-item-cancel-invite").hide()
+
+            xalert.success("Success", response.message)
+            xmodal.hide("invitationModal")
+            $("#invitationModal").find("form")[0].reset()
+            console.log(response.data);
 
         } catch (error) {
             console.error(error);
@@ -223,7 +219,6 @@
         try {
             let response = await xApiInterview.store("{{ route('interviews.store') }}",data)
             if(!response) return
-            console.log(response);
 
         } catch (error) {
             console.error(error);
@@ -249,7 +244,6 @@
             let response = await xApiJobOffer.store("{{ route('jobOffers.store') }}", data)
             if(!response) return
 
-            console.log(response);
             xalert.fire("Success", response.message, "success")
             xmodal.hide("jobOfferModal")
 
@@ -279,7 +273,17 @@
         try {
             let response = await xApiPosition.update("{{ route('positions.update', ['id' => '__ID__']) }}", id, data)
             if(!response) return
-            console.log(response);
+            console.log("response", response);
+            $(".ui_position_title").text(response.data.position_title)
+            $(".ui_description").text(response.data.description)
+            $(".ui_work_location").text(response.data.work_location)
+            $(".ui_employment_type").text(response.data.employment_type)
+            $(".ui_department").text(response.data.department)
+            $(".ui_vacancies").text(response.data.vacancies)
+
+            xalert.success("Success", response.message)
+
+            handleCloseModalPosition()
 
         } catch (error) {
             console.error(error);
@@ -302,7 +306,6 @@
 
             let response = await xApiPosition.getPositionById("{{ route('positions.getPositionById', ['id' => '__ID__']) }}",positionId)
             if (!response) return
-            console.log(response.data);
             curruntPosition = response.data
             candidateList = response.data.shortlist_users
 
@@ -327,27 +330,27 @@
         let description = form.find("#description").val()
 
         if (position_title == "") {
-            salert.salert("Validation Error", "Please enter a position title", "warning");
+            xalert.fire("Validation Error", "Please enter a position title", "warning");
             return
         }
 
         if (employment_type == "") {
-            salert.salert("Validation Error", "Please select employment type", "warning");
+            xalert.fire("Validation Error", "Please select employment type", "warning");
             return
         }
 
         if (vacancies == "") {
-            salert.salert("Validation Error", "Please enter a vacancies", "warning");
+            xalert.fire("Validation Error", "Please enter a vacancies", "warning");
             return
         }
 
         if (department == "") {
-            salert.salert("Validation Error", "Please enter a department", "warning");
+            xalert.fire("Validation Error", "Please enter a department", "warning");
             return
         }
 
         if (work_location == "") {
-            salert.salert("Validation Error", "Please enter a work location", "warning");
+            xalert.fire("Validation Error", "Please enter a work location", "warning");
             return
         }
 
@@ -357,8 +360,7 @@
 
             if (!response) return
 
-            console.log(response);
-            salert.salert('Success', response.message, 'success');
+            xalert.fire('Success', response.message, 'success');
             form[0].reset();
             bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).hide();
 
@@ -366,7 +368,7 @@
 
         } catch (xhr) {
             console.error(xhr);
-            salert.salert("Error", xhr, "error")
+            xalert.fire("Error", xhr, "error")
         }
 
     }
@@ -385,32 +387,32 @@
         let description = form.find("#description").val()
 
         if (position_id == "") {
-            salert.salert("Validation Error", "position id is NULL", "warning");
+            xalert.fire("Validation Error", "Position id is NULL", "warning");
             return
         }
 
         if (position_title == "") {
-            salert.salert("Validation Error", "Please enter a position title", "warning");
+            xalert.fire("Validation Error", "Please enter a position title", "warning");
             return
         }
 
         if (employment_type == "") {
-            salert.salert("Validation Error", "Please select employment type", "warning");
+            xalert.fire("Validation Error", "Please select employment type", "warning");
             return
         }
 
         if (vacancies == "") {
-            salert.salert("Validation Error", "Please enter a vacancies", "warning");
+            xalert.fire("Validation Error", "Please enter a vacancies", "warning");
             return
         }
 
         if (department == "") {
-            salert.salert("Validation Error", "Please enter a department", "warning");
+            xalert.fire("Validation Error", "Please enter a department", "warning");
             return
         }
 
         if (work_location == "") {
-            salert.salert("Validation Error", "Please enter a work location", "warning");
+            xalert.fire("Validation Error", "Please enter a work location", "warning");
             return
         }
 
@@ -419,8 +421,7 @@
             let response = await updatePositions(parseInt(position_id), position_title, employment_type, vacancies, department, work_location, description)
             if (!response) return
 
-            console.log(response);
-            salert.salert('Success', response.message, 'success');
+            xalert.fire('Success', response.message, 'success');
             form[0].reset();
             bootstrap.Modal .getOrCreateInstance($("#shortlistModal")).hide();
 
@@ -430,55 +431,62 @@
 
         } catch (xhr) {
             console.error(xhr);
-            salert.salert("Error", xhr, "error")
+            xalert.fire("Error", xhr, "error")
         }
     }
 
     async function handleAddInvitation(e) {
         e.preventDefault()
+
         let today = new Date().toISOString().split('T')[0];
         let form = $(this).closest("form");
 
         let candidate_id = form.find("#invite_candidate_id").val()
         let position_id = form.find("#invite_position_id").val()
         let expires_at = form.find("#expires_at").val()
+        let title = form.find("#invitation_title").val()
         let invitation_message = form.find("#invitation_message").val()
 
+        if (title == "") {
+            xalert.fire("Validation Error", "Title id is NULL", "warning");
+            return
+        }
+
         if (candidate_id == "") {
-            salert.salert("Validation Error", "Candidte id is NULL", "warning");
+            xalert.fire("Validation Error", "Candidte id is NULL", "warning");
             return
         }
 
         if (position_id == "") {
-            salert.salert("Validation Error", "Position id is NULL", "warning");
+            xalert.fire("Validation Error", "Position id is NULL", "warning");
             return
         }
 
         if (expires_at == "") {
-            salert.salert("Validation Error", "Please select employment type", "warning");
+            xalert.fire("Validation Error", "Please select expires date ", "warning");
             return
         }
 
         if (expires_at < today) {
-            salert.salert("Validation Error", "Expiration date cannot be in the past", "warning");
+            xalert.fire("Validation Error", "Expiration date cannot be in the past", "warning");
             return;
         }
 
         if (invitation_message == "") {
-            salert.salert("Validation Error", "Please enter a vacancies", "warning");
+            xalert.fire("Validation Error", "Please enter a vacancies", "warning");
             return
         }
 
         try {
-            let response = await storeInvitations(candidate_id, position_id, expires_at, invitation_message)
+            let response = await storeInvitations(candidate_id, position_id, expires_at, invitation_message,title)
             if (!response) return
 
-            salert.salert('Success', response.message, 'success');
+            xalert.fire('Success', response.message, 'success');
 
 
         } catch (xhr) {
             console.error(xhr);
-            salert.salert("Error", xhr.responseJSON.message, "error")
+            xalert.fire("Error", xhr.responseJSON.message, "error")
         }
     }
 
@@ -506,6 +514,7 @@
         let data = {
             position_id: curruntPosition.id,
             interviewee_profile_id: curruntCandidate.id,
+            title: $("#invitation_title").val(),
             scheduled_at: `${interviewDate} ${startTime}`,
             interview_mode: interviewMode,
             location: $("#location").val(),
@@ -515,7 +524,7 @@
         };
 
         if (!data.interview_mode) {
-            salert.salert("Validation Error", "Please select an interview mode", "warning");
+            xalert.fire("Validation Error", "Please select an interview mode", "warning");
             return;
         }
 
@@ -524,7 +533,7 @@
             if(!response) return
 
             bootstrap.Modal .getInstance($("#interviewModal")).hide();
-            salert.salert("Success", response.message, "success");
+            xalert.fire("Success", response.message, "success");
             // Reload table/datatable jika perlu:
             // table.ajax.reload();
 
@@ -559,7 +568,6 @@
 
         let profileId = $(this).attr("data-id")
         let candidte = candidateList.find(user => user.id == profileId)
-        console.log(candidte);
         $("#invite_candidate_id").val(profileId)
         $("#invite_candidate").val(candidte.name)
         $("#invite_position_title").val(curruntPosition.position_title)
@@ -597,7 +605,6 @@
 
     function handleAddInterview(){
 
-        console.log("curruntPosition",curruntPosition);
 
         let interviewMode = $('input[name="interview_mode"]:checked').val();
 
@@ -614,7 +621,6 @@
             recruiter_comment: $("#recruiter_comment").val()
         };
 
-        console.log(data);
 
         // $.ajax({
         //     url: "{{ route('interviews.store') }}",
@@ -634,7 +640,6 @@
             let response = await xApiPosition.getShortlistedPositionIds("{{ route('shortlists.getShortlistedPositionIds',['profileId' => '__profileId__','orgId' => '__orgId__' ]) }}")
             if(!response) return
 
-            console.log(response);
 
         } catch (error) {
             console.error(error);
@@ -654,7 +659,6 @@
             data,
             method: "POST",
             success: function (response) {
-                console.log(response);
 
             },
             error: function (xhr) {
@@ -677,7 +681,6 @@
             data,
             type: "POST",
             success: function (response) {
-                console.log(response);
 
             },
             error: function (xhr) {
@@ -695,6 +698,7 @@
             );
 
             let organizations = profile.data.organization_users;
+            myData = profile.data
 
             let results = await Promise.all(
                 organizations.map(organization => {
@@ -709,14 +713,11 @@
                 })
             );
 
-            console.log("RESULTS:", results);
-
             xshortList.sideBar(results);
 
         } catch (error) {
 
             console.error("Ralat semasa loadData:", error);
-
         }
     }
 
@@ -791,13 +792,42 @@
         storeJobOffer($form)
     }
 
-    $(document).ready(function(){
-        loadData()
-    });
+    async function handleEditPosition (){
+        console.log(curruntPosition);
 
-    $(document).on("change", "input[name='interview_mode']", function () {
-        toggleInterviewMode($(this).val());
-    });
+        xmodal.show("shortlistModal")
+        let $form = $("#shortlistModal")
+        $form.find("#position_id").val(curruntPosition.id)
+        $form.find("#position_title").val(curruntPosition.position_title)
+        $form.find("#employment_type").val(curruntPosition.employment_type)
+        $form.find("#vacancies").val(curruntPosition.vacancies)
+        $form.find("#department").val(curruntPosition.department)
+        $form.find("#work_location").val(curruntPosition.work_location)
+        $form.find("#description").val(curruntPosition.description)
+        $("#btnAddShortlist").hide()
+        $("#btnUpdateShortlist").show()
+    }
+
+    function handleCloseModalPosition(){
+        xmodal.hide("shortlistModal")
+        $("#shortlistModal").find("form")[0].reset();
+    }
+
+    function handleShowModalListInvite(){
+        xmodal.show("listInvitationModal")
+
+    }
+
+    function handleShowModalListInterview(){
+        xmodal.show("listInterviewModal")
+
+    }
+
+    function handleShowModalListJobOffer(){
+        xmodal.show("listJobOfferModal")
+
+    }
+
     $(document).on("click", ".btnShowModalAddShortlist", showModalAddShortlist);
     $(document).on("click", ".showModalUpdateShortlist", showModalUpdateShortlist);
     $(document).on("click", ".btnShowModalAddInvite", showModalAddInvite)
@@ -810,6 +840,77 @@
     $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
     $(document).on("click", ".btnShowModalAddJobOffer", showJobOfferModal)
     $(document).on("click", "#btnAddJobOffer", handleAddJobOffer)
+    $(document).on("click", ".btnShowModalUpdateShortlist", handleEditPosition)
+    $(document).on("click", "#btnCloseModalPosition", handleCloseModalPosition)
+
+    $(document).on("click", ".btnShowModalListInvite", handleShowModalListInvite)
+    $(document).on("click", ".btnShowModalListInterview", handleShowModalListInterview)
+    $(document).on("click", ".btnShowModalListJobOffer", handleShowModalListJobOffer)
+
+    $(document).ready(loadData);
+    $(document).on("change", "input[name='interview_mode']", function () {
+        toggleInterviewMode($(this).val());
+    });
+
+    function getInvitationsByPositionIdAndReceiverId(receiverId, positionId) {
+        let url = "{{ route('invitations.getInvitationsByPositionIdAndReceiverId', ['receiverId' => '__RECEIVER_ID__','positionId' => '__POSITION_ID__'])}}";
+        url = url
+            .replace("__RECEIVER_ID__", receiverId)
+            .replace("__POSITION_ID__", positionId);
+
+        return $.ajax({
+            url,
+            type: "GET",
+            success: response => {
+                console.log(response);
+            },
+            error: xhr => {
+                console.log(xhr);
+            }
+        });
+    }
+
+    function getInterviewsByPositionIdAndIntervieweeId(intervieweeId, positionId) {
+        let url = "{{ route('interviews.getInterviewsByPositionIdAndIntervieweeId', ['intervieweeId' => '__INTERVIEWEE_ID__','positionId' => '__POSITION_ID__'])}}";
+
+        url = url
+            .replace("__INTERVIEWEE_ID__", intervieweeId)
+            .replace("__POSITION_ID__", positionId);
+
+        $.ajax({
+            url,
+            type: "GET",
+            success: response => {
+                console.log(response);
+            },
+            error: xhr => {
+                console.log(xhr);
+            }
+        });
+
+    }
+
+    function getJobOffersByPositionIdAndReceiverId(receiverId, positionId) {
+        let url = "{{ route('interviews.getJobOffersByPositionIdAndReceiverId', ['receiverId' => '__RECEIVER_ID__','positionId' => '__POSITION_ID__'])}}";
+        url = url
+            .replace("__RECEIVER_ID__", receiverId)
+            .replace("__POSITION_ID__", positionId);
+
+        return $.ajax({
+            url,
+            type: "GET",
+            success: response => {
+                console.log(response);
+            },
+            error: xhr => {
+                console.log(xhr);
+            }
+        });
+    }
+
+    getInvitationsByPositionIdAndReceiverId(2, 11);
+    getInvitationsByPositionIdAndReceiverId(2, 11);
+    getJobOffersByPositionIdAndReceiverId(2, 11);
 
 </script>
 @endsection
