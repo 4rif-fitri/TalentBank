@@ -37,9 +37,11 @@ class ProfileService
      * Get profile data of profile by profile ID.
      * 
      * @param   int $userProfileId
+     * @param   array $currentUserRoles
+     * @param   int $currentUserProfileId
      * @return  UserProfile
      */
-    public function getProfileDataByProfileId(int $userProfileId): UserProfile
+    public function getProfileDataByProfileId(int $userProfileId, array $currentUserRoles, int $currentUserProfileId): UserProfile
     {
         $profile = UserProfile::with([
             'organizationUsers' => function ($query) {
@@ -54,7 +56,20 @@ class ProfileService
             'userLanguages.language',
             'skills',
         ])
-            ->find($userProfileId);
+            ->where('id', $userProfileId)
+            ->where(function ($query) use ($currentUserProfileId, $currentUserRoles, $userProfileId) {
+                if ($userProfileId === $currentUserProfileId) {
+                    return $query;
+                }
+
+                // filter visibility
+                $query->where('profile_visibility', AppConstants::PROFILE_VISIBILITY['PUBLIC']);
+
+                if (array_intersect($currentUserRoles, self::ORG_ADMIN_ROLES)) {
+                    $query->orWhere('profile_visibility', AppConstants::PROFILE_VISIBILITY['RECRUITER']);
+                }
+            })
+            ->first();
 
         if (!isset($profile)) {
             throw new Exception('Profile not found with given ID.', Response::HTTP_NOT_FOUND);
