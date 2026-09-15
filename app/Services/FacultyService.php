@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\AppConstants;
 use App\Helpers\CheckOrgRoleHelper;
 use App\Models\Faculty;
 use App\Models\Organization;
@@ -11,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class FacultyService
 {
-    private const ORG_ADMIN_ROLES = ['Organization Admin'];
+    private const ORG_ADMIN_ROLES = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN']];
 
     /**
      * Get all faculties by organization ID.

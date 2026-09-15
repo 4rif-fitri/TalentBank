@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 
 class InvitationService
 {
-    private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
+    private const ADMINISTRATIVE_ROLES = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN'], AppConstants::USER_ROLES['RECRUITER']];
 
     // used to prevent updating invitation that are already accepted, rejected or withdrawn
     private const LOCKED_INVITATION_STATUSES = [

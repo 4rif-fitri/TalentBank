@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Constants\AppConstants;
 use App\Models\Education;
 use App\Models\Language;
 use App\Models\Like;
@@ -70,10 +71,13 @@ class ProfileControllerTest extends TestCase
         $this->userProfile = UserProfile::factory()->create([
             'user_id' => $this->user->id,
         ]);
-        $this->actingAs($this->user)->withSession(['user_profile_id' => $this->userProfile->id]);
+        $this->actingAs($this->user)->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
     }
 
-    private function createStudentInOrg(?array $attributes = null): UserProfile
+    private function createStudentInOrg(array $attributes = []): UserProfile
     {
         $organization = Organization::factory()->create();
         $studentRoleId = Role::where('name', 'Student')->first()->id;
@@ -365,7 +369,7 @@ class ProfileControllerTest extends TestCase
             'organization_id' => $organization->id,
         ]);
 
-        $otherStudentProfile = UserProfile::factory()->create();
+        $otherStudentProfile = UserProfile::factory()->create(['profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']]);
         OrganizationUser::factory()->create([
             'user_profile_id' => $otherStudentProfile->id,
             'role_id' => $studentRoleId,
@@ -394,6 +398,100 @@ class ProfileControllerTest extends TestCase
         $returnedIds = collect($response->json('data.data'))->pluck('id');
 
         $this->assertFalse($returnedIds->contains($this->userProfile->id));
+    }
+
+    public function test_user_can_get_non_private_profiles_with_recruiter_role(): void
+    {
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['RECRUITER']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PRIVATE']
+        ]);
+
+        $response = $this->getJson(route('profile.getAllStudentUserProfiles'));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => [
+                            ...self::LIST_PROFILE_RETURN_COLUMNS,
+                            'skills',
+                            'programmes' => [
+                                '*' => [
+                                    'organization',
+                                    'qualification'
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
+            ]);
+
+        $payload = $response->json('data');
+        $this->assertEquals(2, count($payload['data']));
+    }
+
+    public function test_user_can_get_public_profiles_only_with_student_role(): void
+    {
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Student']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['RECRUITER']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PRIVATE']
+        ]);
+
+        $response = $this->getJson(route('profile.getAllStudentUserProfiles'));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => [
+                            ...self::LIST_PROFILE_RETURN_COLUMNS,
+                            'skills',
+                            'programmes' => [
+                                '*' => [
+                                    'organization',
+                                    'qualification'
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
+            ]);
+
+        $payload = $response->json('data');
+        $this->assertEquals(1, count($payload['data']));
     }
 
     public function test_user_can_get_liked_user_profiles(): void

@@ -46,9 +46,10 @@ class ProfileController extends Controller
         ];
 
         $userProfileId = session('user_profile_id');
+        $roles = session('roles');
         $returnLiked = $request->has('return_liked') ? filter_var($request->query('return_liked'), FILTER_VALIDATE_BOOL) : false;
 
-        $profiles = $this->profileService->getAllStudentUserProfiles($searchParams, $userProfileId, $returnLiked);
+        $profiles = $this->profileService->getAllStudentUserProfiles($searchParams, $userProfileId, $returnLiked, $roles);
 
         return ApiResponse::success('Success.', [
             'data' => $profiles->items(),
@@ -59,21 +60,6 @@ class ProfileController extends Controller
             'has_more_pages' => $profiles->hasMorePages(),
         ])->toJsonResponse();
     }
-
-    /**
-     * Handles request to get user profiles liked by current user
-     * 
-     * @return JsonResponse
-     */
-    // public function getLikedUserProfiles(): JsonResponse
-    // {
-    //     $userProfileId = session('user_profile_id');
-    //     $likedProfiles = $this->profileService->getLikedUserProfiles($userProfileId);
-    //     return ApiResponse::success('Success.', [
-    //         'data' => $likedProfiles->items(),
-    //         'has_more_pages' => $likedProfiles->hasMorePages(),
-    //     ])->toJsonResponse();
-    // }
 
     /**
      * Handles request to update profile data for current logged in user
