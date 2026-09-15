@@ -18,7 +18,8 @@ class SocialMediaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->word(),
+            'icon_class_name' => $this->faker->word(),
         ];
     }
 }
