@@ -86,13 +86,13 @@ export function detail(data) {
                     </li>
                 </ul>
             </div>
-            <h1 class="fw-bolder">${data.position_title}</h1>
-            <p class="mt-1">${data.description}</p>
-            <small class="text-muted">Location: ${data.work_location}</small>
+            <h1 class="fw-bolder ui_position_title">${data.position_title}</h1>
+            <p class="mt-1 ui_description">${data.description}</p>
+            <small class="text-muted ui_work_location">Location: ${data.work_location}</small>
             <div class="d-flex mt-2 gap-2">
-                <div class="badge text-dark border">${data.employment_type}</div>
-                <div class="badge text-dark border">${data.department}</div>
-                <div class="badge text-dark border">${data.vacancies} person</div>
+                <div class="badge text-dark border ui_employment_type">${data.employment_type}</div>
+                <div class="badge text-dark border ui_department">${data.department}</div>
+                <div class="badge text-dark border ui_vacancies">${data.vacancies} person</div>
             </div>
             <hr>
 
@@ -115,9 +115,11 @@ export function detail(data) {
     if (!data.shortlist_users) return
 
     data.shortlist_users.forEach(user => {
+        console.log({ user });
+
         let interviewsCount = user.interviews_count ?? 0;
         let invitationsCount = user.invitations_count ?? 0;
-        let jobOfferCount = 0;
+        let jobOfferCount = user.job_offers_count ?? 0;
         let status = getStatus(interviewsCount, invitationsCount, jobOfferCount);
 
         $("#tableDetail").append(
@@ -136,7 +138,7 @@ export function detail(data) {
                     </td>
 
                     <td>
-                        <div class="badge bg-primary text-white">
+                        <div class="badge bg-primary text-white text-status">
                             ${status}
                         </div>
                     </td>
@@ -154,56 +156,51 @@ export function detail(data) {
 
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
 
-                                <!-- View Profile -->
-                                <li>
-                                    <a target="_blank" href="${window.appConfig.baseURL}/profile/student/${user.id}" class="dropdown-item">
-                                        View Profile
-                                    </a>
-                                </li>
+    <!-- View Profile -->
+    <li class="list-item-view-profile">
+        <a
+            target="_blank"
+            href="${window.appConfig.baseURL}/profile/student/${user.id}"
+            class="dropdown-item"
+        >
+            View Profile
+        </a>
+    </li>
 
-                                <!-- Set Invite -->
-                                <li class="${status === "Added" ? "" : "d-none"}">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalAddInvite">
-                                        Invite
-                                    </button>
-                                </li>
+    <!-- List Invitation -->
+    <li class="list-item-add-invite">
+        <button
+            type="button"
+            data-id="${user.id}"
+            class="dropdown-item btnShowModalListInvite"
+        >
+            List Invite
+        </button>
+    </li>
 
-                                <!-- Cancel Invite -->
-                                <li class="${status === "Invited" ? "" : "d-none"}">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item text-danger btnCancelInvite">
-                                        Withdraw Invite
-                                    </button>
-                                </li>
+    <!-- List Interview -->
+    <li class="${user.invitations_count > 0 ? "" : "d-none"} list-item-add-interview">
+        <button
+            type="button"
+            data-id="${user.id}"
+            class="dropdown-item btnShowModalListInterview"
+        >
+            List Interview
+        </button>
+    </li>
 
-                                <!-- Set Interview -->
-                                <li class="${status === "Invited" ? "" : "d-none"}">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalAddInterview">
-                                        Set Interview
-                                    </button>
-                                </li>
+    <!-- List Job Offer -->
+    <li class="${user.interviews_count > 0 ? "" : "d-none"} list-item-add-jobOffer">
+        <button
+            type="button"
+            data-id="${user.id}"
+            class="dropdown-item btnShowModalListJobOffer"
+        >
+            List Job Offer
+        </button>
+    </li>
 
-                                <!-- Cencel Interview -->
-                                <li class="${status === "Interview" ? "" : "d-none"}">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item text-danger btnCencelAddInterview">
-                                        Withdraw Interview
-                                    </button>
-                                </li>
-
-                                <!-- Set Job Offer -->
-                                <li class="${status === "Interview" ? "" : "d-none"}">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item btnShowModalAddJobOffer">
-                                        Create Job Offer
-                                    </button>
-                                </li>
-
-                                <!-- Cencel JobOffer -->
-                                <li class="${status === "JobOffer" ? "" : "d-none"}">
-                                    <button type="button" data-id="${user.id}" class="dropdown-item text-danger btnWithdrawJobOffer"
-                                        Withdraw Job Offer
-                                    </button>
-                                </li>
-
-                            </ul>
+</ul>
                         </div>
                     </td>
                 </tr>`

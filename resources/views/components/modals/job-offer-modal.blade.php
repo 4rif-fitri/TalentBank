@@ -2,6 +2,7 @@
 
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
+            <form id="jobOfferForm">
 
             <div class="modal-header">
                 <h5 class="modal-titlem fw-semibold" id="jobOfferModalLabel">
@@ -27,6 +28,12 @@
                     </label>
                     <input type="text" id="jobOfferPositionId" hidden>
                 </div>
+                <div class="col-md-12 mb-3">
+                    <label for="salary_amount" class="form-label">
+                        title
+                    </label>
+                    <input type="text" name="title" id="job-offer-title" class="form-control" required>
+                </div>
 
                     <div class="col-md-6 mb-3">
                         <label for="start_date" class="form-label">
@@ -41,6 +48,7 @@
                         </label>
                         <input type="date" id="end_date" class="form-control" required>
                     </div>
+
 
                     <div class="col-md-12 mb-3">
                         <label for="salary_amount" class="form-label">
@@ -93,9 +101,12 @@
             <div class="modal-footer">
                 <button type="button" id="btnCencelAddJobOffer" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" id="btnCencelupdateJobOffer" class="d-none btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" id="btnAddJobOffer" class="btn btn-primary">Save</button>
-                <button type="submit" id="btnUpdateJobOffer" class="btn btn-primary">Update</button>
+                <button type="button" id="btnAddJobOffer" class="btn btn-primary">Save</button>
+                <button type="button" id="btnUpdateJobOffer" class="btn btn-primary">Update</button>
             </div>
+
+            </form>
+
         </div>
     </div>
 </div>

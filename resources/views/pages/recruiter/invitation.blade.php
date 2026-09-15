@@ -1,90 +1,8 @@
 @extends('layouts.internship-layouts')
 
-@section('css')
-<style>
-    .shortlist-layout {
-        display: flex;
-        gap: 24px;
-        align-items: flex-start;
-    }
-
-    .shortlist-sidebar {
-        width: 420px;
-        background: #fff;
-        height: 80vh !important;
-        overflow-y: auto;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
-        flex-shrink: 0;
-        transition: transform 0.3s ease;
-    }
-
-    .shortlist-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.4);
-        display: none;
-        z-index: 1040;
-    }
-
-    @media (max-width: 1300px) {
-        .btn-toggle-filter {
-            display: block !important;
-        }
-
-        .shortlist-layout {
-            display: block;
-        }
-
-        .shortlist-sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 450px !important;
-            max-width: 85vw;
-            height: 100vh !important;
-            z-index: 1050;
-            border-radius: 0;
-            overflow-y: auto;
-            transform: translateX(-100%);
-        }
-
-        body.filter-open .shortlist-sidebar {
-            transform: translateX(0);
-        }
-
-        body.filter-open .shortlist-overlay {
-            display: block;
-        }
-
-        body.filter-open {
-            overflow: hidden;
-        }
-    }
-
-    .list-item:hover {
-        border: 1px solid #6d7eca !important;
-        color: #6d7eca;
-
-        small {
-            color: #6d7eca !important;
-        }
-
-    }
-
-    .list-item.active {
-        border: 1px solid #5267c4 !important;
-        color: #5267c4;
-
-        small {
-            color: #5267c4 !important;
-        }
-    }
-</style>
-@endsection
-
 @section('content')
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/recruiter.css') }}">
+
 <div class="content p-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
@@ -182,6 +100,29 @@
         }
     }
 
+        async function handleSelectedInvitationn(id) {
+
+                try {
+                    let inv = await xApiInvite.getInvitationById("{{ route('invitations.getInvitationById', ['id' => '__ID__' ]) }}", id);
+                    if (!inv) return
+
+                    currentInv = inv.data
+                    console.log(currentInv);
+
+                    currentInviteEducatios = await xApiEducation.getEducationById("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}", currentInv.receiver.id)
+                    if (!currentInviteEducatios) return
+
+                    currentInviteEducatios = currentInviteEducatios.data
+                    let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentInv.receiver.profile_image
+
+                    $("#shortlistContent").html(xinvitation.recruiter.mainContent(inv.data, imageUrl, currentInviteEducatios))
+
+                } catch (xhr) {
+                    console.error(xhr);
+                }
+            }
+
+
     async function getInvitationsByStatusAndSenderId(status) {
 
         try {
@@ -256,6 +197,7 @@
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, Withdraw it!"
+
         }).then( async (result) => {
 
             if (!result.isConfirmed) return;
@@ -354,7 +296,23 @@
     $(document).on("click", ".toggleFilter", function () {
         document.body.classList.toggle('filter-open');
     })
-    getInvitationsByStatusAndSenderId("Pending")
+
+    $(document).ready(function () {
+
+        const pathParts = window.location.pathname.split('/');
+        const id = pathParts[pathParts.length - 1];
+
+        if (!id) {
+
+            getInvitationsByStatusAndSenderId("Pending");
+
+        } else {
+            handleSelectedInvitationn(id);
+        }
+
+    });
+
+
 
 </script>
 @endsection

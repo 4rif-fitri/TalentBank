@@ -36,13 +36,13 @@ export let student = {
                         </li>
                     </ul>
                 </div>
-                <h1 class="fw-bolder">${data.position_title}</h1>
-                <p class="mt-1">${data.description}</p>
-                <small class="text-muted">Location: ${data.work_location}</small>
+                <h1 class="fw-bolder ui_position_title">${data.position_title}</h1>
+                <p class="mt-1 ui_description">${data.description}</p>
+                <small class="text-muted ui_work_location">Location: ${data.work_location}</small>
                 <div class="d-flex mt-2 gap-2">
-                    <div class="badge text-dark border">${data.employment_type}</div>
-                    <div class="badge text-dark border">${data.department}</div>
-                    <div class="badge text-dark border">${data.vacancies} person</div>
+                    <div class="badge text-dark border ui_employment_type">${data.employment_type}</div>
+                    <div class="badge text-dark border ui_department">${data.department}</div>
+                    <div class="badge text-dark border ui_vacancies">${data.vacancies} person</div>
                 </div>
                 <hr>
 

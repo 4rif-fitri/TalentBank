@@ -18,7 +18,8 @@ export function update(url,id,data){
     url = url.replace("__ID__", id);
     return $.ajax({
         url: url,
-        method: 'GET'
+        method: 'POST',
+        data
     });
 }
 

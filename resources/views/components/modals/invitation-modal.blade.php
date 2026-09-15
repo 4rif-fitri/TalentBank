@@ -36,7 +36,13 @@
                             <input type="text" id="invite_position_title" class="form-control" readonly>
                             <input type="number" id="invite_position_id" class="form-control" hidden readonly>
                         </div>
+                        <div class="col-md-12 mb-3">
+                            <label for="invitation_title" class="form-label">
+                                Invitation Title
+                            </label>
 
+                            <input type="text" name="title" id="invitation_title" class="form-control">
+                        </div>
                         <div class="col-md-12 mb-3">
                             <label for="expires_at" class="form-label">
                                 Expires Date
