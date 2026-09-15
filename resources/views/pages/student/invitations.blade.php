@@ -1,76 +1,7 @@
 @extends('layouts.internship-layouts')
 
-@section('css')
-<style>
-    .talent-layout {
-        display: flex;
-        gap: 24px;
-        align-items: flex-start;
-    }
-
-    .filter-panel {
-        width: 350px;
-        background-color: white !important;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
-        flex-shrink: 0;
-        transition: transform 0.3s ease;
-    }
-
-    .filter-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.4);
-        display: none;
-        z-index: 1040;
-    }
-
-    .results-panel {
-        width: 400px !important;
-        padding: 1rem;
-        background-color: #fff;
-    }
-
-    @media (max-width: 768px) {
-        .results-panel {
-            padding: 0rem;
-        }
-
-        .talent-layout {
-            display: block;
-        }
-
-        .filter-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            max-width: 100vw;
-            height: 100vh;
-            z-index: 1050;
-            border-radius: 0;
-            overflow-y: auto;
-            transform: translateY(100%);
-        }
-
-        body.filter-open .filter-panel {
-            transform: translateY(0%);
-            border-radius: 14px;
-        }
-
-        body.filter-open .filter-overlay {
-            display: block;
-        }
-
-        body.filter-open {
-            overflow: hidden;
-        }
-    }
-</style>
-@endsection
-
 @section('content')
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/student.css') }}">
 
 <div class="content p-4">
 
