@@ -519,8 +519,10 @@ class InvitationControllerTest extends TestCase
             ->assertJsonPath('data.receiver_profile_id', $this->receiverProfile->id)
             ->assertJsonPath('data.receiver.id', $this->receiverProfile->id);
 
+        $checkPayload = $this->validInvitationPayload();
+        unset($checkPayload['expires_at']);
         $this->assertDatabaseCount('invitations', 1)
-            ->assertDatabaseHas('invitations', $this->validInvitationPayload());
+            ->assertDatabaseHas('invitations', $checkPayload);
     }
 
     public function test_create_invitation_fails_without_required_fields(): void

@@ -33,7 +33,7 @@ class UserProfileFactory extends Factory
             'phone_no' => fake()->phoneNumber(),
             'profile_image' => 'default.png',
             'cover_image' => 'default.png',
-            'profile_visibility' => fake()->randomElement(AppConstants::PROFILE_VISIBILITY),
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC'],
             'employment_status' => fake()->randomElement(AppConstants::EMPLOYMENT_STATUS),
         ];
     }

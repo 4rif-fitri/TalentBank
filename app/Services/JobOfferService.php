@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 
 class JobOfferService
 {
-    private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
+    private const ADMINISTRATIVE_ROLES = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN'], AppConstants::USER_ROLES['RECRUITER']];
     private const LOCKED_STATUS = [
         AppConstants::JOB_OFFER_STATUS['ACCEPTED'],
         AppConstants::JOB_OFFER_STATUS['REJECTED'],
