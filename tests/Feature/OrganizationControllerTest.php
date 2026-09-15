@@ -266,7 +266,7 @@ class OrganizationControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseEmpty('organizations');
         $this->assertDatabaseEmpty('organization_users');
@@ -282,7 +282,7 @@ class OrganizationControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertStringContainsString('industry category id', $response->json('message'));
         $this->assertDatabaseEmpty('organizations');
@@ -299,7 +299,7 @@ class OrganizationControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertStringContainsString('industry sector id', $response->json('message'));
         $this->assertDatabaseEmpty('organizations');
@@ -316,7 +316,7 @@ class OrganizationControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertStringContainsString('organization type id', $response->json('message'));
         $this->assertDatabaseEmpty('organizations');
@@ -333,7 +333,7 @@ class OrganizationControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertStringContainsString('company email', $response->json('message'));
         $this->assertDatabaseEmpty('organizations');
@@ -367,7 +367,7 @@ class OrganizationControllerTest extends TestCase
                 'status' => Response::HTTP_CONFLICT,
                 'message' => 'SSM number already taken.',
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id,
@@ -387,7 +387,7 @@ class OrganizationControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Role not found with given ID.',
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseEmpty('organizations');
         $this->assertDatabaseEmpty('organization_users');
@@ -478,7 +478,7 @@ class OrganizationControllerTest extends TestCase
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'Unauthorized access to update organization.',
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id,
@@ -520,7 +520,7 @@ class OrganizationControllerTest extends TestCase
                 'status' => Response::HTTP_CONFLICT,
                 'message' => 'SSM number already taken.',
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id,
@@ -610,7 +610,7 @@ class OrganizationControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id,
@@ -637,7 +637,7 @@ class OrganizationControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id,
@@ -664,7 +664,7 @@ class OrganizationControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Organization not found with given ID.'
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id,
@@ -690,7 +690,7 @@ class OrganizationControllerTest extends TestCase
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'Unauthorized access to upload organization logo for this organization.'
             ])
-            ->assertJsonPath('data.id', null);
+            ->assertJsonPath('data', null);
 
         $this->assertDatabaseHas('organizations', [
             'id' => $organization->id,

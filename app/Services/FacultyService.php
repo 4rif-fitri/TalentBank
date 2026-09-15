@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\CheckOrgRoleHelper;
 use App\Models\Faculty;
 use App\Models\Organization;
 use Exception;
@@ -10,6 +11,8 @@ use Illuminate\Support\Collection;
 
 class FacultyService
 {
+    private const ORG_ADMIN_ROLES = ['Organization Admin'];
+
     /**
      * Get all faculties by organization ID.
      * 
@@ -31,25 +34,38 @@ class FacultyService
      */
     public function getFacultyById(int $facultyId): Faculty
     {
-        return Faculty::with('programmes')->find($facultyId);
+        $faculty = Faculty::with('programmes')->find($facultyId);
+
+        if (!isset($faculty)) {
+            throw new Exception('Faculty not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        return $faculty;
     }
 
     /**
      * Get all faculties by organization ID.
      * 
      * @param array $data
+     * @param int $userProfileId
      * 
      * @return Faculty
      */
-    public function createFaculty(array $data): Faculty
+    public function createFaculty(array $data, int $userProfileId): Faculty
     {
         $orgId = $data['organization_id'];
 
         // check if organization exists
-        $orgExists = Organization::find($orgId)->exists();
+        $isOrgExists = Organization::where('id', $orgId)->exists();
 
-        if (!$orgExists) {
+        if (!$isOrgExists) {
             throw new Exception('Organization not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ORG_ADMIN_ROLES, $orgId);
+
+        if (!$isUserAdmin) {
+            throw new Exception('Unauthorized access to create faculty in this organization.', Response::HTTP_FORBIDDEN);
         }
 
         // create new faculty
@@ -67,15 +83,22 @@ class FacultyService
      * 
      * @param int $facultyId
      * @param array $data
+     * @param int $userProfileId
      * 
      * @return Faculty
      */
-    public function updateFaculty(int $facultyId, array $data): Faculty
+    public function updateFaculty(int $facultyId, array $data, int $userProfileId): Faculty
     {
         $faculty = Faculty::find($facultyId);
 
         if (!isset($faculty)) {
             throw new Exception('Faculty not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ORG_ADMIN_ROLES, $faculty->organization_id);
+
+        if (!$isUserAdmin) {
+            throw new Exception('Unauthorized access to update faculty in this organization.', Response::HTTP_FORBIDDEN);
         }
 
         $faculty->update([

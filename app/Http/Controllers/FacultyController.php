@@ -18,12 +18,11 @@ class FacultyController extends Controller
     /**
      * Handle request to get all faculties by organization ID.
      * 
-     * @param Request $request
      * @param int $id
      * 
      * @return JsonResponse
      */
-    public function getFacultiesByOrgId(Request $request, int $id): JsonResponse
+    public function getFacultiesByOrgId(int $id): JsonResponse
     {
         $faculties = $this->facultyService->getFacultiesByOrgId($id);
 
@@ -59,7 +58,9 @@ class FacultyController extends Controller
             'faculty_code' => ['required', 'string'],
         ]);
 
-        $faculty = $this->facultyService->createFaculty($validated);
+        $userProfileId = session('user_profile_id');
+
+        $faculty = $this->facultyService->createFaculty($validated, $userProfileId);
 
         return ApiResponse::success('Faculty created successfully.', $faculty, Response::HTTP_CREATED)->toJsonResponse();
     }
@@ -78,7 +79,9 @@ class FacultyController extends Controller
             'faculty_code' => ['required', 'string'],
         ]);
 
-        $faculty = $this->facultyService->updateFaculty($id, $validated);
+        $userProfileId = session('user_profile_id');
+
+        $faculty = $this->facultyService->updateFaculty($id, $validated, $userProfileId);
 
         return ApiResponse::success('Faculty updated successfully.', $faculty)->toJsonResponse();
     }
