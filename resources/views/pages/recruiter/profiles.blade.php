@@ -2,7 +2,7 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/student.css') }}">
-<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/select2') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/select2.css') }}">
 
 <div class="content p-4">
 
@@ -219,27 +219,35 @@
 
         async function getPosition() {
 
-            organizations = myData.organization_users;
-            organizations.forEach(organization => myOrg.push(organization));
+            organizations = myData.organization_users
 
+            organizations.forEach(organization => {
+                myOrg.push(organization)
+            })
 
-            results = await Promise.all(
+            const results = await Promise.all(
                 myOrg.map(async org => {
-                    let response = await getPositionsByOrgId(org.organization_id);
 
-                    positions.push(response.data);
+                    const response =
+                        await getPositionsByOrgId(
+                            org.organization_id
+                        )
+
+                    positions.push(response.data)
 
                     return {
                         org: org,
                         position: response.data
-                    };
+                    }
                 })
-            );
+            )
 
-            organizationWithPosition = results;
+            organizationWithPosition = results
+
+            return results
         }
 
-        async function getData() {
+         async function getData() {
             await Promise.all([
                 getProfileDataByProfileId(),
                 getAllOrganizations(),
@@ -247,8 +255,11 @@
                 getAllSkills(),
                 getAllQualifications(),
             ]);
-            setOptions()
-            getPosition()
+
+            setOptions();
+
+            await getPosition();
+            shortlistModal.init(organizationWithPosition);
         }
 
         $('.select2-skills').select2({
@@ -283,6 +294,7 @@
                     <a class="page-link">Next</a>
                 </li>`);
         }
+
         function getAndSentDataFilter() {
             let universities = $("#selectUniversiti").val() || [];
             let skills = $("#selectSkill").val() || [];
@@ -328,34 +340,6 @@
         function handleResetFilter() {
             setOptions()
             getAndSentDataFilter()
-        }
-
-        function handleAddToShortlist(e) {
-            e.preventDefault();
-
-            let profileId = $("#candidateId").val();
-            let positionId = $("#selectPosition").val();
-
-            $.ajax({
-                url: "{{ route('shortlists.store') }}",
-                type: "POST",
-                data: {
-                    user_profile_id: profileId,
-                    position_id: positionId,
-                    _token: $('meta[name="csrf-token"]').attr("content")
-                },
-                success: response => {
-                    console.log(response);
-                    xalert.alert('Success', response.message, 'success');
-                },
-                error: xhr => {
-                    console.log(xhr);
-                    xalert.alert("Error", xhr.responseJSON.message, "error")
-                },
-                complete: function () {
-                    modal.hide("shortlistModal")
-                }
-            });
         }
 
         getAndSentDataFilter()
@@ -405,51 +389,31 @@
             });
         }
 
-        function getShortlistedPositionIds(profileId, orgId) {
-            let url = "{{ route('shortlists.getShortlistedPositionIds', ['profileId' => '__profileId__', 'orgId' => '__orgId__']) }}"
-            url = url.replace("__profileId__", profileId)
-            url = url.replace("__orgId__", orgId)
-            return $.ajax({
-                url,
-                type: "GET",
-            });
-        }
-
-        async function handleAddtoShortlist() {
-            let id = $(this).data("id")
-            let name = $(this).data("name")
-
-            xmodal.show("shortlistModal")
-
-            $('#candidateId').val(id)
-            $('#candidateName').val(name)
-
-            let html = ""
-            for (const data of organizationWithPosition) {
-                let shortlistedPositionIds = await getShortlistedPositionIds(id, data.org.organization.id)
-                console.log(shortlistedPositionIds.data);
-                let xxx = shortlistedPositionIds.data
-
-                html += `<optgroup label="${data.org.organization.company_name}">`
-                data.position.forEach(pos => {
-
-                    html += `<option ${xxx.includes(pos.id) ? "disabled" : ""} value="${pos.id}">${pos.position_title} ${xxx.includes(pos.id) ? "(Added)" : ""}</option>`
-                })
-                html += `</optgroup>`
-            }
-
-            $("#selectPosition").html(html)
-        }
-
         $(document).on("click", "#btnFilter", getAndSentDataFilter);
-        $(document).on("click", ".btn-add-to-shortlist", handleAddToShortlist)
         $(document).on("click", "#btnResetFilter", handleResetFilter);
         $(document).on("click", ".page-target", handlePage)
         $(document).on("click", ".talent-like", hanldeToggleLike)
-        $(document).on("click", ".btnAddToShortlist", handleAddtoShortlist)
-        $(document).on("submit", "#shortlistForm", handleAddToShortlist)
         $(document).on("click", ".btn-toggle-filter", toggleFilter)
+    });
+
+    // ====================
+    $(document).on("click", ".btnAddToShortlist", function (){
+        shortlistModal.open({
+            id: $(this).data("id"),
+            name: $(this).data("name")
+        })
+    });
+
+    $(document).on("submit", "#shortlistModal #shortlistForm", function (e) {
+        e.preventDefault();
+        shortlistModal.save();
+    });
+
+    $(document).on("click", "#shortlistModal #btnCloseModal", function () {
+        shortlistModal.close()
     })
+    // ====================
+
 
 </script>
 @endsection

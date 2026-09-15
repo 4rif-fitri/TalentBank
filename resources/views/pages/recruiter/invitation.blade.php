@@ -256,9 +256,7 @@
             let response = await xApiInvite.update("{{ route('invitations.update', ['id' => '__ID__']) }}", currentInv.id, data)
             if(!response) return
 
-
-
-            xalert.salert('Success', response.message, 'success');
+            xalert.success(response.message, 'success');
             xmodal.hide("invitationModal")
             $("#inviteForm")[0].reset()
 
