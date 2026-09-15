@@ -1,0 +1,165 @@
+// =========================================================
+// BOOTSTRAP THEME CONFIGURATION
+// =========================================================
+
+
+// ---------------------------------------------------------
+// Bootstrap defaults
+// ---------------------------------------------------------
+
+@import "bootstrap/scss/functions";
+
+
+// ---------------------------------------------------------
+// Override Bootstrap variables
+// ---------------------------------------------------------
+
+$primary: $tb-forest;
+$secondary: $tb-slate;
+
+$success: $tb-spruce;
+$danger: $tb-alarm-red;
+
+$warning: $tb-lime;
+$info: $tb-signal-blue;
+
+$light: $tb-fog;
+$dark: $tb-forest;
+
+
+// Body
+
+$body-bg: $tb-fog;
+$body-color: $tb-forest;
+
+$font-family-sans-serif: $tb-font-family;
+
+$font-size-base: 1rem;
+
+$line-height-base: 1.5;
+
+
+// Borders
+
+$border-color: rgba(
+	22,
+	51,
+	0,
+	0.18
+);
+
+$border-radius: $tb-radius-lg;
+
+$border-radius-sm: $tb-radius-md;
+
+$border-radius-lg: $tb-radius-2xl;
+
+$border-radius-xl: $tb-radius-3xl;
+
+$border-radius-xxl: 32px;
+
+$border-radius-pill: $tb-radius-pill;
+
+
+// Buttons
+
+$btn-border-radius: $tb-radius-pill;
+
+$btn-border-radius-sm: $tb-radius-pill;
+
+$btn-border-radius-lg: $tb-radius-pill;
+
+$btn-font-weight: $tb-weight-semibold;
+
+
+// Cards
+
+$card-border-color: rgba(
+	22,
+	51,
+	0,
+	0.18
+);
+
+$card-border-radius: $tb-radius-2xl;
+
+$card-box-shadow: $tb-shadow;
+
+
+// Inputs
+
+$input-border-color: $tb-forest;
+
+$input-border-radius: $tb-radius-lg;
+
+$input-focus-border-color: $tb-forest;
+
+$input-focus-box-shadow:
+	4px 4px 0 $tb-lime;
+
+
+// Modal
+
+$modal-content-border-radius: $tb-radius-2xl;
+
+$modal-content-border-color:
+	rgba(22, 51, 0, 0.18);
+
+
+// Dropdown
+
+$dropdown-border-radius: $tb-radius-lg;
+
+$dropdown-border-color:
+	rgba(22, 51, 0, 0.18);
+
+$dropdown-box-shadow: $tb-shadow;
+
+
+// ---------------------------------------------------------
+// Bootstrap maps
+// ---------------------------------------------------------
+
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+
+// ---------------------------------------------------------
+// Bootstrap
+// ---------------------------------------------------------
+
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+
+@import "bootstrap/scss/type";
+
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+
+@import "bootstrap/scss/helpers";
+
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/card";
+
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+
+@import "bootstrap/scss/modal";
+
+@import "bootstrap/scss/close";
+
+@import "bootstrap/scss/badge";
+
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/list-group";
+
+@import "bootstrap/scss/transitions";
+
+@import "bootstrap/scss/utilities/api";

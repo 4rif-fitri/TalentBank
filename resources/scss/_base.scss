@@ -1,0 +1,98 @@
+
+// =========================================================
+// BASE
+// =========================================================
+
+html {
+	font-size: 16px;
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+
+	font-family: $tb-font-family;
+
+	font-size: $tb-font-body-sm;
+
+	font-weight: $tb-weight-regular;
+
+	line-height: 1.5;
+
+	color: $tb-forest;
+
+	background: $tb-fog;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+
+::selection {
+	color: $tb-forest;
+	background: $tb-lime;
+}
+
+
+:focus-visible {
+	outline: 2px solid $tb-forest;
+	outline-offset: 3px;
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: $tb-forest;
+
+	font-weight: $tb-weight-bold;
+
+	letter-spacing: -0.025em;
+}
+
+
+h1 {
+	font-size: clamp(
+		48px,
+		7vw,
+		$tb-font-heading-lg
+	);
+
+	line-height: 0.9;
+
+	font-weight: $tb-weight-black;
+
+	letter-spacing: -0.05em;
+}
+
+
+h2 {
+	font-size: clamp(
+		36px,
+		5vw,
+		$tb-font-heading
+	);
+
+	line-height: 1;
+
+	font-weight: 800;
+}
+
+
+h3 {
+	font-size: $tb-font-subheading;
+	line-height: 1.1;
+}
+
+
+a {
+	color: inherit;
+}
+
+
+img {
+	max-width: 100%;
+}

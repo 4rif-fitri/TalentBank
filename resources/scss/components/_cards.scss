@@ -1,0 +1,46 @@
+// =========================================================
+// CARDS
+// =========================================================
+
+.card {
+
+	border-width: 1px;
+
+	transition:
+		transform 180ms ease,
+		box-shadow 180ms ease,
+		border-color 180ms ease;
+
+	&:hover {
+		border-color: rgba(
+			22,
+			51,
+			0,
+			0.4
+		);
+
+		box-shadow: $tb-shadow;
+	}
+}
+
+
+// ---------------------------------------------------------
+// Brutal card
+// ---------------------------------------------------------
+
+.card-brutal {
+
+	border: 2px solid $tb-forest;
+
+	box-shadow:
+		$tb-shadow-lime;
+
+	&:hover {
+
+		transform:
+			translate(-2px, -2px);
+
+		box-shadow:
+			7px 7px 0 $tb-forest;
+	}
+}
