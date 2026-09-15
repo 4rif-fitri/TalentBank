@@ -29,6 +29,21 @@ class FacultyControllerTest extends TestCase
         'updated_at',
     ];
 
+    private const PROGRAMME_RETURN_COLUMNS = [
+        'id',
+        'faculty_id',
+        'programme_name',
+        'programme_code',
+        'programme_level',
+        'duration_years',
+        'status',
+        'organization_id',
+        'field_of_study_id',
+        'qualification_id',
+        'created_at',
+        'updated_at',
+    ];
+
     private User $user;
     private UserProfile $userProfile;
     private Organization $organization;
@@ -92,7 +107,9 @@ class FacultyControllerTest extends TestCase
                 'data' => [
                     '*' => [
                         ...self::FACULTY_RETURN_COLUMNS,
-                        'programmes'
+                        'programmes' => [
+                            '*' => self::PROGRAMME_RETURN_COLUMNS
+                        ]
                     ],
                 ],
             ])
@@ -133,7 +150,9 @@ class FacultyControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     ...self::FACULTY_RETURN_COLUMNS,
-                    'programmes'
+                    'programmes' => [
+                        '*' => self::PROGRAMME_RETURN_COLUMNS
+                    ]
                 ],
             ])
             ->assertJsonPath('data.organization_id', $this->organization->id)
