@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 
 class InterviewService
 {
-    private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
+    private const ADMINISTRATIVE_ROLES = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN'], AppConstants::USER_ROLES['RECRUITER']];
     private const LOCKED_STATUS = [AppConstants::INTERVIEW_STATUS['COMPLETED'], AppConstants::INTERVIEW_STATUS['CANCELLED']];
 
     // used to determine the columns to be returned for related models

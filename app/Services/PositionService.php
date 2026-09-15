@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\AppConstants;
 use App\Helpers\CheckOrgRoleHelper;
 use App\Models\Position;
 use Exception;
@@ -10,7 +11,7 @@ use Illuminate\Support\Collection;
 
 class PositionService
 {
-    private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
+    private const ADMINISTRATIVE_ROLES = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN'], AppConstants::USER_ROLES['RECRUITER']];
 
     private function getPositionModel(int $positionId): Position
     {

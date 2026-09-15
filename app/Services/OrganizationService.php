@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\AppConstants;
 use App\Helpers\CheckOrgRoleHelper;
 use App\Models\IndustryCategory;
 use App\Models\IndustrySector;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
 class OrganizationService
 {
     private const CACHE_TIME_HOURS = 1;
+    private const ORG_ADMIN_ROLE = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN']];
 
     /**
      * Get all organizations
@@ -47,7 +49,7 @@ class OrganizationService
             throw new Exception('SSM number already taken.', Response::HTTP_CONFLICT);
         }
 
-        $role = Role::where('name', 'Organization Admin')->first();
+        $role = Role::where('name', AppConstants::USER_ROLES['ORGANIZATION_ADMIN'])->first();
 
         if (!isset($role)) {
             throw new Exception('Role not found with given ID.', Response::HTTP_NOT_FOUND);
@@ -83,10 +85,6 @@ class OrganizationService
             return $organization;
         });
 
-        if (!isset($organization)) {
-            throw new Exception('Organization not found with given ID.', Response::HTTP_NOT_FOUND);
-        }
-
         return $organization;
     }
 
@@ -101,17 +99,16 @@ class OrganizationService
      */
     public function updateOrganization(array $data, int $orgId, int $userProfileId): Organization
     {
-        $organization = Organization::where('id', $orgId)
-            ->whereHas('organizationUsers', function ($query) use ($userProfileId) {
-                $query->whereHas('role', function ($query) {
-                    $query->where('name', 'Organization Admin');
-                })
-                    ->where('user_profile_id', $userProfileId);
-            })
-            ->first();
+        $organization = Organization::find($orgId);
 
         if (!isset($organization)) {
-            throw new Exception('Organization not found or access unauthorized.', Response::HTTP_FORBIDDEN);
+            throw new Exception('Organization not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ORG_ADMIN_ROLE, $organization->id);
+
+        if (!$isUserAdmin) {
+            throw new Exception('Unauthorized access to update organization.', Response::HTTP_FORBIDDEN);
         }
 
         $ssmNumberExists = Organization::where([
@@ -151,7 +148,7 @@ class OrganizationService
             throw new Exception('Organization not found with given ID.', Response::HTTP_NOT_FOUND);
         }
 
-        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, ['Organization Admin'], $orgId);
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ORG_ADMIN_ROLE, $orgId);
 
         if (!$isUserAdmin) {
             throw new Exception('Unauthorized access to upload organization logo for this organization.', Response::HTTP_FORBIDDEN);
