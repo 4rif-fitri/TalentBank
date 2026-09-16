@@ -100,6 +100,35 @@
             xmodal.show("invitationModal")
             xmodal.hide("listInvitationModal")
         },
+        async storeInvitations(candidate_id, position_id, expires_at, invitation_message, title) {
+
+            let data = {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+                receiver_profile_id: candidate_id,
+                invitation_message: invitation_message,
+                expires_at: expires_at,
+                position_id: position_id,
+                title
+            }
+
+            try {
+                let response = await xApiInvite.store("{{ route('invitations.store') }}", data)
+                if (!response) return
+
+                let $row = $("#tableDetail").find(`tr[data-id=${response.data.receiver.id}]`);
+                $row.find(".text-status").text("Invited")
+                $row.find(".list-item-add-invite").hide()
+                $row.find(".list-item-cancel-invite").hide()
+
+                xalert.success("Success", response.message)
+                xmodal.hide("invitationModal")
+                $("#invitationModal").find("form")[0].reset()
+                console.log(response.data);
+
+            } catch (error) {
+                console.error(error);
+            }
+        },
 
         showModalAddInviteId() {
             let profileId = this.currentUserId
@@ -113,7 +142,111 @@
 
             this.open()
         },
+        async handleAddInvitation(e) {
+            e.preventDefault()
 
+            let today = new Date().toISOString().split('T')[0];
+            let form = $(this).closest("form");
+
+            let candidate_id = form.find("#invite_candidate_id").val()
+            let position_id = form.find("#invite_position_id").val()
+            let expires_at = form.find("#expires_at").val()
+            let title = form.find("#invitation_title").val()
+            let invitation_message = form.find("#invitation_message").val()
+
+            if (title == "") {
+                xalert.fire("Validation Error", "Title id is NULL", "warning");
+                return
+            }
+
+            if (candidate_id == "") {
+                xalert.fire("Validation Error", "Candidte id is NULL", "warning");
+                return
+            }
+
+            if (position_id == "") {
+                xalert.fire("Validation Error", "Position id is NULL", "warning");
+                return
+            }
+
+            if (expires_at == "") {
+                xalert.fire("Validation Error", "Please select expires date ", "warning");
+                return
+            }
+
+            if (expires_at < today) {
+                xalert.fire("Validation Error", "Expiration date cannot be in the past", "warning");
+                return;
+            }
+
+            if (invitation_message == "") {
+                xalert.fire("Validation Error", "Please enter a vacancies", "warning");
+                return
+            }
+
+            try {
+                let response = await storeInvitations(candidate_id, position_id, expires_at, invitation_message, title)
+                if (!response) return
+
+                xalert.fire('Success', response.message, 'success');
+
+
+            } catch (xhr) {
+                console.error(xhr);
+                xalert.fire("Error", xhr.responseJSON.message, "error")
+            }
+        },
+        async handleInviteForm(e){
+        e.preventDefault();
+
+        let interviewMode = $('input[name="interview_mode"]:checked').val();
+
+        let interviewDate = $("#interview_date").val();
+        let startTime = $("#start_time").val();
+
+        let data = {
+            position_id: curruntPosition.id,
+            interviewee_profile_id: curruntCandidate.id,
+            title: $("#invitation_title").val(),
+            scheduled_at: `${interviewDate} ${startTime}`,
+            interview_mode: interviewMode,
+            location: $("#location").val(),
+            meeting_url: $("#meeting_url").val(),
+            recruiter_comment: $("#recruiter_comment").val(),
+            _token: $('meta[name="csrf-token"]').attr("content")
+        };
+
+        if (!data.interview_mode) {
+            xalert.fire("Validation Error", "Please select an interview mode", "warning");
+            return;
+        }
+
+        try {
+            let response = await xApiInterview.store("{{ route('interviews.store') }}", data)
+            if (!response) return
+
+            bootstrap.Modal.getInstance($("#interviewModal")).hide();
+            xalert.fire("Success", response.message, "success");
+            // Reload table/datatable jika perlu:
+            // table.ajax.reload();
+
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
+    showModalAddInvite() {
+            $("#btnAddInvitation").show()
+            $("#btnUpdateInvitation").hide()
+
+            let profileId = $(this).attr("data-id")
+            let candidte = candidateList.find(user => user.id == profileId)
+            $("#invite_candidate_id").val(profileId)
+            $("#invite_candidate").val(candidte.name)
+            $("#invite_position_title").val(curruntPosition.position_title)
+            $("#invite_position_id").val(curruntPosition.id)
+            xmodal.show("invitationModal")
+        },
         bindEvents(){
             const self = this;
 
@@ -127,6 +260,16 @@
                 self.showModalAddInviteId()
             })
 
+            $(document).on("submit", "#inviteForm", function(){
+                self.handleInviteForm()
+            });
+
+            $(document).on("click", "#btnAddInvitation", function(){
+                self.handleAddInvitation()
+            })
+            $(document).on("click", ".btnShowModalAddInvite", function (){
+                self.showModalAddInvite()
+            })
         }
     }
 </script>

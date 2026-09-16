@@ -148,7 +148,33 @@
             xmodal.hide("listInterviewModal")
             $("#btnUpdateInterview").hide()
         },
+        async storeInterview(position_id, scheduled_at, interview_mode, location, meeting_url, recruiter_comment, interviewee_profile_id, title){
+        let data = {
+            _token: $('meta[name="csrf-token"]').attr("content"),
+            position_id,
+            scheduled_at,
+            interview_mode,
+            location,
+            meeting_url,
+            recruiter_comment,
+            interviewee_profile_id,
+            title
+        }
 
+        console.table(data);
+
+
+        try {
+            let response = await xApiInterview.store("{{ route('interviews.store') }}", data)
+            if (!response) return
+
+            xalert.success("Success", response.message)
+            xmodal.hide("interviewModal")
+        } catch (error) {
+            console.error(error);
+            xalert.error("Faild", error.responseJSON.message)
+        }
+    },
         showModalAddintervieww() {
             let profileId = this.currentUserId
             let candidte = this.candidateList.find(user => user.id == profileId)
@@ -171,6 +197,99 @@
             this.open()
         },
 
+        changeinterviewMode(){
+            const mode = $(this).val();
+
+            $("#div_meeting_url, #div_location").hide();
+
+            $("#meeting_url, #location").prop("required", false);
+
+            // Clear unused fields
+            $("#meeting_url").val("");
+            $("#location").val("");
+
+            if (mode === "Online") {
+
+                $("#div_meeting_url").show();
+                $("#meeting_url").prop("required", true);
+
+            } else if (mode === "On-site") {
+
+                $("#div_location").show();
+                $("#location").prop("required", true);
+            }
+        },
+        handleAddInterview(){
+            const form = $("#interviewForm")[0];
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const scheduled_at =
+                $("#interview_date").val() + " " + $("#start_time").val();
+
+            const interview_mode =
+                $('input[name="interview_mode"]:checked').val();
+
+            const meeting_url = $("#meeting_url").val();
+            const location = $("#location").val();
+            const recruiter_comment = $("#recruiter_comment").val();
+            let title = $("#invite_title").val();
+
+            console.error(title);
+
+            storeInterview(
+                curruntPosition.id,
+                scheduled_at,
+                interview_mode,
+                location,
+                meeting_url,
+                recruiter_comment,
+                currentUserId,
+                title
+            );
+        },
+        toggleInterviewMode(mode) {
+            $("#div_meeting_url, #div_location").addClass("d-none");
+            $("#meeting_url, #location").prop("required", false);
+
+            if (mode === "Online") {
+                $("#div_meeting_url").removeClass("d-none");
+                $("#meeting_url").prop("required", true);
+            } else if (mode === "On-site") {
+                $("#div_location").removeClass("d-none");
+                $("#location").prop("required", true);
+            }
+        },
+        showModalAddinterview() {
+            $("#inviteForm")[0].reset();
+            $("#invitation_id").val("");
+
+            $(".invitation_id").val(curruntPosition.id)
+
+            let profileId = $(this).attr("data-id")
+            let candidte = candidateList.find(user => user.id == profileId)
+            curruntCandidate = candidte
+            $(".candidate_name").val(candidte.name)
+
+
+            let today = new Date().toISOString().split("T")[0];
+            $("#interview_date").attr("min", today).val(today);
+            $("#start_time").val("10:00");
+
+            let candidateName = $(this).data("candidate-name") || "";
+            let candidateId = $(this).data("candidate-id") || "";
+            $("#invite_candidate").val(candidateName);
+            $("#invite_candidate_id").val(candidateId);
+
+            $("#interviewModalLabel").text("Schedule Interview");
+            $("#btnAddInterview").show();
+            $("#btnUpdateInterview").hide();
+
+            xmodal.show("interviewModal")
+        },
 
         bindEvents() {
             const self = this;
@@ -179,9 +298,26 @@
                 self.details = details
                 self.candidateList = candidateList
             })
+
             $(document).on("click", ".btnShowModalAddIntervieww", function(){
                 self.currentUserId = $(this).data("id")
                 self.showModalAddintervieww()
+            });
+
+            $(document).on("change", 'input[name="interview_mode"]', function () {
+                self.changeinterviewMode()
+            });
+
+            $(document).on("change", "input[name='interview_mode']", function () {
+                toggleInterviewMode($(this).val());
+            });
+
+            $(document).on("click", "#btnAddInterview", function () {
+                self.handleAddInterview()
+            });
+
+            $(document).on("click", ".btnShowModalAddInterview", function (){
+                self.showModalAddinterview()
             });
 
         }

@@ -126,6 +126,34 @@
 
         },
 
+        async storeJobOffer($form){
+            let data = {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+                salary_amount: $form.find("#salary_amount").val(),
+                salary_period: $form.find("#salary_period").val(),
+                start_date: $form.find("#start_date").val(),
+                end_date: $form.find("#end_date").val(),
+                terms_and_conditions: $form.find("#terms_and_conditions").val(),
+                benefits: $form.find("#benefits").val(),
+                expires_at: $form.find("#expires_at").val(),
+                position_id: $form.find("#jobOfferPositionId").val(),
+                receiver_profile_id: $form.find("#job-offer-candicate-id").val(),
+                title: $form.find("#job-offer-title").val()
+            }
+
+            try {
+                let response = await xApiJobOffer.store("{{ route('jobOffers.store') }}", data)
+                if (!response) return
+
+                xalert.fire("Success", response.message, "success")
+                xmodal.hide("jobOfferModal")
+
+            } catch (error) {
+                console.error(error);
+
+            }
+        },
+
         showModalAddJobOffer(){
             let profileId = this.currentUserId
             let candidte = this.candidateList.find(user => user.id == profileId)
@@ -147,6 +175,115 @@
             this.open()
         },
 
+        handleAddJobOffer() {
+
+            const $form = $("#jobOfferForm");
+
+            const salary_amount =
+                $form.find("#salary_amount").val();
+
+            const salary_period =
+                $form.find("#salary_period").val();
+
+            const start_date =
+                $form.find("#start_date").val();
+
+            const end_date =
+                $form.find("#end_date").val();
+
+            const terms_and_conditions =
+                $form.find("#terms_and_conditions").val();
+
+            const benefits =
+                $form.find("#benefits").val();
+
+            const expires_at =
+                $form.find("#expires_at").val();
+
+            const position_id =
+                $form.find("#jobOfferPositionId").val();
+
+            const receiver_profile_id =
+                $form.find("#job-offer-candicate-id").val();
+
+            const title =
+                $form.find("#job-offer-title").val();
+
+            if (!salary_amount || Number(salary_amount) <= 0) {
+                xalert.fire(
+                    "Warning",
+                    "Please enter a valid salary amount.",
+                    "warning"
+                );
+                return;
+            }
+
+            if (!salary_period) {
+                xalert.fire(
+                    "Warning",
+                    "Please select salary period.",
+                    "warning"
+                );
+                return;
+            }
+
+            if (!start_date) {
+                xalert.fire(
+                    "Warning",
+                    "Please select start date.",
+                    "warning"
+                );
+                return;
+            }
+
+            if (!end_date) {
+                xalert.fire(
+                    "Warning",
+                    "Please select end date.",
+                    "warning"
+                );
+                return;
+            }
+
+            if (end_date < start_date) {
+                xalert.fire(
+                    "Warning",
+                    "End date cannot be before start date.",
+                    "warning"
+                );
+                return;
+            }
+
+            if (!expires_at) {
+                xalert.fire(
+                    "Warning",
+                    "Please enter expiration date.",
+                    "warning"
+                );
+                return;
+            }
+
+            if (!position_id) {
+                xalert.fire(
+                    "Warning",
+                    "Position ID not found.",
+                    "warning"
+                );
+                return;
+            }
+
+            if (!receiver_profile_id) {
+                xalert.fire(
+                    "Warning",
+                    "Receiver profile ID not found.",
+                    "warning"
+                );
+                return;
+            }
+
+            storeJobOffer($form);
+        },
+
         bindEvents() {
             const self = this;
 
@@ -159,6 +296,11 @@
                 self.currentUserId = $(this).data("id")
                 self.showModalAddJobOffer()
             })
+
+            $(document).on("click", "#btnAddJobOffer", function(){
+                this.handleAddJobOffer()
+            })
+
         }
     }
 </script>
