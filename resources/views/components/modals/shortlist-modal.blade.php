@@ -4,71 +4,46 @@
         <div class="modal-content">
 
             <div class="modal-header">
-
                 <h5 class="fw-semibold modal-title" id="shortlistModalLabel">
                     Add to Shortlist
                 </h5>
-
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-
             </div>
-
-            <form id="shortlistForm">
-
-                <div class="modal-body">
-
-                    <div class="row">
-
-                        <div class="col-md-12 mb-3">
-
-                            <label for="candidateName" class="form-label">
-                                Candidate Name
-                            </label>
-
-                            <input type="hidden" id="candidateId">
-
-                            <input type="text" id="candidateName" class="form-control" readonly required>
-
-                        </div>
-
-                        <div class="col-12">
-
-                            <label for="selectPosition" class="form-label">
-                                Position
-                            </label>
-
-                            <select id="selectPosition" class="form-select" required>
-                                <option value="">
-                                    Select Position
-                                </option>
-                            </select>
-
-                        </div>
-
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12 mb-3">
+                        <label for="candidateName" class="form-label">
+                            Candidate Name
+                        </label>
+                        <input type="hidden" id="candidateId">
+                        <input type="text" id="candidateName" class="form-control" readonly required>
                     </div>
-
+                    <div class="col-12">
+                        <label for="selectPosition" class="form-label">
+                            Position
+                        </label>
+                        <select id="selectPosition" class="form-select" required>
+                            <option value="">
+                                Select Position
+                            </option>
+                        </select>
+                    </div>
                 </div>
-
-                <div class="modal-footer">
-
-                    <button type="button" id="btnCloseModal" class="btn btn-secondary">
-                        Cancel
-                    </button>
-
-                    <button type="submit" id="btnAddShortlist" class="btn btn-primary">
-                        Save
-                    </button>
-
-                </div>
-
-            </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCloseModal" class="btn btn-secondary">
+                    Cancel
+                </button>
+                <button type="button" id="btnAddShortlist" class="btn btn-primary">
+                    Save
+                </button>
+            </div>
 
         </div>
     </div>
 </div>
 
 @push('childScript')
-
 
 <script type="module">
 
@@ -102,7 +77,6 @@
                 await this.loadPositions();
 
             } catch (error) {
-
                 console.error("Failed to open shortlist modal:",error);
             }
         },
@@ -122,22 +96,17 @@
             const candidateId = this.candidate.id;
 
             const results = await Promise.all(
-
                 this.organizationWithPosition.map(
                     async data => {
-
                         const organizationId = data.org.organization.id;
-                        const response =
-                            await getShortlistedPositionIds(candidateId,organizationId);
+                        const response = await getShortlistedPositionIds(candidateId,organizationId);
 
                         return {
                             ...data,
                             shortlistedPositionIds: response.data
                         };
-
                     }
                 )
-
             );
 
             this.renderPositions(results);
@@ -168,79 +137,40 @@
 
 
         async save() {
-
-            const candidateId =
-                this.candidate?.id;
-
-            const positionId =
-                $("#selectPosition").val();
-
+            const candidateId = this.candidate?.id;
+            const positionId = $("#selectPosition").val();
 
             if (!candidateId) {
-
-                xalert.alert(
-                    "Error",
-                    "Candidate not found.",
-                    "error"
-                );
-
+                xalert.error("Candidate not found.","error");
                 return;
-
             }
-
 
             if (!positionId) {
-
-                xalert.alert(
-                    "Error",
-                    "Please select a position.",
-                    "error"
-                );
-
+                xalert.error("Please select a position.","error");
                 return;
-
             }
 
-
-            try {
-
-                const response = await $.ajax({
-
-                    url: "{{ route('shortlists.store') }}",
-
-                    type: "POST",
-
-                    data: {
-
-                        user_profile_id:
-                            candidateId,
-
-                        position_id:
-                            positionId,
-
-                        _token:
-                            $('meta[name="csrf-token"]').attr(
-                                "content"
-                            )
-
-                    }
-
-                });
-
-
-                xalert.alert(
-                    "Success",
-                    response.message,
-                    "success"
-                );
-
-                this.close();
-
-            } catch (xhr) {
-                console.error(xhr);
-                xalert.error(xhr.responseJSON?.message ?? "Something went wrong.","error");
+            let data = {
+                user_profile_id: candidateId,
+                position_id: positionId,
+                _token: $('meta[name="csrf-token"]').attr("content")
             }
 
+            $.ajax({
+                url: "{{ route('shortlists.store') }}",
+                type: "POST",
+                data,
+
+                success: response => {
+                    xalert.success( response.message, "success");
+                    this.close();
+                },
+
+                error: xhr =>{
+                    console.error(xhr);
+                    xalert.error(xhr.responseJSON?.message ?? "Something went wrong.", "error");
+                }
+            });
         },
 
         close() {
