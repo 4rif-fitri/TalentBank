@@ -91,6 +91,7 @@
 
             $(document).on("click", ".btnShowModalListJobOffer", function () {
                 let userId = $(this).data("id");
+                $(".btnShowModalAddOffer").attr("data-id", userId);
                 self.handleShowModalListJobOffer(userId)
             })
         }

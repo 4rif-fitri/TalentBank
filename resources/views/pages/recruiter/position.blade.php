@@ -807,52 +807,6 @@
         storeJobOffer($form);
     }
 
-    function showJobOfferModal() {
-        const profileId = $(this).data("id");
-
-        const candidate = candidateList.find(
-            user => user.id == profileId
-        );
-
-        if (!candidate) {
-            console.error("Candidate not found:", profileId);
-            return;
-        }
-
-        curruntCandidate = candidate;
-        currentUserId = profileId;
-
-        const $form = $("#jobOfferForm");
-
-        // Reset form
-        $form[0].reset();
-
-        // Candidate
-        $(".offer-candidate-name").text(
-            `Candidate: ${candidate.name}`
-        );
-
-        $("#job-offer-candicate-id").val(candidate.id);
-
-        // Position
-        $("#jobOfferPositionName").text(
-            `Position: ${curruntPosition.position_title}`
-        );
-
-        $("#jobOfferPositionId").val(
-            curruntPosition.id
-        );
-
-        // Mode
-        $("#btnAddJobOffer").removeClass("d-none");
-        $("#btnUpdateJobOffer").addClass("d-none");
-
-        $("#btnCencelAddJobOffer").removeClass("d-none");
-        $("#btnCencelupdateJobOffer").addClass("d-none");
-
-        xmodal.show("jobOfferModal");
-    }
-
     $(document).on("click", ".btn-withdraw-invitation", handleWithdrawInvitation)
 
     $(document).on("click", ".btnShowModalAddShortlist", showModalAddShortlist);
@@ -866,7 +820,7 @@
     $(document).on("click", ".toggleFilter", toggle)
     $(document).on("click", "#btnAddShortlist", handleAddShortlist)
     $(document).on("click", "#btnUpdateShortlist", handleUpdateShortlist)
-    $(document).on("click", ".btnShowModalAddJobOffer", showJobOfferModal)
+    // $(document).on("click", ".btnShowModalAddJobOffer", showJobOfferModal)
     $(document).on("click", "#btnAddJobOffer", handleAddJobOffer)
     $(document).on("click", ".btnShowModalUpdateShortlist", handleEditPosition)
 
@@ -930,7 +884,7 @@
         );
     });
 
-    async function loadData() {
+    $(document).ready(async function(){
         try {
 
             let profile = await xApiProfile.getProfileDataByProfileId(
@@ -953,8 +907,14 @@
 
                 })
             );
+
             positionList.init(response)
             positionDetail.init()
+
+            invitationModal.init()
+            interviewModal.init()
+            jobOfferModal.init()
+
             listInvitationModal.init()
             listJobOfferModal.init()
             listInterviewModal.init()
@@ -962,107 +922,11 @@
         } catch (error) {
             console.error("Ralat semasa loadData:", error);
         }
-    }
-
-    $(document).ready(loadData);
+    })
 
     $(document).on("change", "input[name='interview_mode']", function () {
         toggleInterviewMode($(this).val());
     });
-
-
-
-    function showModalAddInviteId() {
-        $("#btnAddInvitation").show()
-        $("#btnUpdateInvitation").hide()
-
-        let profileId = currentUserId
-
-        let candidte = candidateList.find(user => user.id == profileId)
-        console.error(candidte);
-
-        $("#invite_candidate_id").val(profileId)
-        $("#invite_candidate").val(candidte.name)
-        $("#invite_position_title").val(curruntPosition.position_title)
-        $("#invite_position_id").val(curruntPosition.id)
-        xmodal.show("invitationModal")
-        xmodal.hide("listInvitationModal")
-
-    }
-
-    function showModalAddintervieww() {
-        $("#inviteForm")[0].reset();
-        $("#invitation_id").val("");
-
-        $(".invitation_id").val(curruntPosition.id)
-
-        let profileId = currentUserId
-        let candidte = candidateList.find(user => user.id == profileId)
-        curruntCandidate = candidte
-        console.log(profileId);
-        console.log(candidateList);
-
-        $(".candidate_name").val(candidte.name)
-
-
-        let today = new Date().toISOString().split("T")[0];
-        $("#interview_date").attr("min", today).val(today);
-        $("#start_time").val("10:00");
-
-        let candidateName = $(this).data("candidate-name") || "";
-        let candidateId = $(this).data("candidate-id") || "";
-        $("#invite_candidate").val(candidateName);
-        $("#invite_candidate_id").val(candidateId);
-
-        $("#interviewModalLabel").text("Schedule Interview");
-        $("#btnAddInterview").show();
-        $("#btnUpdateInterview").hide();
-
-        xmodal.show("interviewModal")
-        xmodal.hide("listInterviewModal")
-        $("#btnUpdateInterview").hide()
-    }
-
-    function showModalAddOffer(){
-        const profileId = currentUserId;
-
-        console.log("currentUserId:", profileId);
-
-        const candidate = candidateList.find(user => user.id == profileId);
-
-        if (!candidate) {
-            console.error("Candidate not found:", profileId);
-            return;
-        }
-
-        curruntCandidate = candidate;
-
-        $(".offer-candidate-name").text(`Candidate: ${candidate.name}`);
-
-        $("#job-offer-candicate-id").val(candidate.id);
-
-        $("#jobOfferPositionName").text(`Position: ${curruntPosition.position_title}`);
-
-        $("#jobOfferPositionId").val(curruntPosition.id);
-
-        $("#start_date").val("");
-        $("#end_date").val("");
-        $("#salary_amount").val("");
-        $("#salary_period").val("Hourly");
-        $("#expires_at").val("");
-        $("#benefits").val("");
-        $("#terms_and_conditions").val("");
-
-        $("#btnAddJobOffer").removeClass("d-none");
-        $("#btnUpdateJobOffer").addClass("d-none");
-
-        xmodal.hide("listJobOfferModal");
-        xmodal.show("jobOfferModal");
-    }
-
-    $(document).on("click", ".btnShowModalAddInvitee", showModalAddInviteId)
-    $(document).on("click", ".btnShowModalAddIntervieww", showModalAddintervieww);
-    $(document).on("click", ".btnShowModalAddOffer", showModalAddOffer);
 
     // function getInvitationsByPositionIdAndReceiverId(receiverId, positionId) {
     //     let url = "{{ route('invitations.getInvitationsByPositionIdAndReceiverId', ['receiverId' => '__RECEIVER_ID__','positionId' => '__POSITION_ID__'])}}";

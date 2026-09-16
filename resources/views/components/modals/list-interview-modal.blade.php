@@ -98,6 +98,7 @@
 
             $(document).on("click", ".btnShowModalListInterview", function () {
                 let userId = $(this).data("id");
+                $(".btnShowModalAddIntervieww").attr("data-id", userId);
                 self.handleShowModalListInterview(userId)
             })
         }

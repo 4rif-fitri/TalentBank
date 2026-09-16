@@ -127,3 +127,63 @@
         </div>
     </div>
 </div>
+
+<script type="module">
+    window.interviewModal = {
+        currentUserId: null,
+        details: null,
+        candidateList: null,
+
+        init() {
+            const self = this;
+            self.bindEvents()
+        },
+
+        open() {
+            $("#interviewModalLabel").text("Schedule Interview");
+            $("#btnAddInterview").show();
+            $("#btnUpdateInterview").hide();
+
+            xmodal.show("interviewModal")
+            xmodal.hide("listInterviewModal")
+            $("#btnUpdateInterview").hide()
+        },
+
+        showModalAddintervieww() {
+            let profileId = this.currentUserId
+            let candidte = this.candidateList.find(user => user.id == profileId)
+
+            $("#inviteForm")[0].reset();
+            $("#invitation_id").val("");
+
+            $(".invitation_id").val(this.details.id)
+            $(".candidate_name").val(candidte.name)
+
+            let today = new Date().toISOString().split("T")[0];
+            $("#interview_date").attr("min", today).val(today);
+            $("#start_time").val("10:00");
+
+            let candidateName = $(this).data("candidate-name") || "";
+            let candidateId = $(this).data("candidate-id") || "";
+            $("#invite_candidate").val(candidateName);
+            $("#invite_candidate_id").val(candidateId);
+
+            this.open()
+        },
+
+
+        bindEvents() {
+            const self = this;
+
+            $(document).on("position:detail", function (event, details, candidateList) {
+                self.details = details
+                self.candidateList = candidateList
+            })
+            $(document).on("click", ".btnShowModalAddIntervieww", function(){
+                self.currentUserId = $(this).data("id")
+                self.showModalAddintervieww()
+            });
+
+        }
+    }
+</script>

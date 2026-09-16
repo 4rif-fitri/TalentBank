@@ -82,3 +82,51 @@
         </div>
     </div>
 </div>
+
+<script type="module">
+    window.invitationModal = {
+        currentUserId: null,
+        details: null,
+        candidateList: null,
+
+        init(){
+            const self = this;
+            self.bindEvents()
+        },
+        open(){
+            $("#btnAddInvitation").show()
+            $("#btnUpdateInvitation").hide()
+
+            xmodal.show("invitationModal")
+            xmodal.hide("listInvitationModal")
+        },
+
+        showModalAddInviteId() {
+            let profileId = this.currentUserId
+            let candidte = this.candidateList.find(user => user.id == profileId)
+
+            $("#invite_candidate_id").val(profileId)
+            $("#invite_candidate").val(candidte.name)
+
+            $("#invite_position_title").val(this.details.position_title)
+            $("#invite_position_id").val(this.details.id)
+
+            this.open()
+        },
+
+        bindEvents(){
+            const self = this;
+
+            $(document).on("position:detail", function (event, details, candidateList) {
+                self.details = details
+                self.candidateList = candidateList
+            })
+
+            $(document).on("click", ".btnShowModalAddInvitee", function(){
+                self.currentUserId = $(this).data("id")
+                self.showModalAddInviteId()
+            })
+
+        }
+    }
+</script>

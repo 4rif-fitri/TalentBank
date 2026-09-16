@@ -103,6 +103,7 @@
 
             $(document).on("click", ".btnShowModalListInvite", function () {
                 let userId = $(this).data("id");
+                $(".btnShowModalAddInvitee").attr("data-id", userId);
                 self.handleShowModalListInvite(userId)
             })
         }

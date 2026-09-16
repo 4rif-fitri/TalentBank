@@ -2,8 +2,6 @@
 
     <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form id="jobOfferForm">
-
             <div class="modal-header">
                 <h5 class="modal-titlem fw-semibold" id="jobOfferModalLabel">
                     Create JobOffer
@@ -78,20 +76,20 @@
                         <input  min="{{ date('Y-m-d') }}" type="date" id="expires_at" class="form-control" required>
                     </div>
 
-                    <div class="col-12 mb-2">
+                    <div class="col-6 mb-2">
                         <label for="benefits" class="form-label">
                             Benefits
                         </label>
 
-                        <textarea id="benefits" class="form-control" rows="3" placeholder="" required></textarea>
+                        <textarea id="benefits" class="form-control" rows="4" placeholder="" required></textarea>
                     </div>
 
-                    <div class="col-12 mb-3">
+                    <div class="col-6 mb-3">
                         <label for="recruiter_comment" class="form-label">
                             Terms and Conditions
                         </label>
 
-                        <textarea id="terms_and_conditions" class="form-control" rows="2" placeholder="" required></textarea>
+                        <textarea id="terms_and_conditions" class="form-control" rows="4" placeholder="" required></textarea>
                     </div>
 
                 </div>
@@ -105,8 +103,62 @@
                 <button type="button" id="btnUpdateJobOffer" class="btn btn-primary">Update</button>
             </div>
 
-            </form>
-
         </div>
     </div>
 </div>
+
+<script type="module">
+    window.jobOfferModal = {
+        currentUserId: null,
+        details: null,
+        candidateList: null,
+
+        init() {
+            const self = this;
+            this.bindEvents()
+        },
+        open() {
+            xmodal.show("jobOfferModal");
+            xmodal.hide("listJobOfferModal");
+        },
+
+        save(){
+
+        },
+
+        showModalAddJobOffer(){
+            let profileId = this.currentUserId
+            let candidte = this.candidateList.find(user => user.id == profileId)
+
+            console.log("profileId", profileId);
+            console.log("candidte", candidte);
+            console.log("position", this.details);
+
+
+            $("#jobOfferModal .offer-candidate-name").text(`Candidate: ${candidte.name}`)
+            $("#jobOfferModal #job-offer-candicate-id").text(candidte.id)
+
+            $("#jobOfferModal #jobOfferPositionName").text(`Position: ${this.details.position_title}`)
+            $("#jobOfferModal #jobOfferPositionId").text(`Position: ${this.details.id}`)
+
+            $("#btnAddJobOffer").removeClass("d-none");
+            $("#btnUpdateJobOffer").addClass("d-none");
+
+            this.open()
+        },
+
+        bindEvents() {
+            const self = this;
+
+            $(document).on("position:detail", function (event, details, candidateList) {
+                self.details = details
+                self.candidateList = candidateList
+            })
+
+            $(document).on("click", ".btnShowModalAddOffer", function (){
+                self.currentUserId = $(this).data("id")
+                self.showModalAddJobOffer()
+            })
+        }
+    }
+</script>
