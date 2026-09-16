@@ -32,7 +32,7 @@
                 self.load();
             });
 
-            $(document).on( 'filterPanel:reset', function () {
+            $(document).on('filterPanel:reset', function () {
                 self.filters = {};
                 self.currentPage = 1;
                 self.load();

@@ -30,35 +30,21 @@ function getStatus(interviewsCount, invitationsCount, jobOffersCount) {
     return "Added";
 }
 
-export function sideBar(results) {
-    $("#shortlistList").empty();
-
-    if (results.length != 0) {
-        results.forEach(response => {
-            response.data.forEach(position => {
-                $("#shortlistList").append(
-
-                    `<div data-id=${position.id} class="shortlist-item d-flex justify-content-start align-items-center gap-3 mb-2 p-3 border rounded" role="button">
-                        <div class="d-flex align-items-center gap-3">
-                            <i class="fa-regular fa-folder fa-xl"></i>
-                            <div class="flex-grow-1">
-                                <div class="fw-semibold title">
-                                    ${position.position_title}
-                                </div>
-                                <small class="text-muted">
-                                    Created ${formatDate(position.created_at)}
-                                </small>
-                            </div>
+export function sideBar(position) {
+    return `<div data-id=${position.id} class="shortlist-item d-flex justify-content-start align-items-center gap-3 mb-2 p-3 border rounded" role="button">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fa-regular fa-folder fa-xl"></i>
+                    <div class="flex-grow-1">
+                        <div class="fw-semibold title">
+                            ${position.position_title}
                         </div>
-                    </div>`
+                        <small class="text-muted">
+                            Created ${formatDate(position.created_at)}
+                        </small>
+                    </div>
+                </div>
+            </div>`
 
-                );
-            });
-        });
-
-    } else {
-        $("#shortlistList").append(`<small class="text-muted">No Data yet</small>`);
-    }
 }
 
 export function detail(data) {
@@ -115,8 +101,6 @@ export function detail(data) {
     if (!data.shortlist_users) return
 
     data.shortlist_users.forEach(user => {
-        console.log({ user });
-
         let interviewsCount = user.interviews_count ?? 0;
         let invitationsCount = user.invitations_count ?? 0;
         let jobOfferCount = user.job_offers_count ?? 0;
