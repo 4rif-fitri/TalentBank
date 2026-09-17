@@ -10,24 +10,28 @@ function renderStatus(status) {
     if (status == "Exprired") class_name = "text-secondary bg-secondary-subtle border-secondary"
     if (status == "Withdrawn") class_name = "text-secondary bg-secondary-subtle border-secondary"
 
-    return `<div class="badge border-2 ${class_name}">
+    return `<div class="offer-status ${class_name}">
                 ${status}
             </div>`
 }
 
 export let student = {
     sideList: (invite, imageUrl) =>  {
-        return `<div data-id="${invite.id}" role="button" class="invitation-item list-item row border p-2 rounded-2">
-                    <div class="col-3 d-flex align-items-center">
+
+        return `<button data-id="${invite.id}" role="button" type="button" class="offer-list-card invitation-item list-item" data-offer-id="2">
+                    <div class="company-logo">
                         <div class="thum-image" style="background-image: url('${imageUrl}'); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
                     </div>
-                    <div class="col-9 d-flex flex-column">
-                        <h5 class="fw-semibold student-name">${invite.position.organization.company_name}</h5>
-                        <h6 class="student-position">${invite.position.position_title}</h6>
+                    <div class="offer-list-info">
+                        <h3 class="student-name">${invite.position.organization.company_name}</h3>
+                        <p class="student-position">${invite.position.position_title}</p>
+                        <small class="offer-expiry">
+                            ${formatDate(invite.expires_at)}
+                        </small>
                         ${renderStatus(invite.offer_status)}
-                        <small class="text-muted">expires ${formatDate(invite.expires_at)}</small>
                     </div>
-                </div>`
+                    <i class="fa-solid fa-arrow-right offer-arrow"></i>
+                </button>`
     },
 
     mainContent(invitation, imageUrl) {
@@ -38,146 +42,84 @@ export let student = {
                 Withdrawn: "text-secondary text-secondary bg-secondary-subtle",
             }[invitation.invitation_status] ?? "text-secondary";
 
-            return `<div class="results-panel flex-grow-1 w-100">
-                <div class="bg-body p-4">
-                    <div class="d-flex flex-column flex-lg-row gap-3 bg-light p-3 rounded rounded-2 border align-items-center">
-                        <div class=" d-flex align-items-center">
+        return `<article class="offer-details-card results-panel" id="offerDetails">
+                    <header class="offer-details-header">
+                        <div class="company-logo company-logo-large">
                             <div class="thum-image-lg" style="background-image: url('${imageUrl}');background-position: center; background-size: cover; background-repeat: no-repeat;"></div>
                         </div>
-                        <div class="">
-                            <h4 class="fw-semibold">${invitation.position.organization.company_name}</h4>
+                        <div class="company-heading">
+                            <h2>${invitation.position.organization.company_name}</h2>
+                            <small>${invitation.position.work_location}</small>
+                        </div>
+                        ${renderStatus(invitation.offer_status)}
+                    </header>
+
+                    <div class="offer-details-grid">
+                        <div class="offer-info-column">
+                            <div class="offer-info-row">
+                                <span>Position</span>
+                                <strong>${invitation.position.position_title}</strong>
+                            </div>
+                            <div class="offer-info-row">
+                                <span>Department</span>
+                                <strong>${invitation.position.department}</strong>
+                            </div>
+                            <div class="offer-info-row">
+                                <span>Period</span>
+                                <strong>${formatDateShort(invitation.start_date)} - ${formatDateShort(invitation.end_date)}</strong>
+                            </div>
+                            <div class="offer-info-row">
+                                <span>Salary</span>
+                                <strong>${invitation.salary_amount} / ${invitation.salary_period}</strong>
+                            </div>
+                        </div>
+                        <div class="offer-info-column">
+                            <div class="offer-info-row">
+                                <span>Benefits</span>
+                                <strong>${invitation.benefits ?? ""}</strong>
+                            </div>
+                            <div class="offer-info-row">
+                                <span>Terms and Conditions</span>
+                                <strong>${invitation.terms_and_conditions ?? ""}</strong>
+                            </div>
+                            <div class="offer-info-row">
+                                <span>Status</span>
+                                <strong>
+                                    ${renderStatus(invitation.offer_status)}
+                                </strong>
+                            </div>
+                            <div class="offer-info-row">
+                                <span>Sent</span>
+                                <strong>${formatDate(invitation.created_at)}</strong>
+                            </div>
+                            <div class="offer-info-row">
+                                <span>Expires</span>
+                                <strong>${formatDate(invitation.expires_at)}</strong>
+                            </div>
+                            <div class="offer-info-row">
+                                <span>Created By</span>
+                                <strong>${invitation.sender.name}</strong>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-12 card-body p-3">
-                            <table class="table">
-                                <tbody>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Company</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <div>${invitation.position.organization.company_name} - ${invitation.position.work_location}</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Position</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${invitation.position.position_title}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Department</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${invitation.position.department}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Period</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${formatDateShort(invitation.start_date)} - ${formatDateShort(invitation.end_date)}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Salary</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${invitation.salary_amount} / ${invitation.salary_period}</span>
-                                    </td>
-                                </tr>
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-lg-6 col-12 card-body p-3">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Benefits</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${invitation.benefits ?? ""}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Terms and conditions</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${invitation.terms_and_conditions ?? ""}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Status</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <div>${renderStatus(invitation.offer_status)}</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Sent</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${formatDate(invitation.created_at)}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Expires</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${formatDate(invitation.expires_at)}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Create by</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${invitation.sender.name}</span>
-                                        </td>
-                                    </tr>
-                                </body>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-body p-3">
-                        <h5 class="fw-bold mb-3">
-                            Actions
-                        </h5>
-
-                        <div class="d-flex flex-column flex-lg-row gap-2">
-                            <button class="btn btn-primary btn-message-student">
-                                <i class="fa-solid fa-message me-2"></i>
+                    <footer class="offer-actions">
+                        <h3>Actions</h3>
+                        <div class="offer-action-buttons">
+                            <button type="button" class="tb-btn tb-btn-primary" id="messageStudentBtn">
+                                <i class="fa-solid fa-message"></i>
                                 Message Student
                             </button>
-
-                            <button id="btnRejectInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"}
-                                class="btn btn-outline-danger">
-                                <i class="fa-regular fa-trash-can me-2"></i>
+                            <button id="btnRejectInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"} type="button" class="tb-btn tb-btn-danger" id="declineOfferBtn">
+                                <i class="fa-regular fa-trash-can"></i>
                                 Decline
                             </button>
-
-                            <button id="btnAcceptInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"}
-                                class="btn btn-outline-primary">
-                                <i class="fa-solid fa-pen me-2"></i>
+                            <button id="btnAcceptInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"} type="button" class="tb-btn tb-btn-outline" id="acceptOfferBtn">
+                                <i class="fa-solid fa-pen"></i>
                                 Accept Offer
                             </button>
-
                         </div>
-                    </div>
-                </div>
-            </div>`
+                    </footer>
+                </article>`
     }
 }
 

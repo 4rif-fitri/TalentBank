@@ -6,10 +6,7 @@
 
 .filter-panel {
     width: 350px;
-    background-color: white !important;
-    padding: 20px;
     border-radius: 12px;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;
     transition: transform 0.3s ease;
 }
@@ -23,7 +20,6 @@
 }
 
 .results-panel {
-    padding: 1rem;
 }
 
 @media (max-width: 768px) {

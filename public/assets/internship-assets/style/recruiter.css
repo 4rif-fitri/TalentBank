@@ -94,8 +94,6 @@
 
 .filter-panel {
     width: 260px;
-    background: #fff;
-    padding: 20px;
     border-radius: 12px;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
     flex-shrink: 0;

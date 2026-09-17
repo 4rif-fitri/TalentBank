@@ -10,18 +10,26 @@
 
     <div class="topbar-right">
 
-        <div class="profile-wrapper">
-        <button type="button" class="profile-btn" id="profileBtn" aria-label="Open profile menu" style=" background-size: contain;
-                background-image: url('{{ asset('storage/' . env('PROFILE_IMAGE_URL') . '/default.png') }}');">
-        </button>
+        <div class="dropdown">
+            <button type="button" class="profile-btn dropdown-toggle" id="profileBtn" data-bs-toggle="dropdown" aria-expanded="false" style=" background-size: contain;
+                                background-image: url('{{ asset('storage/' . env('PROFILE_IMAGE_URL') . '/default.png') }}');">
+            </button>
+
+            <ul class="dropdown-menu">
+                <li class="w-100">
+                    <form class="logout" action="/logout" method="POST">
+                        @csrf
+                        <button class="btn text-danger w-100" type="submit">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        <!-- <div class="profile-wrapper">
 
             <div class="profile-user-info">
                 <span class="profile-user-name">
                     {{ auth()->user()->name ?? 'Recruiter' }}
-                </span>
-
-                <span class="profile-user-role">
-                    Recruiter
                 </span>
             </div>
 
@@ -72,7 +80,7 @@
 
             </div>
 
-        </div>
+        </div> -->
 
     </div>
 

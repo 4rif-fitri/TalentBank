@@ -3,56 +3,51 @@
 @section('content')
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/student.css') }}">
 
-<div class="content p-4">
+<div class="content p-4 job-offers-page">
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
-        <h3 class="m-0 fw-bold">Job Offers</h3>
-    </div>
+    <section class="job-offers-header">
+        <div class="job-offers-heading">
+            <span class="section-eyebrow">OPPORTUNITIES</span>
+            <h1>Job Offers</h1>
+        </div>
+    </section>
 
     <div class="talent-layout">
 
         <aside class="results-panel" id="filterPanel">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <button data-status="Pending" class="nav-link active text-primary">Pending</button>
-                    </li>
-                    <li class="nav-item">
-                        <button data-status="Accepted" class="nav-link text-body">Accepted</button>
-                    </li>
-                    <li class="nav-item">
-                        <button data-status="Rejected" class="nav-link text-body">Rejected</button>
-                    </li>
-                    <li class="nav-item">
-                        <button data-status="Expired" class="nav-link text-body">Expired</button>
-                    </li>
-                    <li class="nav-item">
-                        <button data-status="Withdrawn" class="nav-link text-body">Withdrawn</button>
-                    </li>
-                </ul>
-            </div>
+            <nav class="offer-tabs" aria-label="Job offer status">
+                <button type="button" class="offer-tab active" data-status="Pending">
+                    Pending
+                    <!-- <span class="tab-count">2</span> -->
+                </button>
+
+                <button type="button" class="offer-tab nav-link" data-status="Accepted">
+                    Accepted
+                </button>
+
+                <button type="button" class="offer-tab nav-link" data-status="Rejected">
+                    Rejected
+                </button>
+
+                <button type="button" class="offer-tab nav-link" data-status="Expired">
+                    Expired
+                </button>
+
+                <button type="button" class="offer-tab nav-link" data-status="Withdrawn">
+                    Withdrawn
+                </button>
+            </nav>
 
             <div class="invitation-list p-2 d-flex flex-column gap-2"></div>
 
         </aside>
 
-        <div class="filter-panel flex-grow-1" id="shortlistContent">
-
-            <div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
-                <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                <h4 class="mt-2">No Interview Selected Yet</h4>
-                <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                    <i class="fa-solid fa-filter"></i>
-                    Interview
-                </button>
-            </div>
-
-        </div>
+        <div class="filter-panel flex-grow-1 offers-list" id="shortlistContent" id="offersList"></div>
     </div>
 </div>
 
-<div class="filter-overlay" onclick="toggleFilter()"></div>
+<div class="filter-overlay"></div>
 @endsection
 
 @section('script')
@@ -136,8 +131,8 @@
     }
 
     function handleChangeStatus () {
-        $(".nav-item button").removeClass("active text-primary").addClass("text-body");
-        $(this).find("button").removeClass("text-body").addClass("active text-primary");
+        $(".offer-tab").removeClass("active")
+        $(this).addClass("active");
         let status = $(this).data("status")
 
         if (status == currentStatus) return
@@ -153,8 +148,8 @@
         getJobOfferById(id)
     }
 
-    $(document).on("click", ".toggleFilter, .invitation-item, .list-item", toggle);
-    $(document).on("click", ".nav-item button", handleChangeStatus)
+    $(document).on("click", ".toggleFilter, .invitation-item, .list-item, .filter-overlay", toggle);
+    $(document).on("click", ".offer-tab", handleChangeStatus)
     $(document).on("click", ".invitation-item ", handleJobOfferDetail)
     $(document).on("click", "#btnAcceptInvitation", handleAcceptJobOffer)
     $(document).on("click", "#btnRejectInvitation", handleRejectJobOffer)
