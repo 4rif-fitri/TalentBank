@@ -111,27 +111,28 @@
 
         }
     }
-        async function handleSelectedIntervieww(id) {
 
-            try {
-                let interviewDetail = await xApiInterview.getInterviewById("{{ route('interviews.getInterviewById', ['id' => '__ID__']) }}", id);
-                let receiverId = interviewDetail.data.interviewee.id
+    async function handleSelectedIntervieww(id) {
+        try {
+            let interviewDetail = await xApiInterview.getInterviewById("{{ route('interviews.getInterviewById', ['id' => '__ID__']) }}", id);
+            let receiverId = interviewDetail.data.interviewee.id
 
-                let listEducationReceiver = await xApiEducation.getEducationByUserProfileId("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}", receiverId);
+            let listEducationReceiver = await xApiEducation.getEducationByUserProfileId("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}", receiverId);
 
-                curreEducations = listEducationReceiver.data
-                currentInterview = interviewDetail.data
-                let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentInterview.interviewee.profile_image
+            curreEducations = listEducationReceiver.data
+            currentInterview = interviewDetail.data
+            let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + currentInterview.interviewee.profile_image
 
-                console.log("curreEducations", curreEducations);
-                console.log("currentInterview", currentInterview);
-                $(".shortlist-content").html(xinterview.recruiter.mainContent(currentInterview, imageUrl, curreEducations));
+            console.log("curreEducations", curreEducations);
+            console.log("currentInterview", currentInterview);
+            $(".shortlist-content").html(xinterview.recruiter.mainContent(currentInterview, imageUrl, curreEducations));
 
-            } catch (xhr) {
-                console.error(xhr);
+        } catch (xhr) {
+            console.error(xhr);
 
-            }
         }
+    }
+
     async function completeInterview() {
         let id = $(this).data("id")
 
@@ -335,23 +336,24 @@
             console.error("Ralat semasa loadData:", error);
         }
     }
-        $(document).ready(function () {
 
-            const pathParts = window.location.pathname.split('/');
-            const id = pathParts[pathParts.length - 1];
+    $(document).ready(function () {
+        const pathParts = window.location.pathname.split('/');
+        const id = pathParts[pathParts.length - 1];
 
-            if (!id) {
+        if (!id) {
 
-                loadData()
+            loadData()
 
 
-            } else {
-                handleSelectedIntervieww(id)
-                loadData()
+        } else {
+            handleSelectedIntervieww(id)
+            loadData()
 
-            }
+        }
 
-        });
+    });
+
     $(document).on("click", ".btnSeeMore", handleSeeMoreEducation);
 
     $(document).on("click", ".shortlist-item", handleSelectedInterview)

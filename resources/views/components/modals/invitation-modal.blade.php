@@ -67,6 +67,10 @@
         currentUserId: null,
         details: null,
         candidateList: null,
+        invitationDetail: null,
+
+        onSuccess: null,
+        onError: null,
 
         init() {
             this.bindEvents();
@@ -80,11 +84,24 @@
             xmodal.hide("listInvitationModal");
         },
 
-        openUpdate() {
+        openUpdate(detail, callbacks = {}) {
+            this.invitationDetail = detail
+            this.onSuccess = callbacks.onSuccess;
+            this.onError = callbacks.onError;
+
+            $("#invitationModal .candidate_name").text(`Candidate: ${this.invitationDetail.receiver.name}`)
+            $("#invitationModal #candidate_id").val(this.invitationDetail.receiver.id)
+
+            $("#invitationModal .position_title").text(`Position: ${this.invitationDetail.position.position_title}`)
+            $("#invitationModal #position_id").val(this.invitationDetail.position.id)
+
+            $("#invitationModal #invitation_title").val(this.invitationDetail.title)
+            $("#invitationModal #expires_at").val(this.invitationDetail.expires_at)
+            $("#invitationModal #invitation_message").val(this.invitationDetail.invitation_message)
+
             $("#btnAddInvitation").hide();
             $("#btnUpdateInvitation").show();
             xmodal.show("invitationModal");
-            xmodal.hide("listInvitationModal");
         },
 
         reset() {
@@ -217,7 +234,70 @@
         },
 
         async update() {
-            console.log("Update invitation");
+
+            let data = {
+                _method: "PUT",
+                _token: $('meta[name="csrf-token"]').attr("content"),
+                title: $("#invitation_title").val(),
+                expires_at: $("#expires_at").val(),
+                invitation_message: $("#invitation_message").val(),
+            }
+
+            try {
+                let response = await xApiInvite.update("{{ route('invitations.update', ['id' => '__ID__']) }}", this.invitationDetail.id, data)
+                if (!response) return
+
+                xalert.success(response.message, 'success');
+                xmodal.hide("invitationModal")
+
+                if (typeof this.onSuccess === "function") {
+                    await this.onSuccess(response);
+                }
+
+            } catch (error) {
+                if (typeof this.onError === "function") {
+                    this.onError(error);
+                }
+            }
+        },
+
+        Withdraw(id, callbacks = {}) {
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, Withdraw it!"
+
+            }).then(async (result) => {
+
+                if (!result.isConfirmed) return;
+
+                const data = {
+                    _method: "PUT",
+                    _token: $('meta[name="csrf-token"]').attr("content")
+                };
+
+                try {
+
+                    const response = await xApiInvite.withdrawInvitation("{{ route('invitations.withdrawInvitation',['id' => '__ID__']) }}",id,data);
+
+                    if (!response) return;
+                    xalert.salert("Success",response.message,"success");
+
+                    if (typeof callbacks.onSuccess === "function") {
+                        await callbacks.onSuccess(response);
+                    }
+
+                } catch (error) {
+                    if (typeof callbacks.onError === "function") {
+                        callbacks.onError(error);
+                    }
+                }
+            });
         },
 
         bindEvents() {
@@ -237,11 +317,14 @@
                 self.store();
             });
 
-            $(document).on("click","#invitationModal #btnUpdateInvitation",function () {
-                self.update();
+            $(document).on("click","#btnUpdateInvitation",function () {
+                self.update()
             });
         }
     };
+
+    invitationModal.init()
 </script>
 
 @endpush
+

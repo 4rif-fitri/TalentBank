@@ -301,7 +301,7 @@
                 self.candidateList = candidateList;
             });
 
-            $(document).on("click",".btnShowModalAddOffer",function () {
+            $(document).on("click","h[pldtmkflpgh;mt].btnShowModalAddOffer",function () {
                 self.currentUserId = $(this).data("id");
                 self.showModalAddJobOffer();
             });
