@@ -51,11 +51,32 @@
         });
     }
 
+    function getPositionById(id) {
+
+        let url = "{{ route('positions.getPositionById', ['id' => '__ID__']) }}";
+        url = url.replace("__ID__", id);
+
+        return $.ajax({
+            url: url,
+            type: "GET",
+            dataType: "json",
+            success: function ({
+                data
+            }) {
+                console.log("getPositionById", data);
+            },
+            error: function (xhr) {
+                console.error(xhr);
+            }
+        });
+    }
+
     $(document).ready(async function () {
         await getMyData();
         console.log("mydata siap diambil:", mydata);
 
         await getPositionsFormMine();
+        getPositionById(11)
     });
 </script>
 @endsection

@@ -26,6 +26,7 @@
 
 <x-modals.invitation-modal />
 <x-modals.active-educations-modal />
+
 @endsection
 
 @section('script')
@@ -37,6 +38,12 @@
     });
 
     $(document).on("click", ".toggleFilter", toggle)
+
+    $(document).on("click", ".nav-item", function () {
+        const status = $(this).data("status");
+        invitationList.load(status);
+        invitationDetail.clear()
+    });
 
     $(document).on("click",".invitation-item",function () {
         const id = $(this).data("id");
@@ -72,6 +79,7 @@
             }
         })
     })
+
 </script>
 @endsection
 

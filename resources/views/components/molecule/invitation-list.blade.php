@@ -3,15 +3,15 @@
     <div class="d-flex flex-column justify-content-between mb-1 pb-1">
         <div class="d-flex justify-content-between w-100">
             <h5 class="m-0 fw-bold">Your invitation</h5>
-            <button type="button"
+            <!-- <button type="button"
                 class="btnShowModalAddShortlist btn btn-outline-primary d-flex justify-content-center align-items-center">
                 <i class="fa-solid fa-plus fs-5"></i>
-            </button>
+            </button> -->
         </div>
 
         <ul class="nav nav-tabs">
             <x-atom.invitation-status status="Pending" />
-            <x-atom.invitation-status status="Appected" />
+            <x-atom.invitation-status status="Accepted" />
             <x-atom.invitation-status status="Rejected" />
             <x-atom.invitation-status status="Expired" />
             <x-atom.invitation-status status="Withdrawn" />

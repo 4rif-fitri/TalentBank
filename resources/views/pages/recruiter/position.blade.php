@@ -14,10 +14,8 @@
 
     <div class="shortlist-layout">
 
-        <!-- Position List -->
         <x-atom.position-list />
 
-        <!-- Position Details -->
         <x-atom.position-detail />
 
     </div>
