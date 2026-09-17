@@ -98,14 +98,11 @@
                 <button type="button" id="btnCencelAddJobOffer" class="btn btn-secondary" data-bs-dismiss="modal">
                     Cancel
                 </button>
-                <button type="button" id="btnCencelupdateJobOffer" class="d-none btn btn-secondary"
-                    data-bs-dismiss="modal">
-                    Cancel
                 </button>
-                <button type="button" id="btnAddJobOffer" class="btn btn-primary">
+                <button type="button"  id="btnAddJobOffer" class="btn btn-primary">
                     Save
                 </button>
-                <button type="button" id="btnUpdateJobOffer" class="d-none btn btn-primary">
+                <button type="button" id="btnUpdateJobOffer" class="btn btn-primary">
                     Update
                 </button>
             </div>
@@ -286,11 +283,74 @@
             }
         },
 
-        async update() {
-            console.log("Update Job Offer");
+        openUpdate(currentJobOffer){
 
-            // API update nanti dekat sini
+            $(".offer-candidate-name").text(`Candidate: ${currentJobOffer.receiver.name}`)
+            $("#jobOfferPositionName").text(`Position: ${currentJobOffer.position.position_title}`)
+            $("#job-offer-title").val(currentJobOffer.title)
+            $("#start_date").val(currentJobOffer.start_date)
+            $("#end_date").val(currentJobOffer.end_date)
 
+            $("#salary_amount").val(currentJobOffer.salary_amount)
+            $("#salary_period").val(currentJobOffer.salary_period)
+            $("#expires_at").val(currentJobOffer.expires_at.split(" ")[0])
+            $("#benefits").val(currentJobOffer.benefits)
+            $("#terms_and_conditions").val(currentJobOffer.terms_and_conditions)
+            $("#job-offer-candicate-id").val(currentJobOffer.receiver.id)
+            $("#QjobOfferPositionId").val(currentJobOffer.position.id)
+
+            $("#jobOfferModal #btnAddJobOffer").hide()
+            $("#jobOfferModal #btnUpdateJobOffer").show()
+            xmodal.show("jobOfferModal")
+        },
+
+        async update(id) {
+
+            let data = {
+                '_token': $('meta[name="csrf-token"]').attr("content"),
+                'title': $("#job-offer-title").val(),
+                'salary_amount': $("#salary_amount").val(),
+                'salary_period': $("#salary_period").val(),
+                'start_date': $("#start_date").val(),
+                'end_date': $("#end_date").val(),
+                'terms_and_conditions': $("#terms_and_conditions").val(),
+                'benefits': $("#benefits").val(),
+                'expires_at': $("#expires_at").val(),
+                '_method': "PUT",
+            }
+
+            try {
+                let response = await xApiEducation.update("{{ route('jobOffers.update', ['id' => '__ID__']) }}", id, data)
+                if (!response) return
+
+                // getJobOffersByStatus(currentStatus)
+
+                xalert.success(response.message)
+                xmodal.hide("jobOfferModal")
+
+            } catch (error) {
+                console.error(error);
+            }
+
+        },
+
+        async withdraw(id){
+            let data = {
+                _method: "PUT",
+                _token: $('meta[name="csrf-token"]').attr("content")
+            }
+
+            try {
+                let response = await xApiJobOffer.withdrawJobOffer("{{ route('jobOffers.withdrawJobOffer', ['id' => '__ID__']) }}", id, data)
+                if (!response) return
+
+                $(`#recruitment-invitation-list .list-item[data-id="${response.data.id}"]`).remove();
+                $(".results-panel").html(xcommon.noSelected("No Job Offer Selected", "", "btn-toggle-filter toggleFilter", "Interview"))
+                xalert.success(response.message)
+
+            } catch (error) {
+                console.error(error);
+            }
         },
 
         bindEvents() {

@@ -109,6 +109,9 @@
                 <button type="button" id="btnAddInterview" class="btn btn-primary">
                     Save
                 </button>
+                <button type="button" id="btnUpdateInterviewSave" class="btn btn-primary">
+                    Save
+                </button>
             </div>
 
         </div>
@@ -134,6 +137,67 @@
             $("#btnAddInterview").show();
             xmodal.show("interviewModal");
             xmodal.hide("listInterviewModal");
+        },
+
+        openUpdate(currentInterview){
+            console.log("currentinterview", currentInterview)
+
+            $("#invite_candidate_id").val(currentInterview.interviewee.id)
+            $(".candidate_name").text(`Candidate: ${currentInterview.interviewee.name}`)
+
+            $(".position_title").text(`Position: ${currentInterview.position.position_title}`)
+
+            $("#invite_title").val(currentInterview.title)
+
+            $("#interview_date").val(currentInterview.scheduled_at.split(" ")[0])
+            $("#start_time").val(currentInterview.scheduled_at.split(" ")[1].substring(0, 5))
+
+            $("#mode_online").prop("checked", currentInterview.interview_mode == "Online")
+            $("#mode_onsite").prop("checked", currentInterview.interview_mode == "On-site")
+            $("#mode_phone").prop("checked", currentInterview.interview_mode == "Phone")
+
+            this.toggleInterviewMode(currentInterview.interview_mode);
+
+            $("#recruiter_comment").val(currentInterview.recruiter_comment)
+            $("#meeting_url").val(currentInterview.meeting_url)
+            $("#location").val(currentInterview.location)
+
+            $("#btnAddInterview").hide()
+            $("#btnUpdateInterviewSave").show()
+            xmodal.show("interviewModal")
+        },
+
+        async update(){
+            let data = {
+                "_token": $('meta[name="csrf-token"]').attr("content"),
+                "_method": "PUT",
+                "title": $("#invite_title").val(),
+                "scheduled_at": $("#interviewModal #interview_date").val() + " " + $("#interviewModal #start_time").val() + ":00",
+                "interview_mode": $("input[name='interview_mode']:checked").val(),
+                "location": $("#location").val(),
+                "meeting_url": $("#meeting_url").val(),
+                "recruiter_comment": $("#recruiter_comment").val(),
+                "interview_result": interviewDetail.current.interview_result
+            }
+            console.log(data);
+
+            try {
+                let response = await xApiInterview.update(
+                    "{{ route('interviews.update',['id' => '__ID__' ]) }}",
+                    interviewDetail.current.id,
+                    data
+                )
+
+                if (!response) return
+
+                console.log(response);
+
+                xalert.fire("Success", "Interview Updated", "success")
+                xmodal.hide("interviewModal")
+
+            } catch (error) {
+                console.error(error);
+            }
         },
 
         reset() {
@@ -304,6 +368,47 @@
                 console.error(error);
                 const message = error?.responseJSON?.message || error?.response?.data?.message || "Something went wrong";
                 xalert.fire("Error",message,"error");
+            }
+        },
+
+        async cancelInterview(id) {
+
+            let data = {
+                '_token': $('meta[name="csrf-token"]').attr("content"),
+                '_method': "PUT"
+            }
+
+            try {
+                let response = await xApiInterview.cancelInterview("{{ route('interviews.cancelInterview',['id' => '__ID__']) }}", id, data)
+                if (!response) return
+
+                $(`#shortlistList .shortlist-item[data-id="${response.data.id}"]`).remove();
+                $(".results-panel").html(xcommon.noSelected("No Job Offer Selected", "", "btn-toggle-filter toggleFilter", "Interview"))
+
+                xalert.fire("Success", "Interview Completed", "success")
+
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
+        async completeInterview(id){
+            let data = {
+                '_token': $('meta[name="csrf-token"]').attr("content"),
+                '_method': "PUT"
+            }
+
+            try {
+                let response = await xApiInterview.completeInterview("{{ route('interviews.completeInterview',['id' => '__ID__']) }}", id, data)
+                if (!response) return
+
+                $(`#shortlistList .shortlist-item[data-id="${response.data.id}"]`).remove();
+                $(".results-panel").html(xcommon.noSelected("No Job Offer Selected", "", "btn-toggle-filter toggleFilter", "Interview"))
+
+                xalert.fire("Success", "Interview Completed", "success")
+
+            } catch (error) {
+                console.error(error);
             }
         },
 

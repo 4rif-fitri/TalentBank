@@ -1,0 +1,53 @@
+<div id="shortlistContent" class="shortlist-content flex-grow-1 p-2">
+
+    <div class="card bg-body shadow-sm border-0 p-3 d-flex justify-content-center align-items-center ">
+        <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
+        <h4 class="mt-2">No Interview Selected Yet</h4>
+        <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
+            <i class="fa-solid fa-filter"></i>
+            Interview
+        </button>
+    </div>
+
+</div>
+
+@push('childScript')
+<script type="module">
+    window.interviewDetail = {
+        current: null,
+        educations: [],
+
+        reload(response) {
+            Object.assign(this.current, response);
+            this.render()
+        },
+
+        async load(id){
+            try {
+                let interviewDetail = await xApiInterview.getInterviewById("{{ route('interviews.getInterviewById', ['id' => '__ID__']) }}", id);
+                let receiverId = interviewDetail.data.interviewee.id
+
+                let listEducationReceiver = await xApiEducation.getEducationByUserProfileId("{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}", receiverId);
+
+                this.educations = listEducationReceiver.data
+                this.current = interviewDetail.data
+                let imageUrl = "{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/" + this.current.interviewee.profile_image
+
+                $(".shortlist-content").html(xinterview.recruiter.mainContent(this.current, imageUrl, this.educations));
+
+            } catch (xhr) {
+                console.error(xhr);
+
+            }
+        },
+
+        clear(){
+            $("#shortlistContent").html(
+                xcommon.noSelected("No Interview Selected Yet", "", "btn-toggle-filter toggleFilter", "Interview")
+            );
+        }
+    };
+</script>
+@endpush
+
+
