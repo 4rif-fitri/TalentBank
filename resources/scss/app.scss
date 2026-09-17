@@ -1,4 +1,3 @@
-// // Custom Bootstrap variables
 // $primary: #5267c4;
 
 // $success: #4fae83;
@@ -8,34 +7,17 @@
 // $light: #f5f6fb;
 // $dark: #252a3d;
 
-// // Bootstrap
-@import "bootstrap/scss/bootstrap";
 
-// =========================================================
-// TALENTBANK
-// =========================================================
-
-// 1. TalentBank variables
-@import "variables";
-
-
-// 2. Bootstrap configuration
 @import "bootstrap";
 
-
-// 3. Base
+@import "variables";
 @import "base";
 
+@import "typography";
+@import "buttons";
+@import "cards";
+@import "forms";
 
-// 4. Components
-@import "components/sidebar";
-@import "components/navbar";
-@import "components/buttons";
-@import "components/cards";
-@import "components/forms";
-@import "components/student-card";
-@import "components/filters";
+@import "sidebar";
+@import "topbar";
 
-
-// 5. Utilities
-@import "utilities";

@@ -1,5 +1,5 @@
 import * as bootstrap from 'bootstrap';
-
+import "../scss/app.scss";
 import * as templateEducation from "./features/education/template.js"
 import * as templateImage from "./features/image/template.js"
 import * as templateInterview from "./features/interview/template.js"
