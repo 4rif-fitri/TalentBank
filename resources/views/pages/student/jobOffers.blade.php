@@ -3,10 +3,10 @@
 @section('content')
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/student.css') }}">
 
-<div class="content p-4 job-offers-page">
+<div class="content p-4 page-container">
 
-    <section class="job-offers-header">
-        <div class="job-offers-heading">
+    <section class="page-header">
+        <div class="page-heading">
             <span class="section-eyebrow">OPPORTUNITIES</span>
             <h1>Job Offers</h1>
         </div>
@@ -16,7 +16,7 @@
 
         <aside class="results-panel" id="filterPanel">
 
-            <nav class="offer-tabs" aria-label="Job offer status">
+            <nav class="tabs" aria-label="Job offer status">
                 <button type="button" class="offer-tab active" data-status="Pending">
                     Pending
                     <!-- <span class="tab-count">2</span> -->
@@ -43,7 +43,7 @@
 
         </aside>
 
-        <div class="filter-panel flex-grow-1 offers-list" id="shortlistContent" id="offersList"></div>
+        <div class="filter-panel flex-grow-1 item-list" id="shortlistContent" id="offersList"></div>
     </div>
 </div>
 

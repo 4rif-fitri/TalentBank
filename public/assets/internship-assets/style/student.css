@@ -6,9 +6,9 @@
 
 .filter-panel {
     width: 350px;
-    border-radius: 12px;
     flex-shrink: 0;
     transition: transform 0.3s ease;
+    padding-bottom: 3rem !important;
 }
 
 .filter-overlay {

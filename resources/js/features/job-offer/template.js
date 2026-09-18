@@ -10,7 +10,7 @@ function renderStatus(status) {
     if (status == "Exprired") class_name = "text-secondary bg-secondary-subtle border-secondary"
     if (status == "Withdrawn") class_name = "text-secondary bg-secondary-subtle border-secondary"
 
-    return `<div class="offer-status ${class_name}">
+    return `<div class="offer-status d-block ${class_name}">
                 ${status}
             </div>`
 }
@@ -18,11 +18,11 @@ function renderStatus(status) {
 export let student = {
     sideList: (invite, imageUrl) =>  {
 
-        return `<button data-id="${invite.id}" role="button" type="button" class="offer-list-card invitation-item list-item" data-offer-id="2">
+        return `<button data-id="${invite.id}" role="button" type="button" class="list-item invitation-item list-item" data-offer-id="2">
                     <div class="company-logo">
                         <div class="thum-image" style="background-image: url('${imageUrl}'); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
                     </div>
-                    <div class="offer-list-info">
+                    <div class="list-item__content">
                         <h3 class="student-name">${invite.position.organization.company_name}</h3>
                         <p class="student-position">${invite.position.position_title}</p>
                         <small class="offer-expiry">
@@ -42,16 +42,16 @@ export let student = {
                 Withdrawn: "text-secondary text-secondary bg-secondary-subtle",
             }[invitation.invitation_status] ?? "text-secondary";
 
-        return `<article class="offer-details-card results-panel" id="offerDetails">
-                    <header class="offer-details-header">
+        return `<article class="content-card results-panel" id="offerDetails">
+                    <header class="content-card__header">
                         <div class="company-logo company-logo-large">
                             <div class="thum-image-lg" style="background-image: url('${imageUrl}');background-position: center; background-size: cover; background-repeat: no-repeat;"></div>
                         </div>
                         <div class="company-heading">
                             <h2>${invitation.position.organization.company_name}</h2>
                             <small>${invitation.position.work_location}</small>
+                            ${renderStatus(invitation.offer_status)}
                         </div>
-                        ${renderStatus(invitation.offer_status)}
                     </header>
 
                     <div class="offer-details-grid">
@@ -73,6 +73,7 @@ export let student = {
                                 <strong>${invitation.salary_amount} / ${invitation.salary_period}</strong>
                             </div>
                         </div>
+
                         <div class="offer-info-column">
                             <div class="offer-info-row">
                                 <span>Benefits</span>
@@ -104,16 +105,16 @@ export let student = {
                     </div>
                     <footer class="offer-actions">
                         <h3>Actions</h3>
-                        <div class="offer-action-buttons">
-                            <button type="button" class="tb-btn tb-btn-primary" id="messageStudentBtn">
+                        <div class="action-buttons">
+                            <button type="button" class="btn-tb btn-tb-primary" id="messageStudentBtn">
                                 <i class="fa-solid fa-message"></i>
                                 Message Student
                             </button>
-                            <button id="btnRejectInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"} type="button" class="tb-btn tb-btn-danger" id="declineOfferBtn">
+                            <button id="btnRejectInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"} type="button" class="btn-tb btn-tb-danger" id="declineOfferBtn">
                                 <i class="fa-regular fa-trash-can"></i>
                                 Decline
                             </button>
-                            <button id="btnAcceptInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"} type="button" class="tb-btn tb-btn-outline" id="acceptOfferBtn">
+                            <button id="btnAcceptInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"} type="button" class="btn-tb btn-tb-outline" id="acceptOfferBtn">
                                 <i class="fa-solid fa-pen"></i>
                                 Accept Offer
                             </button>
@@ -158,105 +159,112 @@ export let recruiter = {
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6 col-12 card-body p-3">
-                            <table class="table">
+                        <div class="col-12">
+                            <table class="table table-borderless mb-0">
                                 <tbody>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Company</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <div>${invitation.position.organization.company_name} - ${invitation.position.work_location}</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Position</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${invitation.position.position_title}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Department</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${invitation.position.department}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Period</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${formatDateShort(invitation.start_date)} - ${formatDateShort(invitation.end_date)}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Salary</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${invitation.salary_amount} / ${invitation.salary_period}</span>
-                                    </td>
-                                </tr>
-
+                                    <tr>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Company</small>
+                                        </td>
+                                        <td class="detail-value">
+                                            ${invitation.position.organization.company_name}
+                                            - ${invitation.position.work_location}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Position</small>
+                                        </td>
+                                        <td class="detail-value">
+                                            ${invitation.position.position_title}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Department</small>
+                                        </td>
+                                        <td class="detail-value">
+                                            ${invitation.position.department}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Period</small>
+                                        </td>
+                                        <td class="detail-value">
+                                            ${formatDateShort(invitation.start_date)}
+                                            - ${formatDateShort(invitation.end_date)}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Salary</small>
+                                        </td>
+                                        <td class="detail-value">
+                                            ${invitation.salary_amount}
+                                            / ${invitation.salary_period}
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-lg-6 col-12 card-body p-3">
-                            <table class="table">
+                    </div>
+
+                    <div class="col-12">
+                        <div class="card-body p-3">
+                            <table class="table table-borderless mb-0">
                                 <tbody>
                                     <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Benefits</small>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Benefits</small>
                                         </td>
-                                        <td class="col-9">
-                                            <span>${invitation.benefits}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Terms and conditions</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${invitation.terms_and_conditions}</span>
+                                        <td class="detail-value">
+                                            ${invitation.benefits}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Status</small>
+                                        <td class="detail-label">
+                                            <small class="text-muted">
+                                                Terms and conditions
+                                            </small>
                                         </td>
-                                        <td class="col-9">
-                                            <div>${invitation.offer_status}</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Sent</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${formatDate(invitation.created_at)}</span>
+                                        <td class="detail-value">
+                                            ${invitation.terms_and_conditions}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Expires</small>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Status</small>
                                         </td>
-                                        <td class="col-9">
-                                            <span>${formatDate(invitation.expires_at)}</span>
+                                        <td class="detail-value">
+                                            ${invitation.offer_status}
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Create by</small>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Sent</small>
                                         </td>
-                                        <td class="col-9">
-                                            <span>${invitation.sender.name}</span>
+                                        <td class="detail-value">
+                                            ${formatDate(invitation.created_at)}
                                         </td>
                                     </tr>
-                                </body>
+                                    <tr>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Expires</small>
+                                        </td>
+                                        <td class="detail-value">
+                                            ${formatDate(invitation.expires_at)}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-label">
+                                            <small class="text-muted">Created by</small>
+                                        </td>
+                                        <td class="detail-value">
+                                            ${invitation.sender.name}
+                                        </td>
+                                    </tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
