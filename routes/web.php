@@ -13,6 +13,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
+use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\ShortlistController;
 use App\Http\Controllers\SkillController;
@@ -239,5 +240,14 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
             Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update');
             Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer');
         });
+    });
+
+    Route::prefix('resumes')->group(function () {
+        Route::get('/getAllResumeTemplates', [ResumeController::class, 'getAllResumeTemplates'])->name('resumes.getAllResumeTemplates');
+        Route::get('/getResumesByUserProfileId/{id}', [ResumeController::class, 'getResumesByUserProfileId'])->name('resumes.getResumesByUserProfileId');
+        Route::get('/getResumeById/{id}', [ResumeController::class, 'getResumeById'])->name('resumes.getResumeById');
+        Route::post('/store', [ResumeController::class, 'store'])->name('resumes.store');
+        Route::put('/update/{id}', [ResumeController::class, 'update'])->name('resumes.update');
+        Route::delete('/delete/{id}', [ResumeController::class, 'delete'])->name('resumes.delete');
     });
 });
