@@ -138,6 +138,40 @@
     flex-direction: column;
 }
 
+.list-item-row {
+
+    width: 100%;
+    padding: var(--spacing-16);
+
+    border: 2px solid var(--color-obsidian);
+
+    background-color: var(--surface-paper);
+    color: var(--color-obsidian);
+
+    text-align: left;
+    cursor: pointer;
+
+    box-shadow: 2px 2px 0 var(--color-obsidian);
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+
+    &:hover {
+        transform: translate(-2px, -2px);
+    }
+
+    &:active {
+        box-shadow: 1px 1px 0 var(--color-obsidian);
+        transform: translate(2px, 2px);
+    }
+
+    &.active {
+        background: var(--surface-lime-voltage);
+    }
+}
+
 .list-item {
     display: flex;
     align-items: center;
@@ -146,7 +180,7 @@
     width: 100%;
     padding: var(--spacing-16);
 
-    border: 3px solid var(--color-obsidian);
+    border: 2px solid var(--color-obsidian);
     // border-radius: var(--radius-lg);
 
     background: var(--surface-paper);
@@ -155,7 +189,7 @@
     text-align: left;
     cursor: pointer;
 
-    box-shadow: 4px 4px 0 var(--color-obsidian);
+    box-shadow: 2px 2px 0 var(--color-obsidian);
 
     transition:
         transform 0.2s ease,
@@ -269,11 +303,11 @@
 
     padding: var(--spacing-32);
 
-    border: 3px solid var(--color-obsidian);
+    border: 2px solid var(--color-obsidian);
     // border-radius: var(--radius-lg);
 
     background: var(--surface-paper);
-    box-shadow: 6px 6px 0 var(--color-obsidian);
+    box-shadow: 3px 3px 0 var(--color-obsidian);
 }
 
 .content-card__header {
@@ -391,7 +425,7 @@
     gap: var(--spacing-8);
 
     min-height: 44px;
-    padding: var(--spacing-12) var(--spacing-16);
+    // padding: var(--spacing-12) var(--spacing-16);
 
     border: 1.5px solid var(--color-obsidian);
     // border-radius: var(--radius-buttons);
@@ -431,23 +465,6 @@
     background: var(--surface-paper);
     color: var(--color-obsidian);
 }
-
-.offer-bottom-note {
-    position: absolute;
-    right: var(--spacing-24);
-    bottom: var(--spacing-20);
-
-    max-width: 90px;
-
-    color: var(--color-obsidian);
-    font-size: var(--text-micro);
-    font-weight: var(--font-weight-black);
-    line-height: 1.1;
-    text-align: center;
-
-    transform: rotate(-8deg);
-}
-
 
 @media (max-width: 1200px) {
     .page-layout {

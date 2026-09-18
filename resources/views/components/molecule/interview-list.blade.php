@@ -1,10 +1,9 @@
 <aside class="shortlist-sidebar" id="listContainer">
     <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
         <ul class="nav nav-tabs">
-            <x-atom.tab-status status="Scheduled" />
-            <x-atom.tab-status status="Completed" />
-            <x-atom.tab-status status="Cancelled" />
-            <x-atom.tab-status status="Rescheduled" />
+            <x-atom.tab-status status="Scheduled" class="active" />
+            <x-atom.tab-status status="Completed" class="" />
+            <x-atom.tab-status status="Cancelled" class="" />
         </ul>
     </div>
 

@@ -14,32 +14,18 @@
     <div class="talent-layout">
 
         <aside class="results-panel" id="filterPanel">
-
             <nav class="tabs" aria-label="Job offer status">
                 <x-atom.tab-status status="Scheduled" class="active" />
                 <x-atom.tab-status status="Completed" class="" />
                 <x-atom.tab-status status="Cancelled" class="" />
             </nav>
-
-
             <div class="invitation-list p-2 d-flex gap-2 flex-column"></div>
-
         </aside>
 
         <div class="filter-panel flex-grow-1">
-            <div class="row g-3 " id="shortlistContent">
-
-                <!-- <div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
-                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                    <h4 class="mt-2">No Interview Selected Yet</h4>
-                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                        <i class="fa-solid fa-filter"></i>
-                        Interview
-                    </button>
-                </div> -->
-
-            </div>
+            <div class="row g-3 " id="shortlistContent"></div>
         </div>
+
     </div>
 </div>
 

@@ -10,11 +10,11 @@
         </div>
 
         <ul class="nav nav-tabs">
-            <x-atom.tab-status status="Pending" />
-            <x-atom.tab-status status="Accepted" />
-            <x-atom.tab-status status="Declined" />
-            <x-atom.tab-status status="Withdrawn" />
-            <x-atom.tab-status status="Expired" />
+            <x-atom.tab-status status="Pending" class="active" />
+            <x-atom.tab-status status="Accepted" class="" />
+            <x-atom.tab-status status="Declined" class="" />
+            <x-atom.tab-status status="Withdrawn" class="" />
+            <x-atom.tab-status status="Expired" class="" />
         </ul>
     </div>
 
