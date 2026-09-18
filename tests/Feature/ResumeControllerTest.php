@@ -7,6 +7,7 @@ use App\Models\Education;
 use App\Models\Programme;
 use App\Models\Resume;
 use App\Models\ResumeContent;
+use App\Models\ResumeTemplate;
 use App\Models\User;
 use App\Models\UserProfile;
 use Database\Seeders\FacultySeeder;
@@ -56,6 +57,7 @@ class ResumeControllerTest extends TestCase
     private UserProfile $userProfile;
     private Education $education;
     private Education $otherEducation;
+    private ResumeTemplate $resumeTemplate;
 
     protected function setUp(): void
     {
@@ -84,6 +86,7 @@ class ResumeControllerTest extends TestCase
             'user_profile_id' => $this->userProfile->id,
             'programme_id' => $programme->id,
         ]);
+        $this->resumeTemplate = ResumeTemplate::factory()->create();
 
         $this->actingAs($this->user)->withSession([
             'user_profile_id' => $this->userProfile->id,
@@ -186,7 +189,9 @@ class ResumeControllerTest extends TestCase
 
     public function test_user_can_create_resume(): void
     {
-        $response = $this->postJson(route('resumes.store'), $this->validResumePayload());
+        $response = $this->postJson(route('resumes.store'), $this->validResumePayload([
+            'resume_template_id' => $this->resumeTemplate->id
+        ]));
 
         $response->assertStatus(Response::HTTP_CREATED)
             ->assertJsonFragment([
@@ -196,9 +201,14 @@ class ResumeControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => self::RESUME_RETURN_COLUMNS,
             ])
-            ->assertJsonPath('data.user_profile_id', $this->userProfile->id);
+            ->assertJsonPath('data.user_profile_id', $this->userProfile->id)
+            ->assertJsonPath('data.resume_template_id', $this->resumeTemplate->id);
 
-        $this->assertDatabaseHas('resumes', ['id' => $response->json('data.id'), 'user_profile_id' => $this->userProfile->id])
+        $this->assertDatabaseHas('resumes', [
+            'id' => $response->json('data.id'),
+            'user_profile_id' => $this->userProfile->id,
+            'resume_template_id' => $this->resumeTemplate->id,
+        ])
             ->assertDatabaseHas('resume_contents', [
                 'resume_id' => $response->json('data.id'),
                 'source_type' => 'education',
@@ -220,17 +230,66 @@ class ResumeControllerTest extends TestCase
     public function test_create_resume_fails_with_non_existing_source_id(): void
     {
         $response = $this->postJson(route('resumes.store'), $this->validResumePayload([
-            'content_to_add' => [['source_type' => 'education', 'source_id' => 0]],
+            'resume_template_id' => $this->resumeTemplate->id,
+            'content_to_add' => [
+                [
+                    'source_type' => 'education',
+                    'source_id' => 0
+                ]
+            ],
         ]));
 
         $response->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJsonFragment([
                 'status' => Response::HTTP_NOT_FOUND,
-                'message' => 'Source ID not found for App\\Models\\Education',
+                'message' => 'Source not found for education with given ID.',
             ]);
 
         $this->assertDatabaseEmpty('resumes');
     }
+
+    public function test_create_resume_fails_with_non_existing_resume_template_id(): void
+    {
+        $response = $this->postJson(route('resumes.store'), $this->validResumePayload([
+            'resume_template_id' => 0,
+            'content_to_add' => [
+                [
+                    'source_type' => 'education',
+                    'source_id' => $this->education->id
+                ]
+            ],
+        ]));
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST,
+            ]);
+
+        $this->assertStringContainsString('resume template id', $response->json('message'));
+        $this->assertDatabaseEmpty('resumes');
+    }
+
+    public function test_create_resume_fails_with_invalid_source_type(): void
+    {
+        $response = $this->postJson(route('resumes.store'), $this->validResumePayload([
+            'resume_template_id' => $this->resumeTemplate->id,
+            'content_to_add' => [
+                [
+                    'source_type' => 'Invalid type',
+                    'source_id' => $this->education->id
+                ]
+            ],
+        ]));
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST,
+            ]);
+
+        $this->assertStringContainsString('source_type', $response->json('message'));
+        $this->assertDatabaseEmpty('resumes');
+    }
+
 
     public function test_user_can_update_resume_content(): void
     {
@@ -374,6 +433,35 @@ class ResumeControllerTest extends TestCase
                 'status' => Response::HTTP_CONFLICT,
                 'message' => 'Content already exists in resume.',
             ]);
+    }
+
+    public function test_update_resume_fails_with_invalid_source_type(): void
+    {
+        $resume = Resume::factory()->create(['user_profile_id' => $this->userProfile->id]);
+        ResumeContent::create([
+            'source_type' => 'education',
+            'source_id' => $this->education->id,
+            'resume_id' => $resume->id,
+        ]);
+
+        $response = $this->putJson(route('resumes.update', ['id' => $resume->id]), [
+            'content_to_add' => [
+                [
+                    'source_type' => 'Invalid type',
+                    'source_id' => $this->education->id
+                ]
+            ],
+            'content_ids_to_delete' => [],
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST,
+            ])
+            ->assertJsonPath('data', null);
+
+        $this->assertStringContainsString('source_type', $response->json('message'));
+        $this->assertDatabaseCount('resume_contents', 1);
     }
 
     public function test_user_cannot_update_another_users_resume(): void

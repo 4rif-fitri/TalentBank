@@ -25,6 +25,16 @@ class ResumeController extends Controller
     }
 
     /**
+     * Handles request to get all available resume tempaltes
+     * @return JsonResponse
+     */
+    public function getAllResumeTemplates(): JsonResponse
+    {
+        $resumeTemplates = $this->resumeService->getAllResumeTemplates();
+        return ApiResponse::success('Success.', $resumeTemplates)->toJsonResponse();
+    }
+
+    /**
      * Handles request to get resumes by user profile ID
      * 
      * @param int $id
@@ -58,6 +68,7 @@ class ResumeController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'resume_template_id' => ['required', 'int', 'exists:resume_templates,id'],
             'content_to_add' => ['required', 'array'],
             'content_to_add.*' => ['required', 'array'],
             'content_to_add.*.source_type' => ['required', 'string', Rule::in(self::RESUME_CONTENT_SOURCE)],

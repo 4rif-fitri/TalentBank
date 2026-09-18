@@ -14,7 +14,13 @@ class Resume extends Model
         'created_at',
         'updated_at',
         'user_profile_id',
+        'resume_template_id',
     ];
+
+    public function resumeTemplate()
+    {
+        return $this->belongsTo(ResumeTemplate::class, 'resume_template_id');
+    }
 
     public function education()
     {

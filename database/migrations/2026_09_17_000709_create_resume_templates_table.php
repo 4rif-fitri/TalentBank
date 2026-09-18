@@ -10,11 +10,10 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('resumes', function (Blueprint $table) {
+        Schema::create('resume_templates', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->foreignId('user_profile_id')->constrained('user_profiles')->onDelete('cascade');
-            $table->foreignId('resume_template_id')->constrained('resume_templates')->onDelete('cascade');
+            $table->string('template_file_name');
+            $table->string('thumbnail_file_name');
         });
     }
 
@@ -23,6 +22,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('resumes');
+        Schema::dropIfExists('resume_templates');
     }
 };

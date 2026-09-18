@@ -711,9 +711,12 @@ class InvitationControllerTest extends TestCase
             ->assertJsonPath('data', null);
 
         $this->assertDatabaseCount('invitations', 1)
-            ->assertDatabaseHas('invitations', $this->validInvitationPayload([
-                'id' => $invitation->id
-            ]));
+            ->assertDatabaseHas('invitations', [
+                'id' => $invitation->id,
+                'sender_profile_id' => $this->senderProfile->id,
+                'receiver_profile_id' => $this->receiverProfile->id,
+                'position_id' => $this->position->id,
+            ]);
     }
 
     public function test_update_invitation_fails_with_non_existing_invitation_id(): void

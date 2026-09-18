@@ -2,15 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Resume;
 use App\Models\ResumeTemplate;
-use App\Models\UserProfile;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<Resume>
+ * @extends Factory<ResumeTemplate>
  */
-class ResumeFactory extends Factory
+class ResumeTemplateFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,8 +18,8 @@ class ResumeFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_profile_id' => UserProfile::inRandomOrder()->first()->id,
-            'resume_template_id' => ResumeTemplate::inRandomOrder()->first()->id
+            'template_file_name' => $this->faker->uuid() . '.html',
+            'thumbnail_file_name' => $this->faker->uuid() . '.jpg'
         ];
     }
 }

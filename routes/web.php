@@ -240,6 +240,7 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::prefix('resumes')->group(function () {
+        Route::get('/getAllResumeTemplates', [ResumeController::class, 'getAllResumeTemplates'])->name('resumes.getAllResumeTemplates');
         Route::get('/getResumesByUserProfileId/{id}', [ResumeController::class, 'getResumesByUserProfileId'])->name('resumes.getResumesByUserProfileId');
         Route::get('/getResumeById/{id}', [ResumeController::class, 'getResumeById'])->name('resumes.getResumeById');
         Route::post('/store', [ResumeController::class, 'store'])->name('resumes.store');
