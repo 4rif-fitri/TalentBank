@@ -26,6 +26,31 @@ class ResumeControllerTest extends TestCase
     use RefreshDatabase;
 
     private const RESUME_RETURN_COLUMNS = ['id', 'user_profile_id', 'created_at', 'updated_at'];
+    private const RESUME_CONTENT_RELATIONS_RETURN_COLUMNS = [
+        'education' => [
+            '*' => [
+                'programme' => [
+                    'organization'
+                ]
+            ]
+        ],
+        'user_profile',
+        'user_languages' => [
+            '*' => [
+                'language'
+            ]
+        ],
+        'social_media_links' => [
+            '*' => [
+                'social_media'
+            ]
+        ],
+        'user_skills' => [
+            '*' => [
+                'skill'
+            ]
+        ],
+    ];
 
     private User $user;
     private UserProfile $userProfile;
@@ -95,15 +120,11 @@ class ResumeControllerTest extends TestCase
             ])
             ->assertJsonStructure([
                 'data' => [
-                    '*' => [
-                        ...self::RESUME_RETURN_COLUMNS,
-                        ...AppConstants::RESUME_CONTENT_RELATIONS,
-                    ],
+                    '*' => self::RESUME_RETURN_COLUMNS,
                 ],
             ])
             ->assertJsonPath('data.0.id', $resume->id)
-            ->assertJsonPath('data.0.user_profile_id', $this->userProfile->id)
-            ->assertJsonPath('data.0.education.0.id', $this->education->id);
+            ->assertJsonPath('data.0.user_profile_id', $this->userProfile->id);
     }
 
     public function test_user_can_get_resume_by_id_and_is_marked_as_owner(): void
@@ -121,7 +142,7 @@ class ResumeControllerTest extends TestCase
                 'data' => [
                     ...self::RESUME_RETURN_COLUMNS,
                     'user_role',
-                    ...AppConstants::RESUME_CONTENT_RELATIONS,
+                    ...self::RESUME_CONTENT_RELATIONS_RETURN_COLUMNS,
                 ],
             ])
             ->assertJsonPath('data.id', $resume->id)
@@ -144,7 +165,7 @@ class ResumeControllerTest extends TestCase
                 'data' => [
                     ...self::RESUME_RETURN_COLUMNS,
                     'user_role',
-                    ...AppConstants::RESUME_CONTENT_RELATIONS,
+                    ...self::RESUME_CONTENT_RELATIONS_RETURN_COLUMNS,
                 ],
             ])
             ->assertJsonPath('data.id', $resume->id)
@@ -173,13 +194,9 @@ class ResumeControllerTest extends TestCase
                 'message' => 'Resume created successfully.',
             ])
             ->assertJsonStructure([
-                'data' => [
-                    ...self::RESUME_RETURN_COLUMNS,
-                    ...AppConstants::RESUME_CONTENT_RELATIONS,
-                ],
+                'data' => self::RESUME_RETURN_COLUMNS,
             ])
-            ->assertJsonPath('data.user_profile_id', $this->userProfile->id)
-            ->assertJsonPath('data.education.0.id', $this->education->id);
+            ->assertJsonPath('data.user_profile_id', $this->userProfile->id);
 
         $this->assertDatabaseHas('resumes', ['id' => $response->json('data.id'), 'user_profile_id' => $this->userProfile->id])
             ->assertDatabaseHas('resume_contents', [
@@ -235,10 +252,7 @@ class ResumeControllerTest extends TestCase
                 'message' => 'Resume updated successfully.',
             ])
             ->assertJsonStructure([
-                'data' => [
-                    ...self::RESUME_RETURN_COLUMNS,
-                    ...AppConstants::RESUME_CONTENT_RELATIONS,
-                ],
+                'data' => self::RESUME_RETURN_COLUMNS,
             ]);
 
         $this->assertDatabaseMissing('resume_contents', ['id' => $content->id])
@@ -268,10 +282,7 @@ class ResumeControllerTest extends TestCase
                 'message' => 'Resume updated successfully.',
             ])
             ->assertJsonStructure([
-                'data' => [
-                    ...self::RESUME_RETURN_COLUMNS,
-                    ...AppConstants::RESUME_CONTENT_RELATIONS,
-                ],
+                'data' => self::RESUME_RETURN_COLUMNS,
             ])
             ->assertJsonPath('data.id', $resume->id);
 
@@ -300,10 +311,7 @@ class ResumeControllerTest extends TestCase
                 'message' => 'Resume updated successfully.',
             ])
             ->assertJsonStructure([
-                'data' => [
-                    ...self::RESUME_RETURN_COLUMNS,
-                    ...AppConstants::RESUME_CONTENT_RELATIONS,
-                ],
+                'data' => self::RESUME_RETURN_COLUMNS,
             ])
             ->assertJsonPath('data.id', $resume->id);
 

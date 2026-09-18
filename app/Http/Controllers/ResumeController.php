@@ -12,6 +12,13 @@ use Illuminate\Validation\Rule;
 
 class ResumeController extends Controller
 {
+    private const RESUME_CONTENT_SOURCE = [
+        'education',
+        'social_media_link',
+        'user_skill',
+        'user_language'
+    ];
+
     public function __construct(
         private readonly ResumeService $resumeService
     ) {
@@ -38,7 +45,7 @@ class ResumeController extends Controller
     public function getResumeById(int $id): JsonResponse
     {
         $userProfileId = session('user_profile_id');
-        $resume = $this->resumeService->getResumesById($id, $userProfileId);
+        $resume = $this->resumeService->getResumeById($id, $userProfileId);
         return ApiResponse::success('Success.', $resume)->toJsonResponse();
     }
 
@@ -53,7 +60,7 @@ class ResumeController extends Controller
         $validated = $request->validate([
             'content_to_add' => ['required', 'array'],
             'content_to_add.*' => ['required', 'array'],
-            'content_to_add.*.source_type' => ['required', 'string', Rule::in(AppConstants::RESUME_CONTENT_RELATIONS)],
+            'content_to_add.*.source_type' => ['required', 'string', Rule::in(self::RESUME_CONTENT_SOURCE)],
             'content_to_add.*.source_id' => ['required', 'int']
         ]);
 
@@ -74,7 +81,7 @@ class ResumeController extends Controller
         $validated = $request->validate([
             'content_to_add' => ['nullable', 'array', 'required_without:content_ids_to_delete'],
             'content_to_add.*' => ['nullable', 'array'],
-            'content_to_add.*.source_type' => ['required', 'string', Rule::in(AppConstants::RESUME_CONTENT_RELATIONS)],
+            'content_to_add.*.source_type' => ['required', 'string', Rule::in(self::RESUME_CONTENT_SOURCE)],
             'content_to_add.*.source_id' => ['required', 'int'],
 
             'content_ids_to_delete' => ['nullable', 'array', 'required_without:content_to_add'],

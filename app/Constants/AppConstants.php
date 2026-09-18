@@ -61,5 +61,4 @@ class AppConstants
         'MONTHLY' => 'Monthly',
         'YEARLY' => 'Yearly',
     ];
-    public const RESUME_CONTENT_RELATIONS = ['education'];
 }

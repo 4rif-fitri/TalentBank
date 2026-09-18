@@ -20,4 +20,24 @@ class Resume extends Model
     {
         return $this->morphedByMany(Education::class, 'source', 'resume_contents', 'resume_id', 'source_id');
     }
+
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class, 'user_profile_id');
+    }
+
+    public function userLanguages()
+    {
+        return $this->morphedByMany(UserLanguage::class, 'source', 'resume_contents', 'resume_id', 'source_id');
+    }
+
+    public function socialMediaLinks()
+    {
+        return $this->morphedByMany(SocialMediaLink::class, 'source', 'resume_contents', 'resume_id', 'source_id');
+    }
+
+    public function userSkills()
+    {
+        return $this->morphedByMany(UserSkill::class, 'source', 'resume_contents', 'resume_id', 'source_id');
+    }
 }

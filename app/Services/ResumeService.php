@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Constants\AppConstants;
 use App\Models\Resume;
 use App\Models\ResumeContent;
 use Exception;
@@ -61,9 +60,7 @@ class ResumeService
      */
     public function getResumesByUserProfileId(int $userProfileId): Collection
     {
-        return Resume::with(AppConstants::RESUME_CONTENT_RELATIONS)
-            ->where('user_profile_id', $userProfileId)
-            ->get();
+        return Resume::where('user_profile_id', $userProfileId)->get();
     }
 
     /**
@@ -74,9 +71,15 @@ class ResumeService
      * @throws Exception
      * @return Resume|\stdClass
      */
-    public function getResumesById(int $resumeId, int $userProfileId): Resume
+    public function getResumeById(int $resumeId, int $userProfileId): Resume
     {
-        $resume = Resume::with(AppConstants::RESUME_CONTENT_RELATIONS)
+        $resume = Resume::with([
+            'education.programme.organization:id,company_name,organization_logo',
+            'userProfile',
+            'userLanguages.language',
+            'socialMediaLinks.socialMedia',
+            'userSkills.skill',
+        ])
             ->find($resumeId);
 
         if (!isset($resume)) {
@@ -124,7 +127,7 @@ class ResumeService
             return $resume;
         });
 
-        return $resume->load(AppConstants::RESUME_CONTENT_RELATIONS);
+        return $resume;
     }
 
     /**
@@ -187,7 +190,7 @@ class ResumeService
             }
         });
 
-        return $resume->load(AppConstants::RESUME_CONTENT_RELATIONS);
+        return $resume;
     }
 
     /**
