@@ -4,15 +4,9 @@
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/student.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/select2.css') }}">
 
-<div class="content p-4">
+<div class="content p-4 page-content">
 
-    <!-- Header & Toggle Button (Mobile) -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="m-0 fw-bold">Find University Talent</h3>
-        <button class="btn btn-primary d-lg-none btn-toggle-filter">
-            <i class="fa-solid fa-filter"></i> Filters
-        </button>
-    </div>
+    <x-atom.page-header title="Liked Talents" />
 
     <div class="talent-layout">
         <x-molecule.filter-panel />

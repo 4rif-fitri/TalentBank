@@ -93,7 +93,7 @@ class internshipController extends Controller
     }
     public function recruiterHiredTalent()
     {
-        return view("pages.recruiter.hiredTalent");
+        return view("pages.recruiter.message");
     }
     public function recruiterMessage()
     {

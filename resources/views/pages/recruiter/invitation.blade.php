@@ -3,15 +3,9 @@
 @section('content')
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/recruiter.css') }}">
 
-<div class="content p-4">
+<div class="content p-4 page-content">
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
-        <h3 class="m-0 fw-bold">Invitations</h3>
-        <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-            <i class="fa-solid fa-filter"></i>
-            invitation
-        </button>
-    </div>
+    <x-atom.page-header title="Invitations" />
 
     <div class="shortlist-layout">
 

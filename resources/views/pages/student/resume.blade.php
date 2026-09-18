@@ -1,22 +1,21 @@
 @extends('layouts.internship-layouts')
-
+@php
+    $list = [
+        ['status' => 'All Resume', 'class' => 'active',],
+        ['status' => 'Latest', 'class' => '',],
+        ['status' => 'Oldest', 'class' => '',],
+    ];
+@endphp
 @section('content')
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/student.css') }}">
 
 <div class="content p-4 page-container">
 
-    <section class="page-header">
-        <div class="page-heading">
-            <h1>My Resume</h1>
-        </div>
-    </section>
+    <x-atom.page-header title="My Resume" />
 
     <div class="d-flex justify-content-between">
-        <nav class="tabs" aria-label="Job offer status">
-            <x-atom.tab-status status="All Resume" class="active" />
-            <x-atom.tab-status status="Latest" class="" />
-            <x-atom.tab-status status="Oldest" class="" />
-        </nav>
+
+        <x-molecule.nav-tabs :list="$list" />
 
         <div class="nav-item">
             <button class="offer-tab active">
