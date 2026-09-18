@@ -18,7 +18,7 @@ function renderStatus(status) {
 export let student = {
     sideList: (invite, imageUrl) =>  {
 
-        return `<button data-id="${invite.id}" role="button" type="button" class="list-item invitation-item list-item" data-offer-id="2">
+        return `<button data-id="${invite.id}" role="button" type="button" class="list-item invitation-item list-item">
                     <div class="company-logo">
                         <div class="thum-image" style="background-image: url('${imageUrl}'); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
                     </div>
@@ -35,13 +35,6 @@ export let student = {
     },
 
     mainContent(invitation, imageUrl) {
-            const statusClass = {
-                Pending: "text-warning text-warning bg-warning-subtle",
-                Accepted: "text-success text-success bg-success-subtle",
-                Rejected: "text-danger text-danger bg-danger-subtle",
-                Withdrawn: "text-secondary text-secondary bg-secondary-subtle",
-            }[invitation.invitation_status] ?? "text-secondary";
-
         return `<article class="content-card results-panel" id="offerDetails">
                     <header class="content-card__header">
                         <div class="company-logo company-logo-large">

@@ -7,7 +7,6 @@
 
     <section class="page-header">
         <div class="page-heading">
-            <span class="section-eyebrow">OPPORTUNITIES</span>
             <h1>Job Offers</h1>
         </div>
     </section>
@@ -17,26 +16,10 @@
         <aside class="results-panel" id="filterPanel">
 
             <nav class="tabs" aria-label="Job offer status">
-                <button type="button" class="offer-tab active" data-status="Pending">
-                    Pending
-                    <!-- <span class="tab-count">2</span> -->
-                </button>
-
-                <button type="button" class="offer-tab nav-link" data-status="Accepted">
-                    Accepted
-                </button>
-
-                <button type="button" class="offer-tab nav-link" data-status="Rejected">
-                    Rejected
-                </button>
-
-                <button type="button" class="offer-tab nav-link" data-status="Expired">
-                    Expired
-                </button>
-
-                <button type="button" class="offer-tab nav-link" data-status="Withdrawn">
-                    Withdrawn
-                </button>
+                <x-atom.tab-status status="Pending" class="active" />
+                <x-atom.tab-status status="Rejected" class="" />
+                <x-atom.tab-status status="Expired" class="" />
+                <x-atom.tab-status status="Withdrawn" class="" />
             </nav>
 
             <div class="invitation-list p-2 d-flex flex-column gap-2"></div>
