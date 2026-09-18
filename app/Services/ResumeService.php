@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
-use App\Constants\AppConstants;
 use App\Models\Resume;
 use App\Models\ResumeContent;
+use App\Models\ResumeTemplate;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class ResumeService
@@ -48,9 +49,21 @@ class ResumeService
             $sourceIdsCountInDb = $modelClass->whereIn('id', $sourceIds)->lockForUpdate()->count();
 
             if ($sourceIdsCountInDb !== count($sourceIds)) {
-                throw new Exception('Source ID not found for ' . $morphMap[$sourceType], Response::HTTP_NOT_FOUND);
+                throw new Exception('Source not found for ' . $sourceType . ' with given ID.', Response::HTTP_NOT_FOUND);
             }
         }
+    }
+
+    /**
+     * Gets all resume templates available in database
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection<int, ResumeTemplate>
+     */
+    public function getAllResumeTemplates(): Collection
+    {
+        return Cache::remember('resume_templates', now()->addHours(24), function () {
+            return ResumeTemplate::all();
+        });
     }
 
     /**
@@ -61,9 +74,7 @@ class ResumeService
      */
     public function getResumesByUserProfileId(int $userProfileId): Collection
     {
-        return Resume::with(AppConstants::RESUME_CONTENT_RELATIONS)
-            ->where('user_profile_id', $userProfileId)
-            ->get();
+        return Resume::with('resumeTemplate')->where('user_profile_id', $userProfileId)->get();
     }
 
     /**
@@ -74,9 +85,16 @@ class ResumeService
      * @throws Exception
      * @return Resume|\stdClass
      */
-    public function getResumesById(int $resumeId, int $userProfileId): Resume
+    public function getResumeById(int $resumeId, int $userProfileId): Resume
     {
-        $resume = Resume::with(AppConstants::RESUME_CONTENT_RELATIONS)
+        $resume = Resume::with([
+            'resumeTemplate',
+            'education.programme.organization:id,company_name,organization_logo',
+            'userProfile',
+            'userLanguages.language',
+            'socialMediaLinks.socialMedia',
+            'userSkills.skill',
+        ])
             ->find($resumeId);
 
         if (!isset($resume)) {
@@ -103,7 +121,8 @@ class ResumeService
 
             // create resume
             $resume = Resume::create([
-                'user_profile_id' => $userProfileId
+                'user_profile_id' => $userProfileId,
+                'resume_template_id' => $data['resume_template_id']
             ]);
 
             $insertRecord = [];
@@ -124,7 +143,7 @@ class ResumeService
             return $resume;
         });
 
-        return $resume->load(AppConstants::RESUME_CONTENT_RELATIONS);
+        return $resume;
     }
 
     /**
@@ -187,7 +206,7 @@ class ResumeService
             }
         });
 
-        return $resume->load(AppConstants::RESUME_CONTENT_RELATIONS);
+        return $resume;
     }
 
     /**

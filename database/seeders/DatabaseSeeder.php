@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
             InterviewSeeder::class,
             JobOfferSeeder::class,
             LikeSeeder::class,
+            ResumeTemplateSeeder::class,
             ResumeSeeder::class,
             ResumeContentSeeder::class,
         ]);
