@@ -23,7 +23,9 @@ class ProfileController extends Controller
      */
     public function getProfileDataByProfileId(int $id): JsonResponse
     {
-        $profile = $this->profileService->getProfileDataByProfileId($id);
+        $roles = session('roles', []);
+        $currentUserProfileId = session('user_profile_id');
+        $profile = $this->profileService->getProfileDataByProfileId($id, $roles, $currentUserProfileId);
 
         return ApiResponse::success('Success.', $profile)->toJsonResponse();
     }

@@ -122,6 +122,165 @@ class ProfileControllerTest extends TestCase
             ->assertJsonPath('data.email', $this->userProfile->email);
     }
 
+    public function test_user_can_get_public_profile_data_by_profile_id_with_recruiter_role(): void
+    {
+        $publicProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $publicProfile->id]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'organization_users',
+                    'active_programmes',
+                    'social_media_links',
+                    'user_languages',
+                    'skills',
+                ],
+            ])
+            ->assertJsonPath('data.id', $publicProfile->id)
+            ->assertJsonPath('data.name', $publicProfile->name)
+            ->assertJsonPath('data.email', $publicProfile->email)
+            ->assertJsonPath('data.profile_visibility', $publicProfile->profile_visibility);
+    }
+
+    public function test_user_can_get_recruiter_visibility_profile_data_by_profile_id_with_recruiter_role(): void
+    {
+        $recruiterProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['RECRUITER']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $recruiterProfile->id]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'organization_users',
+                    'active_programmes',
+                    'social_media_links',
+                    'user_languages',
+                    'skills',
+                ],
+            ])
+            ->assertJsonPath('data.id', $recruiterProfile->id)
+            ->assertJsonPath('data.name', $recruiterProfile->name)
+            ->assertJsonPath('data.email', $recruiterProfile->email)
+            ->assertJsonPath('data.profile_visibility', $recruiterProfile->profile_visibility);
+    }
+
+    public function test_user_can_get_public_profile_data_by_profile_id_with_student_role(): void
+    {
+        $publicProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Student']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $publicProfile->id]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'organization_users',
+                    'active_programmes',
+                    'social_media_links',
+                    'user_languages',
+                    'skills',
+                ],
+            ])
+            ->assertJsonPath('data.id', $publicProfile->id)
+            ->assertJsonPath('data.name', $publicProfile->name)
+            ->assertJsonPath('data.email', $publicProfile->email)
+            ->assertJsonPath('data.profile_visibility', $publicProfile->profile_visibility);
+    }
+
+    public function test_recruiter_get_profile_by_profile_id_fails_when_profile_is_private(): void
+    {
+        $privateProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PRIVATE']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $privateProfile->id]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Profile not found with given ID.',
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_student_get_profile_by_profile_id_fails_when_profile_is_private(): void
+    {
+        $privateProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PRIVATE']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Student']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $privateProfile->id]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Profile not found with given ID.',
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_student_get_profile_by_profile_id_fails_when_profile_is_recruiter_visibility(): void
+    {
+        $recruiterProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['RECRUITER']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Student']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $recruiterProfile->id]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Profile not found with given ID.',
+            ])
+            ->assertJsonPath('data', null);
+    }
+
     public function test_user_can_get_all_student_user_profiles(): void
     {
         $organization = Organization::factory()->create();

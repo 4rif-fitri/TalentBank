@@ -42,6 +42,8 @@ class DatabaseSeeder extends Seeder
             InterviewSeeder::class,
             JobOfferSeeder::class,
             LikeSeeder::class,
+            ResumeSeeder::class,
+            ResumeContentSeeder::class,
         ]);
     }
 }
