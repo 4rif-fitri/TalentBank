@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
             'project' => Semester::class,
             'honors_award' => Semester::class,
             'certification' => Semester::class,
-            'user_profile' => UserProfile::class
+            'user_profile' => UserProfile::class,
         ]);
 
         RateLimiter::for('api', function (Request $request) {
