@@ -22,10 +22,7 @@ $list = [
             <div class="invitation-list p-2 d-flex gap-2 flex-column"></div>
         </aside>
 
-        <div class="filter-panel flex-grow-1">
-            <div class="row g-3 " id="shortlistContent"></div>
-        </div>
-
+        <x-atom.interview-detail panel="std" />
     </div>
 </div>
 
@@ -39,14 +36,13 @@ $list = [
     let currentStatus = "Scheduled"
 
     async function getInterviewsByStatusAndIntervieweeId(status){
-
         try {
             let response = await xApiInterview.getInterviewsByStatusAndIntervieweeId(
                 "{{ route('interviews.getInterviewsByStatusAndIntervieweeId') }}",
                 status
             )
 
-            if(!response) return
+            if (!response) return
 
             currentInterviews = response.data
 
@@ -62,19 +58,15 @@ $list = [
     }
 
     async function handleInvitationClick() {
-        let id = $(this).data("id")
 
-        try {
-            let response = await xApiInterview.getInterviewById( "{{ route('interviews.getInterviewById',['id' => '__ID__']) }}", id)
-            if(!response) return
+        const id = $(this).data("id");
 
-            currentInterview = response.data;
-            let imageUrl = "{{ asset('storage/' . env('ORGANIZATION_LOGO_URL')) }}/" + currentInterview.position.organization.organization_logo
-            $("#shortlistContent").html(xinterview.student.mainContent(currentInterview, imageUrl));
+        if (!id) return;
 
-        } catch (error) {
-            console.error(error);
-        }
+        window.interviewDetail
+            .setRole("student")
+            .load(id);
+
     }
 
     function handleFilterToggle() {
@@ -91,6 +83,6 @@ $list = [
     getInterviewsByStatusAndIntervieweeId("Scheduled")
     $(document).on('click', '.btn-toggle-filter, .shortlist-overlay, .filter-overlay, .list-item', toggle);
     $(document).on("click", ".nav-item", handleFilterToggle);
-    $(document).on("click", ".invitation-item, .list-item", handleInvitationClick);
+    $(document).on("click", ".list-item", handleInvitationClick);
 </script>
 @endsection

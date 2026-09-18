@@ -167,7 +167,7 @@
             xmodal.show("interviewModal")
         },
 
-        async update(){
+        async update(callback){
             let data = {
                 "_token": $('meta[name="csrf-token"]').attr("content"),
                 "_method": "PUT",
@@ -194,6 +194,8 @@
 
                 xalert.fire("Success", "Interview Updated", "success")
                 xmodal.hide("interviewModal")
+
+                callback(response.data);
 
             } catch (error) {
                 console.error(error);
