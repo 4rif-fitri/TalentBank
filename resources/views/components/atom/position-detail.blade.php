@@ -1,4 +1,4 @@
-<div class="shortlist-content flex-grow-1"></div>
+<div class="shortlist-content flex-grow-1" id="shortlistContent"></div>
 
 @push('childScript')
 <script>
@@ -50,8 +50,10 @@
             const self = this;
 
             $(document).on("position:detail", function(event, details, candidateList){
+
                 self.details = details
                 self.candidateList = candidateList
+
                 self.render()
             })
         }
