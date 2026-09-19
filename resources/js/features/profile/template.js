@@ -24,8 +24,8 @@ function renderEducation(programmes) {
 export let student = {
 
     talentCard(data) {
-        return `<div data-id=${data.id} class="col-12 col-md-6 col-lg-6 col-xl-4">
-                    <div class="card h-100 border-0 p-3">
+        return `<div data-id=${data.id} class="col-12 col-md-6 col-lg-6 col-xl-4 content-card">
+                    <div class="">
                     <div class="d-flex justify-content-between align-items-start">
                         <div></div>
 

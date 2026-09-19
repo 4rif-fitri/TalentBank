@@ -1,10 +1,16 @@
-<aside class="shortlist-sidebar" id="listContainer">
+@php
+$list = [
+['status' => 'Scheduled', 'class' => 'active'],
+['status' => 'Completed', 'class' => ''],
+['status' => 'Cancelled', 'class' => ''],
+];
+@endphp
+
+
+<aside class="shortlist-sidebar" id="           ">
     <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
-        <ul class="nav nav-tabs">
-            <x-atom.tab-status status="Scheduled" class="active" />
-            <x-atom.tab-status status="Completed" class="" />
-            <x-atom.tab-status status="Cancelled" class="" />
-        </ul>
+        <x-molecule.nav-tabs :list="$list" />
+
     </div>
 
     <div id="shortlistList"></div>

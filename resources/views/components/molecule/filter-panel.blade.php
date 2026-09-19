@@ -1,51 +1,77 @@
+<aside class="filter-panel content-card" id="filterPanel">
 
-<aside class="filter-panel" id="filterPanel">
-    <div class="d-flex justify-content-between align-items-center d-md-none mb-3 border-bottom pb-3">
+    <div class="content-card__header d-md-none">
         <h5 class="m-0 fw-bold">Filters</h5>
-        <button class="btn btn-sm btn-light toggleFilter">
+
+        <button type="button" class="btn btn-sm btn-light toggleFilter">
             <i class="fa-solid fa-xmark fs-5"></i>
         </button>
     </div>
 
-    <div class="d-none d-md-flex justify-content-between align-items-center mb-4">
-        <span class="fw-bold">Filters</span>
+    <div class="content-card__body">
+
+        <div class="mb-3">
+            <label class="form-label text-muted small fw-bold">
+                Name
+            </label>
+
+            <input type="email" class="form-control" id="searchName" placeholder="Name">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-muted small fw-bold">
+                University
+            </label>
+
+            <select id="selectUniversiti" class="form-select select2-skills" multiple="multiple"
+                data-placeholder="Select or type skills...">
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-muted small fw-bold">
+                Skill
+            </label>
+
+            <select id="selectSkill" class="form-select select2-skills" multiple="multiple"
+                data-placeholder="Select or type skills...">
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-muted small fw-bold">
+                Language
+            </label>
+
+            <select id="selectLanguage" class="form-select select2-skills" multiple="multiple"
+                data-placeholder="Select or type skills...">
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label text-muted small fw-bold">
+                Qualifications
+            </label>
+
+            <select id="selectQualifications" class="form-select select2-skills" multiple="multiple"
+                data-placeholder="Select or type skills...">
+            </select>
+        </div>
+
     </div>
 
-    <div class="mb-3">
-        <label class="form-label text-muted small fw-bold">Name</label>
-        <input type="email" class="form-control" id="searchName" placeholder="Name">
-    </div>
+    <footer class="offer-actions">
 
-    <div class="mb-3">
-        <label class="form-label text-muted small fw-bold">University</label>
-        <select id="selectUniversiti" class="form-select select2-skills" multiple="multiple"
-            data-placeholder="Select or type skills...">
-        </select>
-    </div>
+        <button type="button" class="btn btn-tb btn-tb-outline w-100 mt-2" id="btnResetFilter">
+            Reset
+        </button>
 
-    <div class="mb-3">
-        <label class="form-label text-muted small fw-bold">Skill</label>
-        <select id="selectSkill" class="form-select select2-skills" multiple="multiple"
-            data-placeholder="Select or type skills...">
-        </select>
-    </div>
+        <button type="button" class="btn btn-tb btn-tb-primary w-100 mt-2" id="btnFilter">
+            Filter
+        </button>
 
-    <div class="mb-3">
-        <label class="form-label text-muted small fw-bold">Language</label>
-        <select id="selectLanguage" class="form-select select2-skills" multiple="multiple"
-            data-placeholder="Select or type skills...">
-        </select>
-    </div>
+    </footer>
 
-    <div class="mb-3">
-        <label class="form-label text-muted small fw-bold">Qualifications</label>
-        <select id="selectQualifications" class="form-select select2-skills" multiple="multiple"
-            data-placeholder="Select or type skills...">
-        </select>
-    </div>
-
-    <button class="btn btn-outline-danger w-100 mt-2" id="btnResetFilter">Reset</button>
-    <button class="btn btn-primary w-100 mt-2" id="btnFilter">Filter</button>
 </aside>
 
 @push('childScript')

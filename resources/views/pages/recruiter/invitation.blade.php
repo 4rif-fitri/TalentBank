@@ -33,7 +33,10 @@
 
     $(document).on("click", ".toggleFilter", toggle)
 
-    $(document).on("click", ".nav-item", function () {
+    $(document).on("click", ".offer-tab", function () {
+        $(".offer-tab").removeClass("active")
+        $(this).addClass("active")
+
         const status = $(this).data("status");
         invitationList.load(status);
         invitationDetail.clear()

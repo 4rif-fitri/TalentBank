@@ -113,183 +113,257 @@ export let student = {
 
 export let recruiter = {
     mainContent(invitation, imageUrl, educatios) {
-        const statusClass = {
-            Pending: "text-warning text-warning bg-warning-subtle",
-            Accepted: "text-success text-success bg-success-subtle",
-            Rejected: "text-danger text-danger bg-danger-subtle",
-            Withdrawn: "text-secondary text-secondary bg-secondary-subtle",
-        }[invitation.invitation_status] ?? "text-secondary";
+        return `
+    <article class="content-card results-panel" id="interviewDetails">
 
-        return `<div class="results-panel flex-grow-1">
-                <div class="bg-body p-4">
-                    <div class="d-flex flex-column flex-lg-row gap-3 bg-light p-3 rounded rounded-2 border">
-                        <div class=" d-flex align-items-center">
-                            <div class="thum-image-lg" style="background-image: url('${imageUrl}');background-position: center; background-size: cover; background-repeat: no-repeat;"></div>
-                        </div>
-                        <div class="">
-                            <h4 class="fw-semibold">${invitation.interviewee.name}</h4>
-                            <p>${invitation.interviewee.location ?? "Location not specified"}</p>
-                            ${educatios[0]?.programme?.organization?.company_name ? `<p class="fw-semibold">${educatios[0].programme.organization.company_name}</p>` : ""}
-                            ${educatios[0]?.programme?.programme_name ? `<p>${educatios[0].programme.programme_name}</p>` : ""}
-                            ${educatios[0]?.programme?.programme_name ? `<div role="button" class="badge bg-primary btnSeeMore">See More</div>` : ""}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 col-12 card-body p-3">
-                            <table class="table">
-                                <tbody>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Company</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <div>${invitation.position.organization.company_name}</div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Position</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${invitation.position.position_title}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="col-3">
-                                        <small class="text-muted d-block">Department</small>
-                                    </td>
-                                    <td class="col-9">
-                                        <span>${invitation.position.department}</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Interview mode</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${invitation.interview_mode}</span>
-                                        </td>
-                                    </tr>
+        <header class="content-card__header">
 
-                                    ${invitation.interview_mode === "Online" ? `
-                                        <tr>
-                                            <td class="col-3">
-                                                <small class="text-muted d-block">Interview Link</small>
-                                            </td>
-                                            <td class="col-9">
-                                                <span>${invitation.meeting_url}</span>
-                                            </td>
-                                        </tr>` : ""}
-
-                                    ${invitation.interview_mode === "On-site" ? `
-                                        <tr>
-                                            <td class="col-3">
-                                                <small class="text-muted d-block">Interview location</small>
-                                            </td>
-                                            <td class="col-9">
-                                                <span>${invitation.location}</span>
-                                            </td>
-                                        </tr>` : ""}
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="col-lg-6 col-12 card-body p-3">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Ceheduled</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${formatDateTime(invitation.scheduled_at)}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Interview result</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <div>${invitation.interview_result}</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Interview status</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <div>${invitation.interview_status}</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Recruiter comment</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <div>${invitation.recruiter_comment}</div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Create at</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${formatDate(invitation.created_at)}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-3">
-                                            <small class="text-muted d-block">Create by</small>
-                                        </td>
-                                        <td class="col-9">
-                                            <span>${invitation.interviewee.name}</span>
-                                        </td>
-                                    </tr>
-                                </body>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card-body p-3">
-                        <h5 class="fw-bold mb-3">
-                            Actions
-                        </h5>
-
-                        <div class="d-flex flex-column flex-lg-row gap-2">
-                            <button class="btn btn-primary btn-message-student">
-                                Message Student
-                            </button>
-
-                            <button id="btnCencelInterview" data-id="${invitation.id}" ${invitation.interview_status === "Scheduled" ? "" : "disabled"}
-                                class="btn-withdraw-invitation btn btn-outline-danger">
-                                Cencel
-                            </button>
-
-                            <button id="btnCompletedInterview" data-id="${invitation.id}" ${invitation.interview_status === "Scheduled" ? "" : "disabled"}
-                                class="btn-withdraw-invitation btn btn-outline-success">
-                                Completed
-                            </button>
-
-                            <button id="btnUpdateInterview" data-id="${invitation.id}"
-                                class="btn-edit-invitation btn btn-outline-primary">
-                                Edit Invitation
-                            </button>
-
-                        </div>
-                    </div>
+            <div class="company-logo company-logo-large">
+                <div
+                    class="thum-image-lg"
+                    style="
+                        background-image: url('${imageUrl}');
+                        background-position: center;
+                        background-size: cover;
+                        background-repeat: no-repeat;
+                    ">
                 </div>
-            </div>`
-    },
-    sidebar: (interview) => {
-        return `<div data-id=${interview.id} class="d-flex justify-content-between align-items-center gap-3 shortlist-item mb-2 p-3 border rounded">
-                        <div role="button" class="d-flex align-items-center gap-3">
-                        <div class="bg-primary" style="width:4rem; border-radius: 50%; height:4rem; background-size: cover; background-image:url('${window.appConfig.profileImageUrl}/${interview.interviewee.profile_image}')"></div>
-                            <div class="flex-grow-1 d-flex flex-column">
-                                <p class="fw-semibold">${interview.interviewee.name}</p>
-                                <p>${interview.position.position_title}</p>
-                                <smoll>${formatDateFull(interview.scheduled_at)}</smoll>
+            </div>
+
+            <div class="company-heading">
+
+                <h2>${invitation.interviewee.name}</h2>
+
+                <small>
+                    ${invitation.interviewee.location ?? "Location not specified"}
+                </small>
+
+                ${educatios[0]?.programme?.organization?.company_name
+                ? `
+                            <p class="mb-0 fw-semibold">
+                                ${educatios[0].programme.organization.company_name}
+                            </p>
+                        `
+                : ""
+            }
+
+                ${educatios[0]?.programme?.programme_name
+                ? `
+                            <p class="mb-0">
+                                ${educatios[0].programme.programme_name}
+                            </p>
+                        `
+                : ""
+            }
+
+                ${educatios[0]?.programme?.programme_name
+                ? `
+                            <button
+                                type="button"
+                                class="badge bg-primary border-0 btnSeeMore">
+                                See More
+                            </button>
+                        `
+                : ""
+            }
+
+            </div>
+
+        </header>
+
+
+        <div class="offer-details-grid">
+
+            <div class="offer-info-column">
+
+                <div class="offer-info-row">
+                    <span>Company</span>
+                    <strong>
+                        ${invitation.position.organization.company_name}
+                    </strong>
+                </div>
+
+                <div class="offer-info-row">
+                    <span>Position</span>
+                    <strong>
+                        ${invitation.position.position_title}
+                    </strong>
+                </div>
+
+                <div class="offer-info-row">
+                    <span>Department</span>
+                    <strong>
+                        ${invitation.position.department}
+                    </strong>
+                </div>
+
+                <div class="offer-info-row">
+                    <span>Interview mode</span>
+                    <strong>
+                        ${invitation.interview_mode}
+                    </strong>
+                </div>
+
+                ${invitation.interview_mode === "Online"
+                ? `
+                            <div class="offer-info-row">
+                                <span>Interview Link</span>
+                                <strong>
+                                    ${invitation.meeting_url ?? "-"}
+                                </strong>
                             </div>
-                        </div>
-                    </div>`
+                        `
+                : ""
+            }
+
+                ${invitation.interview_mode === "On-site"
+                ? `
+                            <div class="offer-info-row">
+                                <span>Interview location</span>
+                                <strong>
+                                    ${invitation.location ?? "-"}
+                                </strong>
+                            </div>
+                        `
+                : ""
+            }
+
+            </div>
+
+
+            <div class="offer-info-column">
+
+                <div class="offer-info-row">
+                    <span>Scheduled</span>
+                    <strong>
+                        ${formatDateTime(invitation.scheduled_at)}
+                    </strong>
+                </div>
+
+                <div class="offer-info-row">
+                    <span>Interview result</span>
+                    <strong>
+                        ${renderStatus(invitation.interview_result)}
+                    </strong>
+                </div>
+
+                <div class="offer-info-row">
+                    <span>Interview status</span>
+                    <strong>
+                        ${renderStatus(invitation.interview_status)}
+                    </strong>
+                </div>
+
+                <div class="offer-info-row">
+                    <span>Recruiter comment</span>
+                    <strong>
+                        ${invitation.recruiter_comment ?? "-"}
+                    </strong>
+                </div>
+
+                <div class="offer-info-row">
+                    <span>Created At</span>
+                    <strong>
+                        ${formatDate(invitation.created_at)}
+                    </strong>
+                </div>
+
+                <div class="offer-info-row">
+                    <span>Created By</span>
+                    <strong>
+                        ${invitation.interviewee.name}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <footer class="offer-actions">
+
+            <h3>Actions</h3>
+
+            <div class="action-buttons">
+
+                <button
+                    type="button"
+                    class="btn-tb btn-tb-primary btn-message-student">
+
+                    <i class="fa-solid fa-message"></i>
+                    Message Student
+
+                </button>
+
+
+                <button
+                    id="btnCencelInterview"
+                    data-id="${invitation.id}"
+                    ${invitation.interview_status === "Scheduled"
+                ? ""
+                : "disabled"
+            }
+                    type="button"
+                    class="btn-tb btn-tb-danger">
+
+                    <i class="fa-regular fa-calendar-xmark"></i>
+                    Cancel
+
+                </button>
+
+
+                <button
+                    id="btnCompletedInterview"
+                    data-id="${invitation.id}"
+                    ${invitation.interview_status === "Scheduled"
+                ? ""
+                : "disabled"
+            }
+                    type="button"
+                    class="btn-tb btn-tb-success">
+
+                    <i class="fa-solid fa-check"></i>
+                    Completed
+
+                </button>
+
+
+                <button
+                    id="btnUpdateInterview"
+                    data-id="${invitation.id}"
+                    type="button"
+                    class="btn-tb btn-tb-outline">
+
+                    <i class="fa-solid fa-pen"></i>
+                    Edit Interview
+
+                </button>
+
+            </div>
+
+        </footer>
+
+    </article>
+`;
+    },
+
+    sidebar: (interview) => {
+        return `<div data-id="${interview.id}" role="button" class="list-item interview-item shortlist-item">
+                    <div class="company-logo">
+                        <div class="thum-image" style=" background-image: url('${window.appConfig.profileImageUrl}/${interview.interviewee.profile_image}'); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
+                    </div>
+                    <div class="list-item__content">
+                        <h3 class="student-name">
+                            ${interview.interviewee.name}
+                        </h3>
+                        <p class="student-position">
+                            ${interview.position.position_title}
+                        </p>
+                        <small class="text-muted">
+                            ${formatDateFull(interview.scheduled_at)}
+                        </small>
+                    </div>
+                </div>`;
     },
 
 }

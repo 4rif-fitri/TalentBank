@@ -32,7 +32,11 @@
         interviewList.load("Pending")
     })
 
-    $(document).on("click", ".nav-item", function(){
+    $(document).on("click", ".offer-tab", function () {
+        let currentStatus = $(this).data("status")
+        $(".offer-tab").removeClass("active")
+        $(this).addClass("active")
+
         let status = $(this).data("status")
         interviewList.load(status)
     })
