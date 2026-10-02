@@ -1,11 +1,5 @@
 @extends('layouts.internship-layouts')
-@php
-    $list = [
-        ['status' => 'All Resume', 'class' => 'active',],
-        ['status' => 'Latest', 'class' => '',],
-        ['status' => 'Oldest', 'class' => '',],
-    ];
-@endphp
+
 @section('content')
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/student.css') }}">
 
@@ -13,47 +7,13 @@
 
     <x-atom.page-header title="My Resume" />
 
-    <div class="d-flex justify-content-between">
+    <section class="resume-list d-flex gap-2 flex-wrap">
 
-        <x-molecule.nav-tabs :list="$list" />
-
-        <div class="nav-item">
-            <button id="btnCreateResume" class="btn-tb btn-tb-primary">
-                Create Resume
-            </button>
-        </div>
-    </div>
-
-<section class="item-list">
-    <div class="list-item-row row g-3">
-
-        <div class="col-12 col-md-10">
-            <div class="row g-2">
-                <div class="col-4">
-                    Lorem ipsum dolor sit amet.
-                </div>
-
-                <div class="col-8">
-                    Lorem ipsum dolor sit amet.
-                </div>
-            </div>
+        <div class="add-resume card d-flex justify-content-center align-content-center" role="button" style="min-width: 20rem !important; height: 27rem !important;">
+            <h1 class="text-center fw-bolder" style="font-size: 5rem;">+</h1>
         </div>
 
-        <div class="col-12 col-md-2">
-            <div class="d-flex flex-column gap-2">
-                <button class="btn-tb btn-tb-primary">
-                    Edit Resume
-                </button>
-
-                <button class="btn-tb btn-tb-outline">
-                    View Resume
-                </button>
-            </div>
-        </div>
-
-    </div>
-</section>
-
+    </section>
 </div>
 
 <div class="filter-overlay"></div>
@@ -64,36 +24,39 @@
 
 @section('script')
 <script>
-    let listTemplate = []
 
-    function getTemplateResume(){
+    let id = "{{ session('user_profile_id') }}";
+
+    function template(data){
+        console.log(data);
+
+        return`<div data-id=${data.id} class="resume-item card" role="button" style="width: 20rem;">
+                    <div class="resume-image bg-light w-100" style="height: 20rem;"></div>
+                    <div class="mt-1">
+                        <p>Name Template:</p>
+                        <h4 class="fw-semibold">${data.resume_template.template_file_name}</h4>
+                    </div>
+                </div>`
+    }
+
+    function getResumesByUserProfileId() {
+        let url = "{{ route('resumes.getResumesByUserProfileId', ['id' => '__ID__']) }}";
+        url = url.replace('__ID__', id);
+
         $.ajax({
-            url: "{{ route('resumes.getAllResumeTemplates') }}",
+            url: url,
             type: "GET",
-            success: response => {
-                listTemplate = response.data
-                console.log(listTemplate);
-            },
-            error: xhr =>{
-                console.log(xhr);
+            success: function (response) {
+                response.data.forEach(function (resume) {
+                    $(".resume-list").append(template(resume));
+                });
             }
         });
     }
+    getResumesByUserProfileId();
 
-    function handleChangeStatus(){
-        $(".offer-tab").removeClass("active")
-        $(this).addClass("active");
-        let status = $(this).data("status")
-    }
-
-    $(document).on("click", ".offer-tab", handleChangeStatus)
-
-    $(document).on("click", "#btnCreateResume", function(){
-        templateResume.open(listTemplate)
-    })
-
-    $(document).ready(function(){
-        getTemplateResume()
+    $(".add-resume").on("click", function(){
+        window.location.href = "{{ route('student.edit.resume') }}"
     })
 
 </script>
