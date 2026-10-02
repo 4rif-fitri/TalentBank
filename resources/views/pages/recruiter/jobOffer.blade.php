@@ -65,6 +65,5 @@
        interviewDetail.education()
     })
 
-    $(document).on('click', '.btn-toggle-filter, .shortlist-overlay', toggle);
 </script>
 @endsection

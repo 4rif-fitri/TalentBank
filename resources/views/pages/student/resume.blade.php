@@ -18,7 +18,7 @@
         <x-molecule.nav-tabs :list="$list" />
 
         <div class="nav-item">
-            <button class="offer-tab active">
+            <button id="btnCreateResume" class="btn-tb btn-tb-primary">
                 Create Resume
             </button>
         </div>
@@ -57,10 +57,28 @@
 </div>
 
 <div class="filter-overlay"></div>
+
+<x-modals.template-resume />
+
 @endsection
 
 @section('script')
 <script>
+    let listTemplate = []
+
+    function getTemplateResume(){
+        $.ajax({
+            url: "{{ route('resumes.getAllResumeTemplates') }}",
+            type: "GET",
+            success: response => {
+                listTemplate = response.data
+                console.log(listTemplate);
+            },
+            error: xhr =>{
+                console.log(xhr);
+            }
+        });
+    }
 
     function handleChangeStatus(){
         $(".offer-tab").removeClass("active")
@@ -69,6 +87,14 @@
     }
 
     $(document).on("click", ".offer-tab", handleChangeStatus)
+
+    $(document).on("click", "#btnCreateResume", function(){
+        templateResume.open()
+    })
+
+    $(document).ready(function(){
+        getTemplateResume()
+    })
 
 </script>
 @endsection

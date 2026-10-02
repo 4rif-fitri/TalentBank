@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/student', [internshipController::class, "studentIndex"])->name('student.index');
         Route::get('/student/invitations', [internshipController::class, "invitations"])->name('student.invitations');
         Route::get('/student/resume', [internshipController::class, "resume"])->name('student.resume');
+        Route::get('/student/resume/edit', [internshipController::class, "editResume"])->name('student.edit.resume');
         Route::get('/student/interviews', [internshipController::class, "interviews"])->name('student.interviews');
         Route::get('/student/jobOffers', [internshipController::class, "jobOffers"])->name('student.jobOffers');
         Route::get('/student/messages', [internshipController::class, "messages"])->name('student.messages');

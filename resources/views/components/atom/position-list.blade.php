@@ -1,7 +1,7 @@
 <aside class="shortlist-sidebar" id="listContainer">
-    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
         <button type="button"
-            class="btnShowModalAddShortlist btn btn-outline-primary d-flex justify-content-center align-items-center w-100">
+            class="btnShowModalAddShortlist btn-tb btn-tb-primary d-flex justify-content-center align-items-center w-100">
             Add Position
         </button>
     </div>

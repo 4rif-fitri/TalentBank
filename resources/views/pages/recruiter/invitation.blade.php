@@ -47,7 +47,7 @@
         invitationDetail.load(id);
     });
 
-    $(document).on("click", ".btn-withdraw-invitation",  function () {
+    $(document).on("click", "#btn-withdraw-invitation",  function () {
         const id = $(this).data("id");
 
         invitationModal.Withdraw(id, {
@@ -65,7 +65,7 @@
 
     });
 
-    $(document).on("click",".btn-edit-invitation", function(){
+    $(document).on("click","#btn-edit-invitation", function(){
         invitationModal.openUpdate(
             invitationDetail.current, {
             onSuccess: response => {

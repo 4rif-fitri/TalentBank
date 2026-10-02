@@ -8,7 +8,7 @@ $list = [
 
 
 <aside class="shortlist-sidebar" id="           ">
-    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-3">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3">
         <x-molecule.nav-tabs :list="$list" />
 
     </div>

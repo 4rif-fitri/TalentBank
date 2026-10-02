@@ -99,7 +99,6 @@ $list = [
 
     async function handleRejectInvitation () {
         let id = $(this).data("id")
-
         let data = {
             _method: "PUT",
             _token: $('meta[name="csrf-token"]').attr("content")

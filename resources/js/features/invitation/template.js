@@ -91,11 +91,11 @@ export let student = {
                                 <i class="fa-solid fa-message"></i>
                                 Message Student
                             </button>
-                            <button id="btnRejectInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"} type="button" class="btn-tb btn-tb-danger" id="declineOfferBtn">
+                            <button id="btnRejectInvitation" data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"} type="button" class="btn-tb btn-tb-danger" id="declineOfferBtn">
                                 <i class="fa-regular fa-trash-can"></i>
                                     Reject Invitation
                             </button>
-                            <button id="btnAcceptInvitation" data-id="${invitation.id}" ${invitation.offer_status === "Pending" ? "" : "disabled"} type="button" class="btn-tb btn-tb-outline" id="acceptOfferBtn">
+                            <button id="btnAcceptInvitation" data-id="${invitation.id}" ${invitation.invitation_status === "Pending" ? "" : "disabled"} type="button" class="btn-tb btn-tb-outline" id="acceptOfferBtn">
                                 <i class="fa-solid fa-pen"></i>
                                     Accept Invitation
                             </button>
@@ -140,202 +140,104 @@ export let recruiter = {
                 </div>`
     },
     mainContent(invitation, imageUrl, educatios) {
-        const statusClass = {
-            Pending: "text-warning text-warning bg-warning-subtle",
-            Accepted: "text-success text-success bg-success-subtle",
-            Rejected: "text-danger text-danger bg-danger-subtle",
-            Withdrawn: "text-secondary text-secondary bg-secondary-subtle",
-        }[invitation.invitation_status] ?? "text-secondary";
+        console.log(invitation);
 
-        return `
-    <article class="content-card results-panel" id="invitationDetails">
+        return `<article class="content-card results-panel" id="invitationDetails">
+                    <header class="content-card__header">
+                        <div class="company-logo company-logo-large">
+                            <div class="thum-image-lg"
+                                style="background-image: url('${imageUrl}'); background-position: center; background-size: cover; background-repeat: no-repeat;">
+                            </div>
+                        </div>
 
-        <header class="content-card__header">
-
-            <div class="company-logo company-logo-large">
-                <div class="thum-image-lg"
-                    style="
-                        background-image: url('${imageUrl}');
-                        background-position: center;
-                        background-size: cover;
-                        background-repeat: no-repeat;
-                    ">
-                </div>
-            </div>
-
-            <div class="company-heading">
-
-                <h2>${invitation.receiver.name}</h2>
-
-                <small>
-                    ${invitation.receiver.location ?? "Location not specified"}
-                </small>
-
-                ${educatios[0]?.programme?.organization?.company_name
-                ? `<p class="mb-0 fw-semibold">
-                            ${educatios[0].programme.organization.company_name}
-                        </p>`
-                : ""
-            }
-
-                ${educatios[0]?.programme?.programme_name
-                ? `<p class="mb-0">
-                            ${educatios[0].programme.programme_name}
-                        </p>`
-                : ""
-            }
-
-                ${educatios[0]?.programme?.programme_name
-                ? `<button type="button"
-                            class="badge bg-primary border-0 btnSeeMore">
-                            See More
-                        </button>`
-                : ""
-            }
-
-            </div>
-
-        </header>
-
+                        <div class="company-heading">
+                            <h2>${invitation.receiver.name}</h2>
+                            <small>${invitation.receiver.location ?? "Location not specified"}</small>
+                            ${educatios[0]?.programme?.organization?.company_name? `<p class="mb-0 fw-semibold">
+                                        ${educatios[0].programme.organization.company_name}</p>` : ""}
+                            ${educatios[0]?.programme?.programme_name? `<p class="mb-0">
+                                        ${educatios[0].programme.programme_name}</p>` : ""}
+                            ${educatios[0]?.programme?.programme_name ? `
+                                <button type="button" class="badge bg-primary border-0 btnSeeMore">
+                                        See More
+                                    </button>` : ""}
+                        </div>
+                    </header>
 
         <div class="offer-details-grid">
-
             <div class="offer-info-column">
-
                 <div class="offer-info-row">
                     <span>Company</span>
-                    <strong>
-                        ${invitation.position.organization.company_name}
-                    </strong>
+                    <strong>${invitation.position.organization.company_name}</strong>
                 </div>
-
                 <div class="offer-info-row">
                     <span>Position</span>
-                    <strong>
-                        ${invitation.position.position_title}
-                    </strong>
+                    <strong>${invitation.position.position_title}</strong>
                 </div>
-
                 <div class="offer-info-row">
                     <span>Department</span>
-                    <strong>
-                        ${invitation.position.department}
-                    </strong>
+                    <strong>${invitation.position.department}</strong>
                 </div>
-
                 <div class="offer-info-row">
                     <span>Employment type</span>
-                    <strong>
-                        ${invitation.position.employment_type}
-                    </strong>
+                    <strong>${invitation.position.employment_type}</strong>
                 </div>
-
                 <div class="offer-info-row">
                     <span>Work location</span>
-                    <strong>
-                        ${invitation.position.work_location}
-                    </strong>
+                    <strong>${invitation.position.work_location}</strong>
                 </div>
-
             </div>
-
 
             <div class="offer-info-column">
-
                 <div class="offer-info-row">
                     <span>Invitation status</span>
-                    <strong>
-                        ${renderStatus(invitation.invitation_status)}
-                    </strong>
+                    <strong>${renderStatus(invitation.invitation_status)}</strong>
                 </div>
-
                 <div class="offer-info-row">
                     <span>Message</span>
-                    <strong>
-                        ${invitation.invitation_message ?? "-"}
-                    </strong>
+                    <strong>${invitation.invitation_message ?? "-"}</strong>
                 </div>
-
                 <div class="offer-info-row">
                     <span>Sent</span>
-                    <strong>
-                        ${formatDate(invitation.created_at)}
-                    </strong>
+                    <strong>${formatDate(invitation.created_at)}</strong>
                 </div>
-
                 <div class="offer-info-row">
                     <span>Expires</span>
-                    <strong>
-                        ${formatDate(invitation.expires_at)}
-                    </strong>
+                    <strong>${formatDate(invitation.expires_at)}</strong>
                 </div>
-
                 <div class="offer-info-row">
                     <span>Created By</span>
-                    <strong>
-                        ${invitation.sender.name}
-                    </strong>
+                    <strong>${invitation.sender.name}</strong>
                 </div>
-
             </div>
-
         </div>
 
-
         <footer class="offer-actions">
-
             <h3>Actions</h3>
-
             <div class="action-buttons">
-
-                <button type="button"
-                    class="btn-tb btn-tb-primary btn-message-student"
+                <button type="button" class="btn-tb btn-tb-primary btn-message-student"
                     data-id="${invitation.receiver.id}">
-
                     <i class="fa-solid fa-message"></i>
                     Message Student
-
                 </button>
-
-
-                <button
-                    id="btnRejectInvitation"
-                    data-id="${invitation.id}"
-                    ${invitation.invitation_status === "Pending"
-                ? ""
-                : "disabled"
-            }
-                    type="button"
-                    class="btn-tb btn-tb-danger">
-
+                <button id="btn-withdraw-invitation" data-id="${invitation.id}"
+                    type="button"class="btn-tb btn-tb-danger"
+                    ${invitation.invitation_status === "Pending" ? "" : "disabled"}>
                     <i class="fa-regular fa-trash-can"></i>
                     Withdraw Invitation
-
                 </button>
 
-
-                <button
-                    id="btnAcceptInvitation"
-                    data-id="${invitation.id}"
-                    ${invitation.invitation_status === "Pending"
-                ? ""
-                : "disabled"
-            }
-                    type="button"
-                    class="btn-tb btn-tb-outline">
-
+                <button id="btn-edit-invitation" data-id="${invitation.id}"
+                    ${invitation.invitation_status === "Pending" ? "" : "disabled" }
+                    type="button" class="btn-tb btn-tb-outline">
                     <i class="fa-solid fa-pen"></i>
                     Edit Invitation
-
                 </button>
-
             </div>
-
         </footer>
+    </article>`;
 
-    </article>
-`;
-    }
+}
 
 
 }
