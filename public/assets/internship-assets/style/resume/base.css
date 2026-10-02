@@ -1,0 +1,179 @@
+/* APP */
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* SIDEBAR */
+/* .sidebar {
+	width: 360px;
+	flex-shrink: 0;
+	height: 100vh;
+	overflow-y: auto;
+	padding: 25px;
+	background: #fff;
+	border-right: 1px solid #ddd;
+} */
+
+/* WORKSPACE */
+.workspace {
+    flex: 1;
+    min-width: 0;
+    height: 100vh;
+    overflow: auto;
+    padding: 30px;
+}
+
+/* PAGES */
+#resumePages {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding-bottom: 100px;
+}
+
+/* A4 */
+.resume-page {
+    position: relative;
+    width: 210mm;
+    height: 297mm;
+    flex-shrink: 0;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, .15);
+}
+
+.resume-page-inner {
+    width: 100%;
+    height: 100%;
+    padding: 15mm;
+    overflow: hidden;
+}
+
+/* BLOCK */
+.resume-block {
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+/* COLUMNS */
+.resume-columns {
+    display: grid;
+    grid-template-columns: 35% 65%;
+    gap: 20px;
+    height: 100%;
+}
+
+.resume-column {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.single-column {
+    width: 100%;
+}
+
+/* TEXT */
+.resume-name {
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.resume-title {
+    font-size: 16px;
+    margin-top: 5px;
+}
+
+.resume-contact {
+    font-size: 11px;
+    margin-top: 10px;
+    color: #666;
+}
+
+.resume-summary {
+    margin-top: 25px;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.resume-summary p {
+    margin: 8px 0 0;
+}
+
+/* SECTION */
+.resume-section {
+    margin-top: 25px;
+}
+
+.resume-section-title {
+    margin: 0 0 12px;
+    padding-bottom: 5px;
+    font-size: 13px;
+    border-bottom: 1px solid #222;
+}
+
+/* EXPERIENCE */
+.experience-item {
+    margin-bottom: 18px;
+}
+
+.experience-position {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.experience-company {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #666;
+}
+
+.experience-description {
+    margin-top: 7px;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+/* EDUCATION */
+.education-item {
+    margin-bottom: 15px;
+}
+
+.education-title {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.education-institution {
+    margin-top: 4px;
+    font-size: 13px;
+}
+
+.education-meta {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #666;
+}
+
+/* SKILLS */
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.skill {
+    padding: 5px 9px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+/* MEASUREMENT */
+.measurement-page {
+    position: absolute !important;
+    left: -99999px;
+    top: 0;
+    visibility: hidden;
+}
