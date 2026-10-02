@@ -89,7 +89,7 @@
     $(document).on("click", ".offer-tab", handleChangeStatus)
 
     $(document).on("click", "#btnCreateResume", function(){
-        templateResume.open()
+        templateResume.open(listTemplate)
     })
 
     $(document).ready(function(){

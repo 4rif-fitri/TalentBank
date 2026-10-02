@@ -5,7 +5,6 @@
 
             <div class="modal-header d-flex justify-content-between">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Social Media Links</h1>
-                <button type="button" class="btn btn-primary" id="addlink">Add Link</button>
             </div>
 
             <div class="modal-body" id="list-template-resume"></div>
@@ -21,9 +20,42 @@
 <script type="module">
 
 window.templateResume = {
-     open(){
+
+    listTemplate: [],
+
+    load(){
+
+    },
+
+    selectTemplate(templateId) {
+        window.location.href =
+            `{{ route('student.edit.resume') }}?template_id=${templateId}`;
+    },
+
+    renderTemplateResume(listTemplate){
+        let html = ''
+        listTemplate.forEach((item, index) => {
+            html += `
+                <div class="card mb-3">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title">${item.template_file_name}</h5>
+                            <p class="card-text">${item.thumbnail_file_name}</p>
+                        </div>
+                       <button class="btn btn-primary" onclick="templateResume.selectTemplate('${item.id}')">
+                            Select
+                        </button>
+                    </div>
+                </div>
+            `
+        })
+        $('#list-template-resume').html(html)
+    },
+
+    open(listTemplate){
+        this.renderTemplateResume(listTemplate)
         xmodal.show("template-resume")
-     }
+    }
 }
 
 </script>
