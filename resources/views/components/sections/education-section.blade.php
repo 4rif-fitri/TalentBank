@@ -4,29 +4,38 @@
         background-position: center;
         background-size: cover;
     }
-    #education, #semesterResults{
+
+    #education,
+    #semesterResults {
         overflow: hidden;
     }
 
-    #educationsContainer .card,
-    #semesterResultList .card{
-        height: 100%;
-    }
-
-    #educationsContainer .owl-stage,
-    #semesterResultList .owl-stage{
-        display: flex;
-    }
-
-    #educationsContainer .owl-item,
-    #semesterResultList .owl-item{
-        display: flex;
-    }
-
-    #educationsContainer .owl-item>div,
-    #semesterResultList .owl-item>div
-    {
+    #educationsContainer,
+    #semesterResultList {
         width: 100%;
+        overflow: hidden;
+    }
+
+    #educationsContainer .carousel-track,
+    #semesterResultList .carousel-track {
+        display: flex;
+        transition: transform 0.4s ease;
+    }
+
+    #educationsContainer .carousel-track .item,
+    #semesterResultList .carousel-track .item {
+        min-width: 50%;
+        flex: 0 0 50%;
+        padding: 0 8px;
+        box-sizing: border-box;
+    }
+
+    @media (max-width: 1200px) {
+        #educationsContainer .carousel-track .item,
+        #semesterResultList .carousel-track .item {
+            min-width: 100%;
+            flex: 0 0 100%;
+        }
     }
 </style>
 @endsection
@@ -45,7 +54,30 @@
 
     </div>
     <hr>
-    <div id="educationsContainer" class="owl-carousel"></div>
+    <div id="educationsContainer">
+
+        <div class="carousel-wrapper">
+
+            <div class="carousel-track">
+            </div>
+
+            <div class="carousel-controls">
+
+                <button type="button" class="carousel-prev">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    Back
+                </button>
+
+                <button type="button" class="carousel-next">
+                    Next
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </section>
 
@@ -100,49 +132,70 @@
         return html;
     }
 
-    function renderEducationList(educations) {
+    function getEducationItemsPerView() {
 
-        let $carousel = $("#educationsContainer");
+        return window.innerWidth <= 1200 ? 1 : 2;
+    }
 
-        if ($carousel.hasClass("owl-loaded")) {
-            $carousel.trigger("destroy.owl.carousel");
-            $carousel.removeClass("owl-loaded");
-            $carousel.removeAttr("style");
+
+    function updateEducationCarousel() {
+        const $track = $("#educationsContainer .carousel-track");
+
+        const totalItems = $track.find(".item").length;
+        const itemsPerView = window.innerWidth <= 1200 ? 1 : 2;
+
+        const maxIndex = Math.max(0, totalItems - itemsPerView);
+
+        if (currentEducation > maxIndex) {
+            currentEducation = maxIndex;
         }
 
-        $carousel.empty(xeducation.common.noRecords());
+        $track.css(
+            "transform",
+            `translateX(-${currentEducation * (100 / itemsPerView)}%)`
+        );
+
+        $track.data("current", currentEducation);
+    }
+
+    function renderEducationList(educations) {
+
+        const $container = $("#educationsContainer");
+        const $track = $container.find(".carousel-track");
 
         if (!educations || educations.length === 0) {
-            $carousel.html(xeducation.student.emptyEducation());
+
+            $track.html(
+                xeducation.student.emptyEducation()
+            );
+
             return;
         }
 
         let htmlEducation = "";
 
         educations.forEach(education => {
-            let htmlImage = image(education.media ?? [], education.id);
-            htmlEducation += xeducation.student.educationCard(education, htmlImage);
+
+            let htmlImage = image(
+                education.media ?? [],
+                education.id
+            );
+
+            htmlEducation += `
+            <div class="item">
+                ${xeducation.student.educationCard(
+                education,
+                htmlImage
+            )}
+            </div>
+        `;
         });
 
-        $carousel.html(htmlEducation);
+        $track.html(htmlEducation);
 
-        $carousel.owlCarousel({
-            margin: 15,
-            nav: true,
-            dots: educations.length > 1,
-            navText: [
-                '<i class="fa-solid fa-chevron-left"></i>',
-                '<i class="fa-solid fa-chevron-right"></i>'
-            ],
-            responsive: {
-                0: {
-                    items: 1
-                },
-                992: {
-                    items: 2
-                },
-            }
-        });
+        $track.data("current", 0);
+
+        updateEducationCarousel();
     }
 
     function initEducationCarousel() {
@@ -173,18 +226,28 @@
         });
     }
 
-    function handleScreenSize(){
+    function handleScreenSize() {
         clearTimeout(resizeTimer);
 
         resizeTimer = setTimeout(function () {
-            let $carousel = $("#educationsContainer");
 
-            if ($carousel.hasClass("owl-loaded")) {
-                $carousel.trigger("refresh.owl.carousel");
-            }
+            // Reset scroll count
+            currentEducation = 0;
+
+            // Reset carousel position
+            const $track = $("#educationsContainer .carousel-track");
+            $track.data("current", 0);
+
+            updateEducationCarousel();
 
         }, 100);
     }
+
+    $(window).on("resize", handleScreenSize);
+
+    $(window).on("resize", handleScreenSize);
+
+    $(window).on("resize", handleScreenSize);
 
     $(window).on("resize", handleScreenSize);
     function getEducationById(id) {
@@ -230,5 +293,36 @@
         getEducationByUserProfileId(profileId);
     });
 
+    $(document).on(
+        "click",
+        "#educationsContainer .carousel-next",
+        function () {
+
+            const $track = $("#educationsContainer .carousel-track");
+
+            const totalItems = $track.find(".item").length;
+            const itemsPerView = window.innerWidth <= 1200 ? 1 : 2;
+
+            const maxIndex = Math.max(0, totalItems - itemsPerView);
+
+            if (currentEducation < maxIndex) {
+                currentEducation++;
+            }
+
+            updateEducationCarousel();
+        }
+    );
+    $(document).on(
+        "click",
+        "#educationsContainer .carousel-prev",
+        function () {
+
+            if (currentEducation > 0) {
+                currentEducation--;
+            }
+
+            updateEducationCarousel();
+        }
+    );
 </script>
 @endpush
