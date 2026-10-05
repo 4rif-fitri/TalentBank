@@ -1,21 +1,9 @@
-/* APP */
+
 .app {
     display: flex;
     min-height: 100vh;
 }
 
-/* SIDEBAR */
-/* .sidebar {
-	width: 360px;
-	flex-shrink: 0;
-	height: 100vh;
-	overflow-y: auto;
-	padding: 25px;
-	background: #fff;
-	border-right: 1px solid #ddd;
-} */
-
-/* WORKSPACE */
 .workspace {
     flex: 1;
     min-width: 0;

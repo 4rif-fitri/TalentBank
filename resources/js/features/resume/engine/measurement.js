@@ -2,7 +2,7 @@ export const MM_TO_PX = 3.7795275591;
 export const PAGE_WIDTH = 210 * MM_TO_PX;
 export const PAGE_HEIGHT = 297 * MM_TO_PX;
 export const PAGE_PADDING_TOP = 15 * MM_TO_PX;
-export const PAGE_PADDING_BOTTOM = 15 * MM_TO_PX;
+export const PAGE_PADDING_BOTTOM = 65 * MM_TO_PX;
 export const CONTENT_HEIGHT = PAGE_HEIGHT - PAGE_PADDING_TOP - PAGE_PADDING_BOTTOM;
 
 export function createMeasurementPage() {

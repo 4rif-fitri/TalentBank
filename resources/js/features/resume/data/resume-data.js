@@ -11,236 +11,6 @@ const resumeData = {
 
 	experience: [
 		{
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
-			id: 2,
-			position: "Web Developer Intern",
-			company: "ABC Technology",
-			start: "2025",
-			end: "2026",
-			description:
-				"Developed web applications and maintained existing systems. Worked with PHP, MySQL, JavaScript, Bootstrap and REST APIs."
-		}, {
-			id: 1,
-			position: "Frontend Developer",
-			company: "TalentBank",
-			start: "2026",
-			end: "Present",
-			description:
-				"Developed recruitment platform interfaces using Laravel, JavaScript, jQuery, React and REST APIs. Built reusable components, profile interfaces, interview modules, invitation flows and responsive UI."
-		},
-		{
 			id: 2,
 			position: "Web Developer Intern",
 			company: "ABC Technology",
@@ -276,7 +46,63 @@ const resumeData = {
 				"Universiti Teknikal Malaysia Melaka",
 			year: "2026",
 			cgpa: "3.60"
-		}
+		},
+        {
+            id: 1,
+            qualification: "Diploma in Computer Science",
+            institution:
+                "Universiti Teknikal Malaysia Melaka",
+            year: "2026",
+            cgpa: "3.60"
+        },
+        {
+            id: 1,
+            qualification: "Diploma in Computer Science",
+            institution:
+                "Universiti Teknikal Malaysia Melaka",
+            year: "2026",
+            cgpa: "3.60"
+        },
+        {
+            id: 1,
+            qualification: "Diploma in Computer Science",
+            institution:
+                "Universiti Teknikal Malaysia Melaka",
+            year: "2026",
+            cgpa: "3.60"
+        },
+        {
+            id: 1,
+            qualification: "qw in Computer Science",
+            institution:
+                "Universiti Teknikal Malaysia Melaka",
+            year: "2026",
+            cgpa: "3.60"
+        },
+        {
+            id: 1,
+            qualification: "qw in Computer Science",
+            institution:
+                "Universiti Teknikal Malaysia Melaka",
+            year: "2026",
+            cgpa: "3.60"
+        },
+        {
+            id: 1,
+            qualification: "qw in Computer Science",
+            institution:
+                "Universiti Teknikal Malaysia Melaka",
+            year: "2026",
+            cgpa: "3.60"
+        },
+        {
+            id: 1,
+            qualification: "qw in Computer Science",
+            institution:
+                "Universiti Teknikal Malaysia Melaka",
+            year: "2026",
+            cgpa: "3.60"
+        },
 	],
 
 	skills: [

@@ -11,7 +11,7 @@
         </div>
     </section>
 
-    <section class="resume-list d-flex gap-2 flex-wrap justify-content-center">
+    <section class="resume-list d-flex gap-2 flex-wrap">
 
         <div class="add-resume card d-flex justify-content-center align-content-center" role="button" style="min-width: 20rem !important; height: 27rem !important;">
             <h1 class="text-center fw-bolder" style="font-size: 5rem;">+</h1>

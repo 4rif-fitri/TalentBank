@@ -15,11 +15,7 @@ export function renderResume() {
     const template = templates[currentTemplate];
 
     if (!template) {
-        console.error(
-            "Template not found:",
-            currentTemplate
-        );
-
+        console.error("Template not found:",currentTemplate);
         return;
     }
 
@@ -27,14 +23,9 @@ export function renderResume() {
 
     if (template.type === "single") {
 
-        const blocks =
-            template.render(resumeData);
-
-        const measured =
-            measureBlocks(blocks);
-
-        const columnPages =
-            paginateColumn(measured);
+        const blocks = template.render(resumeData);
+        const measured = measureBlocks(blocks);
+        const columnPages = paginateColumn(measured);
 
         pages = columnPages.map(blocks => ({
             left: blocks,
@@ -44,110 +35,105 @@ export function renderResume() {
 
     else if (template.type === "columns") {
 
-        const layout =
-            template.render(resumeData);
-
-        const left =
-            measureBlocks(layout.left);
-
-        const right =
-            measureBlocks(layout.right);
-
-        pages =
-            paginateTwoColumns(left, right);
+        const layout = template.render(resumeData);
+        const left = measureBlocks(layout.left);
+        const right = measureBlocks(layout.right);
+        pages = paginateTwoColumns(left, right);
     }
 
     renderPages(pages, template);
 }
 
+function applyZoom() {
+    const resumePages = document.querySelector("#resumePages");
+    resumePages.style.scale = zoom
+    resumePages.style.transformOrigin = "top center";
+}
 
 $(document).ready(function () {
+
+    $("#zoomIn").on("click", function () {
+        zoom += 0.1;
+        if (zoom > 2) zoom = 2;
+        applyZoom();
+    });
+
+    $("#zoomOut").on("click", function () {
+        zoom -= 0.1;
+        if (zoom < 0.5) zoom = 0.5;
+        applyZoom();
+    });
 
     renderResume();
 
     $("#templateSelect").on("change", function () {
-
         currentTemplate = this.value;
-
         renderResume();
     });
-
     $("#name").on("input", function () {
-
-        resumeData.profile.name =
-            this.value;
-
+        resumeData.profile.name = this.value;
         renderResume();
     });
-
     $("#jobTitle").on("input", function () {
-
-        resumeData.profile.jobTitle =
-            this.value;
-
+        resumeData.profile.jobTitle = this.value;
         renderResume();
     });
-
     $("#email").on("input", function () {
-
-        resumeData.profile.email =
-            this.value;
-
+        resumeData.profile.email = this.value;
         renderResume();
     });
-
     $("#phone").on("input", function () {
-
-        resumeData.profile.phone =
-            this.value;
-
+        resumeData.profile.phone = this.value;
         renderResume();
     });
-
     $("#location").on("input", function () {
-
-        resumeData.profile.location =
-            this.value;
-
+        resumeData.profile.location = this.value;
         renderResume();
     });
-
     $("#summary").on("input", function () {
-
-        resumeData.profile.summary =
-            this.value;
-
+        resumeData.profile.summary = this.value;
         renderResume();
     });
 
-    $("#downloadResume").on("click", function () {
+    $("#downloadResume").on("click", async function () {
 
-        const element =
-            document.querySelector("#resumePages");
+        const resumePages = document.querySelector("#resumePages");
 
-        html2pdf()
-            .set({
-                margin: 0,
+        // Simpan zoom asal
+        const originalZoom = zoom;
 
-                filename: "resume.pdf",
+        // Reset scale sebelum capture
+        resumePages.style.scale = "1";
+        resumePages.style.transformOrigin = "top center";
 
-                image: {
-                    type: "jpeg",
-                    quality: 0.98
-                },
+        try {
 
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true
-                },
+            await html2pdf()
+                .set({
+                    margin: 0,
+                    filename: "resume.pdf",
+                    image: {
+                        type: "jpeg",
+                        quality: 0.98
+                    },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true
+                    },
+                    jsPDF: {
+                        unit: "mm",
+                        format: "a4",
+                        orientation: "portrait"
+                    }
+                })
+                .from(resumePages)
+                .save();
 
-                jsPDF: {
-                    unit: "mm",
-                    format: "a4",
-                    orientation: "portrait"
-                }
-            })
-            .from(element)
-            .save();
+        } finally {
+
+            // Restore zoom HANYA selepas PDF siap
+            resumePages.style.scale = originalZoom;
+            resumePages.style.transformOrigin = "top center";
+        }
     });
 });
