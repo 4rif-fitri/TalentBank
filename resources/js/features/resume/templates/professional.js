@@ -4,11 +4,8 @@ const professional = {
 	columns: 2,
 
 	render(data) {
-
 		const left = [];
 		const right = [];
-
-		/* LEFT */
 
         left.push({
 			id: "profile",
@@ -41,18 +38,18 @@ const professional = {
 		left.push({
 			id: "skills",
 			html: `<div class="skills-list">
-                        ${data.skills.map(skill => `<span class="skill">${skill.name}</span>`).join("")}
+                        ${data.profile.skills.map(skill => `<span class="skill">${skill.name}</span>`).join("")}
                     </div>`
 		});
 
 		/* RIGHT */
-		right.push({
-			id: "summary",
-			html: `<section class="resume-summary">
-                       <h2 class="resume-section-title">PROFILE</h2>
-                        <p>${data.profile.summary}</p>
-                    </section>`
-		});
+		// right.push({
+		// 	id: "summary",
+		// 	html: `<section class="resume-summary">
+        //                <h2 class="resume-section-title">PROFILE</h2>
+        //                 <p>${data.profile.summary}</p>
+        //             </section>`
+		// });
 
 		right.push({
 			id: "experience-heading",
@@ -61,7 +58,7 @@ const professional = {
                     </section>`
 		});
 
-		data.experience.forEach(item => {
+        data.education.forEach(item => {
 			right.push({
 				id: `experience-${item.id}`,
 				html: `<article class="experience-item">

@@ -1,4 +1,4 @@
-import resumeData from "./data/resume-data.js";
+// import resumeData from "./data/resume-data.js";
 import { measureBlocks } from "./engine/measurement.js";
 import { paginateColumn, paginateTwoColumns } from "./engine/pagination.js";
 import { renderPages } from "./engine/renderer.js";
@@ -8,7 +8,12 @@ import professional from "./templates/professional.js";
 const templates = { modern, professional };
 
 let currentTemplate = "professional";
-let zoom = 1;
+let resumeData = null;
+let zoom = getDefaultZoom();
+
+function getDefaultZoom() {
+    return window.innerWidth < 992 ? 0.5 : 0.8;
+}
 
 export function renderResume() {
 
@@ -46,11 +51,29 @@ export function renderResume() {
 
 function applyZoom() {
     const resumePages = document.querySelector("#resumePages");
-    resumePages.style.scale = zoom
+    if (!resumePages) return;
+
+    resumePages.style.scale = zoom;
     resumePages.style.transformOrigin = "top center";
 }
 
-$(document).ready(function () {
+$(window).on("resize", function () {
+    zoom = getDefaultZoom();
+    applyZoom();
+});
+
+window.addEventListener("resumeDataLoaded",function (event) {
+    resumeData = event.detail;
+    console.log("app.js received:",resumeData);
+    renderResume();
+    applyZoom();
+});
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    // renderResume();
+    // applyZoom();
+
 
     $("#zoomIn").on("click", function () {
         zoom += 0.1;
@@ -64,22 +87,17 @@ $(document).ready(function () {
         applyZoom();
     });
 
-    renderResume();
-
     $("#templateSelect").on("change", function () {
         currentTemplate = this.value;
         renderResume();
     });
 
-
     $("#downloadResume").on("click", async function () {
 
         const resumePages = document.querySelector("#resumePages");
 
-        // Simpan zoom asal
         const originalZoom = zoom;
 
-        // Reset scale sebelum capture
         resumePages.style.scale = "1";
         resumePages.style.transformOrigin = "top center";
 
