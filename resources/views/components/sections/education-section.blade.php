@@ -133,10 +133,8 @@
     }
 
     function getEducationItemsPerView() {
-
         return window.innerWidth <= 1200 ? 1 : 2;
     }
-
 
     function updateEducationCarousel() {
         const $track = $("#educationsContainer .carousel-track");
@@ -164,37 +162,22 @@
         const $track = $container.find(".carousel-track");
 
         if (!educations || educations.length === 0) {
-
-            $track.html(
-                xeducation.student.emptyEducation()
-            );
-
+            $track.html(xeducation.student.emptyEducation());
             return;
         }
 
         let htmlEducation = "";
-
         educations.forEach(education => {
-
-            let htmlImage = image(
-                education.media ?? [],
-                education.id
-            );
+            let htmlImage = image(education.media ?? [],education.id);
 
             htmlEducation += `
             <div class="item">
-                ${xeducation.student.educationCard(
-                education,
-                htmlImage
-            )}
-            </div>
-        `;
+                ${xeducation.student.educationCard(education,htmlImage)}
+            </div>`;
         });
 
         $track.html(htmlEducation);
-
         $track.data("current", 0);
-
         updateEducationCarousel();
     }
 
@@ -243,13 +226,6 @@
         }, 100);
     }
 
-    $(window).on("resize", handleScreenSize);
-
-    $(window).on("resize", handleScreenSize);
-
-    $(window).on("resize", handleScreenSize);
-
-    $(window).on("resize", handleScreenSize);
     function getEducationById(id) {
 
         let url = "{{ route('education.getEducationById', ['id' => '__ID__']) }}";
@@ -271,7 +247,6 @@
         xmodal.show("educationModal");
     }
 
-
     function handleEditEducation() {
         let educationId = $(this).data("educationId");
         let currentEducation = listEducation.find(education => education.id === educationId);
@@ -281,48 +256,41 @@
     function handlePreviewImage() {
         let imageUrl = $(this).attr("src");
         openImagePreview(imageUrl)
-
         xmodal.show("imagePreviewModal");
     }
 
-    $(document).on("click", ".btnEditEducation", handleEditEducation);
-    $(document).on("click","#menuToggle", handleScreenSize)
-    $(document).on("click","#addEducation",showEducationModal);
-    $(document).on("profile:loaded",function (event, data) {
-        profileId = data.id;
+    $(".profile-tab[data-target='education']").on("click", function () {
         getEducationByUserProfileId(profileId);
     });
 
-    $(document).on(
-        "click",
-        "#educationsContainer .carousel-next",
-        function () {
+    $(document).on("click","#educationsContainer .carousel-next",function () {
+        const $track = $("#educationsContainer .carousel-track");
+        const totalItems = $track.find(".item").length;
+        const itemsPerView = window.innerWidth <= 1200 ? 1 : 2;
 
-            const $track = $("#educationsContainer .carousel-track");
+        const maxIndex = Math.max(0, totalItems - itemsPerView);
 
-            const totalItems = $track.find(".item").length;
-            const itemsPerView = window.innerWidth <= 1200 ? 1 : 2;
-
-            const maxIndex = Math.max(0, totalItems - itemsPerView);
-
-            if (currentEducation < maxIndex) {
-                currentEducation++;
-            }
-
-            updateEducationCarousel();
+        if (currentEducation < maxIndex) {
+            currentEducation++;
         }
-    );
-    $(document).on(
-        "click",
-        "#educationsContainer .carousel-prev",
-        function () {
 
-            if (currentEducation > 0) {
-                currentEducation--;
-            }
+        updateEducationCarousel();
+    });
 
-            updateEducationCarousel();
+    $(document).on("click","#educationsContainer .carousel-prev",function () {
+        if (currentEducation > 0) {
+            currentEducation--;
         }
-    );
+
+        updateEducationCarousel();
+    });
+
+    $(window).on("resize", handleScreenSize);
+    $(document).on("click", ".btnEditEducation", handleEditEducation);
+    $(document).on("click", "#menuToggle", handleScreenSize)
+    $(document).on("click", "#addEducation", showEducationModal);
+    $(document).on("profile:loaded", function (event, data) {
+        profileId = data.id;
+    });
 </script>
 @endpush

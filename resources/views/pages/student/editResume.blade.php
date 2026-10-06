@@ -25,17 +25,8 @@
             <!-- Resume Editor -->
             <div id="resumeEditor">
 
-                <input type="text" id="name" value="Arif Fitri">
-
-                <input type="text" id="jobTitle" value="Full Stack Web Developer">
-
-                <input type="text" id="email" value="arif@example.com">
-
-                <input type="text" id="phone" value="+60 12-345 6789">
-
-                <input type="text" id="location" value="Melaka, Malaysia">
-
-                <textarea id="summary"></textarea>
+                <button id="zoomIn">-</button>
+                <button id="zoomOut">+</button>
 
                 <select id="templateSelect">
                     <option value="modern">
@@ -69,18 +60,14 @@
 @endsection
 
 @section('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script type="module">
 
-    const templateId =
-        new URLSearchParams(
-            window.location.search
-        ).get('template_id');
+    const templateId = new URLSearchParams(window.location.search).get('template_id');
 
     if (templateId) {
-        document
-            .querySelector('#template_id')
-            .value = templateId;
+        document.querySelector('#template_id').value = templateId;
     }
 
 </script>

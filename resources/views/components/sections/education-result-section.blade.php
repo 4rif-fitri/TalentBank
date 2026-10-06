@@ -46,10 +46,7 @@
 
 <section id="semesterResults">
     <div class="d-flex justify-content-between align-items-center">
-        <h3 class="fw-bold mb-0">
-            Semester Results
-
-        </h3>
+        <h3 class="fw-bold mb-0">Semester Results</h3>
         <div>
             @if (array_intersect(session('roles') ?? [], ['Student']))
             <button class="btn btn-primary" id="addSemester" type="button">
@@ -59,33 +56,25 @@
                 Add Result
             </button>
             @endif
-
         </div>
     </div>
     <hr>
     <div id="semesterResultList">
+        <div class="carousel-wrapper">
 
-            <div class="carousel-wrapper">
+            <div class="carousel-track"></div>
+                <div class="carousel-controls">
+                    <button type="button" class="carousel-prev">
+                        <i class="fa-solid fa-chevron-left"></i>
+                        Back
+                    </button>
 
-                <div class="carousel-track">
-
-
-
+                    <button type="button" class="carousel-next">
+                        Next
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
-
-                    <div class="carousel-controls">
-                        <button type="button" class="carousel-prev">
-                            <i class="fa-solid fa-chevron-left"></i>
-                            Back
-                        </button>
-
-                        <button type="button" class="carousel-next">
-                            Next
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    </div>
-            </div>
-
+        </div>
     </div>
 </section>
 
@@ -104,6 +93,7 @@
 
         return fileUrl;
     }
+
     function resultSemesterTemplate(semester) {
         let media = getSemesterMedia(semester.media);
         let hasResult = media !== null;
@@ -114,90 +104,56 @@
             let fileUrl = getMediaUrl(media);
 
             if (fileUrl) {
-                resultButton = `
-                <button
-                    type="button"
-                    class="btn btn-outline-primary btn-sm btn-view-result"
-                    data-file-url="${escapeHtml(fileUrl)}"
-                    data-session="${escapeHtml(semester.session ?? "")}">
-                    <i class="fa-regular fa-file-pdf me-1"></i>
-                    View Result
-                </button>
-            `;
+                resultButton = `<button type="button" class="btn btn-outline-primary btn-sm btn-view-result"
+                                    data-file-url="${escapeHtml(fileUrl)}"
+                                    data-session="${escapeHtml(semester.session ?? "")}">
+                                    <i class="fa-regular fa-file-pdf me-1"></i>
+                                    View Result
+                                </button>`;
             } else {
-                resultButton = `
-                <span class="badge text-bg-success">
-                    Result Uploaded
-                </span>
-            `;
+                resultButton = `<span class="badge text-bg-success">Result Uploaded</span>`;
             }
         } else {
-            resultButton = `
-            <span class="badge text-bg-secondary">
-                No Result
-            </span>
-        `;
+            resultButton = `<span class="badge text-bg-secondary">No Result</span>`;
         }
 
         return `
         <article class="semester-result-item border rounded-3 p-3 mb-2">
-
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
-
                 <div>
 
                     <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
-
                         <span class="fw-bold mb-1 d-flex gap-2">
                             <span>Semester</span>
                             <span class="session">
                                 ${escapeHtml(semester.session ?? "-")}
                             </span>
                         </span>
-
-                        ${hasResult
-                ? `<span class="badge text-bg-success">Uploaded</span>`
-                : ''
-            }
-
+                        ${hasResult ? `<span class="badge text-bg-success">Uploaded</span>` : ''}
                     </div>
 
                     <div class="d-flex flex-wrap gap-3 small text-muted">
-
                         <span class="d-flex gap-2">
                             <strong>GPA:</strong>
                             <span class="gpa">
                                 ${escapeHtml(semester.gpa ?? "-")}
                             </span>
                         </span>
-
                     </div>
 
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-
-                    <div>
-                        ${resultButton}
-                    </div>
-
-                    <button
-                        type="button"
-                        class="btn text-secondary icon border-1 btnEditSemester"
+                    <div>${resultButton}</div>
+                    <button type="button" class="btn text-secondary icon border-1 btnEditSemester"
                         data-id="${semester.semesterId}"
                         data-education-id="${semester.educationId}"
                         data-programme-name="${escapeHtml(semester.programmeName ?? "-")}">
-
                         <i class="fa-solid fa-pencil"></i>
-
                     </button>
-
                 </div>
-
             </div>
-
-        </article>
-    `;
+        </article>`;
     }
 
     function programmeTemplate(programme) {
@@ -224,18 +180,10 @@
                 </div>
 
                 <div class="semester-items">
-
-                    ${programme.semesters
-                .map(semester => resultSemesterTemplate(semester))
-                .join("")
-            }
-
+                    ${programme.semesters.map(semester => resultSemesterTemplate(semester)).join("") }
                 </div>
-
             </div>
-
-        </div>
-    `;
+        </div>`;
     }
 
     function renderSemesterResults(programmes) {

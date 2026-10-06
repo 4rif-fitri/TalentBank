@@ -70,30 +70,7 @@ $(document).ready(function () {
         currentTemplate = this.value;
         renderResume();
     });
-    $("#name").on("input", function () {
-        resumeData.profile.name = this.value;
-        renderResume();
-    });
-    $("#jobTitle").on("input", function () {
-        resumeData.profile.jobTitle = this.value;
-        renderResume();
-    });
-    $("#email").on("input", function () {
-        resumeData.profile.email = this.value;
-        renderResume();
-    });
-    $("#phone").on("input", function () {
-        resumeData.profile.phone = this.value;
-        renderResume();
-    });
-    $("#location").on("input", function () {
-        resumeData.profile.location = this.value;
-        renderResume();
-    });
-    $("#summary").on("input", function () {
-        resumeData.profile.summary = this.value;
-        renderResume();
-    });
+
 
     $("#downloadResume").on("click", async function () {
 
@@ -130,8 +107,6 @@ $(document).ready(function () {
                 .save();
 
         } finally {
-
-            // Restore zoom HANYA selepas PDF siap
             resumePages.style.scale = originalZoom;
             resumePages.style.transformOrigin = "top center";
         }
