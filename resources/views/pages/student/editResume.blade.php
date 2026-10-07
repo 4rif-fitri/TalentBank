@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/modern.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/professional.css') }}">
 
-<div class="content p-4 page-container">
+<div class="">
 
     <!-- <section class="page-header">
         <div class="page-heading">
@@ -18,34 +18,15 @@
 
     <input type="hidden" id="template_id">
 
-    <div class="row w-100">
-
-        <div class="col-12 col-lg-6 border border-1 bg-body">
-            <div id="resumeEditor">
-                <button id="zoomOut">-</button>
-                <button id="zoomIn">+</button>
-
-                <select id="templateSelect">
-                    <option value="modern">
-                        Modern
-                    </option>
-
-                    <option value="professional">
-                        Professional
-                    </option>
-                </select>
-
-                <button id="downloadResume">
-                    Download PDF
-                </button>
-            </div>
+    <div class="d-flex flex-md-row flex-column bg-body m-2" style="display: flex; flex-grow: 1;">
+        <div class="border border-1" style="height: 100vh;">
+            <x-sections.resume-setting />
+            <x-sections.resume-editor />
         </div>
 
-
-        <div class="col-12 col-lg-6 border border-1 bg-body workspace">
+        <div class="workspace w-100 " style="height: 100vh !important;">
             <div id="resumePages"></div>
         </div>
-
     </div>
 
 </div>
@@ -53,7 +34,7 @@
 @endsection
 
 @section('script')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script type="module">
 
@@ -108,7 +89,7 @@
                 const response = await getResumeById(templateId);
                 dataResume = response.data;
 
-                // loadResumeToApp(dataResume);
+                loadResumeToApp(dataResume);
 
             } catch (error) {
                 console.error("Failed to load resume:",error);
@@ -131,6 +112,9 @@
                     profile: profileData,
                     education: educationByUser
                 };
+
+                console.log(dataResume);
+
 
                 loadResumeToApp(dataResume);
 

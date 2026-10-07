@@ -51,55 +51,60 @@ const professional = {
         //             </section>`
 		// });
 
-		right.push({
-			id: "experience-heading",
-			html: `<section class="resume-section">
-                        <h2 class="resume-section-title">EXPERIENCE</h2>
-                    </section>`
-		});
+		// right.push({
+		// 	id: "experience-heading",
+		// 	html: `<section class="resume-section">
+        //                 <h2 class="resume-section-title">Education</h2>
+        //             </section>`
+		// });
 
-        data.education.forEach(item => {
-			right.push({
-				id: `experience-${item.id}`,
-				html: `<article class="experience-item">
-                            <div class="experience-position">
-                                ${item.position}
-                            </div>
-                            <div class="experience-company">
-                                ${item.company} | ${item.start} - ${item.end}
-                            </div>
-                            <div class="experience-description">
-                                ${item.description}
-                            </div>
-                        </article>`
-			});
-		});
+        // data.education.forEach(item => {
+        //     console.log(item);
 
-		right.push({
-			id: "education-heading",
-			html: `<section class="resume-section">
-                        <h2 class="resume-section-title">
-                            EDUCATION
-                        </h2>
-                    </section>`
-		});
+		// 	right.push({
+		// 		id: `experience-${item.id}`,
+		// 		html: `<article class="experience-item">
+        //                     <div class="experience-position">
+        //                         ${item.programme.programme_name}
+        //                     </div>
+        //                     <div class="experience-company">
+        //                         ${item.programme.organization.company_name} | ${item.start_date} - ${item.end_date}
+        //                     </div>
+        //                     <div class="experience-description">
+        //                         ${item.description}
+        //                     </div>
+        //                 </article>`
+		// 	});
+		// });
 
-		data.education.forEach(item => {
-			right.push({
-				id: `education-${item.id}`,
-				html: `<article class="education-item">
-                            <div class="education-title">
-                                ${item.qualification}
-                            </div>
-                            <div class="education-institution">
-                                ${item.institution}
-                            </div>
-                            <div class="education-meta">
-                                ${item.year} • CGPA ${item.cgpa}
-                            </div>
-                        </article>`
-			});
-		});
+        const templateId = new URLSearchParams(window.location.search).get('template_id');
+        if (templateId){
+            right.push({
+                id: "education-heading",
+                html: `<section class="resume-section">
+                            <h2 class="resume-section-title">
+                                EDUCATION
+                            </h2>
+                        </section>`
+            });
+
+            data.education.forEach(item => {
+                right.push({
+                    id: `education-${item.id}`,
+                    html: `<article class="education-item">
+                                <div class="education-title">
+                                    ${item.programme.programme_name}
+                                </div>
+                                <div class="education-institution">
+                                    ${item.programme.organization.company_name}
+                                </div>
+                                <div class="education-meta">
+                                    ${item.year} • CGPA ${item.cgpa}
+                                </div>
+                            </article>`
+                });
+            });
+        }
 
 		return {left,right};
 	}
