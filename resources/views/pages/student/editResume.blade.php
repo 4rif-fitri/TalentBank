@@ -19,12 +19,12 @@
     <input type="hidden" id="template_id">
 
     <div class="d-flex flex-md-row flex-column bg-body m-2" style="display: flex; flex-grow: 1;">
-        <div class="border border-1" style="height: 100vh;">
+        <div class="border border-1" style="height: 92vh;">
             <x-sections.resume-setting />
             <x-sections.resume-editor />
         </div>
 
-        <div class="workspace w-100 " style="height: 100vh !important;">
+        <div class="workspace w-100 " style="height: 92vh !important;">
             <div id="resumePages"></div>
         </div>
     </div>
