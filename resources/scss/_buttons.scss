@@ -1,0 +1,98 @@
+.btn-tb {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-8);
+
+    min-height: 44px;
+    padding: var(--spacing-12) var(--spacing-20);
+
+    border: 1px solid transparent;
+    border-radius: var(--radius-buttons);
+
+    font-size: var(--text-caption);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.btn-tb:hover {
+    transform: translateY(-1px);
+}
+
+.btn-tb:active {
+    transform: translateY(0);
+}
+
+/* Primary */
+.btn-tb-primary {
+    color: var(--color-forest-ink);
+    background: var(--color-lime-voltage);
+}
+
+.btn-tb-primary:hover {
+    background: #b4f58f;
+}
+
+/* Dark */
+.btn-tb-dark {
+    color: var(--color-paper);
+    background: var(--color-forest-ink);
+}
+
+.btn-tb-dark:hover {
+    background: var(--color-spruce);
+}
+
+/* Outline */
+.btn-tb-outline {
+    color: var(--color-forest-ink);
+    background: transparent;
+    border-color: var(--color-forest-ink);
+}
+
+.btn-tb-outline:hover {
+    background: var(--color-linen-mist);
+}
+
+/* Ghost */
+.btn-tb-ghost {
+    color: var(--color-charcoal);
+    background: transparent;
+}
+
+.btn-tb-ghost:hover {
+    background: var(--color-fog);
+}
+
+/* Danger */
+.btn-tb-danger {
+    color: var(--color-paper);
+    background: var(--color-alarm-red);
+}
+
+/* Sizes */
+.btn-tb-sm {
+    min-height: 36px;
+    padding: var(--spacing-8) var(--spacing-16);
+    font-size: var(--text-micro);
+}
+
+.btn-tb-lg {
+    min-height: 52px;
+    padding: var(--spacing-16) var(--spacing-28);
+    font-size: var(--text-body-sm);
+}
+
+/* Square button */
+.btn-tb-icon {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: var(--radius-lg);
+}

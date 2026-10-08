@@ -35,7 +35,7 @@ class UserLanguageController extends Controller
     {
         $languages = $this->userLanguageService->getAllLanguages();
 
-        return ApiResponse::success('Success', $languages)->toJsonResponse();
+        return ApiResponse::success('Success.', $languages)->toJsonResponse();
     }
 
     /**

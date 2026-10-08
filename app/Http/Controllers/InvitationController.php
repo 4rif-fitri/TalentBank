@@ -16,30 +16,6 @@ class InvitationController extends Controller
     }
 
     /**
-     * Handles request to get invitations receiver's user profile ID
-     * 
-     * @return JsonResponse
-     */
-    public function getInvitationsByReceiverId(): JsonResponse
-    {
-        $userProfileId = session('user_profile_id');
-        $invitations = $this->invitationService->getInvitationsByReceiverId($userProfileId);
-        return ApiResponse::success('Success.', $invitations)->toJsonResponse();
-    }
-
-    /**
-     * Handles request to get invitations sender's user profile ID
-     * 
-     * @return JsonResponse
-     */
-    public function getInvitationsBySenderId(): JsonResponse
-    {
-        $userProfileId = session('user_profile_id');
-        $invitations = $this->invitationService->getInvitationsBySenderId($userProfileId);
-        return ApiResponse::success('Success.', $invitations)->toJsonResponse();
-    }
-
-    /**
      * Handles request to get invitation by invitation ID
      * 
      * @param int $id
@@ -53,15 +29,44 @@ class InvitationController extends Controller
     }
 
     /**
-     * Handles request to get invitations by status and sender's user profile ID
+     * Handles request to get invitations by status and receiver's user profile ID
      * 
-     * @param string $status
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getInvitationsByStatusAndSenderId(string $status): JsonResponse
+    public function getInvitationsByStatusAndReceiverId(Request $request): JsonResponse
     {
         $userProfileId = session('user_profile_id');
+        $status = $request->query('status');
+        $invitations = $this->invitationService->getInvitationsByStatusAndReceiverId($status, $userProfileId);
+        return ApiResponse::success('Success.', $invitations)->toJsonResponse();
+    }
+
+    /**
+     * Handles request to get invitations by status and sender's user profile ID
+     * 
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function getInvitationsByStatusAndSenderId(Request $request): JsonResponse
+    {
+        $userProfileId = session('user_profile_id');
+        $status = $request->query('status');
         $invitations = $this->invitationService->getInvitationsByStatusAndSenderId($status, $userProfileId);
+        return ApiResponse::success('Success.', $invitations)->toJsonResponse();
+    }
+
+    /**
+     * Handles request to get invitations by position ID and receiver's profile ID
+     * 
+     * @param int $receiverId
+     * @param int $positionId
+     * @return JsonResponse
+     */
+    public function getInvitationsByPositionIdAndReceiverId(int $receiverId, int $positionId): JsonResponse
+    {
+        $currentUserProfileId = session('user_profile_id');
+        $invitations = $this->invitationService->getInvitationsByPositionIdAndReceiverId($receiverId, $positionId, $currentUserProfileId);
         return ApiResponse::success('Success.', $invitations)->toJsonResponse();
     }
 
@@ -74,8 +79,9 @@ class InvitationController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'receiver_profile_id' => ['required', 'integer', 'exists:user_profiles,id'],
-            'invitation_message' => ['required', 'string', 'max:1000'],
+            'invitation_message' => ['required', 'string'],
             'expires_at' => ['required', 'date', 'after:now'],
             'position_id' => ['required', 'integer', 'exists:positions,id'],
         ]);
@@ -97,6 +103,7 @@ class InvitationController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'invitation_message' => ['required', 'string', 'max:1000'],
             'expires_at' => ['required', 'date', 'after:now'],
         ]);
@@ -117,7 +124,7 @@ class InvitationController extends Controller
     {
         $userProfileId = session('user_profile_id');
         $invitation = $this->invitationService->acceptInvitation($id, $userProfileId);
-        return ApiResponse::success('Invitation status updated successfully.', $invitation)->toJsonResponse();
+        return ApiResponse::success('Invitation accepted.', $invitation)->toJsonResponse();
     }
 
     /**
@@ -130,7 +137,7 @@ class InvitationController extends Controller
     {
         $userProfileId = session('user_profile_id');
         $invitation = $this->invitationService->rejectInvitation($id, $userProfileId);
-        return ApiResponse::success('Invitation status updated successfully.', $invitation)->toJsonResponse();
+        return ApiResponse::success('Invitation rejected.', $invitation)->toJsonResponse();
     }
 
     /**
@@ -143,6 +150,6 @@ class InvitationController extends Controller
     {
         $userProfileId = session('user_profile_id');
         $invitation = $this->invitationService->withdrawInvitation($id, $userProfileId);
-        return ApiResponse::success('Invitation status updated successfully.', $invitation)->toJsonResponse();
+        return ApiResponse::success('Invitation withdrawn.', $invitation)->toJsonResponse();
     }
 }

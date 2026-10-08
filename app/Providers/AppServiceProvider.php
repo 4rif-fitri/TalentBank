@@ -4,7 +4,10 @@ namespace App\Providers;
 
 use App\Models\Education;
 use App\Models\Semester;
+use App\Models\SocialMediaLink;
+use App\Models\UserLanguage;
 use App\Models\UserProfile;
+use App\Models\UserSkill;
 use Exception;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -36,7 +39,12 @@ class AppServiceProvider extends ServiceProvider
             'project' => Semester::class,
             'honors_award' => Semester::class,
             'certification' => Semester::class,
-            'user_profile' => UserProfile::class
+
+            // for resume module use
+            'user_profile' => UserProfile::class,
+            'user_language' => UserLanguage::class,
+            'social_media_link' => SocialMediaLink::class,
+            'user_skill' => UserSkill::class,
         ]);
 
         RateLimiter::for('api', function (Request $request) {

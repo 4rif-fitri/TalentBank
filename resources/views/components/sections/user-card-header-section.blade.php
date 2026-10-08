@@ -83,13 +83,13 @@
 
         <div class="row g-2 profile-actions mt-lg-4 mt-md-4">
             @if (array_intersect(session('roles') ?? [], ['Student']))
-            <div class="col-12 order-1 order-md-2">
+            <!-- <div class="col-12 order-1 order-md-2">
                 <button class="btn btn-primary w-100 profile-action-btn" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
                     <i class="fa-solid fa-plus"></i>
                     Add Section
                 </button>
-            </div>
+            </div> -->
             <div class="col-6 col-md-12 order-2 order-md-1">
                 <button class="btn btn-outline-primary w-100 profile-action-btn" type="button">
                     <i class="fa-regular fa-eye"></i>
@@ -178,8 +178,16 @@
         $("#name").text(stateProfile.name)
         $("#headline").text(stateProfile.headline)
         $("#profileLocation").text(stateProfile.location)
-        $("#uni-name").text(stateProfile.programmes[0].organization.company_name)
-        $("#programme").text(stateProfile.programmes[0].programme_name)
+
+        if(!stateProfile.programmes[0]){
+            $("#uni-name").hide()
+            $("#programme").hide()
+            $("#seeMoreActiveEducations").hide()
+        }else{
+            $("#uni-name").text(stateProfile.programmes[0]?.organization.company_name)
+            $("#programme").text(stateProfile.programmes[0]?.programme_name)
+        }
+
 
         let defaultProfile = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/default.png`;
         let profileUrl = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/${stateProfile.profile_image}`;
@@ -248,6 +256,9 @@
             $("#mainTabContent").addClass("d-none");
             $("#resultTabContent").removeClass("d-none");
             $("#educationsTabContent").addClass("d-none");
+
+           $(document).trigger("loadResult");
+
         }
 
         if (target === "education") {
@@ -255,6 +266,8 @@
             $("#resultTabContent").addClass("d-none");
             $("#educationsTabContent").removeClass("d-none");
             // handleLoadEducations()
+
+
         }
     }
 

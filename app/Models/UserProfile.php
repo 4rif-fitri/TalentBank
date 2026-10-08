@@ -65,10 +65,20 @@ class UserProfile extends Model
         return $this->hasMany(UserLanguage::class, 'user_profile_id');
     }
 
+    public function languages()
+    {
+        return $this->belongsToMany(Language::class, 'user_languages', 'user_profile_id', 'language_id');
+    }
+
     public function skills()
     {
         return $this->morphToMany(Skill::class, 'source', 'user_skills')
             ->withPivot('id');
+    }
+
+    public function socialMedia()
+    {
+        return $this->belongsToMany(SocialMedia::class, 'social_media_links', 'user_profile_id', 'social_media_id');
     }
 
     public function education()

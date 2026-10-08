@@ -12,6 +12,7 @@ use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProgrammeController;
+use App\Http\Controllers\ResumeController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\ShortlistController;
 use App\Http\Controllers\SkillController;
@@ -68,6 +69,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/student', [internshipController::class, "studentIndex"])->name('student.index');
         Route::get('/student/invitations', [internshipController::class, "invitations"])->name('student.invitations');
         Route::get('/student/resume', [internshipController::class, "resume"])->name('student.resume');
+        Route::get('/student/resume/edit', [internshipController::class, "editResume"])->name('student.edit.resume');
         Route::get('/student/interviews', [internshipController::class, "interviews"])->name('student.interviews');
         Route::get('/student/jobOffers', [internshipController::class, "jobOffers"])->name('student.jobOffers');
         Route::get('/student/messages', [internshipController::class, "messages"])->name('student.messages');
@@ -80,8 +82,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/recruiter/profiles', [internshipController::class, "recruiterProfiles"])->name('recruiter.profiles');
         Route::get('/recruiter/likeTalent', [internshipController::class, "recruiterLikeTalent"])->name('recruiter.likeTalent');
         Route::get('/recruiter/invitation', [internshipController::class, "recruiterInvitation"])->name('recruiter.invitation');
+        Route::get('/recruiter/invitation/{id}', [internshipController::class, "recruiterInvitation"])->name('recruiter.invitation.id');
         Route::get('/recruiter/interview', [internshipController::class, "recruiterInterview"])->name('recruiter.interview');
+        Route::get('/recruiter/interview/{id}', [internshipController::class, "recruiterInterview"])->name('recruiter.interview.id');
         Route::get('/recruiter/jobOffer', [internshipController::class, "recruiterJobOffers"])->name('recruiter.jobOffer');
+        Route::get('/recruiter/jobOffer/{id}', [internshipController::class, "recruiterJobOffers"])->name('recruiter.jobOffer.id');
         Route::get('/recruiter/hiredTalent', [internshipController::class, "recruiterHiredTalent"])->name('recruiter.hiredTalent');
         Route::get('/recruiter/message', [internshipController::class, "recruiterMessage"])->name('recruiter.message');
         Route::get('/recruiter/setting', [internshipController::class, "recruiterSetting"])->name('recruiter.setting');
@@ -110,7 +115,6 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     Route::prefix('profile')->group(function () {
         Route::get('/getAllStudentUserProfiles', [ProfileController::class, 'getAllStudentUserProfiles'])->name('profile.getAllStudentUserProfiles');
         Route::get('/getProfileDataByProfileId/{id}', [ProfileController::class, 'getProfileDataByProfileId'])->name('profile.getProfileDataByProfileId');
-        // Route::get('/getLikedUserProfiles', [ProfileController::class, 'getLikedUserProfiles'])->name('profile.getLikedUserProfiles');
         Route::put('/update', [ProfileController::class, 'update'])->name('profile.update');
         Route::put('/update/about', [ProfileController::class, 'updateAboutField'])->name('profile.updateAboutField');
         Route::post('/upload/profile-image', [ProfileController::class, 'uploadProfileImage'])->name('profile.uploadProfileImage');
@@ -191,20 +195,22 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     });
 
     Route::middleware('checkRole:Organization Admin,Recruiter')->prefix('shortlists')->group(function () {
-        Route::get('/getShortlistedPositionIds/{profileId}/org/{orgId}', [ShortlistController::class, 'getShortlistedPositionIds'])->name('shortlists.getShortlistedPositionIds'); //+
-        Route::post('/store', [ShortlistController::class, 'store'])->name('shortlists.store'); //+
-        Route::delete('/delete/{shortlistId}', [ShortlistController::class, 'delete'])->name('shortlists.delete'); //+
+        Route::get('/getShortlistedPositionIds/{profileId}/org/{orgId}', [ShortlistController::class, 'getShortlistedPositionIds'])->name('shortlists.getShortlistedPositionIds');
+        Route::post('/store', [ShortlistController::class, 'store'])->name('shortlists.store');
+        Route::delete('/delete/{id}', [ShortlistController::class, 'delete'])->name('shortlists.delete');
     });
 
     Route::prefix('invitations')->group(function () {
-        Route::get('/getInvitationsByReceiverId', [InvitationController::class, 'getInvitationsByReceiverId'])->name('invitations.getInvitationsByReceiverId');
+        Route::get('/getInvitationsByStatusAndReceiverId', [InvitationController::class, 'getInvitationsByStatusAndReceiverId'])->name('invitations.getInvitationsByStatusAndReceiverId');
         Route::get('/getInvitationById/{id}', [InvitationController::class, 'getInvitationById'])->name('invitations.getInvitationById');
         Route::put('/acceptInvitation/{id}', [InvitationController::class, 'acceptInvitation'])->name('invitations.acceptInvitation');
         Route::put('/rejectInvitation/{id}', [InvitationController::class, 'rejectInvitation'])->name('invitations.rejectInvitation');
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
-            Route::get('/status/{status}', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId');
-            Route::get('/getInvitationsBySenderId', [InvitationController::class, 'getInvitationsBySenderId'])->name('invitations.getInvitationsBySenderId');
+            Route::get('/getInvitationsByStatusAndSenderId', [InvitationController::class, 'getInvitationsByStatusAndSenderId'])->name('invitations.getInvitationsByStatusAndSenderId');
+            Route::get('/getInvitationsByPositionIdAndReceiverId/{receiverId}/{positionId}', [InvitationController::class, 'getInvitationsByPositionIdAndReceiverId'])
+                ->where(['receiverId' => '[0-9]+', 'positionId' => '[0-9]+'])
+                ->name('invitations.getInvitationsByPositionIdAndReceiverId');
             Route::post('/store', [InvitationController::class, 'store'])->name('invitations.store');
             Route::put('/update/{id}', [InvitationController::class, 'update'])->name('invitations.update');
             Route::put('/withdrawInvitation/{id}', [InvitationController::class, 'withdrawInvitation'])->name('invitations.withdrawInvitation');
@@ -217,7 +223,9 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
             Route::get('/getInterviewsByStatusAndInterviewerId', [InterviewController::class, 'getInterviewsByStatusAndInterviewerId'])->name('interviews.getInterviewsByStatusAndInterviewerId');
-            // Route::get('/status/{status}', [InterviewController::class, 'getInterviewsByStatus'])->name('interviews.getInterviewsByStatus');
+            Route::get('/getInterviewsByPositionIdAndIntervieweeId/{intervieweeId}/{positionId}', [InterviewController::class, 'getInterviewsByPositionIdAndIntervieweeId'])
+                ->where(['intervieweeId' => '[0-9]+', 'positionId' => '[0-9]+'])
+                ->name('interviews.getInterviewsByPositionIdAndIntervieweeId');
             Route::post('/store', [InterviewController::class, 'store'])->name('interviews.store');
             Route::put('/update/{id}', [InterviewController::class, 'update'])->name('interviews.update');
             Route::put('/completeInterview/{id}', [InterviewController::class, 'completeInterview'])->name('interviews.completeInterview');
@@ -228,15 +236,26 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
     Route::prefix('job-offers')->group(function () {
         Route::get('/getJobOffersByStatusAndReceiverId', [JobOfferController::class, 'getJobOffersByStatusAndReceiverId'])->name('jobOffers.getJobOffersByStatusAndReceiverId');
         Route::get('/getJobOfferById/{id}', [JobOfferController::class, 'getJobOfferById'])->name('jobOffers.getJobOfferById');
-        // Route::get('/getJobOffersByStatus/{status}', [JobOfferController::class, 'getJobOffersByStatus'])->name('jobOffers.getJobOffersByStatus');
         Route::put('/acceptJobOffer/{id}', [JobOfferController::class, 'acceptJobOffer'])->name('jobOffers.acceptJobOffer');
         Route::put('/rejectJobOffer/{id}', [JobOfferController::class, 'rejectJobOffer'])->name('jobOffers.rejectJobOffer');
 
         Route::middleware('checkRole:Organization Admin,Recruiter')->group(function () {
             Route::get('/getJobOffersByStatusAndSenderId', [JobOfferController::class, 'getJobOffersByStatusAndSenderId'])->name('jobOffers.getJobOffersByStatusAndSenderId');
+            Route::get('/getJobOffersByPositionIdAndReceiverId/{receiverId}/{positionId}', [JobOfferController::class, 'getJobOffersByPositionIdAndReceiverId'])
+                ->where(['receiverId' => '[0-9]+', 'positionId' => '[0-9]+'])
+                ->name('interviews.getJobOffersByPositionIdAndReceiverId');
             Route::post('/store', [JobOfferController::class, 'store'])->name('jobOffers.store');
             Route::put('/update/{id}', [JobOfferController::class, 'update'])->name('jobOffers.update');
             Route::put('/withdrawJobOffer/{id}', [JobOfferController::class, 'withdrawJobOffer'])->name('jobOffers.withdrawJobOffer');
         });
+    });
+
+    Route::prefix('resumes')->group(function () {
+        Route::get('/getAllResumeTemplates', [ResumeController::class, 'getAllResumeTemplates'])->name('resumes.getAllResumeTemplates');
+        Route::get('/getResumesByUserProfileId/{id}', [ResumeController::class, 'getResumesByUserProfileId'])->name('resumes.getResumesByUserProfileId');
+        Route::get('/getResumeById/{id}', [ResumeController::class, 'getResumeById'])->name('resumes.getResumeById');
+        Route::post('/store', [ResumeController::class, 'store'])->name('resumes.store');
+        Route::put('/update/{id}', [ResumeController::class, 'update'])->name('resumes.update');
+        Route::delete('/delete/{id}', [ResumeController::class, 'delete'])->name('resumes.delete');
     });
 });

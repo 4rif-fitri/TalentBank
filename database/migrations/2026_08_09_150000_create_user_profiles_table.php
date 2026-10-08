@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string('phone_no')->nullable();
             $table->string('profile_image')->nullable();
             $table->string('cover_image')->nullable();
-            $table->enum('profile_visibility', AppConstants::PROFILE_VISIBILITY)->default('Public');
+            $table->enum('profile_visibility', AppConstants::PROFILE_VISIBILITY)->default(AppConstants::PROFILE_VISIBILITY['PUBLIC']);
             $table->enum('employment_status', AppConstants::EMPLOYMENT_STATUS)->default('Open to Work');
             $table->timestamps();
         });

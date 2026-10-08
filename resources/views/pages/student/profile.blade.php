@@ -36,7 +36,6 @@
 
 <x-modals.profile-modal />
 
-
 <x-modals.active-educations-modal />
 <x-modals.contact-information-modal />
 <x-modals.social-media-link-modal />
@@ -63,16 +62,16 @@
                 url,
                 type: "GET",
                 success: function (response) {
-                    xdebug.log("Profile", response.data)
                     $(document).trigger("profile:loaded", [response.data])
                 },
                 error: xhr =>{
-                    xdebug.line(xhr.responseJSON.message)
                 }
             });
         }
         let profileId = Number(window.location.pathname.split('/').pop()) || "{{ session("user_profile_id") }}";
         getProfileDataByProfileId(profileId)
     })
+
+
 </script>
 @endsection

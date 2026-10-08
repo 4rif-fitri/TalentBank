@@ -109,7 +109,6 @@
             );
 
             if (!language) {
-                xdebug.line("language not found:", languageId);
                 return;
             }
 
@@ -170,10 +169,8 @@
                         $row.remove();
                         xalert.fire("Success", response.message ?? "Language deleted successfully.", "success");
 
-                        xdebug.line(response)
                     },
                     error: xhr => {
-                        xdebug.line(xhr)
                         xalert.fire("Delete Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
 
                     }
@@ -239,7 +236,6 @@
                 type: "POST",
                 data,
                 success: response => {
-                    xdebug.line(response);
 
                     $row.replaceWith(xlanguage.student.languagesRow(response.data));
 
@@ -250,8 +246,6 @@
                     xalert.fire("Success", response.message ?? "Language updated successfully.", "success");
                 },
                 error: xhr => {
-                    xdebug.line(xhr)
-
                     xalert.fire("Update Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
 
                 }

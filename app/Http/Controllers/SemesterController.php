@@ -31,10 +31,6 @@ class SemesterController extends Controller
             'description' => ['nullable', 'string'],
         ]);
 
-        if (!$request->hasFile('result_file')) {
-            throw new Exception('A file must be uploaded.', Response::HTTP_BAD_REQUEST);
-        }
-
         $userProfileId = session('user_profile_id');
 
         $resultFile = $this->semesterService->uploadResults($validated, $request->file('result_file'), $id, $userProfileId);

@@ -6,7 +6,6 @@ use App\Constants\AppConstants;
 use App\Models\Education;
 use App\Models\Media;
 use App\Models\Programme;
-use App\Models\Semester;
 use App\Models\Skill;
 use App\Models\User;
 use App\Models\UserProfile;
@@ -31,6 +30,7 @@ class EducationControllerTest extends TestCase
 
     private UserProfile $userProfile;
     private Programme $programme;
+    private const ORGANIZATION_RETURN_COLUMNS = ['id', 'company_name', 'organization_logo',];
 
     protected function setUp(): void
     {
@@ -193,11 +193,7 @@ class EducationControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'programme' => [
-                        'organization' => [
-                            'id',
-                            'company_name',
-                            'organization_logo',
-                        ],
+                        'organization' => self::ORGANIZATION_RETURN_COLUMNS,
                         'qualification',
                         'field_of_study',
                     ],
@@ -265,6 +261,21 @@ class EducationControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_CREATED,
                 'message' => 'Education created successfully.'
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'programme' => [
+                        'organization' => [
+                            'id',
+                            'company_name',
+                            'organization_logo',
+                        ],
+                        'qualification',
+                        'field_of_study',
+                    ],
+                    'media',
+                    'skills',
+                ]
             ])
             ->assertJsonFragment([
                 'programme_id' => $this->programme->id,
@@ -504,6 +515,17 @@ class EducationControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Education updated successfully.'
             ])
+            ->assertJsonStructure([
+                'data' => [
+                    'programme' => [
+                        'organization' => self::ORGANIZATION_RETURN_COLUMNS,
+                        'qualification',
+                        'field_of_study',
+                    ],
+                    'media',
+                    'skills',
+                ]
+            ])
             ->assertJsonFragment([
                 'user_profile_id' => $this->userProfile->id,
                 'programme_id' => $newProgramme->id,
@@ -584,11 +606,7 @@ class EducationControllerTest extends TestCase
             ->assertJsonStructure([
                 'data' => [
                     'programme' => [
-                        'organization' => [
-                            'id',
-                            'company_name',
-                            'organization_logo',
-                        ],
+                        'organization' => self::ORGANIZATION_RETURN_COLUMNS,
                         'qualification',
                         'field_of_study',
                     ],

@@ -1,0 +1,34 @@
+.badge-tb {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-4);
+
+    padding: var(--spacing-4) var(--spacing-12);
+
+    color: var(--color-forest-ink);
+    background: var(--color-linen-mist);
+
+    border-radius: var(--radius-tags);
+
+    font-size: var(--text-micro);
+    font-weight: var(--font-weight-semibold);
+}
+
+.badge-tb-lime {
+    background: var(--color-lime-voltage);
+}
+
+.badge-tb-blue {
+    color: var(--color-signal-blue);
+    background: #dceef8;
+}
+
+.badge-tb-red {
+    color: var(--color-alarm-red);
+    background: #ffe3e4;
+}
+
+.badge-tb-dark {
+    color: var(--color-paper);
+    background: var(--color-forest-ink);
+}

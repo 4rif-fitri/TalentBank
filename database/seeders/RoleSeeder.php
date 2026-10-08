@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constants\AppConstants;
 use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -13,9 +14,8 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'Student']);
-        Role::create(['name' => 'Recruiter']);
-        Role::create(['name' => 'Alumni']);
-        Role::create(['name' => 'Organization Admin']);
+        foreach (AppConstants::USER_ROLES as $role) {
+            Role::create(['name' => $role]);
+        }
     }
 }

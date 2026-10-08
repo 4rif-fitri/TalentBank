@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\AppConstants;
 use App\Helpers\CheckOrgRoleHelper;
 use App\Models\Position;
 use App\Models\Shortlist;
@@ -11,7 +12,7 @@ use Illuminate\Support\Collection;
 
 class ShortlistService
 {
-    private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
+    private const ADMINISTRATIVE_ROLES = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN'], AppConstants::USER_ROLES['RECRUITER']];
 
     /**
      * Returns shortlisted positions filtered by user profile ID
@@ -50,10 +51,14 @@ class ShortlistService
             throw new Exception('Users cannot shortlist themselves.', Response::HTTP_BAD_REQUEST);
         }
 
-        $position = Position::findOrFail($data['position_id']);
+        $position = Position::find($data['position_id']);
+
+        if (!isset($position)) {
+            throw new Exception('Position not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
 
         // Check if the user an admin of the current organization
-        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($position->user_profile_id, self::ADMINISTRATIVE_ROLES, $position->organization_id);
+        $isUserAdmin = CheckOrgRoleHelper::userHasRoles($currentUserProfileId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
 
         if (!$isUserAdmin) {
             throw new Exception('Unauthorized access to shortlist user for this position.', Response::HTTP_FORBIDDEN);
@@ -97,7 +102,7 @@ class ShortlistService
         $isUserAdmin = CheckOrgRoleHelper::userHasRoles($userProfileId, self::ADMINISTRATIVE_ROLES, $shortlist->position->organization_id);
 
         if (!$isUserAdmin) {
-            throw new Exception('User does not have permission to delete this shortlist entry.', Response::HTTP_FORBIDDEN);
+            throw new Exception('Unauthorized access to delete this shortlist entry.', Response::HTTP_FORBIDDEN);
         }
 
         // Delete the shortlist entry

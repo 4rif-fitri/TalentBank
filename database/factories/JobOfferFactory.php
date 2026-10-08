@@ -21,6 +21,7 @@ class JobOfferFactory extends Factory
     public function definition(): array
     {
         return [
+            'title' => fake()->sentence(),
             'salary_amount' => $this->faker->randomFloat(2, 0, 100000),
             'salary_period' => $this->faker->randomElement(),
             'start_date' => $this->faker->date(),

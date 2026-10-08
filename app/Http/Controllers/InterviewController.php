@@ -62,18 +62,18 @@ class InterviewController extends Controller
     }
 
     /**
-     * Handles request to get interview by status
+     * Handles request to get interviews by position ID and interviewee's profile ID
      * 
-     * @param string $status
+     * @param int $intervieweeId
+     * @param int $positionId
      * @return JsonResponse
      */
-    // public function getInterviewsByStatus(string $status): JsonResponse
-    // {
-    //     $userProfileId = session('user_profile_id');
-    //     $interviews = $this->interviewService->getInterviewsByStatus($status, $userProfileId);
-
-    //     return ApiResponse::success('Success.', $interviews)->toJsonResponse();
-    // }
+    public function getInterviewsByPositionIdAndIntervieweeId(int $intervieweeId, int $positionId): JsonResponse
+    {
+        $currentUserProfileId = session('user_profile_id');
+        $interviews = $this->interviewService->getInterviewsByPositionIdAndIntervieweeId($intervieweeId, $positionId, $currentUserProfileId);
+        return ApiResponse::success('Success.', $interviews)->toJsonResponse();
+    }
 
     /**
      * Handles request to create a new interview
@@ -84,11 +84,12 @@ class InterviewController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'position_id' => ['required', 'integer', 'exists:positions,id'],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
-            'location' => ['nullable', 'string', 'required_if:interview_mode,On-site'],
-            'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,Online'],
+            'location' => ['nullable', 'string', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[1]],
+            'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[0]],
             'recruiter_comment' => ['nullable', 'string'],
             'interviewee_profile_id' => ['required', 'integer', 'exists:user_profiles,id'],
         ]);
@@ -109,10 +110,11 @@ class InterviewController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
             'scheduled_at' => ['required', 'date', 'after:now'],
             'interview_mode' => ['required', 'string', Rule::in(AppConstants::INTERVIEW_MODES)],
-            'location' => ['nullable', 'string'],
-            'meeting_url' => ['nullable', 'string', 'url'],
+            'location' => ['nullable', 'string', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[1]],
+            'meeting_url' => ['nullable', 'string', 'url', 'required_if:interview_mode,' . AppConstants::INTERVIEW_MODES[0]],
             'interview_result' => ['nullable', 'string', Rule::in(AppConstants::INTERVIEW_RESULTS)],
             'recruiter_comment' => ['nullable', 'string'],
         ]);

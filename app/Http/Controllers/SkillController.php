@@ -28,7 +28,7 @@ class SkillController extends Controller
     private function validateUserSkillFields(Request $request): array
     {
         return $request->validate([
-            'source_type' => ['required', Rule::in($this::ALLOWED_SOURCE_TYPE)],
+            'source_type' => ['required', Rule::in(self::ALLOWED_SOURCE_TYPE)],
             'source_id' => ['required', 'integer', 'min:1'],
             'skill_id' => ['required', 'exists:skills,id']
         ]);

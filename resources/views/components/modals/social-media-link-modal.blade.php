@@ -70,7 +70,6 @@
             type: "POST",
             data,
             success: response => {
-                xdebug.line(response)
                 let linkId = response.data?.id;
 
                 $row.replaceWith(xlink.student.socialMediaRow(linkId, socialMediaId, platformName, platformIcon, link));
@@ -88,7 +87,6 @@
             },
 
             error: xhr => {
-                xdebug.line(xhr)
                 xalert.fire("Add Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
             }
         });
@@ -156,7 +154,6 @@
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
                 success: response => {
-                    xdebug.line(response)
 
                     let theBadge = $("#linksList").find(`.badge[data-id='${id}']`);
                     theBadge.remove();
@@ -166,7 +163,6 @@
 
                 },
                 error: xhr => {
-                    xdebug.line(xhr)
                     xalert.fire("Delete Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
 
                 }
@@ -225,8 +221,6 @@
             type: "POST",
             data,
             success: response => {
-                xdebug.line(response)
-
                 let data = response.data;
 
                 let theBadge = $("#linksList").find(`.badge[data-id='${data.id}']`);
@@ -243,8 +237,6 @@
                 xalert.fire("Success", response.message ?? "Social media link updated successfully.","success");
             },
             error: xhr => {
-                xdebug.line(xhr)
-
                 xalert.fire("Update Failed", xhr.responseJSON?.message ?? "Something went wrong.", "error");
             }
         });

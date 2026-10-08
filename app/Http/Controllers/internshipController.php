@@ -59,6 +59,10 @@ class internshipController extends Controller
     {
         return view("pages.student.resume");
     }
+    public function editResume()
+    {
+        return view("pages.student.editResume");
+    }
 
     // ==== Recruiter ====
     public function recruiterIndex()
@@ -93,7 +97,7 @@ class internshipController extends Controller
     }
     public function recruiterHiredTalent()
     {
-        return view("pages.recruiter.hiredTalent");
+        return view("pages.recruiter.message");
     }
     public function recruiterMessage()
     {

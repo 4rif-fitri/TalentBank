@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Constants\AppConstants;
 use App\Models\Like;
 use App\Models\Role;
 use App\Models\User;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileService
 {
+    private const ORG_ADMIN_ROLES = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN'], AppConstants::USER_ROLES['RECRUITER']];
     private const ORGANIZATION_RETURN_COLUMNS = 'id,company_name,organization_logo';
     private const PROGRAMME_RETURN_COLUMNS = 'programmes.id,programme_name,organization_id,duration_years,qualification_id';
 
@@ -35,9 +37,11 @@ class ProfileService
      * Get profile data of profile by profile ID.
      * 
      * @param   int $userProfileId
+     * @param   array $currentUserRoles
+     * @param   int $currentUserProfileId
      * @return  UserProfile
      */
-    public function getProfileDataByProfileId(int $userProfileId): UserProfile
+    public function getProfileDataByProfileId(int $userProfileId, array $currentUserRoles, int $currentUserProfileId): UserProfile
     {
         $profile = UserProfile::with([
             'organizationUsers' => function ($query) {
@@ -52,7 +56,20 @@ class ProfileService
             'userLanguages.language',
             'skills',
         ])
-            ->find($userProfileId);
+            ->where('id', $userProfileId)
+            ->where(function ($query) use ($currentUserProfileId, $currentUserRoles, $userProfileId) {
+                if ($userProfileId === $currentUserProfileId) {
+                    return $query;
+                }
+
+                // filter visibility
+                $query->where('profile_visibility', AppConstants::PROFILE_VISIBILITY['PUBLIC']);
+
+                if (array_intersect($currentUserRoles, self::ORG_ADMIN_ROLES)) {
+                    $query->orWhere('profile_visibility', AppConstants::PROFILE_VISIBILITY['RECRUITER']);
+                }
+            })
+            ->first();
 
         if (!isset($profile)) {
             throw new Exception('Profile not found with given ID.', Response::HTTP_NOT_FOUND);
@@ -67,9 +84,10 @@ class ProfileService
      * @param array $searchParams
      * @param int $userProfileId
      * @param bool $returnLiked
+     * @param array $currentUserRoles
      * @return LengthAwarePaginator
      */
-    public function getAllStudentUserProfiles(array $searchParams, int $userProfileId, bool $returnLiked): LengthAwarePaginator
+    public function getAllStudentUserProfiles(array $searchParams, int $userProfileId, bool $returnLiked, array $currentUserRoles): LengthAwarePaginator
     {
         return UserProfile::with([
             'skills',
@@ -77,37 +95,50 @@ class ProfileService
             'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
             'programmes.qualification',
         ])
-            ->select('id', 'name', 'location', 'headline', 'profile_image')
+            ->select('id', 'name', 'location', 'headline', 'profile_image', 'profile_visibility')
             ->when($returnLiked, function ($query) use ($userProfileId) {
+                // return liked profiles only if returnLiked is true
                 $query->whereHas('likes', function ($query) use ($userProfileId) {
                     $query->where('liker_user_profile_id', $userProfileId);
                 });
             })
             ->where(function ($query) use ($searchParams) {
+                // filter user profiles by params
                 $query->when(isset($searchParams['name']) && filled($searchParams['name']), function ($query) use ($searchParams) {
                     $query->where('name', 'LIKE', '%' . $searchParams['name'] . '%');
                 })
                     ->when(!empty($searchParams['skills']), function ($query) use ($searchParams) {
-                        $query->whereHas('skills', function ($query) use ($searchParams) {
-                            $query->whereIn('skills.id', $searchParams['skills']);
-                        });
-                    })
-                    ->when(!empty($searchParams['languages']), function ($query) use ($searchParams) {
-                        $query->whereHas('userLanguages', function ($query) use ($searchParams) {
-                            $query->whereIn('language_id', $searchParams['languages']);
-                        });
-                    })
-                    ->when(!empty($searchParams['programmes']), function ($query) use ($searchParams) {
-                        $query->whereHas('education', function ($query) use ($searchParams) {
-                            $query->whereIn('programme_id', $searchParams['programmes']);
-                        });
-                    })
-                    ->whereHas('organizationUsers', function ($query) use ($searchParams) {
-                        $query->when(!empty($searchParams['organizations']), function ($query) use ($searchParams) {
-                            $query->whereIn('organization_id', $searchParams['organizations']);
-                        })
-                            ->whereIn('role_id', Role::whereIn('name', ['Student', 'Alumni'])->pluck('id')->toArray());
+                    $query->whereHas('skills', function ($query) use ($searchParams) {
+                        $query->whereIn('skills.id', $searchParams['skills']);
                     });
+                })
+                    ->when(!empty($searchParams['languages']), function ($query) use ($searchParams) {
+                    $query->whereHas('userLanguages', function ($query) use ($searchParams) {
+                        $query->whereIn('language_id', $searchParams['languages']);
+                    });
+                })
+                    ->when(!empty($searchParams['programmes']), function ($query) use ($searchParams) {
+                    $query->whereHas('education', function ($query) use ($searchParams) {
+                        $query->whereIn('programme_id', $searchParams['programmes']);
+                    });
+                })
+                    ->whereHas('organizationUsers', function ($query) use ($searchParams) {
+                    $query->when(!empty($searchParams['organizations']), function ($query) use ($searchParams) {
+                        $query->whereIn('organization_id', $searchParams['organizations']);
+                    })
+                        ->whereIn('role_id', Role::whereIn('name', [
+                            AppConstants::USER_ROLES['STUDENT'],
+                            AppConstants::USER_ROLES['ALUMNI'],
+                        ])->pluck('id')->toArray());
+                });
+            })
+            ->where(function ($query) use ($currentUserRoles) {
+                // filter visibility
+                $query->where('profile_visibility', AppConstants::PROFILE_VISIBILITY['PUBLIC']);
+
+                if (array_intersect($currentUserRoles, self::ORG_ADMIN_ROLES)) {
+                    $query->orWhere('profile_visibility', AppConstants::PROFILE_VISIBILITY['RECRUITER']);
+                }
             })
             ->withExists([
                 'likes as is_liked' => function ($query) use ($userProfileId) {
@@ -117,28 +148,6 @@ class ProfileService
             ->where('id', '<>', $userProfileId)
             ->paginate(6);
     }
-
-    /**
-     * Returns user profiles that have been liked by the current user
-     * 
-     * @param int $userProfileId
-     * @return Paginator
-     */
-    // public function getLikedUserProfiles(int $userProfileId): Paginator
-    // {
-    //     return UserProfile::with([
-    //         'skills',
-    //         'programmes:' . self::PROGRAMME_RETURN_COLUMNS,
-    //         'programmes.organization:' . self::ORGANIZATION_RETURN_COLUMNS,
-    //         'programmes.qualification',
-    //     ])
-    //         ->whereHas('likes', function ($query) use ($userProfileId) {
-    //             $query->where('liker_user_profile_id', $userProfileId);
-    //         })
-    //         ->where('id', '<>', $userProfileId)
-    //         ->select('id', 'name', 'location', 'headline', 'profile_image')
-    //         ->simplePaginate(6);
-    // }
 
     /**
      * Update profile data of profile by profile ID.

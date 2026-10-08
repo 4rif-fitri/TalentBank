@@ -33,6 +33,7 @@
         });
     </script>
 
+    @yield('scriptComponent')
     @yield('script')
     @stack('childScript')
 

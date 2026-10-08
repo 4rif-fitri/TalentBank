@@ -3,10 +3,14 @@
 namespace Tests\Feature;
 
 use App\Constants\AppConstants;
+use App\Models\Interview;
+use App\Models\Invitation;
+use App\Models\JobOffer;
 use App\Models\Organization;
 use App\Models\OrganizationUser;
 use App\Models\Position;
 use App\Models\Role;
+use App\Models\Shortlist;
 use App\Models\User;
 use App\Models\UserProfile;
 use Database\Seeders\FacultySeeder;
@@ -24,6 +28,18 @@ use Tests\TestCase;
 class PositionControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    private const POSITION_RETURN_COLUMNS = [
+        'id',
+        'organization_id',
+        'user_profile_id',
+        'position_title',
+        'employment_type',
+        'department',
+        'work_location',
+        'vacancies',
+        'description',
+    ];
 
     private User $user;
     private UserProfile $adminProfile;
@@ -102,7 +118,14 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => self::POSITION_RETURN_COLUMNS,
+                ],
+            ])
+            ->assertJsonPath('data.0.organization_id', $this->organization->id)
+            ->assertJsonPath('data.0.user_profile_id', $this->adminProfile->id);
 
         $this->assertEquals(3, count($response->json()['data']));
     }
@@ -120,7 +143,14 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => self::POSITION_RETURN_COLUMNS
+                ],
+            ])
+            ->assertJsonPath('data.0.organization_id', $this->organization->id)
+            ->assertJsonPath('data.0.user_profile_id', $this->adminProfile->id);
 
         $this->assertEquals(2, count($response->json()['data']));
     }
@@ -145,6 +175,28 @@ class PositionControllerTest extends TestCase
             'user_profile_id' => $this->adminProfile->id,
         ]);
 
+        $otherProfile = UserProfile::factory()->create();
+
+        Shortlist::create([
+            'user_profile_id' => $otherProfile->id,
+            'position_id' => $position->id
+        ]);
+
+        Invitation::factory()->create([
+            'position_id' => $position->id,
+            'receiver_profile_id' => $otherProfile->id
+        ]);
+
+        Interview::factory()->create([
+            'position_id' => $position->id,
+            'interviewee_profile_id' => $otherProfile->id
+        ]);
+
+        JobOffer::factory()->create([
+            'position_id' => $position->id,
+            'receiver_profile_id' => $otherProfile->id
+        ]);
+
         $response = $this->getJson(route('positions.getPositionById', ['id' => $position->id]));
 
         $response->assertStatus(Response::HTTP_OK)
@@ -162,18 +214,20 @@ class PositionControllerTest extends TestCase
                             'location',
                             'profile_image',
                             'headline',
-                            'receivedInvitations',
-                            'receivedInterviews',
-                            'receivedJobOffers',
+                            'invitations_count',
+                            'interviews_count',
+                            'job_offers_count',
                         ]
                     ],
                 ]
             ])
-            ->assertJsonFragment([
-                'id' => $position->id,
-                'organization_id' => $this->organization->id,
-                'user_profile_id' => $this->adminProfile->id,
-            ]);
+            ->assertJsonPath('data.id', $position->id)
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.shortlist_users.0.id', $otherProfile->id)
+            ->assertJsonPath('data.shortlist_users.0.invitations_count', 1)
+            ->assertJsonPath('data.shortlist_users.0.interviews_count', 1)
+            ->assertJsonPath('data.shortlist_users.0.job_offers_count', 1);
     }
 
     public function test_get_position_by_id_fails_when_user_is_not_org_admin_of_position(): void
@@ -223,7 +277,14 @@ class PositionControllerTest extends TestCase
                 'organization_id' => $this->organization->id,
                 'position_title' => 'Backend Engineer',
                 'department' => 'Engineering',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => self::POSITION_RETURN_COLUMNS,
+            ])
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.position_title', 'Backend Engineer')
+            ->assertJsonPath('data.department', 'Engineering');
 
         $this->assertDatabaseHas('positions', [
             'organization_id' => $this->organization->id,
@@ -255,7 +316,14 @@ class PositionControllerTest extends TestCase
                 'organization_id' => $this->organization->id,
                 'position_title' => 'Backend Engineer',
                 'department' => 'Engineering',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => self::POSITION_RETURN_COLUMNS,
+            ])
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.position_title', 'Backend Engineer')
+            ->assertJsonPath('data.department', 'Engineering');
 
         $this->assertDatabaseHas('positions', [
             'organization_id' => $this->organization->id,
@@ -275,6 +343,8 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('positions');
     }
 
     public function test_create_position_fails_with_invalid_employment_type(): void
@@ -287,6 +357,8 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('positions');
     }
 
     public function test_create_position_fails_when_organization_does_not_exist(): void
@@ -299,6 +371,8 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseEmpty('positions');
     }
 
     public function test_create_position_fails_when_user_is_not_organization_admin(): void
@@ -312,6 +386,8 @@ class PositionControllerTest extends TestCase
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'Unauthorized access to create position.',
             ]);
+
+        $this->assertDatabaseEmpty('positions');
     }
 
     public function test_org_admin_can_update_position(): void
@@ -340,7 +416,16 @@ class PositionControllerTest extends TestCase
                 'position_title' => 'Senior Engineer',
                 'vacancies' => 3,
                 'description' => 'Updated description.'
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => self::POSITION_RETURN_COLUMNS,
+            ])
+            ->assertJsonPath('data.id', $position->id)
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.position_title', 'Senior Engineer')
+            ->assertJsonPath('data.vacancies', 3)
+            ->assertJsonPath('data.description', 'Updated description.');
 
         $this->assertDatabaseHas('positions', [
             'id' => $position->id,
@@ -377,7 +462,15 @@ class PositionControllerTest extends TestCase
                 'id' => $position->id,
                 'position_title' => 'Senior Engineer',
                 'vacancies' => 3,
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => self::POSITION_RETURN_COLUMNS,
+            ])
+            ->assertJsonPath('data.id', $position->id)
+            ->assertJsonPath('data.organization_id', $this->organization->id)
+            ->assertJsonPath('data.user_profile_id', $this->adminProfile->id)
+            ->assertJsonPath('data.position_title', 'Senior Engineer')
+            ->assertJsonPath('data.vacancies', 3);
 
         $this->assertDatabaseHas('positions', [
             'id' => $position->id,
@@ -399,6 +492,12 @@ class PositionControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_BAD_REQUEST,
             ]);
+
+        $this->assertDatabaseHas('positions', [
+            'id' => $position->id,
+            'organization_id' => $this->organization->id,
+            'user_profile_id' => $this->adminProfile->id
+        ]);
     }
 
     public function test_update_position_fails_when_user_is_not_organization_admin(): void
@@ -417,10 +516,21 @@ class PositionControllerTest extends TestCase
                 'status' => Response::HTTP_FORBIDDEN,
                 'message' => 'Unauthorized access to update position.',
             ]);
+
+        $this->assertDatabaseHas('positions', [
+            'id' => $position->id,
+            'organization_id' => $this->organization->id,
+            'user_profile_id' => $this->adminProfile->id
+        ]);
     }
 
     public function test_update_position_fails_with_invalid_position_id(): void
     {
+        $position = Position::factory()->create([
+            'organization_id' => $this->organization->id,
+            'user_profile_id' => $this->adminProfile->id,
+        ]);
+
         $response = $this->putJson(route('positions.update', ['id' => 0]), $this->validPositionPayload());
 
         $response->assertStatus(Response::HTTP_NOT_FOUND)
@@ -428,5 +538,11 @@ class PositionControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Position not found.',
             ]);
+
+        $this->assertDatabaseHas('positions', [
+            'id' => $position->id,
+            'organization_id' => $this->organization->id,
+            'user_profile_id' => $this->adminProfile->id
+        ]);
     }
 }

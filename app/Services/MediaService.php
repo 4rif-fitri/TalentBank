@@ -18,12 +18,8 @@ class MediaService
         'application/pdf',
     ];
 
-    private function validateFileType(mixed $file): void
+    private function validateFileType(UploadedFile $file): void
     {
-        if (!$file instanceof UploadedFile) {
-            throw new Exception('File field must be of type UploadedFile.', Response::HTTP_BAD_REQUEST);
-        }
-
         if (!in_array($file->getMimeType(), $this->allowedMediaType)) {
             throw new Exception('Invalid file type. File must either be ' . implode(', ', $this->allowedMediaType), Response::HTTP_BAD_REQUEST);
         }

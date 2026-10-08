@@ -4,8 +4,18 @@ namespace App\Constants;
 
 class AppConstants
 {
+    public const USER_ROLES = [
+        'ORGANIZATION_ADMIN' => 'Organization Admin',
+        'RECRUITER' => 'Recruiter',
+        'STUDENT' => 'Student',
+        'ALUMNI' => 'Alumni',
+    ];
     public const PROFICIENCY_LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
-    public const PROFILE_VISIBILITY = ['Public', 'Recruiter', 'Private'];
+    public const PROFILE_VISIBILITY = [
+        'PUBLIC' => 'Public',
+        'RECRUITER' => 'Recruiter',
+        'PRIVATE' => 'Private'
+    ];
     public const EMPLOYMENT_STATUS = ['Open to Work', 'Open to Internship', 'Employed', 'Not Looking'];
     public const PROGRAMME_LEVELS = ['Diploma', 'Bachelor', 'Master', 'Doctor of Philosophy'];
     public const ENROLLMENT_STATUS = ['Active', 'Graduated', 'Deferred', 'Withdrawn'];

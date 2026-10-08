@@ -139,7 +139,6 @@
                         "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                     },
                     success: response => {
-                        xdebug.line(response);
 
                         $row.remove();
 
@@ -148,7 +147,6 @@
                         xalert.fire("Success", response.message ?? "Skill removed successfully.", "success");
                     },
                     error: xhr => {
-                        xdebug.line(xhr);
                         xalert.fire("Delete Failed", xhr.responseJSON?.message ?? "Failed to remove skill.", "error");
                     }
                 });
@@ -168,7 +166,6 @@
             let skill = stateSkills.allSkill.find(skill => Number(skill.id) === Number(skillId));
 
             if (!skill) {
-                xdebug.fire("Skill not found:", skillId);
                 return;
             }
 

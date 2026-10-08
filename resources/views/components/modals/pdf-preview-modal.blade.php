@@ -44,7 +44,7 @@
 </div>
 
 
-@push('scripts')
+@push('childScript')
 
 <script>
 
@@ -55,15 +55,14 @@ document.addEventListener("DOMContentLoaded",function () {
 
     $(document).on("click",".btn-view-result",function () {
         const fileUrl = $(this).attr("data-file-url");
-        const session = $(this).attr("data-session");
-        const semester = $(this).attr("data-semester");
+        const semester = $(this).attr("data-session");
 
         if (!fileUrl) {
             swalfire("PDF Not Found", "Semester result file could not be found", "error")
             return;
         }
 
-        const pdfModal = bootstrap.Modal .getOrCreateInstance(modalEl);
+        const pdfModal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
         $("#pdfPreviewModalLabel").text(`Semester ${semester} Result`);
         $("#pdfPreviewFrame").attr("src", "").addClass("d-none");

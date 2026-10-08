@@ -11,6 +11,7 @@ class Invitation extends Model
     use HasFactory;
 
     protected $fillable = [
+        'title',
         'sender_profile_id',
         'receiver_profile_id',
         'invitation_message',

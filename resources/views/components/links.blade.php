@@ -25,7 +25,6 @@
             url: "{{ route('social-media.getAllSocialMedia') }}",
             type: "GET",
             success: response => {
-                console.log(response);
                 stateSocialMedia.allLinks = response.data
             },
             error: xhr => {

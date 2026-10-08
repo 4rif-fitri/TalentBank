@@ -155,15 +155,15 @@ class EducationService
 
             // update skills
             if (!empty($data['new_skill_ids'])) {
-                $this->skillService->createUserSkills($data['new_skill_ids'], 'education', $education->id);
+                $this->skillService->createUserSkills($data['new_skill_ids'] ?? [], 'education', $education->id);
             }
 
             if (!empty($data['updated_user_skills'])) {
-                $this->skillService->updateUserSkills($data['updated_user_skills'], $userProfileId, 'education', $education->id);
+                $this->skillService->updateUserSkills($data['updated_user_skills'] ?? [], $userProfileId, 'education', $education->id);
             }
 
             if (!empty($data['deleted_user_skill_ids'])) {
-                $this->skillService->deleteUserSkillsByIds($data['deleted_user_skill_ids'], $userProfileId);
+                $this->skillService->deleteUserSkillsByIds($data['deleted_user_skill_ids'] ?? [], $userProfileId);
             }
         });
 

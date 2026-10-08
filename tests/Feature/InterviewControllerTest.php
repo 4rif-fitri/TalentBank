@@ -26,6 +26,10 @@ class InterviewControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const ORGANIZATION_RETURN_COLUMNS = ['id', 'company_name', 'organization_logo'];
+    private const PROFILE_RETURN_COLUMNS = ['id', 'name', 'profile_image', 'location', 'headline'];
+    private const POSITION_RETURN_COLUMNS = ['id', 'position_title', 'organization_id', 'department', 'employment_type'];
+
     private User $user;
     private UserProfile $interviewerProfile;
     private UserProfile $intervieweeProfile;
@@ -95,12 +99,38 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.'
             ])
-            ->assertJsonFragment([
-                'id' => $scheduledInterview->id,
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'position_id',
+                        'interviewer_profile_id',
+                        'interviewee_profile_id',
+                        'scheduled_at',
+                        'interview_mode',
+                        'location',
+                        'meeting_url',
+                        'interview_status',
+                        'interview_result',
+                        'recruiter_comment',
+                        'created_at',
+                        'updated_at',
+                        'position' => [
+                            'id',
+                            'position_title',
+                            'organization_id',
+                            'department',
+                            'employment_type',
+                            'organization' => self::ORGANIZATION_RETURN_COLUMNS
+                        ],
+                        'interviewee' => self::PROFILE_RETURN_COLUMNS,
+                    ]
+                ]
+            ])
+            ->assertJsonPath('data.0.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.0.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.0.interview_status', AppConstants::INTERVIEW_STATUS['SCHEDULED'])
+            ->assertJsonPath('data.0.position.id', $this->position->id);
     }
 
     public function test_interviewee_can_get_interviews_by_status(): void
@@ -130,12 +160,38 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.'
             ])
-            ->assertJsonFragment([
-                'id' => $completedInterview->id,
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'position_id',
+                        'interviewer_profile_id',
+                        'interviewee_profile_id',
+                        'scheduled_at',
+                        'interview_mode',
+                        'location',
+                        'meeting_url',
+                        'interview_status',
+                        'interview_result',
+                        'recruiter_comment',
+                        'created_at',
+                        'updated_at',
+                        'position' => [
+                            'id',
+                            'position_title',
+                            'organization_id',
+                            'department',
+                            'employment_type',
+                            'organization' => self::ORGANIZATION_RETURN_COLUMNS
+                        ],
+                        'interviewer' => self::PROFILE_RETURN_COLUMNS,
+                    ]
+                ]
+            ])
+            ->assertJsonPath('data.0.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.0.interviewer.id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.0.interview_status', AppConstants::INTERVIEW_STATUS['COMPLETED'])
+            ->assertJsonPath('data.0.position.id', $this->position->id);
     }
 
     public function test_user_can_get_interview_by_id_when_they_are_the_interviewer(): void
@@ -160,6 +216,15 @@ class InterviewControllerTest extends TestCase
                     'position_id',
                     'interviewer_profile_id',
                     'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
                     'user_role',
                     'position' => [
                         'id',
@@ -167,35 +232,18 @@ class InterviewControllerTest extends TestCase
                         'organization_id',
                         'department',
                         'employment_type',
-                        'organization' => [
-                            'id',
-                            'company_name',
-                            'organization_logo',
-                        ],
+                        'organization' => self::ORGANIZATION_RETURN_COLUMNS
                     ],
-                    'interviewee' => [
-                        'id',
-                        'name',
-                        'profile_image',
-                        'location',
-                        'headline',
-                    ],
-                    'interviewer' => [
-                        'id',
-                        'name',
-                        'profile_image',
-                        'location',
-                        'headline',
-                    ],
+                    'interviewer' => self::PROFILE_RETURN_COLUMNS,
+                    'interviewee' => self::PROFILE_RETURN_COLUMNS,
                 ]
             ])
-            ->assertJsonFragment([
-                'id' => $interview->id,
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-                'user_role' => 'interviewer'
-            ]);
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.interviewer.id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.user_role', 'interviewer')
+            ->assertJsonPath('data.position.id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id);
     }
 
     public function test_user_get_interview_by_id_returns_not_found_when_not_part_of_interview(): void
@@ -237,9 +285,118 @@ class InterviewControllerTest extends TestCase
             ]);
     }
 
+    public function test_interviewer_can_get_interviews_by_position_id_and_receiver_id(): void
+    {
+        $interview = Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+        ]);
+
+        Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+        ]);
+
+        $response = $this->getJson(route('interviews.getInterviewsByPositionIdAndIntervieweeId', [
+            'intervieweeId' => $this->intervieweeProfile->id,
+            'positionId' => $this->position->id,
+        ]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.'
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'position_id',
+                        'title'
+                    ]
+                ]
+            ])
+            ->assertJsonPath('data.0.id', $interview->id)
+            ->assertJsonPath('data.0.position_id', $interview->position_id)
+            ->assertJsonPath('data.0.title', $interview->title);
+
+        $this->assertCount(2, $response->json('data'));
+    }
+
+    public function test_get_interviews_by_position_id_and_receiver_id_fails_with_non_existing_position_id(): void
+    {
+        Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+        ]);
+
+        $response = $this->getJson(route('interviews.getInterviewsByPositionIdAndIntervieweeId', [
+            'intervieweeId' => $this->intervieweeProfile->id,
+            'positionId' => 0,
+        ]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Position not found with given ID.'
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_get_interviews_by_position_id_and_receiver_id_fails_when_user_is_not_admin_of_current_org(): void
+    {
+        $this->withSession([
+            'user_profile_id' => $this->intervieweeProfile->id,
+            'roles' => ['Organization Admin']
+        ]);
+
+        Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+        ]);
+
+        $response = $this->getJson(route('interviews.getInterviewsByPositionIdAndIntervieweeId', [
+            'intervieweeId' => $this->intervieweeProfile->id,
+            'positionId' => $this->position->id,
+        ]));
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_FORBIDDEN,
+                'message' => 'Unauthorized access to get interviews.'
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_get_interviews_by_position_id_and_receiver_id_fails_with_non_existing_receiver_id(): void
+    {
+        Interview::factory()->create([
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+        ]);
+
+        $response = $this->getJson(route('interviews.getInterviewsByPositionIdAndIntervieweeId', [
+            'intervieweeId' => 0,
+            'positionId' => $this->position->id,
+        ]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'User profile not found with given ID.'
+            ])
+            ->assertJsonPath('data', null);
+    }
+
     public function test_org_admin_can_create_interview(): void
     {
         $response = $this->postJson(route('interviews.store'), [
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'scheduled_at' => now()->addDays(2)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[0],
@@ -253,15 +410,42 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_CREATED,
                 'message' => 'Interview created successfully.',
             ])
-            ->assertJsonFragment([
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-                'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
-                'interview_result' => AppConstants::INTERVIEW_RESULTS['PENDING'],
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'title',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                    'position' => [
+                        'id',
+                        'position_title',
+                        'organization_id',
+                        'department',
+                        'employment_type',
+                    ],
+                    'interviewee' => self::PROFILE_RETURN_COLUMNS,
+                ]
+            ])
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.title', 'Interview for position of Software Engineering role')
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_status', AppConstants::INTERVIEW_STATUS['SCHEDULED'])
+            ->assertJsonPath('data.interview_result', AppConstants::INTERVIEW_RESULTS['PENDING'])
+            ->assertJsonPath('data.position.id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id);
 
         $this->assertDatabaseHas('interviews', [
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -273,6 +457,7 @@ class InterviewControllerTest extends TestCase
     public function test_org_admin_can_create_online_interview_without_nullable_fields_except_meeting_url(): void
     {
         $response = $this->postJson(route('interviews.store'), [
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'scheduled_at' => now()->addDays(2)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[0],
@@ -285,13 +470,39 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_CREATED,
                 'message' => 'Interview created successfully.',
             ])
-            ->assertJsonFragment([
-                'position_id' => $this->position->id,
-                'interview_mode' => AppConstants::INTERVIEW_MODES[0],
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'title',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                    'position' => [
+                        'id',
+                        'position_title',
+                        'organization_id',
+                        'department',
+                        'employment_type',
+                    ],
+                    'interviewee' => self::PROFILE_RETURN_COLUMNS,
+                ]
+            ])
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[0])
+            ->assertJsonPath('data.position.id', $this->position->id);
 
         $this->assertDatabaseHas('interviews', [
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interview_mode' => AppConstants::INTERVIEW_MODES[0],
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -301,6 +512,7 @@ class InterviewControllerTest extends TestCase
     public function test_org_admin_can_create_on_site_interview_without_nullable_fields_except_location(): void
     {
         $response = $this->postJson(route('interviews.store'), [
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'scheduled_at' => now()->addDays(2)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[1],
@@ -313,14 +525,40 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_CREATED,
                 'message' => 'Interview created successfully.',
             ])
-            ->assertJsonFragment([
-                'position_id' => $this->position->id,
-                'interview_mode' => AppConstants::INTERVIEW_MODES[1],
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-                'location' => 'Block A'
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'title',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                    'position' => [
+                        'id',
+                        'position_title',
+                        'organization_id',
+                        'department',
+                        'employment_type',
+                    ],
+                    'interviewee' => self::PROFILE_RETURN_COLUMNS,
+                ]
+            ])
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewee.id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[1])
+            ->assertJsonPath('data.location', 'Block A')
+            ->assertJsonPath('data.position.id', $this->position->id);
 
         $this->assertDatabaseHas('interviews', [
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interview_mode' => AppConstants::INTERVIEW_MODES[1],
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -341,6 +579,7 @@ class InterviewControllerTest extends TestCase
     public function test_create_interview_fails_with_invalid_interview_mode(): void
     {
         $response = $this->postJson(route('interviews.store'), [
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'scheduled_at' => now()->addDays(2)->toDateTimeString(),
             'interview_mode' => 'Physical',
@@ -358,6 +597,7 @@ class InterviewControllerTest extends TestCase
     public function test_org_admin_can_update_interview(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -371,6 +611,7 @@ class InterviewControllerTest extends TestCase
         ]);
 
         $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'title' => 'Updated title',
             'scheduled_at' => now()->addDays(7)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[1],
             'location' => 'HQ Room 3',
@@ -384,17 +625,37 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Interview updated successfully.',
             ])
-            ->assertJsonFragment([
-                'id' => $interview->id,
-                'interview_mode' => AppConstants::INTERVIEW_MODES[1],
-                'location' => 'HQ Room 3',
-                'meeting_url' => null,
-                'interview_result' => AppConstants::INTERVIEW_RESULTS['PASSED'],
-                'recruiter_comment' => 'Updated interview note.',
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'title',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.title', 'Updated title')
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[1])
+            ->assertJsonPath('data.location', 'HQ Room 3')
+            ->assertJsonPath('data.interview_result', AppConstants::INTERVIEW_RESULTS['PASSED'])
+            ->assertJsonPath('data.recruiter_comment', 'Updated interview note.');
 
         $this->assertDatabaseHas('interviews', [
             'id' => $interview->id,
+            'title' => 'Updated title',
             'interview_mode' => AppConstants::INTERVIEW_MODES[1],
             'location' => 'HQ Room 3',
             'meeting_url' => null,
@@ -403,9 +664,248 @@ class InterviewControllerTest extends TestCase
         ]);
     }
 
+    public function test_org_admin_can_update_to_online_interview_without_nullable_fields_except_location(): void
+    {
+        $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'title' => 'Updated title',
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+            'scheduled_at' => now()->addDays(7)->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Interview updated successfully.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.title', 'Updated title')
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[1])
+            ->assertJsonPath('data.location', 'HQ Room 3')
+            ->assertJsonPath('data.meeting_url', null);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'title' => 'Updated title',
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+        ]);
+    }
+
+    public function test_org_admin_can_update_to_on_site_interview_without_nullable_fields_except_meeting_url(): void
+    {
+        $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'title' => 'Updated title',
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://new.example.com/meet',
+            'scheduled_at' => now()->addDays(7)->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Interview updated successfully.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.title', 'Updated title')
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_mode', AppConstants::INTERVIEW_MODES[0])
+            ->assertJsonPath('data.meeting_url', 'https://new.example.com/meet')
+            ->assertJsonPath('data.location', null);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'title' => 'Updated title',
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://new.example.com/meet',
+        ]);
+    }
+
+    public function test_update_to_on_site_interview_fails_without_location(): void
+    {
+        $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'title' => 'Updated interview',
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'scheduled_at' => now()->addDays(7)->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST,
+            ])
+            ->assertJsonPath('data', null);
+
+        $this->assertStringContainsString('location', $response->json('message'));
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'title' => 'Interview for position of Software Engineering role',
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+        ]);
+    }
+
+    public function test_update_to_online_interview_fails_without_meeting_url(): void
+    {
+        $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'title' => 'Interview for position of Software Engineering role',
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'scheduled_at' => now()->addDays(7)->toDateTimeString(),
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST,
+            ])
+            ->assertJsonPath('data', null);
+
+        $this->assertStringContainsString('meeting url', $response->json('message'));
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'title' => 'Interview for position of Software Engineering role',
+            'interview_mode' => AppConstants::INTERVIEW_MODES[1],
+            'location' => 'HQ Room 3',
+            'meeting_url' => null,
+        ]);
+    }
+
+    public function test_update_interview_fails_without_required_fields(): void
+    {
+        $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+            'interview_result' => AppConstants::INTERVIEW_RESULTS['PENDING'],
+            'recruiter_comment' => 'Old note',
+        ]);
+
+        $response = $this->putJson(route('interviews.update', ['id' => $interview->id]));
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_BAD_REQUEST
+            ])
+            ->assertJsonPath('data', null);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'scheduled_at' => now()->addDays(5)->toDateTimeString(),
+            'interview_mode' => AppConstants::INTERVIEW_MODES[0],
+            'location' => null,
+            'meeting_url' => 'https://old.example.com/meet',
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+            'interview_result' => AppConstants::INTERVIEW_RESULTS['PENDING'],
+            'recruiter_comment' => 'Old note',
+        ]);
+    }
+
     public function test_update_interview_fails_when_interview_is_completed(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -413,6 +913,7 @@ class InterviewControllerTest extends TestCase
         ]);
 
         $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'title' => 'Interview for position of Software Engineering role',
             'scheduled_at' => now()->addDays(7)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[0],
             'meeting_url' => 'https://meet.example.com/update',
@@ -425,11 +926,20 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'message' => 'Interview completed or cancelled cannot be updated anymore.',
             ]);
+
+        $this->assertDatabaseHas('interviews', [
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['COMPLETED'],
+        ]);
     }
 
     public function test_update_interview_fails_when_interview_is_cancelled(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -437,6 +947,7 @@ class InterviewControllerTest extends TestCase
         ]);
 
         $response = $this->putJson(route('interviews.update', ['id' => $interview->id]), [
+            'title' => 'Interview for position of Software Engineering role',
             'scheduled_at' => now()->addDays(7)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[0],
             'meeting_url' => 'https://meet.example.com/update',
@@ -449,11 +960,20 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'message' => 'Interview completed or cancelled cannot be updated anymore.',
             ]);
+
+        $this->assertDatabaseHas('interviews', [
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['CANCELLED'],
+        ]);
     }
 
     public function test_update_interview_fails_with_invalid_interview_id(): void
     {
-        $interview = Interview::factory()->create([
+        Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -461,6 +981,7 @@ class InterviewControllerTest extends TestCase
         ]);
 
         $response = $this->putJson(route('interviews.update', ['id' => 0]), [
+            'title' => 'Interview for position of Software Engineering role',
             'scheduled_at' => now()->addDays(7)->toDateTimeString(),
             'interview_mode' => AppConstants::INTERVIEW_MODES[0],
             'meeting_url' => 'https://meet.example.com/update',
@@ -473,11 +994,20 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Interview not found or access unauthorized.',
             ]);
+
+        $this->assertDatabaseHas('interviews', [
+            'title' => 'Interview for position of Software Engineering role',
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
     }
 
     public function test_org_admin_can_complete_scheduled_interview(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -491,17 +1021,43 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Interview marked as completed.',
             ])
-            ->assertJsonFragment([
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-                'interview_status' => AppConstants::INTERVIEW_STATUS['COMPLETED'],
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'title',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_status', AppConstants::INTERVIEW_STATUS['COMPLETED']);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['COMPLETED'],
+        ]);
     }
 
     public function test_org_admin_can_cancel_scheduled_interview(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -515,17 +1071,44 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Interview cancelled.',
             ])
-            ->assertJsonFragment([
-                'position_id' => $this->position->id,
-                'interviewer_profile_id' => $this->interviewerProfile->id,
-                'interviewee_profile_id' => $this->intervieweeProfile->id,
-                'interview_status' => AppConstants::INTERVIEW_STATUS['CANCELLED'],
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'title',
+                    'position_id',
+                    'interviewer_profile_id',
+                    'interviewee_profile_id',
+                    'scheduled_at',
+                    'interview_mode',
+                    'location',
+                    'meeting_url',
+                    'interview_status',
+                    'interview_result',
+                    'recruiter_comment',
+                    'created_at',
+                    'updated_at',
+                ]
+            ])
+
+            ->assertJsonPath('data.id', $interview->id)
+            ->assertJsonPath('data.position_id', $this->position->id)
+            ->assertJsonPath('data.interviewer_profile_id', $this->interviewerProfile->id)
+            ->assertJsonPath('data.interviewee_profile_id', $this->intervieweeProfile->id)
+            ->assertJsonPath('data.interview_status', AppConstants::INTERVIEW_STATUS['CANCELLED']);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['CANCELLED'],
+        ]);
     }
 
     public function test_complete_interview_fails_when_interview_status_is_not_scheduled(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -539,11 +1122,20 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'message' => 'Interview completed or cancelled cannot be updated anymore.',
             ]);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['CANCELLED'],
+        ]);
     }
 
     public function test_cancel_interview_fails_when_interview_status_is_not_scheduled(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -557,11 +1149,20 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_UNPROCESSABLE_ENTITY,
                 'message' => 'Interview completed or cancelled cannot be updated anymore.',
             ]);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['COMPLETED'],
+        ]);
     }
 
     public function test_complete_interview_fails_with_invalid_interview_id(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -575,11 +1176,20 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Interview not found or access unauthorized.',
             ]);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
     }
 
     public function test_cancel_interview_fails_with_invalid_interview_id(): void
     {
         $interview = Interview::factory()->create([
+            'title' => 'Interview for position of Software Engineering role',
             'position_id' => $this->position->id,
             'interviewer_profile_id' => $this->interviewerProfile->id,
             'interviewee_profile_id' => $this->intervieweeProfile->id,
@@ -593,5 +1203,13 @@ class InterviewControllerTest extends TestCase
                 'status' => Response::HTTP_NOT_FOUND,
                 'message' => 'Interview not found or access unauthorized.',
             ]);
+
+        $this->assertDatabaseHas('interviews', [
+            'id' => $interview->id,
+            'position_id' => $this->position->id,
+            'interviewer_profile_id' => $this->interviewerProfile->id,
+            'interviewee_profile_id' => $this->intervieweeProfile->id,
+            'interview_status' => AppConstants::INTERVIEW_STATUS['SCHEDULED'],
+        ]);
     }
 }

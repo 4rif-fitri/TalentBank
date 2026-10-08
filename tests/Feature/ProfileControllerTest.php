@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Constants\AppConstants;
 use App\Models\Education;
 use App\Models\Language;
 use App\Models\Like;
@@ -32,6 +33,24 @@ class ProfileControllerTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const PROFILE_RETURN_COLUMNS = [
+        'id',
+        'name',
+        'email',
+        'location',
+        'headline',
+        'profile_image',
+    ];
+
+    private const LIST_PROFILE_RETURN_COLUMNS = [
+        'id',
+        'name',
+        'location',
+        'headline',
+        'profile_image',
+        'is_liked',
+    ];
+
     private User $user;
     private UserProfile $userProfile;
 
@@ -52,10 +71,13 @@ class ProfileControllerTest extends TestCase
         $this->userProfile = UserProfile::factory()->create([
             'user_id' => $this->user->id,
         ]);
-        $this->actingAs($this->user)->withSession(['user_profile_id' => $this->userProfile->id]);
+        $this->actingAs($this->user)->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
     }
 
-    private function createStudentInOrg(?array $attributes = null): UserProfile
+    private function createStudentInOrg(array $attributes = []): UserProfile
     {
         $organization = Organization::factory()->create();
         $studentRoleId = Role::where('name', 'Student')->first()->id;
@@ -84,7 +106,179 @@ class ProfileControllerTest extends TestCase
                 'id' => $this->userProfile->id,
                 'name' => $this->userProfile->name,
                 'email' => $this->userProfile->email,
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'organization_users',
+                    'active_programmes',
+                    'social_media_links',
+                    'user_languages',
+                    'skills',
+                ],
+            ])
+            ->assertJsonPath('data.id', $this->userProfile->id)
+            ->assertJsonPath('data.name', $this->userProfile->name)
+            ->assertJsonPath('data.email', $this->userProfile->email);
+    }
+
+    public function test_user_can_get_public_profile_data_by_profile_id_with_recruiter_role(): void
+    {
+        $publicProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $publicProfile->id]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'organization_users',
+                    'active_programmes',
+                    'social_media_links',
+                    'user_languages',
+                    'skills',
+                ],
+            ])
+            ->assertJsonPath('data.id', $publicProfile->id)
+            ->assertJsonPath('data.name', $publicProfile->name)
+            ->assertJsonPath('data.email', $publicProfile->email)
+            ->assertJsonPath('data.profile_visibility', $publicProfile->profile_visibility);
+    }
+
+    public function test_user_can_get_recruiter_visibility_profile_data_by_profile_id_with_recruiter_role(): void
+    {
+        $recruiterProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['RECRUITER']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $recruiterProfile->id]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'organization_users',
+                    'active_programmes',
+                    'social_media_links',
+                    'user_languages',
+                    'skills',
+                ],
+            ])
+            ->assertJsonPath('data.id', $recruiterProfile->id)
+            ->assertJsonPath('data.name', $recruiterProfile->name)
+            ->assertJsonPath('data.email', $recruiterProfile->email)
+            ->assertJsonPath('data.profile_visibility', $recruiterProfile->profile_visibility);
+    }
+
+    public function test_user_can_get_public_profile_data_by_profile_id_with_student_role(): void
+    {
+        $publicProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Student']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $publicProfile->id]));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'organization_users',
+                    'active_programmes',
+                    'social_media_links',
+                    'user_languages',
+                    'skills',
+                ],
+            ])
+            ->assertJsonPath('data.id', $publicProfile->id)
+            ->assertJsonPath('data.name', $publicProfile->name)
+            ->assertJsonPath('data.email', $publicProfile->email)
+            ->assertJsonPath('data.profile_visibility', $publicProfile->profile_visibility);
+    }
+
+    public function test_recruiter_get_profile_by_profile_id_fails_when_profile_is_private(): void
+    {
+        $privateProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PRIVATE']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $privateProfile->id]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Profile not found with given ID.',
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_student_get_profile_by_profile_id_fails_when_profile_is_private(): void
+    {
+        $privateProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PRIVATE']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Student']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $privateProfile->id]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Profile not found with given ID.',
+            ])
+            ->assertJsonPath('data', null);
+    }
+
+    public function test_student_get_profile_by_profile_id_fails_when_profile_is_recruiter_visibility(): void
+    {
+        $recruiterProfile = UserProfile::factory()->create([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['RECRUITER']
+        ]);
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Student']
+        ]);
+
+        $response = $this->getJson(route('profile.getProfileDataByProfileId', ['id' => $recruiterProfile->id]));
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_NOT_FOUND,
+                'message' => 'Profile not found with given ID.',
+            ])
+            ->assertJsonPath('data', null);
     }
 
     public function test_user_can_get_all_student_user_profiles(): void
@@ -125,9 +319,20 @@ class ProfileControllerTest extends TestCase
                 'status' => Response::HTTP_OK,
                 'message' => 'Success.'
             ])
-            ->assertJsonFragment([
-                'total' => 4,
-            ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => self::LIST_PROFILE_RETURN_COLUMNS,
+                    ],
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total',
+                    'has_more_pages',
+                ],
+            ])
+            ->assertJsonPath('data.total', 4)
+            ->assertJsonPath('data.data.0.is_liked', false);
 
         $payload = $response->json();
         $this->assertEquals(6, count($payload['data']));
@@ -141,7 +346,21 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->getJson(route('profile.getAllStudentUserProfiles', ['name' => 'Jane']));
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => self::LIST_PROFILE_RETURN_COLUMNS,
+                    ],
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total',
+                    'has_more_pages',
+                ],
+            ])
+            ->assertJsonPath('data.data.0.id', $userA->id)
+            ->assertJsonPath('data.data.0.name', 'Jane Doe');
 
         $returnedIds = collect($response->json('data.data'))->pluck('id');
 
@@ -171,7 +390,21 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->getJson(route('profile.getAllStudentUserProfiles', ['organizations' => [$orgA->id]]));
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => self::LIST_PROFILE_RETURN_COLUMNS,
+                    ],
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total',
+                    'has_more_pages',
+                ],
+            ])
+            ->assertJsonPath('data.data.0.id', $userInOrgA->id)
+            ->assertJsonPath('data.data.0.is_liked', false);
         $returnedIds = collect($response->json('data.data'))->pluck('id');
 
         $this->assertTrue($returnedIds->contains($userInOrgA->id));
@@ -193,7 +426,21 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->getJson(route('profile.getAllStudentUserProfiles', ['skills' => [$skill->id]]));
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => self::LIST_PROFILE_RETURN_COLUMNS,
+                    ],
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total',
+                    'has_more_pages',
+                ],
+            ])
+            ->assertJsonPath('data.data.0.id', $userWithSkill->id)
+            ->assertJsonPath('data.data.0.is_liked', false);
         $returnedIds = collect($response->json('data.data'))->pluck('id');
 
         $this->assertTrue($returnedIds->contains($userWithSkill->id));
@@ -214,7 +461,21 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->getJson(route('profile.getAllStudentUserProfiles', ['languages' => [$language->id]]));
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => self::LIST_PROFILE_RETURN_COLUMNS,
+                    ],
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total',
+                    'has_more_pages',
+                ],
+            ])
+            ->assertJsonPath('data.data.0.id', $userWithLanguage->id)
+            ->assertJsonPath('data.data.0.is_liked', false);
         $returnedIds = collect($response->json('data.data'))->pluck('id');
 
         $this->assertTrue($returnedIds->contains($userWithLanguage->id));
@@ -235,7 +496,21 @@ class ProfileControllerTest extends TestCase
 
         $response = $this->getJson(route('profile.getAllStudentUserProfiles', ['programmes' => [$programme->id]]));
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => self::LIST_PROFILE_RETURN_COLUMNS,
+                    ],
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total',
+                    'has_more_pages',
+                ],
+            ])
+            ->assertJsonPath('data.data.0.id', $userWithProgramme->id)
+            ->assertJsonPath('data.data.0.is_liked', false);
         $returnedIds = collect($response->json('data.data'))->pluck('id');
 
         $this->assertTrue($returnedIds->contains($userWithProgramme->id));
@@ -253,12 +528,129 @@ class ProfileControllerTest extends TestCase
             'organization_id' => $organization->id,
         ]);
 
+        $otherStudentProfile = UserProfile::factory()->create(['profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']]);
+        OrganizationUser::factory()->create([
+            'user_profile_id' => $otherStudentProfile->id,
+            'role_id' => $studentRoleId,
+            'organization_id' => $organization->id,
+        ]);
+
         $response = $this->getJson(route('profile.getAllStudentUserProfiles'));
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => self::LIST_PROFILE_RETURN_COLUMNS,
+                    ],
+                    'current_page',
+                    'last_page',
+                    'per_page',
+                    'total',
+                    'has_more_pages',
+                ],
+            ])
+            ->assertJsonPath('data.data.0.id', $otherStudentProfile->id)
+            ->assertJsonPath('data.data.0.name', $otherStudentProfile->name)
+            ->assertJsonPath('data.total', 1);
+
         $returnedIds = collect($response->json('data.data'))->pluck('id');
 
         $this->assertFalse($returnedIds->contains($this->userProfile->id));
+    }
+
+    public function test_user_can_get_non_private_profiles_with_recruiter_role(): void
+    {
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Recruiter']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['RECRUITER']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PRIVATE']
+        ]);
+
+        $response = $this->getJson(route('profile.getAllStudentUserProfiles'));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => [
+                            ...self::LIST_PROFILE_RETURN_COLUMNS,
+                            'skills',
+                            'programmes' => [
+                                '*' => [
+                                    'organization',
+                                    'qualification'
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
+            ]);
+
+        $payload = $response->json('data');
+        $this->assertEquals(2, count($payload['data']));
+    }
+
+    public function test_user_can_get_public_profiles_only_with_student_role(): void
+    {
+        $this->withSession([
+            'user_profile_id' => $this->userProfile->id,
+            'roles' => ['Student']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PUBLIC']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['RECRUITER']
+        ]);
+
+        $this->createStudentInOrg([
+            'profile_visibility' => AppConstants::PROFILE_VISIBILITY['PRIVATE']
+        ]);
+
+        $response = $this->getJson(route('profile.getAllStudentUserProfiles'));
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonFragment([
+                'status' => Response::HTTP_OK,
+                'message' => 'Success.',
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'data' => [
+                        '*' => [
+                            ...self::LIST_PROFILE_RETURN_COLUMNS,
+                            'skills',
+                            'programmes' => [
+                                '*' => [
+                                    'organization',
+                                    'qualification'
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
+            ]);
+
+        $payload = $response->json('data');
+        $this->assertEquals(1, count($payload['data']));
     }
 
     public function test_user_can_get_liked_user_profiles(): void
@@ -301,7 +693,19 @@ class ProfileControllerTest extends TestCase
                 'phone_no' => '1234567890',
                 'location' => 'Updated Location',
                 'headline' => 'Updated Headline',
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'phone_no',
+                ],
+            ])
+            ->assertJsonPath('data.id', $this->userProfile->id)
+            ->assertJsonPath('data.name', 'Updated Name')
+            ->assertJsonPath('data.email', 'updated@example.com')
+            ->assertJsonPath('data.phone_no', '1234567890')
+            ->assertJsonPath('data.location', 'Updated Location')
+            ->assertJsonPath('data.headline', 'Updated Headline');
 
         $this->assertDatabaseHas('user_profiles', [
             'id' => $this->userProfile->id,
@@ -413,7 +817,19 @@ class ProfileControllerTest extends TestCase
                 'phone_no' => null,
                 'location' => null,
                 'headline' => null,
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    ...self::PROFILE_RETURN_COLUMNS,
+                    'phone_no',
+                ],
+            ])
+            ->assertJsonPath('data.id', $this->userProfile->id)
+            ->assertJsonPath('data.name', 'Updated Name')
+            ->assertJsonPath('data.email', 'updated@example.com')
+            ->assertJsonPath('data.phone_no', null)
+            ->assertJsonPath('data.location', null)
+            ->assertJsonPath('data.headline', null);
 
         $this->assertDatabaseHas('user_profiles', [
             'id' => $this->userProfile->id,
@@ -440,7 +856,15 @@ class ProfileControllerTest extends TestCase
             ])
             ->assertJsonFragment([
                 'about' => 'Updated About'
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'about',
+                ],
+            ])
+            ->assertJsonPath('data.id', $this->userProfile->id)
+            ->assertJsonPath('data.about', 'Updated About');
 
         $this->assertDatabaseHas('user_profiles', [
             'about' => 'Updated About'
@@ -460,7 +884,15 @@ class ProfileControllerTest extends TestCase
             ])
             ->assertJsonFragment([
                 'about' => null
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'about',
+                ],
+            ])
+            ->assertJsonPath('data.id', $this->userProfile->id)
+            ->assertJsonPath('data.about', null);
 
         $this->assertDatabaseHas('user_profiles', [
             'about' => null
@@ -480,10 +912,19 @@ class ProfileControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_OK,
                 'message' => 'Profile image uploaded successfully.'
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'profile_image',
+                ],
+            ])
+            ->assertJsonPath('data.id', $this->userProfile->id);
 
         $this->userProfile->refresh();
         $this->assertStringContainsString('avatar.jpg', $this->userProfile->profile_image);
+
+        Storage::disk('public')->assertExists(config('services.uploads_file_path.profile_image') . $this->userProfile->profile_image);
     }
 
     public function test_upload_profile_image_fails_without_required_field(): void
@@ -498,6 +939,8 @@ class ProfileControllerTest extends TestCase
                 'status' => Response::HTTP_BAD_REQUEST,
                 'message' => 'The profile image field is required.'
             ]);
+
+        Storage::disk('public')->assertDirectoryEmpty(config('services.uploads_file_path.profile_image'));
     }
 
     public function test_upload_profile_image_fails_with_invalid_file_format(): void
@@ -530,11 +973,21 @@ class ProfileControllerTest extends TestCase
             ->assertJsonFragment([
                 'status' => Response::HTTP_OK,
                 'message' => 'Cover image uploaded successfully.'
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'cover_image',
+                ],
+            ])
+            ->assertJsonPath('data.id', $this->userProfile->id);
 
         $this->userProfile->refresh();
         $this->assertStringContainsString('cover.jpg', $this->userProfile->cover_image);
+
+        Storage::disk('public')->assertExists(config('services.uploads_file_path.cover_image') . $this->userProfile->cover_image);
     }
+
 
     public function test_upload_cover_image_fails_without_required_field(): void
     {
@@ -548,6 +1001,8 @@ class ProfileControllerTest extends TestCase
                 'status' => Response::HTTP_BAD_REQUEST,
                 'message' => 'The cover image field is required.'
             ]);
+
+        Storage::disk('public')->assertDirectoryEmpty(config('services.uploads_file_path.cover_image'));
     }
 
     public function test_upload_cover_image_fails_with_invalid_file_format(): void
@@ -582,7 +1037,13 @@ class ProfileControllerTest extends TestCase
                 'data' => [
                     'is_liked' => true
                 ]
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'is_liked',
+                ],
+            ])
+            ->assertJsonPath('data.is_liked', true);
 
         $this->assertDatabaseHas('likes', [
             'liked_user_profile_id' => $newUser->id,
@@ -609,7 +1070,13 @@ class ProfileControllerTest extends TestCase
                 'data' => [
                     'is_liked' => false
                 ]
-            ]);
+            ])
+            ->assertJsonStructure([
+                'data' => [
+                    'is_liked',
+                ],
+            ])
+            ->assertJsonPath('data.is_liked', false);
 
         $this->assertDatabaseEmpty('likes');
     }

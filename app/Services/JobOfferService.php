@@ -6,13 +6,14 @@ use App\Constants\AppConstants;
 use App\Helpers\CheckOrgRoleHelper;
 use App\Models\JobOffer;
 use App\Models\Position;
+use App\Models\UserProfile;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
 class JobOfferService
 {
-    private const ADMINISTRATIVE_ROLES = ['Organization Admin', 'Recruiter'];
+    private const ADMINISTRATIVE_ROLES = [AppConstants::USER_ROLES['ORGANIZATION_ADMIN'], AppConstants::USER_ROLES['RECRUITER']];
     private const LOCKED_STATUS = [
         AppConstants::JOB_OFFER_STATUS['ACCEPTED'],
         AppConstants::JOB_OFFER_STATUS['REJECTED'],
@@ -117,31 +118,6 @@ class JobOfferService
     }
 
     /**
-     * Retrieves job offers matching the given status where the current user is the sender or receiver
-     *
-     * @param string $offerStatus
-     * @param int $userProfileId
-     * @return Collection
-     */
-    // public function getJobOffersByStatus(string $offerStatus, int $userProfileId): Collection
-    // {
-    //     return JobOffer::with([
-    //         'position:' . self::POSITION_RETURN_COLUMNS,
-    //         'sender:' . self::PROFILE_RETURN_COLUMNS,
-    //         'receiver:' . self::PROFILE_RETURN_COLUMNS,
-    //         'position.organization:' . self::ORGANIZATION_RETURN_COLUMNS
-    //     ])
-    //         ->where('offer_status', $offerStatus)
-    //         ->whereHas('', function ($query) use ($userProfileId) {
-    //             $query->where(function ($query) use ($userProfileId) {
-    //                 $query->where('sender_profile_id', $userProfileId)
-    //                     ->orWhere('receiver_profile_id', $userProfileId);
-    //             });
-    //         })
-    //         ->get();
-    // }
-
-    /**
      * Retrieves a job offer by job offer ID, accessible to either the sender or receiver
      *
      * @param int $jobOfferId
@@ -173,6 +149,45 @@ class JobOfferService
     }
 
     /**
+     * Returns job offers filtered by position ID and receiver's profile ID
+     * 
+     * @param int $receiverId
+     * @param int $positionId
+     * @param int $currentUserProfileId
+     * @throws Exception
+     * @return Collection<int, \stdClass>|\Illuminate\Database\Eloquent\Collection<int, JobOffer>
+     */
+    public function getJobOffersByPositionIdAndReceiverId(int $receiverId, int $positionId, int $currentUserProfileId): Collection
+    {
+        $position = Position::select('id', 'organization_id')->find($positionId);
+
+        if (!isset($position)) {
+            throw new Exception('Position not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $userProfileExists = UserProfile::where('id', $receiverId)->exists();
+
+        if (!$userProfileExists) {
+            throw new Exception('User profile not found with given ID.', Response::HTTP_NOT_FOUND);
+        }
+
+        $isUserOrgAdmin = CheckOrgRoleHelper::userHasRoles($currentUserProfileId, self::ADMINISTRATIVE_ROLES, $position->organization_id);
+
+        if (!$isUserOrgAdmin) {
+            throw new Exception('Unauthorized access to get job offers.', Response::HTTP_FORBIDDEN);
+        }
+
+        $invitations = JobOffer::where([
+            'position_id' => $positionId,
+            'receiver_profile_id' => $receiverId
+        ])
+            ->select('id', 'position_id', 'title')
+            ->get();
+
+        return $invitations;
+    }
+
+    /**
      * Creates a new job offer for the position
      *
      * @param array $data
@@ -193,6 +208,7 @@ class JobOfferService
 
         // create job offer
         $jobOffer = JobOffer::create([
+            'title' => $data['title'],
             'position_id' => $data['position_id'],
             'sender_profile_id' => $senderId,
             'receiver_profile_id' => $data['receiver_profile_id'],
@@ -236,6 +252,7 @@ class JobOfferService
         }
 
         $jobOffer->update([
+            'title' => $data['title'],
             'salary_amount' => $data['salary_amount'],
             'salary_period' => $data['salary_period'],
             'start_date' => $data['start_date'] ?? null,
