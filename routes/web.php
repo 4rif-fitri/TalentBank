@@ -33,6 +33,11 @@ use App\Http\Controllers\UserLanguageController;
 */
 
 Route::middleware('guest')->group(function () {
+
+    Route::get("/landingPage", function(){
+        return view('pages.landing-page');
+    })->name("landingPage");
+
     // page routes
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('loginPage'); //+
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('registerPage'); //+

@@ -64,9 +64,8 @@
                         design and engineering teams that ship measurable results for SaaS and tech-driven businesses.
                     </p>
                     <div class="d-flex flex-wrap gap-3 mb-4 justify-content-lg-start justify-content-center">
-                        <a href="contact.html" class="btn btn-primary btn-lg-custom">Start a Project <i
-                                class="bi bi-arrow-right ms-1"></i></a>
-                        <a href="services.html" class="btn btn-light-custom btn-lg-custom">Explore Services</a>
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg-custom">Get Started</a>
+                        <!-- <a href="services.html" class="btn btn-light-custom btn-lg-custom">Explore Services</a> -->
                     </div>
 
                 </div>
@@ -459,10 +458,10 @@
                     <p class="text-white-50 mb-4" style="max-width:320px;">We help ambitious SaaS and tech companies
                         design, build and scale digital products that customers love.</p>
                     <div class="d-flex gap-2">
-                        <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-dribbble"></i></a>
-                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="social-icon d-flex justify-content-center align-items-center"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="social-icon d-flex justify-content-center align-items-center"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="social-icon d-flex justify-content-center align-items-center"><i class="bi bi-dribbble"></i></a>
+                        <a href="#" class="social-icon d-flex justify-content-center align-items-center"><i class="bi bi-instagram"></i></a>
                     </div>
                 </div>
                 <div class="col-lg-2 col-md-6 col-6">
