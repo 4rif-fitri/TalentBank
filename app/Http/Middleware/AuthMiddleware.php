@@ -16,7 +16,7 @@ class AuthMiddleware extends Authenticate
     protected function redirectTo(Request $request)
     {
         if (!$request->expectsJson()) {
-            return route('loginPage');
+            return route('landing-page');
         }
     }
 
