@@ -35,19 +35,19 @@
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-nexora fixed-top">
         <div class="container">
-            <a class="navbar-brand navbar-brand-custom" href="index.html">Nexora<span>.</span></a>
+            <a class="navbar-brand navbar-brand-custom" href="index.html">TalentBank<span></span></a>
             <button class="navbar-toggler navbar-toggler-custom" type="button" data-bs-toggle="collapse"
                 data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="bar"></span><span class="bar"></span><span class="bar"></span>
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-1 mt-3 mt-lg-0">
-                    <li class="nav-item"><a class="nav-link nav2 active" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link nav2" href="about.html">Login</a></li>
-                    <li class="nav-item"><a class="nav-link nav2" href="about.html">Register</a></li>
-                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                    <li class="nav-item"><a class="nav-link nav2 active" href="{{ route('landingPage') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link nav2" href="{{ route('loginPage') }}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link nav2" href="{{ route('registerPage') }}">Register</a></li>
+                    <!-- <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
                         <a href="contact.html" class="btn btn-primary btn-sm-custom w-100">Get Started</a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>
@@ -127,7 +127,7 @@
     </header>
 
     <!-- LOGO CLOUD -->
-    <section class="py-4 bg-white border-bottom">
+    <!-- <section class="py-4 bg-white border-bottom">
         <div class="container">
             <p class="text-center text-slate small fw-semibold text-uppercase mb-4" style="letter-spacing:0.1em;">
                 Powering product teams at</p>
@@ -152,10 +152,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- SERVICES OVERVIEW -->
-    <section class="section bg-soft">
+    <!-- <section class="section bg-soft">
         <div class="container">
             <div class="row section-header align-items-end">
                 <div class="col-lg-7 reveal">
@@ -212,10 +212,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- ABOUT / WHY US -->
-    <section class="section">
+    <!-- <section class="section">
         <div class="container">
             <div class="row align-items-center g-5">
                 <div class="col-lg-6 reveal">
@@ -256,10 +256,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- STATS STRIP -->
-    <section class="stats-strip py-5 bg-white">
+    <!-- <section class="stats-strip py-5 bg-white">
         <div class="container">
             <div class="row text-center g-4">
                 <div class="col-6 col-md-3 stat-item reveal">
@@ -280,10 +280,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- PROCESS -->
-    <section class="section bg-soft">
+    <!-- <section class="section bg-soft">
         <div class="container">
             <div class="row section-header justify-content-center text-center">
                 <div class="col-lg-7 reveal">
@@ -324,10 +324,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- PORTFOLIO PREVIEW -->
-    <section class="section">
+    <!-- <section class="section">
         <div class="container">
             <div class="row section-header align-items-end">
                 <div class="col-lg-7 reveal">
@@ -372,10 +372,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- TESTIMONIALS -->
-    <section class="section bg-soft">
+    <!-- <section class="section bg-soft">
         <div class="container">
             <div class="row section-header justify-content-center text-center">
                 <div class="col-lg-7 reveal">
@@ -428,10 +428,10 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- CTA -->
-    <section class="section">
+    <!-- <section class="section">
         <div class="container">
             <div class="cta-section reveal">
                 <div class="row align-items-center">
@@ -446,7 +446,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- FOOTER -->
     <footer class="footer-nexora">

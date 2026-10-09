@@ -65,18 +65,10 @@
                     </div>
                 </div>
 
-                <!-- Options (Remember me & Forgot Password) -->
-                <div class="login-options">
-                    <label class="custom-control-label">
-                        <input type="checkbox" class="custom-checkbox-input" id="rememberMe">
-                        <span>Remember Me</span>
-                    </label>
-                    <a href="#" class="forgot-password-link">Forgot Password?</a>
-                </div>
 
                 <!-- Submit Button -->
                 <button type="submit" class="btn-login" id="btn-submit">
-                    <span>Sign In to Dashboard</span>
+                    <span>Sign In</span>
                     <i class="bi bi-arrow-right"></i>
                 </button>
 
@@ -84,7 +76,7 @@
 
             <!-- Footer Link -->
             <p class="login-footer-text mt-2">
-                Don't have an account? <a href="#" id="link-register">Register Now</a>
+                Don't have an account? <a href="{{ route('register') }}" id="link-register">Register Now</a>
             </p>
 
         </div>

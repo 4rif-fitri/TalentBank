@@ -1,12 +1,12 @@
-/* 
+/*
 ========================================================================
    BOOTSTRAP 5 ADMIN TEMPLATE - SPARK ADMIN
    DESIGN SYSTEM & CUSTOM STYLESHEET
    Developed with premium UI/UX standards
 
    Template Name: Spark Admin
-   Version: 1.0 
-   Author: Spark Admin Team 
+   Version: 1.0
+   Author: Spark Admin Team
    Email: hello.sparkadmin@gmail.com
    URL: https://sparkadmin.web.id
 ========================================================================
@@ -52,47 +52,54 @@
 --------------------------------------------------------------------- */
 :root {
     /* Colors */
-    --bs-body-bg: #F4F6F5; /* Canvas background: light, warm grayish-green */
-    --bs-body-font-family: 'Plus Jakarta Sans', sans-serif;
-    
-    --brand-forest-dark: #051C12;     /* Core sidebar/brand background */
-    --brand-forest-medium: #072F1F;   /* Alert banner / dark card BG */
-    --brand-forest-light: #1A3E30;    /* Interactive elements in dark mode */
-    --brand-lime: #B4F105;            /* Lime-yellow accent highlight */
-    --brand-lime-hover: #c1f824;      
-    --brand-lime-translucent: rgba(180, 241, 5, 0.15);
-    
-    --text-main: #0B130F;             /* Dark headers, main labels */
-    --text-muted-green: #6C7E75;      /* Secondary labels, muted details */
-    --text-sidebar-muted: #879A91;    /* Sidebar inactive link labels */
-    
+    --bs-body-bg: #FFFFFF;
+    --bs-body-font-family: 'Inter', sans-serif;
+
+    --brand-forest-dark: #0B1437;
+    --brand-forest-medium: #1A2456;
+    --brand-forest-light: #263568;
+    --brand-lime: #155EEF;
+    --brand-lime-hover: #0E3FB0;
+    --brand-lime-translucent: rgba(21, 94, 239, 0.15);
+
+    --text-main: #101828;
+    --text-muted-green: #667085;
+    --text-sidebar-muted: #98A2B3;
+
     --card-background: #FFFFFF;
-    --border-light: #E9EFEF;
+    --border-light: #E4E7EC;
     --border-dark-green: rgba(255, 255, 255, 0.1);
-    
+
     /* System Colors */
-    --sys-green: #22C55E;
-    --sys-green-bg: #DCFCE7;
-    --sys-red: #EF4444;
-    --sys-red-bg: #FEE2E2;
-    --sys-orange: #F97316;
-    --sys-orange-bg: #FFEDD5;
-    
+    --sys-green: #12B76A;
+    --sys-green-bg: #D1FADF;
+    --sys-red: #F04438;
+    --sys-red-bg: #FEE4E2;
+    --sys-orange: #F79009;
+    --sys-orange-bg: #FEF0C7;
+
     /* Layout Configurations */
     --sidebar-width: 280px;
     --navbar-height: 80px;
-    
+
     /* Border Radii */
     --radius-xxl: 24px;
     --radius-xl: 18px;
     --radius-lg: 14px;
     --radius-md: 10px;
     --radius-sm: 6px;
-    
+
     /* Box Shadows */
-    --shadow-sm: 0 2px 8px rgba(11, 19, 15, 0.02);
-    --shadow-md: 0 10px 30px rgba(11, 19, 15, 0.04);
-    --shadow-lg: 0 20px 50px rgba(11, 19, 15, 0.08);
+    --shadow-sm: 0 2px 8px rgba(11, 20, 55, 0.06);
+    --shadow-md: 0 10px 30px rgba(11, 20, 55, 0.08);
+    --shadow-lg: 0 20px 50px rgba(11, 20, 55, 0.12);
+
+    /* Additional Theme Colors */
+    --bs-primary: #155EEF;
+    --bs-primary-rgb: 21, 94, 239;
+    --bs-secondary: #6941C6;
+    --bs-secondary-rgb: 105, 65, 198;
+    --bs-body-color: #667085;
 }
 
 /* ---------------------------------------------------------------------
@@ -1283,28 +1290,28 @@ body.sidebar-minimized .sidebar-profile {
     .sidebar-wrapper {
         transform: translateX(-100%);
     }
-    
+
     .sidebar-wrapper.show {
         transform: translateX(0);
         box-shadow: var(--shadow-lg);
     }
-    
+
     .main-wrapper {
         margin-left: 0;
         padding: 1.5rem 1.5rem;
     }
-    
+
     .sidebar-toggle-btn {
         display: flex;
     }
-    
+
     .navbar-search-wrapper {
         order: 3;
         max-width: 100%;
         width: 100%;
         margin-top: 0.5rem;
     }
-    
+
     .navbar-custom {
         display: flex !important;
         margin-top: -1.5rem;
@@ -1322,7 +1329,7 @@ body.sidebar-minimized .sidebar-profile {
         align-items: flex-start;
         gap: 1rem;
     }
-    
+
     .btn-date-picker {
         width: 100%;
         justify-content: center;
@@ -1712,17 +1719,17 @@ span.flatpickr-weekday {
         margin-top: 1.5rem;
         gap: 1rem;
     }
-    
+
     .footer-left {
         flex-direction: column;
         gap: 0.5rem;
         align-items: center;
     }
-    
+
     .footer-separator {
         display: none;
     }
-    
+
     .footer-links {
         justify-content: center;
         flex-wrap: wrap;
