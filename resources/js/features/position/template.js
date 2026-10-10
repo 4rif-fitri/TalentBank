@@ -1,6 +1,5 @@
 import { formatDate } from "../../shared/utils/format.js";
 
-
 function renderSkills(skills = []) {
 
     return skills

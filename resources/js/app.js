@@ -24,6 +24,13 @@ import * as xApiPosition from "./features/position/api.js"
 import * as xApiEducation from "./features/education/api.js"
 import * as xApiProfile from "./features/profile/api.js"
 
+import * as measureBlocks from "../js/features/resume/engine/measurement.js";
+import * as paginateColumn from "../js/features/resume/engine/pagination.js";
+import * as  paginateTwoColumns from "../js/features/resume/engine/pagination.js";
+import * as renderPages from "../js/features/resume/engine/renderer.js";
+import * as modern from "../js/features/resume/templates/modern.js";
+import * as professional from "../js/features/resume/templates/professional.js";
+
 window.xApiProfile = xApiProfile
 window.xApiInvite = xApiInvite
 window.xApiInterview = xApiInterview
@@ -49,5 +56,12 @@ window.xinvitation = templateInvitation;
 window.xprofile = templateProfile
 
 window.bootstrap = bootstrap;
+
+window.measureBlocks = measureBlocks;
+window.paginateTwoColumns = paginateTwoColumns;
+window.paginateColumn = paginateColumn;
+window.renderPages = renderPages;
+window.modern = modern;
+window.professional = professional;
 
 window.toggle = () => document.body.classList.toggle('filter-open')

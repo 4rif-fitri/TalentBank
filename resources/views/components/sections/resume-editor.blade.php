@@ -13,33 +13,10 @@
         </ul>
     </nav>
 
-    <h2>Education</h2>
-    <h4>In Resume</h4>
-    <div>
-        <div class="card d-flex flex-row justify-content-between">
-            <div>
-                Lorem ipsum dolor sit amet
-            </div>
-            <div class="btn-group border border-1">
-                <button class="btn btn-danger">-</button>
-                <button class="btn btn-primary">+</button>
-            </div>
-        </div>
-    </div>
-    <hr>
+    <section id="editor-content">
 
-    <h4>Lorem</h4>
-    <div>
-        <div class="card d-flex flex-row justify-content-between">
-            <div>
-                Lorem ipsum dolor sit amet
-            </div>
-            <div class="btn-group border border-1">
-                <button class="btn btn-danger">-</button>
-                <button class="btn btn-primary">+</button>
-            </div>
-        </div>
-    </div>
+    </section>
+
 </div>
 @push('childScript')
 
