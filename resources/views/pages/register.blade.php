@@ -9,89 +9,173 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link href="{{ URL::asset('assets/libs/bootstrap5/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/n/css/login.css') }}">
 
 </head>
 
 <body>
-    <div class="card-container">
-        <div class="card-content p-4">
-            <div class="d-flex justify-content-center align-items-center gap-2">
-                <i class="fa-solid fa-graduation-cap fa-xl"></i>
-                <p class="fw-bolder h3 m-0">TalentBank</p>
-            </div>
-            <h3 class="text-center">Create Your Account</h3>
-            <p class="text-center">Join TalentBank and build your professional future</p>
+    <div class="login-wrapper">
 
-            <form action="{{ route('register') }}" method="POST">
+        <!-- Main Register Card -->
+        <div class="login-card relative">
+            <a href="{{ route('landingPage') }}" class="absolute top-0 btn btn-close-white">Back</a>
+
+            <h3 class="login-heading text-center mb-2">Create Account</h3>
+
+            <!-- Register Form -->
+            <form action="{{ route('register') }}" method="POST" id="registerForm">
+
                 @csrf
 
-                <div class="mb-3">
-                    <label for="name" class="form-label">Full Name</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text bg-white" id="basic-addon-name">
-                            <i class="fa-solid fa-user"></i>
-                        </span>
-                        <input type="text" name="name" id="name"
-                            class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
-                            aria-label="Full Name" aria-describedby="basic-addon-name">
+                <!-- Full Name -->
+                <div class="login-form-group">
 
-                        @error('name')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
+                    <label for="name" class="login-form-label">
+                        Full Name
+                    </label>
+
+                    <div class="login-input-group">
+                        <i class="fa-solid fa-user input-icon"></i>
+
+                        <input type="text" name="name" id="name" class="login-input @error('name') is-invalid @enderror"
+                            placeholder="Enter your full name" value="{{ old('name') }}" autocomplete="name" required>
                     </div>
+
+                    @error('name')
+                    <div class="text-danger small mt-1">
+                        {{ $message }}
+                    </div>
+                    @enderror
+
                 </div>
 
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text bg-white" id="basic-addon-email">
-                            <i class="fa-regular fa-envelope"></i>
-                        </span>
+                <!-- Email Address -->
+                <div class="login-form-group">
 
-                        <input type="email" name="email" id="email"
-                            class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}"
-                            aria-label="Email" aria-describedby="basic-addon-email">
+                    <label for="email" class="login-form-label">
+                        Email Address
+                    </label>
 
-                        @error('email')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
+                    <div class="login-input-group">
+                        <i class="fa-regular fa-envelope input-icon"></i>
+
+                        <input type="email" name="email" id="email" class="login-input @error('email') is-invalid @enderror"
+                            placeholder="name@company.com" value="{{ old('email') }}" autocomplete="email" required>
                     </div>
+
+                    @error('email')
+                    <div class="text-danger small mt-1">
+                        {{ $message }}
+                    </div>
+                    @enderror
+
                 </div>
 
-                <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
-                    <div class="input-group has-validation">
-                        <span class="input-group-text bg-white" id="basic-addon-password">
-                            <i class="fa-solid fa-lock"></i>
-                        </span>
+                <!-- Password -->
+                <div class="login-form-group">
+
+                    <label for="password" class="login-form-label">
+                        Password
+                    </label>
+
+                    <div class="login-input-group">
+                        <i class="fa-solid fa-lock input-icon"></i>
 
                         <input type="password" name="password" id="password"
-                            class="form-control @error('password') is-invalid @enderror" aria-label="Password"
-                            aria-describedby="basic-addon-password">
+                            class="login-input login-input-password @error('password') is-invalid @enderror"
+                            placeholder="Create a password" autocomplete="new-password" required>
 
-                        @error('password')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                        @enderror
+                        <button type="button" class="password-toggle-btn" id="toggle-password" aria-label="Show password"
+                            aria-pressed="false">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
                     </div>
+
+                    @error('password')
+                    <div class="text-danger small mt-1">
+                        {{ $message }}
+                    </div>
+                    @enderror
+
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                <!-- Confirm Password -->
+                <div class="login-form-group">
+
+                    <label for="password_confirmation" class="login-form-label">
+                        Confirm Password
+                    </label>
+
+                    <div class="login-input-group">
+                        <i class="fa-solid fa-shield-halved input-icon"></i>
+
+                        <input type="password" name="password_confirmation" id="password_confirmation" class="login-input"
+                            placeholder="Confirm your password" autocomplete="new-password" required>
+
+                        <button type="button" class="password-toggle-btn" id="toggle-confirm-password"
+                            aria-label="Show confirm password" aria-pressed="false">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn-login" id="btn-submit">
+                    <span>Create Account</span>
+                </button>
 
             </form>
 
-            <div class="d-flex mt-4 justify-content-center">
-                <p class="mb-0 me-1">Already have an account? - </p>
-                <a href="{{ route('loginPage') }}" class="text-primary fw-bold text-decoration-none">Sign in</a>
-            </div>
+            <!-- Login Link -->
+            <p class="login-footer-text mt-4">
+                Already have an account?
+                <a href="{{ route('loginPage') }}">
+                    Login
+                </a>
+            </p>
+
         </div>
     </div>
     <script src="{{ URL::asset('assets/libs/bootstrap5/bootstrap.min.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            function setupPasswordToggle(inputId, buttonId) {
+                const passwordInput = document.getElementById(inputId);
+                const toggleButton = document.getElementById(buttonId);
+
+                if (!passwordInput || !toggleButton) return;
+
+                toggleButton.addEventListener('click', function () {
+                    const showPassword = passwordInput.type === 'password';
+
+                    passwordInput.type = showPassword ? 'text' : 'password';
+
+                    toggleButton.innerHTML = showPassword
+                        ? '<i class="fa-regular fa-eye-slash"></i>'
+                        : '<i class="fa-regular fa-eye"></i>';
+
+                    toggleButton.setAttribute(
+                        'aria-label',
+                        showPassword ? 'Hide password' : 'Show password'
+                    );
+
+                    toggleButton.setAttribute(
+                        'aria-pressed',
+                        String(showPassword)
+                    );
+                });
+            }
+
+            setupPasswordToggle('password', 'toggle-password');
+
+            setupPasswordToggle(
+                'password_confirmation',
+                'toggle-confirm-password'
+            );
+
+        });
+    </script>
 </body>
 
 </html>

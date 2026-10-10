@@ -15,6 +15,8 @@ class internshipController extends Controller
         if (in_array('Recruiter', $roles)) {
             return view('pages.recruiter.index');
         }
+
+        return view('pages.404');
     }
     public function studentIndex()
     {

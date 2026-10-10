@@ -42,9 +42,9 @@
             </button>
             <div class="collapse navbar-collapse" id="mainNav">
                 <ul class="navbar-nav ms-auto align-items-lg-center gap-1 mt-3 mt-lg-0">
-                    <li class="nav-item"><a class="nav-link nav2 active" href="{{ route('landingPage') }}">Home</a></li>
                     <li class="nav-item"><a class="nav-link nav2" href="{{ route('loginPage') }}">Login</a></li>
                     <li class="nav-item"><a class="nav-link nav2" href="{{ route('registerPage') }}">Register</a></li>
+                    <li class="nav-item"><a class="nav-link nav2 active" href="{{ route('landingPage') }}">Home</a></li>
                     <!-- <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
                         <a href="contact.html" class="btn btn-primary btn-sm-custom w-100">Get Started</a>
                     </li> -->
