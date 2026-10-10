@@ -1,5 +1,24 @@
 @extends('layouts.internship-layouts')
-
+    <style>
+        .asd{
+            width: 600px;
+        }
+        @media screen and (max-width:1300px) {
+            .asd{
+                width: 400px;
+            }
+        }
+        @media screen and (max-width:1000px) {
+            .asd{
+                width: 300px;
+            }
+        }
+        @media screen and (max-width:760px) {
+            .asd{
+                width: 100%;
+            }
+        }
+    </style>
 @section('css')
 @endsection
 
@@ -19,12 +38,13 @@
     <input type="hidden" id="template_id">
 
     <div class="d-flex flex-md-row flex-column bg-body m-2" style="display: flex; flex-grow: 1;">
-        <div class="border border-1" style="height: 92vh;">
-            <x-sections.resume-setting />
+        <div class="border border-1 asd" style="height: 92vh;">
             <x-sections.resume-editor />
         </div>
 
         <div class="workspace w-100 " style="height: 92vh !important;">
+            <x-sections.resume-setting />
+
             <div id="resumePages"></div>
         </div>
     </div>
@@ -114,7 +134,6 @@
                 };
 
                 console.log(dataResume);
-
 
                 loadResumeToApp(dataResume);
 
