@@ -11,15 +11,15 @@
     <div>
         <div class="d-flex">
             <h4>Template</h4>
-            <select id="templateSelect">
-                <option value="modern">
-                    Modern
-                </option>
+                <select id="templateSelect" class="form-select">
+                    <option value="modern" data-template-id="1">
+                        Modern
+                    </option>
 
-                <option value="professional">
-                    Professional
-                </option>
-            </select>
+                    <option value="professional" data-template-id="2">
+                        Professional
+                    </option>
+                </select>
         </div>
     </div>
     <div>

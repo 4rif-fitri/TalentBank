@@ -58,117 +58,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script type="module">
-
-    function updateResume(id, payload) {
-        const url = "{{ route('resumes.update', ['id' => '__ID__']) }}"
-            .replace('__ID__', encodeURIComponent(id));
-
-        return $.ajax({
-            url,
-            type: "PUT",
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify(payload),
-            headers: {
-                "Accept": "application/json",
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            }
-        });
-    }
-
-    function getResumeContentId(item) {
-        return (
-            item.resume_content_id ??
-            item.resume_content?.id ??
-            item.resumeContent?.id ??
-            item.pivot?.id ??
-            null
-        );
-    }
-
-function prepareResumePayload() {
-    const educationChanges = getChanges(
-        originalEducation,
-        data.education.data.in,
-        "education"
-    );
-
-    const skillChanges = getChanges(
-        originalSkills,
-        data.skill.data.in,
-        "skill"
-    );
-    console.log("aaaaaaaaaaaaaaa");
-
-    const contentToAdd = [
-        ...educationChanges.toAdd.map(item => ({
-            source_type: "education",
-            source_id: Number(
-                item.education_id ?? item.id ?? item.programme_id
-            )
-        })),
-
-        ...skillChanges.toAdd.map(item => ({
-            source_type: "user_skill",
-            source_id: Number(
-                item.pivot.id
-            )
-        }))
-    ];
-
-    const removedItems = [
-        ...educationChanges.toRemove,
-        ...skillChanges.toRemove
-    ];
-
-    const contentIdsToDelete = removedItems
-        .map(item => getResumeContentId(item))
-        .filter(id => id !== null && id !== undefined)
-        .map(Number);
-
-    console.log("Education removed:", educationChanges.toRemove);
-    console.log("Skills removed:", skillChanges.toRemove);
-
-    console.table(
-        removedItems.map(item => ({
-            source_id: item.id,
-            resume_content_id: item.resume_content_id,
-            pivot_id: item.pivot?.id,
-            delete_id: getResumeContentId(item)
-        }))
-    );
-
-    console.log("Delete IDs:", contentIdsToDelete);
-
-    if (
-        removedItems.length > 0 &&
-        contentIdsToDelete.length !== removedItems.length
-    ) {
-        console.error("Missing resume content IDs:", removedItems);
-
-        throw new Error(
-            "Missing resume content IDs. Check the API response."
-        );
-    }
-
-    const payload = {};
-
-    if (contentToAdd.length > 0) {
-        payload.content_to_add = contentToAdd;
-    }
-
-    if (contentIdsToDelete.length > 0) {
-        payload.content_ids_to_delete = contentIdsToDelete;
-    }
-
-    return payload;
-}
-
     let originalEducation = [];
     let originalSkills = [];
-    // ==========================================
-    // 1. GLOBAL DATA
-    // ==========================================
 
     let data = {
         education: {
@@ -197,10 +88,186 @@ function prepareResumePayload() {
     let resumeData = null;
     let zoom = getDefaultZoom();
 
+    const sectionConfig = {
+        education: {
+            title: "Education",
+            data: data.education.data,
+            getId: getEducationId,
+            renderItem: temInn,
+            renderAvailableItem: temOutt,
+            update: updateResumeEducation
+        },
 
-    // ==========================================
-    // 2. API FUNCTIONS
-    // ==========================================
+        skill: {
+            title: "Skills",
+            data: data.skill.data,
+            getId: getSkillId,
+            renderItem: temSkillIn,
+            renderAvailableItem: temSkillOut,
+            update: updateResumeSkill
+        }
+    };
+
+
+    $(document).on("click", "#editor-content [data-action]", function () {
+        const $item = $(this).closest("[data-id]");
+        const sectionKey = $item.attr("data-section");
+        const itemId = String($item.attr("data-id"));
+        const action = $(this).attr("data-action");
+
+        const config = sectionConfig[sectionKey];
+
+        if (!config) {
+            console.error("Unknown section:", sectionKey);
+            return;
+        }
+
+        if (action !== "add" && action !== "remove") {
+            return;
+        }
+
+        const sourceList = action === "add" ? config.data.out : config.data.in;
+        const targetList = action === "add" ? config.data.in : config.data.out;
+
+        const index = sourceList.findIndex(
+            item => config.getId(item) === itemId
+        );
+
+        if (index === -1) {
+            console.error("Item not found:", {sectionKey,itemId,action});
+            return;
+        }
+
+        const [item] = sourceList.splice(index, 1);
+        targetList.push(item);
+
+        renderSection(sectionKey);
+        config.update();
+
+        console.log(`${config.title} ${action}ed:`, item);
+    });
+
+    function renderSection(sectionKey) {
+        const config = sectionConfig[sectionKey];
+
+        if (!config) {
+            console.error("Section not found:", sectionKey);
+            return;
+        }
+
+        const dataIn = config.data.in;
+        const dataOut = config.data.out;
+
+        const temIn = dataIn.map(item => config.renderItem(item)).join("");
+        const temOut = dataOut.map(item => config.renderAvailableItem(item)).join("");
+
+        $("#editor-content").html(`
+            <h2>${config.title}</h2>
+            <div class="border-bottom border-top py-3 inResume">
+                <h4>In Resume (${dataIn.length})</h4>
+                ${temIn || `<p class="text-muted">No items added to your resume.</p>`}
+            </div>
+
+            <div class="mt-3 outResume">
+                <h4>Available ${config.title} (${dataOut.length})</h4>
+                ${temOut || `<p class="text-muted">No more items available.</p>`}
+            </div>`);
+        }
+
+    function updateResume(id, payload) {
+        const url = "{{ route('resumes.update', ['id' => '__ID__']) }}"
+            .replace('__ID__', encodeURIComponent(id));
+
+        return $.ajax({
+            url,
+            type: "PUT",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(payload),
+            headers: {
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        });
+    }
+
+    function getResumeContentId(item) {
+        return (
+            item.resume_content_id ??
+            item.resume_content?.id ??
+            item.resumeContent?.id ??
+            item.pivot?.id ??
+            null
+        );
+    }
+
+    function prepareResumePayload() {
+        const educationChanges = getChanges(
+            originalEducation,
+            data.education.data.in,
+            "education"
+        );
+
+        const skillChanges = getChanges(
+            originalSkills,
+            data.skill.data.in,
+            "skill"
+        );
+
+        const contentToAdd = [
+            ...educationChanges.toAdd.map(item => ({
+                source_type: "education",
+                source_id: Number(item.education_id ?? item.id ?? item.programme_id)
+            })),
+
+            ...skillChanges.toAdd.map(item => ({
+                source_type: "user_skill",
+                source_id: Number(item.pivot.id)
+            }))
+        ];
+
+        const removedItems = [
+            ...educationChanges.toRemove,
+            ...skillChanges.toRemove
+        ];
+
+        const contentIdsToDelete = removedItems
+            .map(item => getResumeContentId(item))
+            .filter(id => id !== null && id !== undefined)
+            .map(Number);
+
+        console.log("Education removed:", educationChanges.toRemove);
+        console.log("Skills removed:", skillChanges.toRemove);
+
+        console.table(
+            removedItems.map(item => ({
+                source_id: item.id,
+                resume_content_id: item.resume_content_id,
+                pivot_id: item.pivot?.id,
+                delete_id: getResumeContentId(item)
+            }))
+        );
+
+        if (removedItems.length > 0 && contentIdsToDelete.length !== removedItems.length) {
+            console.error("Missing resume content IDs:", removedItems);
+
+            throw new Error(
+                "Missing resume content IDs. Check the API response."
+            );
+        }
+
+        const payload = {};
+
+        if (contentToAdd.length > 0) {
+            payload.content_to_add = contentToAdd;
+        }
+
+        if (contentIdsToDelete.length > 0) {
+            payload.content_ids_to_delete = contentIdsToDelete;
+        }
+
+        return payload;
+    }
 
     function getEducationByUserProfileId(id) {
         let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}";
@@ -235,11 +302,6 @@ function prepareResumePayload() {
         });
     }
 
-
-    // ==========================================
-    // 3. EDUCATION HELPERS
-    // ==========================================
-
     function getEducationId(item) {
         return String(
             item.id ??
@@ -251,74 +313,58 @@ function prepareResumePayload() {
     }
 
     function getEducationName(item) {
-        return item.programme?.organization?.company_name
-            ?? "Institution";
+        return item.programme?.organization?.company_name ?? "Institution";
     }
 
     function getProgrammeName(item) {
-        return item.programme?.programme_name
-            ?? "Programme not specified";
+        return item.programme?.programme_name ?? "Programme not specified";
     }
-
-
-    // ==========================================
-    // 4. EDUCATION TEMPLATES
-    // ==========================================
 
     function temInn(item) {
         return `
-            <div
-                class="card d-flex flex-column flex-md-row
-                       justify-content-between p-3 mb-2"
-                data-id="${getEducationId(item)}"
-            >
-                <div>
-                    <h6>${getEducationName(item)}</h6>
-                    <p class="text-muted mb-0">
-                        ${getProgrammeName(item)}
-                    </p>
-                </div>
+        <div class="card d-flex flex-column flex-md-row
+                    justify-content-between p-3 mb-2"
+             data-id="${getEducationId(item)}"
+             data-section="education">
 
-                <div class="btn-group border border-1 mt-2 mt-md-0">
-                    <button
-                        type="button"
-                        class="btn btn-danger remove"
-                        title="Remove education"
-                    >−</button>
-                </div>
+            <div>
+                <h6>${getEducationName(item)}</h6>
+                <p class="text-muted mb-0">
+                    ${getProgrammeName(item)}
+                </p>
             </div>
-        `;
+
+            <button type="button"
+                    class="btn btn-danger"
+                    data-action="remove">
+                −
+            </button>
+        </div>
+    `;
     }
 
     function temOutt(item) {
         return `
-            <div
-                class="card d-flex flex-column flex-md-row
-                       justify-content-between p-3 mb-2"
-                data-id="${getEducationId(item)}"
-            >
-                <div>
-                    <h6>${getEducationName(item)}</h6>
-                    <p class="text-muted mb-0">
-                        ${getProgrammeName(item)}
-                    </p>
-                </div>
+        <div class="card d-flex flex-column flex-md-row
+                    justify-content-between p-3 mb-2"
+             data-id="${getEducationId(item)}"
+             data-section="education">
 
-                <div class="btn-group border border-1 mt-2 mt-md-0">
-                    <button
-                        type="button"
-                        class="btn btn-primary add"
-                        title="Add education"
-                    >+</button>
-                </div>
+            <div>
+                <h6>${getEducationName(item)}</h6>
+                <p class="text-muted mb-0">
+                    ${getProgrammeName(item)}
+                </p>
             </div>
-        `;
+
+            <button type="button"
+                    class="btn btn-primary"
+                    data-action="add">
+                +
+            </button>
+        </div>
+    `;
     }
-
-
-    // ==========================================
-    // 5. RENDER EDUCATION
-    // ==========================================
 
     function renderEducation() {
         let dataIn = data.education.data.in
@@ -329,68 +375,52 @@ function prepareResumePayload() {
 
         $("#editor-content").html(`
             <h2>Education</h2>
-
             <div class="border-bottom border-top py-3 inResume">
-
                 <h4>In Resume (${dataIn.length})</h4>
-
-                ${temIn || `
-                    <p class="text-muted">
-                        No education added to your resume.
-                    </p>
-                `}
-
+                ${temIn || `<p class="text-muted">No education added to your resume.</p>`}
             </div>
 
             <div class="mt-3 outResume">
-
                 <h4>Available Education (${dataOut.length})</h4>
-
-                ${temOut || `
-                    <p class="text-muted">
-                        No more education available.
-                    </p>
-                `}
-
-            </div>
-        `);
+                ${temOut || `<p class="text-muted">No more education available.</p>`}
+            </div>`);
     }
 
-
     function temSkillIn(item) {
-        const name = item.name ?? item.skill_name ?? item;
-
+        const name = item.skill?.skill_name ?? item.skill_name ?? "";
         return `
-        <div class="card d-flex flex-row justify-content-between p-3 mb-2"
-             data-id="${getSkillId(item)}">
-            <div>
-                <h6 class="mb-0">${name}</h6>
-            </div>
+            <div class="card d-flex flex-row
+                        justify-content-between p-3 mb-2"
+                data-id="${getSkillId(item)}"
+                data-section="skill">
 
-            <button type="button"
-                    class="btn btn-danger remove-skill">
-                −
-            </button>
-        </div>
-    `;
+                <h6 class="mb-0">${name}</h6>
+
+                <button type="button"
+                        class="btn btn-danger"
+                        data-action="remove">
+                    −
+                </button>
+            </div>`;
     }
 
     function temSkillOut(item) {
-        const name = item.name ?? item.skill_name ?? item;
+        const name = item.skill?.skill_name ?? item.skill_name ?? "";
 
         return `
-        <div class="card d-flex flex-row justify-content-between p-3 mb-2"
-             data-id="${getSkillId(item)}">
-            <div>
-                <h6 class="mb-0">${name}</h6>
-            </div>
+            <div class="card d-flex flex-row
+                        justify-content-between p-3 mb-2"
+                data-id="${getSkillId(item)}"
+                data-section="skill">
 
-            <button type="button"
-                    class="btn btn-primary add-skill">
-                +
-            </button>
-        </div>
-    `;
+                <h6 class="mb-0">${name}</h6>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        data-action="add">
+                    +
+                </button>
+            </div>`;
     }
 
     function renderSkill() {
@@ -398,70 +428,57 @@ function prepareResumePayload() {
         const dataOut = data.skill.data.out;
 
         $("#editor-content").html(`
-        <h2>Skills</h2>
+            <h2>Skills</h2>
 
-        <div class="border-bottom border-top py-3 inResume">
-            <h4>In Resume (${dataIn.length})</h4>
+            <div class="border-bottom border-top py-3 inResume">
+                <h4>In Resume (${dataIn.length})</h4>
 
-            ${dataIn.map(temSkillIn).join("") ||
-            '<p class="text-muted">No skills added to your resume.</p>'}
-        </div>
+                ${dataIn.map(temSkillIn).join("") ||
+                '<p class="text-muted">No skills added to your resume.</p>'}
+            </div>
 
-        <div class="mt-3 outResume">
-            <h4>Available Skills (${dataOut.length})</h4>
+            <div class="mt-3 outResume">
+                <h4>Available Skills (${dataOut.length})</h4>
 
-            ${dataOut.map(temSkillOut).join("") ||
-            '<p class="text-muted">No more skills available.</p>'}
-        </div>
-    `);
+                ${dataOut.map(temSkillOut).join("") ||
+                '<p class="text-muted">No more skills available.</p>'}
+            </div>`);
     }
 
+    $(document).on("click","#editor-content .add-skill", function () {
+        const id = String($(this).closest("[data-id]").attr("data-id"));
+        const list = data.skill.data.out;
+        const index = list.findIndex(
+            item => getSkillId(item) === id
+        );
 
-    $(document).on(
-        "click",
-        "#editor-content .add-skill",
-        function () {
-            const id = String(
-                $(this).closest("[data-id]").attr("data-id")
-            );
+        if (index === -1) return;
 
-            const list = data.skill.data.out;
-            const index = list.findIndex(
-                item => getSkillId(item) === id
-            );
+        const [skill] = list.splice(index, 1);
+        data.skill.data.in.push(skill);
 
-            if (index === -1) return;
+        renderSkill();
+        updateResumeSkill();
+    });
 
-            const [skill] = list.splice(index, 1);
-            data.skill.data.in.push(skill);
+    $(document).on("click","#editor-content .remove-skill",function () {
+        const id = String(
+            $(this).closest("[data-id]").attr("data-id")
+        );
 
-            renderSkill();
-            updateResumeSkill();
-        }
-    );
+        const list = data.skill.data.in;
+        const index = list.findIndex(
+            item => getSkillId(item) === id
+        );
 
-    $(document).on(
-        "click",
-        "#editor-content .remove-skill",
-        function () {
-            const id = String(
-                $(this).closest("[data-id]").attr("data-id")
-            );
+        if (index === -1) return;
 
-            const list = data.skill.data.in;
-            const index = list.findIndex(
-                item => getSkillId(item) === id
-            );
+        const [skill] = list.splice(index, 1);
+        data.skill.data.out.push(skill);
 
-            if (index === -1) return;
-
-            const [skill] = list.splice(index, 1);
-            data.skill.data.out.push(skill);
-
-            renderSkill();
-            updateResumeSkill();
-        }
-    );
+        renderSkill();
+        updateResumeSkill();
+    });
 
     function updateResumeSkill() {
         if (!dataResume) return;
@@ -478,10 +495,6 @@ function prepareResumePayload() {
             applyZoom();
         }
     }
-
-    // ==========================================
-    // 6. ADD EDUCATION
-    // ==========================================
 
     $(document).on("click","#editor-content .outResume .add",function () {
         const id = String($(this).closest("[data-id]").attr("data-id"));
@@ -501,44 +514,26 @@ function prepareResumePayload() {
         console.log("Current data:", data);
     });
 
+    $(document).on("click","#editor-content .inResume .remove", function () {
+        const id = String($(this).closest("[data-id]").attr("data-id"));
+        const educationIn = data.education.data.in;
 
-    // ==========================================
-    // 7. REMOVE EDUCATION
-    // ==========================================
+        const index = educationIn.findIndex(
+            item => getEducationId(item) === id
+        );
 
-    $(document).on(
-        "click",
-        "#editor-content .inResume .remove",
-        function () {
+        if (index === -1) return;
 
-            const id = String(
-                $(this).closest("[data-id]").attr("data-id")
-            );
+        const [education] = educationIn.splice(index, 1);
 
-            const educationIn = data.education.data.in;
+        data.education.data.out.push(education);
 
-            const index = educationIn.findIndex(
-                item => getEducationId(item) === id
-            );
+        renderEducation();
+        updateResumeEducation();
 
-            if (index === -1) return;
-
-            const [education] = educationIn.splice(index, 1);
-
-            data.education.data.out.push(education);
-
-            renderEducation();
-            updateResumeEducation();
-
-            console.log("Education removed:", education);
-            console.log("Current data:", data);
-        }
-    );
-
-
-    // ==========================================
-    // 8. SYNC EDUCATION TO RESUME PREVIEW
-    // ==========================================
+        console.log("Education removed:", education);
+        console.log("Current data:", data);
+    });
 
     function updateResumeEducation() {
         if (!dataResume) return;
@@ -556,13 +551,7 @@ function prepareResumePayload() {
         }
     }
 
-
-    // ==========================================
-    // 9. INITIALIZE EDUCATION DATA
-    // ==========================================
-
     function initializeEducation(allEducation, selectedEducation = []) {
-
         const selectedIds = new Set(
             selectedEducation.map(getEducationId)
         );
@@ -577,8 +566,9 @@ function prepareResumePayload() {
 
     function getSkillId(item) {
         return String(
-            item.id ??
             item.skill_id ??
+            item.skill?.id ??
+            item.id ??
             item.name ??
             item
         );
@@ -597,49 +587,48 @@ function prepareResumePayload() {
         );
     }
 
-
     function getSourceId(item, type) {
-            if (type === "education") {
-                return String(
-                    item.education_id ??
-                    item.id ??
-                    item.programme_id ??
-                    item.programme?.id ??
-                    ""
-                );
-            }
-
+        if (type === "education") {
             return String(
-                item.skill_id ??
+                item.education_id ??
                 item.id ??
-                item.name ??
-                item
+                item.programme_id ??
+                item.programme?.id ??
+                ""
             );
         }
 
-        function getChanges(original, current, type) {
-            const originalMap = new Map(
-                original.map(item => [getSourceId(item, type), item])
-            );
+        return String(
+            item.skill_id ??
+            item.id ??
+            item.name ??
+            item
+        );
+    }
 
-            const currentMap = new Map(
-                current.map(item => [getSourceId(item, type), item])
-            );
+    function getChanges(original, current, type) {
+        const originalMap = new Map(
+            original.map(item => [getSourceId(item, type), item])
+        );
 
-            return {
-                toAdd: current.filter(
-                    item => !originalMap.has(getSourceId(item, type))
-                ),
+        const currentMap = new Map(
+            current.map(item => [getSourceId(item, type), item])
+        );
 
-                toRemove: original.filter(
-                    item => !currentMap.has(getSourceId(item, type))
-                ),
+        return {
+            toAdd: current.filter(
+                item => !originalMap.has(getSourceId(item, type))
+            ),
 
-                unchanged: current.filter(
-                    item => originalMap.has(getSourceId(item, type))
-                )
-            };
-        }
+            toRemove: original.filter(
+                item => !currentMap.has(getSourceId(item, type))
+            ),
+
+            unchanged: current.filter(
+                item => originalMap.has(getSourceId(item, type))
+            )
+        };
+    }
 
     function prepareResumeChanges() {
         const educationChanges = getChanges(
@@ -665,62 +654,167 @@ function prepareResumePayload() {
         };
     }
 
+    function createResume(payload) {
+        const url = "{{ route('resumes.store') }}";
+
+        return $.ajax({
+            url: url,
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(payload),
+            headers: {
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        });
+    }
+
+    function prepareCreateResumePayload() {
+        const contentToAdd = [];
+
+        for (const [sectionKey, config] of Object.entries(sectionConfig)) {
+            for (const item of config.data.in) {
+                let sourceId;
+
+                if (sectionKey === "education") {
+                    sourceId =
+                        item.education_id ??
+                        item.programme_id ??
+                        item.programme?.id ??
+                        item.id;
+                } else if (sectionKey === "skill") {
+                    sourceId = item.pivot?.id;
+                } else {
+                    console.warn(
+                        "Source ID mapping not configured:",
+                        sectionKey
+                    );
+                    continue;
+                }
+
+                if (sourceId == null || !Number.isInteger(Number(sourceId))) {
+                    throw new Error(
+                        `Invalid source ID for ${sectionKey}: ${sourceId}`
+                    );
+                }
+
+                contentToAdd.push({
+                    source_type:
+                        sectionKey === "education"
+                            ? "education"
+                            : "user_skill",
+                    source_id: Number(sourceId)
+                });
+            }
+        }
+
+        // Nilai ini mesti ID sebenar dalam jadual resume_templates.
+        const selectedOption = $("#templateSelect option:selected");
+        const templateId = Number(selectedOption.attr("data-template-id"));
+
+        if (!Number.isInteger(templateId) || templateId <= 0) {
+            throw new Error(
+                "Please select a valid resume template database ID."
+            );
+        }
+
+        if (contentToAdd.length === 0) {
+            throw new Error(
+                "Please add at least one item to your resume."
+            );
+        }
+
+        return {
+            resume_template_id: templateId,
+            content_to_add: contentToAdd
+        };
+    }
 
     $(document).on("click", "#saveResume", async function () {
-        const resumeId = new URLSearchParams(
-            window.location.search
-        ).get("id");
-
-        if (!resumeId) {
-            console.error("Resume ID not found in URL.");
-            return;
-        }
-
-        const payload = prepareResumePayload();
-
-        if (Object.keys(payload).length === 0) {
-            console.log("No changes to save.");
-            return;
-        }
-
-        console.log("JSON payload:", payload);
+        const $button = $(this);
+        const resumeId = new URLSearchParams(window.location.search).get("id");
+        let payload;
 
         try {
-            const response = await updateResume(resumeId, payload);
+            payload = resumeId ? prepareResumePayload() : prepareCreateResumePayload();
 
-            console.log("Resume updated:", response);
+            if (Object.keys(payload).length === 0) {
+                console.log("No changes to save.");
+                return;
+            }
 
-            // Selepas berjaya, kemas kini snapshot asal.
-            originalEducation = structuredClone(data.education.data.in);
-            originalSkills = structuredClone(data.skill.data.in);
+        } catch (error) {
+            console.error("Invalid resume payload:", error);
+            alert(error.message);
+            return;
+        }
 
-            alert("Resume updated successfully.");
+        console.log("Resume payload:", payload);
+
+        $button.prop("disabled", true);
+
+        try {
+            let response;
+
+            if (resumeId) {
+                // Resume sedia ada
+                response = await updateResume(resumeId, payload);
+
+                originalEducation = structuredClone(
+                    data.education.data.in
+                );
+
+                originalSkills = structuredClone(
+                    data.skill.data.in
+                );
+
+                alert("Resume updated successfully.");
+
+            } else {
+                // Resume baharu
+                response = await createResume(payload);
+
+                console.log("Resume created:", response);
+
+                alert("Resume created successfully.");
+
+                // Jika API memulangkan ID resume, gunakan ID itu
+                // untuk membuka resume yang baru dicipta.
+                const createdResume =
+                    response.data?.data ?? response.data;
+
+                const newResumeId =
+                    createdResume?.id ?? createdResume?.resume?.id;
+
+                if (newResumeId != null) {
+                    window.location.href =
+                        window.location.pathname +
+                        "?id=" +
+                        encodeURIComponent(newResumeId);
+                }
+            }
         } catch (error) {
             console.error(
-                "Failed to update resume:",
+                "Failed to save resume:",
                 error.responseJSON ?? error
             );
 
-            alert("Failed to update resume. Check the console.");
+            const message =
+                error.responseJSON?.message ??
+                "Failed to save resume. Check the console.";
+
+            alert(message);
+        } finally {
+            $button.prop("disabled", false);
         }
     });
 
-
-    // ==========================================
-    // 10. LOAD RESUME DATA
-    // ==========================================
-
     $(document).ready(async function () {
-
-        const id = new URLSearchParams(
-            window.location.search
-        ).get("id");
-
+        const id = new URLSearchParams(window.location.search).get("id");
         const profileId = "{{ session('user_profile_id') }}";
 
         try {
-
-
             if (id) {
                 $("#template_id").val(id);
 
@@ -738,21 +832,9 @@ function prepareResumePayload() {
                 educationByUser = educationResponse.data ?? [];
                 profileData = profileResponse.data;
 
-                console.log({
-                    dataResume, profileData
-                });
-
-                const selectedEducation = Array.isArray(dataResume.education)
-                    ? dataResume.education
-                    : [];
-
-                const selectedSkills = Array.isArray(dataResume.skills)
-                    ? dataResume.skills
-                    : [];
-
-                const allSkills = Array.isArray(profileData.skills)
-                    ? profileData.skills
-                    : [];
+                const selectedEducation = Array.isArray(dataResume.education) ? dataResume.education : [];
+                const selectedSkills = Array.isArray(dataResume.user_skills) ? dataResume.user_skills : [];
+                const allSkills = Array.isArray(profileData.skills) ? profileData.skills : [];
 
                 initializeEducation(educationByUser, selectedEducation);
                 initializeSkill(allSkills, selectedSkills);
@@ -765,10 +847,7 @@ function prepareResumePayload() {
                 };
 
             } else {
-                const [
-                    profileResponse,
-                    educationResponse
-                ] = await Promise.all([
+                const [profileResponse, educationResponse] = await Promise.all([
                     getProfileDataByProfileId(profileId),
                     getEducationByUserProfileId(profileId)
                 ]);
@@ -790,23 +869,14 @@ function prepareResumePayload() {
                 };
             }
 
-            renderEducation();
+            renderSection("education");
             loadResumeToApp(dataResume);
 
 
         } catch (error) {
-
-            console.error(
-                "Failed to load resume data:",
-                error
-            );
+            console.error("Failed to load resume data:",error);
         }
     });
-
-
-    // ==========================================
-    // 11. RENDER RESUME
-    // ==========================================
 
     function renderResume() {
         const template = templates[currentTemplate]?.default;
@@ -848,10 +918,6 @@ function prepareResumePayload() {
         renderPages.renderPages(pages, template);
     }
 
-    // ==========================================
-    // 12. ZOOM
-    // ==========================================
-
     function getDefaultZoom() {
         return window.innerWidth < 992 ? 0.5 : 0.8;
     }
@@ -881,20 +947,11 @@ function prepareResumePayload() {
         applyZoom();
     });
 
-
-    // ==========================================
-    // 13. TEMPLATE SELECTOR
-    // ==========================================
-
     $(document).on("change", "#templateSelect", function () {
         currentTemplate = this.value;
         renderResume();
         applyZoom();
     });
-
-    // ==========================================
-    // 14. DOWNLOAD PDF
-    // ==========================================
 
     $(document).on("click", "#downloadResume", async function () {
 
@@ -943,30 +1000,15 @@ function prepareResumePayload() {
         }
     });
 
-
-    // ==========================================
-    // 15. EDITOR NAVIGATION
-    // ==========================================
-
-
     $(document).on("click", ".page-link", function () {
-        const content = $(this).data("content");
+        const sectionKey = $(this).data("content");
 
-        if (content === "education") {
-            renderEducation();
-        } else if (content === "skill") {
-            renderSkill();
+        if (sectionConfig[sectionKey]) {
+            renderSection(sectionKey);
         }
     });
 
-
-
-    // ==========================================
-    // 16. RESUME DATA EVENT
-    // ==========================================
-
     function loadResumeToApp(data) {
-
         window.dispatchEvent(
             new CustomEvent("resumeDataLoaded", {
                 detail: data
