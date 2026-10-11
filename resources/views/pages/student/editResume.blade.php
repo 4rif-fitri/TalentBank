@@ -59,6 +59,113 @@
 
 <script type="module">
 
+    function updateResume(id, payload) {
+        const url = "{{ route('resumes.update', ['id' => '__ID__']) }}"
+            .replace('__ID__', encodeURIComponent(id));
+
+        return $.ajax({
+            url,
+            type: "PUT",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(payload),
+            headers: {
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        });
+    }
+
+    function getResumeContentId(item) {
+        return (
+            item.resume_content_id ??
+            item.resume_content?.id ??
+            item.resumeContent?.id ??
+            item.pivot?.id ??
+            null
+        );
+    }
+
+function prepareResumePayload() {
+    const educationChanges = getChanges(
+        originalEducation,
+        data.education.data.in,
+        "education"
+    );
+
+    const skillChanges = getChanges(
+        originalSkills,
+        data.skill.data.in,
+        "skill"
+    );
+    console.log("aaaaaaaaaaaaaaa");
+
+    const contentToAdd = [
+        ...educationChanges.toAdd.map(item => ({
+            source_type: "education",
+            source_id: Number(
+                item.education_id ?? item.id ?? item.programme_id
+            )
+        })),
+
+        ...skillChanges.toAdd.map(item => ({
+            source_type: "user_skill",
+            source_id: Number(
+                item.pivot.id
+            )
+        }))
+    ];
+
+    const removedItems = [
+        ...educationChanges.toRemove,
+        ...skillChanges.toRemove
+    ];
+
+    const contentIdsToDelete = removedItems
+        .map(item => getResumeContentId(item))
+        .filter(id => id !== null && id !== undefined)
+        .map(Number);
+
+    console.log("Education removed:", educationChanges.toRemove);
+    console.log("Skills removed:", skillChanges.toRemove);
+
+    console.table(
+        removedItems.map(item => ({
+            source_id: item.id,
+            resume_content_id: item.resume_content_id,
+            pivot_id: item.pivot?.id,
+            delete_id: getResumeContentId(item)
+        }))
+    );
+
+    console.log("Delete IDs:", contentIdsToDelete);
+
+    if (
+        removedItems.length > 0 &&
+        contentIdsToDelete.length !== removedItems.length
+    ) {
+        console.error("Missing resume content IDs:", removedItems);
+
+        throw new Error(
+            "Missing resume content IDs. Check the API response."
+        );
+    }
+
+    const payload = {};
+
+    if (contentToAdd.length > 0) {
+        payload.content_to_add = contentToAdd;
+    }
+
+    if (contentIdsToDelete.length > 0) {
+        payload.content_ids_to_delete = contentIdsToDelete;
+    }
+
+    return payload;
+}
+
+    let originalEducation = [];
+    let originalSkills = [];
     // ==========================================
     // 1. GLOBAL DATA
     // ==========================================
@@ -66,6 +173,13 @@
     let data = {
         education: {
             name: "education",
+            data: {
+                in: [],
+                out: []
+            }
+        },
+        skill: {
+            name: "skill",
             data: {
                 in: [],
                 out: []
@@ -206,16 +320,14 @@
     // 5. RENDER EDUCATION
     // ==========================================
 
-    function templateContent(dataIn = [], dataOut = []) {
-        const temIn = dataIn
-            .map(item => temInn(item))
-            .join("");
+    function renderEducation() {
+        let dataIn = data.education.data.in
+        let dataOut = data.education.data.out
 
-        const temOut = dataOut
-            .map(item => temOutt(item))
-            .join("");
+        const temIn = dataIn.map(item => temInn(item)).join("");
+        const temOut = dataOut.map(item => temOutt(item)).join("");
 
-        return `
+        $("#editor-content").html(`
             <h2>Education</h2>
 
             <div class="border-bottom border-top py-3 inResume">
@@ -241,51 +353,153 @@
                 `}
 
             </div>
-        `;
+        `);
     }
 
-    function renderEducation() {
-        $("#editor-content").html(
-            templateContent(
-                data.education.data.in,
-                data.education.data.out
-            )
-        );
+
+    function temSkillIn(item) {
+        const name = item.name ?? item.skill_name ?? item;
+
+        return `
+        <div class="card d-flex flex-row justify-content-between p-3 mb-2"
+             data-id="${getSkillId(item)}">
+            <div>
+                <h6 class="mb-0">${name}</h6>
+            </div>
+
+            <button type="button"
+                    class="btn btn-danger remove-skill">
+                −
+            </button>
+        </div>
+    `;
     }
 
+    function temSkillOut(item) {
+        const name = item.name ?? item.skill_name ?? item;
+
+        return `
+        <div class="card d-flex flex-row justify-content-between p-3 mb-2"
+             data-id="${getSkillId(item)}">
+            <div>
+                <h6 class="mb-0">${name}</h6>
+            </div>
+
+            <button type="button"
+                    class="btn btn-primary add-skill">
+                +
+            </button>
+        </div>
+    `;
+    }
+
+    function renderSkill() {
+        const dataIn = data.skill.data.in;
+        const dataOut = data.skill.data.out;
+
+        $("#editor-content").html(`
+        <h2>Skills</h2>
+
+        <div class="border-bottom border-top py-3 inResume">
+            <h4>In Resume (${dataIn.length})</h4>
+
+            ${dataIn.map(temSkillIn).join("") ||
+            '<p class="text-muted">No skills added to your resume.</p>'}
+        </div>
+
+        <div class="mt-3 outResume">
+            <h4>Available Skills (${dataOut.length})</h4>
+
+            ${dataOut.map(temSkillOut).join("") ||
+            '<p class="text-muted">No more skills available.</p>'}
+        </div>
+    `);
+    }
+
+
+    $(document).on(
+        "click",
+        "#editor-content .add-skill",
+        function () {
+            const id = String(
+                $(this).closest("[data-id]").attr("data-id")
+            );
+
+            const list = data.skill.data.out;
+            const index = list.findIndex(
+                item => getSkillId(item) === id
+            );
+
+            if (index === -1) return;
+
+            const [skill] = list.splice(index, 1);
+            data.skill.data.in.push(skill);
+
+            renderSkill();
+            updateResumeSkill();
+        }
+    );
+
+    $(document).on(
+        "click",
+        "#editor-content .remove-skill",
+        function () {
+            const id = String(
+                $(this).closest("[data-id]").attr("data-id")
+            );
+
+            const list = data.skill.data.in;
+            const index = list.findIndex(
+                item => getSkillId(item) === id
+            );
+
+            if (index === -1) return;
+
+            const [skill] = list.splice(index, 1);
+            data.skill.data.out.push(skill);
+
+            renderSkill();
+            updateResumeSkill();
+        }
+    );
+
+    function updateResumeSkill() {
+        if (!dataResume) return;
+
+        dataResume.skills = [...data.skill.data.in];
+
+        if (resumeData) {
+            resumeData = {
+                ...resumeData,
+                skills: [...data.skill.data.in]
+            };
+
+            renderResume();
+            applyZoom();
+        }
+    }
 
     // ==========================================
     // 6. ADD EDUCATION
     // ==========================================
 
-    $(document).on(
-        "click",
-        "#editor-content .outResume .add",
-        function () {
+    $(document).on("click","#editor-content .outResume .add",function () {
+        const id = String($(this).closest("[data-id]").attr("data-id"));
+        const educationOut = data.education.data.out;
+        const index = educationOut.findIndex(item => getEducationId(item) === id);
 
-            const id = String(
-                $(this).closest("[data-id]").attr("data-id")
-            );
+        if (index === -1) return;
 
-            const educationOut = data.education.data.out;
+        const [education] = educationOut.splice(index, 1);
 
-            const index = educationOut.findIndex(
-                item => getEducationId(item) === id
-            );
+        data.education.data.in.push(education);
 
-            if (index === -1) return;
+        renderEducation();
+        updateResumeEducation();
 
-            const [education] = educationOut.splice(index, 1);
-
-            data.education.data.in.push(education);
-
-            renderEducation();
-            updateResumeEducation();
-
-            console.log("Education added:", education);
-            console.log("Current data:", data);
-        }
-    );
+        console.log("Education added:", education);
+        console.log("Current data:", data);
+    });
 
 
     // ==========================================
@@ -354,11 +568,142 @@
         );
 
         data.education.data.in = [...selectedEducation];
+        originalEducation = structuredClone(data.education.data.in);
 
         data.education.data.out = allEducation.filter(
             item => !selectedIds.has(getEducationId(item))
         );
     }
+
+    function getSkillId(item) {
+        return String(
+            item.id ??
+            item.skill_id ??
+            item.name ??
+            item
+        );
+    }
+
+    function initializeSkill(allSkill = [], selectedSkill = []) {
+        const selectedIds = new Set(
+            selectedSkill.map(getSkillId)
+        );
+
+        data.skill.data.in = [...selectedSkill];
+        originalSkills = structuredClone(data.skill.data.in);
+
+        data.skill.data.out = allSkill.filter(
+            item => !selectedIds.has(getSkillId(item))
+        );
+    }
+
+
+    function getSourceId(item, type) {
+            if (type === "education") {
+                return String(
+                    item.education_id ??
+                    item.id ??
+                    item.programme_id ??
+                    item.programme?.id ??
+                    ""
+                );
+            }
+
+            return String(
+                item.skill_id ??
+                item.id ??
+                item.name ??
+                item
+            );
+        }
+
+        function getChanges(original, current, type) {
+            const originalMap = new Map(
+                original.map(item => [getSourceId(item, type), item])
+            );
+
+            const currentMap = new Map(
+                current.map(item => [getSourceId(item, type), item])
+            );
+
+            return {
+                toAdd: current.filter(
+                    item => !originalMap.has(getSourceId(item, type))
+                ),
+
+                toRemove: original.filter(
+                    item => !currentMap.has(getSourceId(item, type))
+                ),
+
+                unchanged: current.filter(
+                    item => originalMap.has(getSourceId(item, type))
+                )
+            };
+        }
+
+    function prepareResumeChanges() {
+        const educationChanges = getChanges(
+            originalEducation,
+            data.education.data.in
+        );
+
+        const skillChanges = getChanges(
+            originalSkills,
+            data.skill.data.in
+        );
+
+        console.log("Education:", educationChanges);
+        console.log("Skills:", skillChanges);
+
+        return {
+            educationToAdd: educationChanges.toAdd,
+            skillsToAdd: skillChanges.toAdd,
+            educationToRemove: educationChanges.toRemove,
+            skillsToRemove: skillChanges.toRemove,
+            unchangedEducation: educationChanges.unchanged,
+            unchangedSkills: skillChanges.unchanged
+        };
+    }
+
+
+    $(document).on("click", "#saveResume", async function () {
+        const resumeId = new URLSearchParams(
+            window.location.search
+        ).get("id");
+
+        if (!resumeId) {
+            console.error("Resume ID not found in URL.");
+            return;
+        }
+
+        const payload = prepareResumePayload();
+
+        if (Object.keys(payload).length === 0) {
+            console.log("No changes to save.");
+            return;
+        }
+
+        console.log("JSON payload:", payload);
+
+        try {
+            const response = await updateResume(resumeId, payload);
+
+            console.log("Resume updated:", response);
+
+            // Selepas berjaya, kemas kini snapshot asal.
+            originalEducation = structuredClone(data.education.data.in);
+            originalSkills = structuredClone(data.skill.data.in);
+
+            alert("Resume updated successfully.");
+        } catch (error) {
+            console.error(
+                "Failed to update resume:",
+                error.responseJSON ?? error
+            );
+
+            alert("Failed to update resume. Check the console.");
+        }
+    });
 
 
     // ==========================================
@@ -367,41 +712,59 @@
 
     $(document).ready(async function () {
 
-        const templateId = new URLSearchParams(
+        const id = new URLSearchParams(
             window.location.search
-        ).get("template_id");
+        ).get("id");
 
         const profileId = "{{ session('user_profile_id') }}";
 
         try {
 
-            if (templateId) {
 
-                $("#template_id").val(templateId);
+            if (id) {
+                $("#template_id").val(id);
 
                 const [
                     resumeResponse,
-                    educationResponse
+                    educationResponse,
+                    profileResponse
                 ] = await Promise.all([
-                    getResumeById(templateId),
-                    getEducationByUserProfileId(profileId)
+                    getResumeById(id),
+                    getEducationByUserProfileId(profileId),
+                    getProfileDataByProfileId(profileId)
                 ]);
 
                 dataResume = resumeResponse.data;
                 educationByUser = educationResponse.data ?? [];
+                profileData = profileResponse.data;
 
-                // Pendidikan yang telah dipilih dalam resume
-                const selectedEducation = Array.isArray(
-                    dataResume.education
-                ) ? dataResume.education : [];
+                console.log({
+                    dataResume, profileData
+                });
 
-                initializeEducation(
-                    educationByUser,
-                    selectedEducation
-                );
+                const selectedEducation = Array.isArray(dataResume.education)
+                    ? dataResume.education
+                    : [];
+
+                const selectedSkills = Array.isArray(dataResume.skills)
+                    ? dataResume.skills
+                    : [];
+
+                const allSkills = Array.isArray(profileData.skills)
+                    ? profileData.skills
+                    : [];
+
+                initializeEducation(educationByUser, selectedEducation);
+                initializeSkill(allSkills, selectedSkills);
+
+                dataResume = {
+                    ...dataResume,
+                    profile: dataResume.profile ?? profileData,
+                    education: [...data.education.data.in],
+                    skills: [...data.skill.data.in]
+                };
 
             } else {
-
                 const [
                     profileResponse,
                     educationResponse
@@ -413,17 +776,23 @@
                 profileData = profileResponse.data;
                 educationByUser = educationResponse.data ?? [];
 
+                const allSkills = Array.isArray(profileData.skills)
+                    ? profileData.skills
+                    : [];
+
                 initializeEducation(educationByUser, []);
+                initializeSkill(allSkills, []);
 
                 dataResume = {
                     profile: profileData,
-                    education: []
+                    education: [],
+                    skills: []
                 };
             }
 
             renderEducation();
-
             loadResumeToApp(dataResume);
+
 
         } catch (error) {
 
@@ -449,7 +818,8 @@
 
         const templateData = {
             ...resumeData,
-            education: data.education.data.in
+            education: data.education.data.in,
+            skills: data.skill.data.in
         };
 
         let pages;
@@ -522,7 +892,6 @@
         applyZoom();
     });
 
-
     // ==========================================
     // 14. DOWNLOAD PDF
     // ==========================================
@@ -579,20 +948,17 @@
     // 15. EDITOR NAVIGATION
     // ==========================================
 
-    $(document).on("click", ".page-link", function () {
 
+    $(document).on("click", ".page-link", function () {
         const content = $(this).data("content");
 
         if (content === "education") {
-
             renderEducation();
-
         } else if (content === "skill") {
-
-            // TODO: Render Skills editor
-
+            renderSkill();
         }
     });
+
 
 
     // ==========================================
@@ -617,6 +983,3 @@
 </script>
 
 @endsection
-
-
-<!-- @vite('resources/js/features/resume/app.js') -->

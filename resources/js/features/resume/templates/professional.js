@@ -4,17 +4,17 @@ const professional = {
     type: "columns",
     columns: 2,
 
-    render(data) {
+    render(data = {}) {
         console.log("Professional template data:", data);
 
         const left = [];
         const right = [];
 
+        const profile = data.profile ?? {};
+
         // ==========================================
         // LEFT COLUMN: PROFILE
         // ==========================================
-
-        const profile = data.profile ?? {};
 
         left.push({
             id: "profile",
@@ -35,28 +35,45 @@ const professional = {
         // LEFT COLUMN: CONTACT
         // ==========================================
 
-        left.push({
-            id: "contact",
-            html: `
-                <section class="professional-contact">
-                    <div>${profile.email ?? ""}</div>
-                    <div>${profile.phone ?? ""}</div>
-                    <div>${profile.location ?? ""}</div>
-                </section>
-            `
-        });
+        const contactItems = [
+            profile.email,
+            profile.phone,
+            profile.location
+        ].filter(Boolean);
+
+        if (contactItems.length > 0) {
+            left.push({
+                id: "contact",
+                html: `
+                    <section class="professional-contact">
+                        ${contactItems.map(item => `
+                            <div>${item}</div>
+                        `).join("")}
+                    </section>
+                `
+            });
+        }
 
         // ==========================================
         // LEFT COLUMN: SKILLS
         // ==========================================
 
-        const skills = Array.isArray(profile.skills)
-            ? profile.skills
-            : Array.isArray(data.skills)
-                ? data.skills
+        // Utamakan skill yang dipilih dalam Resume Builder.
+        const skills = Array.isArray(data.skills)
+            ? data.skills
+            : Array.isArray(profile.skills)
+                ? profile.skills
                 : [];
 
-        if (skills.length > 0) {
+        const skillNames = skills
+            .map(skill =>
+                typeof skill === "string"
+                    ? skill
+                    : skill.name ?? skill.skill_name ?? ""
+            )
+            .filter(Boolean);
+
+        if (skillNames.length > 0) {
             left.push({
                 id: "skills-heading",
                 html: `
@@ -72,10 +89,8 @@ const professional = {
                 id: "skills",
                 html: `
                     <div class="skills-list">
-                        ${skills.map(skill => `
-                            <span class="skill">
-                                ${skill.name ?? skill}
-                            </span>
+                        ${skillNames.map(name => `
+                            <span class="skill">${name}</span>
                         `).join("")}
                     </div>
                 `
@@ -102,31 +117,48 @@ const professional = {
                 `
             });
 
-            education.forEach(item => {
+            education.forEach((item, index) => {
+                const educationId =
+                    item.id ??
+                    item.education_id ??
+                    item.programme_id ??
+                    index;
+
+                const qualification =
+                    item.qualification ??
+                    item.programme?.programme_name ??
+                    item.programme_name ??
+                    "Qualification";
+
+                const institution =
+                    item.institution ??
+                    item.programme?.organization?.company_name ??
+                    item.organization?.company_name ??
+                    "Institution";
+
+                const year =
+                    item.year ??
+                    item.graduation_year ??
+                    "";
+
+                const cgpa = item.cgpa
+                    ? ` • CGPA ${item.cgpa}`
+                    : "";
+
                 right.push({
-                    id: `education-${item.id
-                        ?? item.education_id
-                        ?? item.programme_id
-                        ?? "item"}`,
+                    id: `education-${educationId}`,
                     html: `
                         <article class="education-item">
                             <div class="education-title">
-                                ${item.qualification
-                        ?? item.programme?.programme_name
-                        ?? "Qualification"}
+                                ${qualification}
                             </div>
 
                             <div class="education-institution">
-                                ${item.institution
-                        ?? item.programme?.organization?.company_name
-                        ?? "Institution"}
+                                ${institution}
                             </div>
 
                             <div class="education-meta">
-                                ${item.year ?? ""}
-                                ${item.cgpa
-                            ? ` • CGPA ${item.cgpa}`
-                            : ""}
+                                ${year}${cgpa}
                             </div>
                         </article>
                     `

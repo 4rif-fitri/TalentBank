@@ -25,6 +25,9 @@
     <div>
         <button id="downloadResume">Download PDF</button>
     </div>
+    <div>
+        <button id="saveResume">Save</button>
+    </div>
 </div>
 
 @push('childScript')

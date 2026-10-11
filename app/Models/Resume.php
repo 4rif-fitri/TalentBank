@@ -24,7 +24,7 @@ class Resume extends Model
 
     public function education()
     {
-        return $this->morphedByMany(Education::class, 'source', 'resume_contents', 'resume_id', 'source_id');
+        return $this->morphedByMany(Education::class,'source','resume_contents','resume_id','source_id')->withPivot('id');
     }
 
     public function userProfile()
@@ -44,6 +44,6 @@ class Resume extends Model
 
     public function userSkills()
     {
-        return $this->morphedByMany(UserSkill::class, 'source', 'resume_contents', 'resume_id', 'source_id');
+        return $this->morphedByMany(UserSkill::class,'source','resume_contents','resume_id','source_id')->withPivot('id');
     }
 }
