@@ -1,15 +1,15 @@
 <div class="p-4">
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
-            <li class="page-item disabled">
+            <!-- <li class="page-item disabled">
                 <a class="page-link">Back</a>
-            </li>
-            <li class="page-item"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            </li> -->
+            <li class="page-item"><a class="page-link" href="#" data-content="education">1</a></li>
+            <li class="page-item"><a class="page-link" href="#" data-content="skill">2</a></li>
             <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item">
+            <!-- <li class="page-item">
                 <a class="page-link" href="#">Next</a>
-            </li>
+            </li> -->
         </ul>
     </nav>
 

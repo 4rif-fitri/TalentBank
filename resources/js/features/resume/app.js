@@ -64,7 +64,6 @@ $(window).on("resize", function () {
 
 window.addEventListener("resumeDataLoaded",function (event) {
     resumeData = event.detail;
-    // console.log("app.js received:",resumeData);
     renderResume();
     applyZoom();
 });
