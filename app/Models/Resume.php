@@ -34,12 +34,12 @@ class Resume extends Model
 
     public function userLanguages()
     {
-        return $this->morphedByMany(UserLanguage::class, 'source', 'resume_contents', 'resume_id', 'source_id');
+        return $this->morphedByMany(UserLanguage::class,'source','resume_contents','resume_id','source_id')->withPivot('id');
     }
 
     public function socialMediaLinks()
     {
-        return $this->morphedByMany(SocialMediaLink::class, 'source', 'resume_contents', 'resume_id', 'source_id');
+        return $this->morphedByMany(SocialMediaLink::class,'source','resume_contents','resume_id','source_id')->withPivot('id');
     }
 
     public function userSkills()

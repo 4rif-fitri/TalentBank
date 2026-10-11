@@ -137,10 +137,77 @@ export let education = {
 }
 
 export let socialMedia = {
-    inResume() {
+    inResume(item, getSocialMediaId) {
+        const id = getSocialMediaId(item);
 
-    },
-    outResume() {
+        const name =
+            item.social_media?.name ??
+            item.social_media?.platform_name ??
+            item.social_media_name ??
+            item.platform_name ??
+            "Social Media";
 
+        const url =
+            item.url ??
+            item.profile_url ??
+            item.link ??
+            "";
+
+        return `
+            <div class="card mb-2"
+                 data-id="${id}"
+                 data-section="socialMedia">
+
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${name}</h6>
+                        <small class="text-muted">${url}</small>
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-outline-danger btn-sm"
+                            data-action="remove">
+                        Remove
+                    </button>
+                </div>
+            </div>
+        `;
     },
-}
+
+    outResume(item, getSocialMediaId) {
+        const id = getSocialMediaId(item);
+
+        const name =
+            item.social_media?.name ??
+            item.social_media?.platform_name ??
+            item.social_media_name ??
+            item.platform_name ??
+            "Social Media";
+
+        const url =
+            item.url ??
+            item.profile_url ??
+            item.link ??
+            "";
+
+        return `
+            <div class="card mb-2"
+                 data-id="${id}"
+                 data-section="socialMedia">
+
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${name}</h6>
+                        <small class="text-muted">${url}</small>
+                    </div>
+
+                    <button type="button"
+                            class="btn btn-outline-primary btn-sm"
+                            data-action="add">
+                        Add
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+};

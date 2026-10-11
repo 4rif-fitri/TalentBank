@@ -138,6 +138,67 @@ const professional = {
 
         }
 
+        const socialMediaLinks = Array.isArray(data.social_media_links)
+            ? data.social_media_links
+            : Array.isArray(profile.social_media_links)
+                ? profile.social_media_links
+                : [];
+
+        const socialMediaNames = socialMediaLinks
+            .map(item => ({
+                name:
+                    item.social_media?.name ??
+                    item.social_media?.platform_name ??
+                    item.social_media_name ??
+                    item.platform_name ??
+                    "",
+                url:
+                    item.url ??
+                    item.profile_url ??
+                    item.link ??
+                    ""
+            }))
+            .filter(item => item.name || item.url);
+
+        if (socialMediaNames.length > 0) {
+            left.push({
+                id: "social-media-heading",
+                html: `
+            <section class="resume-section">
+                <h2 class="resume-section-title">
+                    SOCIAL MEDIA
+                </h2>
+            </section>
+        `
+            });
+
+            left.push({
+                id: "social-media-links",
+                html: `
+            <div class="social-media-list d-flex flex-column gap-2 mb-2">
+                ${socialMediaNames.map(item => `
+                    <div class="social-media-item">
+                        <span class="social-media-name">
+                            ${item.name}
+                        </span>
+
+                        ${item.url ? `
+                            <a
+                                href="${item.url}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="social-media-url"
+                            >
+                                ${item.url}
+                            </a>
+                        ` : ""}
+                    </div>
+                `).join("")}
+            </div>
+        `
+            });
+        }
+
 
         // ==========================================
         // RIGHT COLUMN: EDUCATION

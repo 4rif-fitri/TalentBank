@@ -33,6 +33,86 @@ const modern = {
             `
         });
 
+        // LANGUAGES
+        const languages = Array.isArray(data.language)
+            ? data.language
+            : [];
+
+        if (languages.length > 0) {
+            blocks.push({
+                id: "languages-heading",
+                html: `
+            <section class="resume-section">
+                <h2 class="resume-section-title">LANGUAGES</h2>
+            </section>
+        `
+            });
+
+            blocks.push({
+                id: "languages",
+                html: `
+            <div class="languages-list">
+                ${languages.map(item => `
+                    <div class="language-item">
+                        <span class="language-name">
+                            ${item.language?.name
+                    ?? item.name
+                    ?? item.language_name
+                    ?? "Language"}
+                        </span>
+                        ${item.proficiency
+                        ? `<span class="language-proficiency">
+                                — ${item.proficiency}
+                               </span>`
+                        : ""}
+                    </div>
+                `).join("")}
+            </div>
+        `
+            });
+        }
+
+        // LINKS / SOCIAL MEDIA
+        const links = Array.isArray(data.social_media_links)
+            ? data.social_media_links
+            : [];
+
+        if (links.length > 0) {
+            blocks.push({
+                id: "links-heading",
+                html: `
+            <section class="resume-section">
+                <h2 class="resume-section-title">LINKS</h2>
+            </section>
+        `
+            });
+
+            blocks.push({
+                id: "links",
+                html: `
+            <div class="links-list">
+                ${links.map(item => {
+                    const url = item.link ?? item.url ?? "";
+                    const name = item.social_media?.name
+                        ?? item.name
+                        ?? "Link";
+
+                    return `
+                        <div class="link-item">
+                            <span class="link-name">${name}:</span>
+                            <a href="${url}"
+                               target="_blank"
+                               rel="noopener noreferrer">
+                                ${url}
+                            </a>
+                        </div>
+                    `;
+                }).join("")}
+            </div>
+        `
+            });
+        }
+
         // EXPERIENCE
         const experiences = Array.isArray(data.experience)
             ? data.experience

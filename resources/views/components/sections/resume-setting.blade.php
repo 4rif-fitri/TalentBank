@@ -28,10 +28,3 @@
         <button id="saveResume">Save</button>
     </div>
 </div>
-
-@push('childScript')
-
-<script>
-
-</script>
-@endpush
