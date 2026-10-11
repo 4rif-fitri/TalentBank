@@ -9,8 +9,7 @@ function renderSkills(skills = []) {
                 <i class="${skill.icon_class_name} fa-lg"></i>
                 ${skill.skill_name}
             </span>
-        `)
-        .join("");
+        `).join("");
 }
 
 
