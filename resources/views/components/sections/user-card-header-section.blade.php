@@ -83,13 +83,13 @@
 
         <div class="row g-2 profile-actions mt-lg-4 mt-md-4">
             @if (array_intersect(session('roles') ?? [], ['Student']))
-            <div class="col-12 order-1 order-md-2">
+            <!-- <div class="col-12 order-1 order-md-2">
                 <button class="btn btn-primary w-100 profile-action-btn" type="button" data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">
                     <i class="fa-solid fa-plus"></i>
                     Add Section
                 </button>
-            </div>
+            </div> -->
             <div class="col-6 col-md-12 order-2 order-md-1">
                 <button class="btn btn-outline-primary w-100 profile-action-btn" type="button">
                     <i class="fa-regular fa-eye"></i>

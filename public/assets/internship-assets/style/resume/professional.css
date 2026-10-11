@@ -1,0 +1,19 @@
+.professional-profile {
+    padding-bottom: 20px;
+    border-bottom: 2px solid #111;
+}
+
+.professional-contact {
+    margin-top: 20px;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.resume-left {
+    padding-right: 10px;
+    border-right: 1px solid #ddd;
+}
+
+.resume-right {
+    padding-left: 5px;
+}

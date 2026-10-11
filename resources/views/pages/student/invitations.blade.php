@@ -1,55 +1,32 @@
 @extends('layouts.internship-layouts')
-
+@php
+$list = [
+['status' => 'Pending', 'class' => 'active'],
+['status' => 'Accepted', 'class' => ''],
+['status' => 'Rejected', 'class' => ''],
+['status' => 'Expired', 'class' => ''],
+['status' => 'Withdrawn', 'class' => ''],
+];
+@endphp
 @section('content')
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/student.css') }}">
 
-<div class="content p-4">
+<div class="content p-4 page-container">
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-lg-row gap-3">
-        <h3 class="m-0 fw-bold">Recruitment Invitation</h3>
-    </div>
+    <x-atom.page-header title="Invitations" />
 
     <div class="talent-layout">
 
         <aside class="results-panel" id="filterPanel">
 
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <ul class="nav nav-tabs">
-                    <li>
-                        <button data-status="Pending" class="nav-link text-body">Pending</button>
-                    </li>
-                    <li>
-                        <button data-status="Accepted" class="nav-link text-body">Accepted</button>
-                    </li>
-                    <li>
-                        <button data-status="Rejected" class="nav-link text-body">Rejected</button>
-                    </li>
-                    <li>
-                        <button data-status="Expired" class="nav-link text-body">Expired</button>
-                    </li>
-                    <li>
-                        <button data-status="Withdrawn" class="nav-link text-body">Withdrawn</button>
-                    </li>
-                </ul>
-            </div>
+            <x-molecule.nav-tabs :list="$list" />
 
             <div class="invitation-list d-flex flex-column gap-2 p-2"></div>
 
         </aside>
 
         <div class="filter-panel flex-grow-1">
-            <div class="row g-3" id="shortlistContent">
-
-                <div class="d-flex flex-column border-0 p-3 d-flex justify-content-center align-items-center ">
-                    <i class="fa-regular fa-folder-open" style="color: rgb(0, 0, 0); font-size: 5rem;"></i>
-                    <h4 class="mt-2">No Interview Selected Yet</h4>
-                    <button class="btn btn-primary d-block d-lg-none btn-toggle-filter toggleFilter">
-                        <i class="fa-solid fa-filter"></i>
-                        Interview
-                    </button>
-                </div>
-
-            </div>
+            <div class="row g-3" id="shortlistContent"></div>
         </div>
     </div>
 </div>
@@ -122,7 +99,6 @@
 
     async function handleRejectInvitation () {
         let id = $(this).data("id")
-
         let data = {
             _method: "PUT",
             _token: $('meta[name="csrf-token"]').attr("content")
@@ -144,8 +120,8 @@
 
     function handleChangeStatus () {
         let currentStatus = $(this).data("status")
-        $(".nav-item button").removeClass("active text-primary").addClass("text-body");
-        $(this).find("button").removeClass("text-body").addClass("active text-primary");
+        $(".offer-tab").removeClass("active")
+        $(this).addClass("active");
         getInvitationsByStatusAndReceiverId(currentStatus)
     }
 

@@ -313,3 +313,10 @@ a {
     height: 5rem;
     border-radius: 50%;
 }
+
+.table-responsive{
+    overflow: unset !important;
+}
+.tableDetail{
+    overflow: unset !important;
+}

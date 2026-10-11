@@ -1,12 +1,24 @@
-// Custom Bootstrap variables
-$primary: #5267c4;
+// $primary: #5267c4;
 
-$success: #4fae83;
-$warning: #e5ad45;
-$danger: #d85c68;
+// $success: #4fae83;
+// $warning: #e5ad45;
+// $danger: #d85c68;
 
-$light: #f5f6fb;
-$dark: #252a3d;
+// $light: #f5f6fb;
+// $dark: #252a3d;
 
-// Bootstrap
-@import "bootstrap/scss/bootstrap";
+
+@import "bootstrap";
+
+@import "variables";
+@import "base";
+
+@import "typography";
+@import "buttons";
+@import "cards";
+@import "topbar";
+@import "common";
+
+@import "sidebar";
+@import "topbar";
+

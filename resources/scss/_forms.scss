@@ -1,0 +1,58 @@
+.form-label-tb {
+    display: block;
+    margin-bottom: var(--spacing-8);
+
+    color: var(--color-forest-ink);
+
+    font-size: var(--text-caption);
+    font-weight: var(--font-weight-semibold);
+}
+
+.form-control-tb,
+.form-select-tb {
+    width: 100%;
+    min-height: 46px;
+
+    padding: var(--spacing-12) var(--spacing-16);
+
+    color: var(--color-obsidian);
+    background: var(--surface-paper);
+
+    border: 1px solid var(--color-pebble);
+    border-radius: var(--radius-inputs);
+
+    font-size: var(--text-caption);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.form-control-tb:focus,
+.form-select-tb:focus {
+    outline: none;
+    border-color: var(--color-spruce);
+
+    box-shadow: 0 0 0 3px rgba(159, 232, 112, 0.35);
+}
+
+.form-control-tb::placeholder {
+    color: var(--color-pebble);
+}
+
+textarea.form-control-tb {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-help-tb {
+    display: block;
+    margin-top: var(--spacing-4);
+
+    color: var(--color-slate);
+    font-size: var(--text-micro);
+}
+
+.form-group-tb {
+    margin-bottom: var(--spacing-20);
+}

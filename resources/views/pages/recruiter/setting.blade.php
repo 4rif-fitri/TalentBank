@@ -4,6 +4,9 @@
 @endsection
 
 @section('content')
+<div class="content p-4 page-container">
+    <x-atom.page-header title="Settings" />
+</div>
 @endsection
 
 @section('script')

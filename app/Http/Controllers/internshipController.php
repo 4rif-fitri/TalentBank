@@ -15,6 +15,8 @@ class internshipController extends Controller
         if (in_array('Recruiter', $roles)) {
             return view('pages.recruiter.index');
         }
+
+        return view('pages.404');
     }
     public function studentIndex()
     {
@@ -59,6 +61,10 @@ class internshipController extends Controller
     {
         return view("pages.student.resume");
     }
+    public function editResume()
+    {
+        return view("pages.student.editResume");
+    }
 
     // ==== Recruiter ====
     public function recruiterIndex()
@@ -93,7 +99,7 @@ class internshipController extends Controller
     }
     public function recruiterHiredTalent()
     {
-        return view("pages.recruiter.hiredTalent");
+        return view("pages.recruiter.message");
     }
     public function recruiterMessage()
     {

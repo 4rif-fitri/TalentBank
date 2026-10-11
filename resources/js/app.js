@@ -1,5 +1,5 @@
 import * as bootstrap from 'bootstrap';
-
+import "../scss/app.scss";
 import * as templateEducation from "./features/education/template.js"
 import * as templateImage from "./features/image/template.js"
 import * as templateInterview from "./features/interview/template.js"
@@ -23,6 +23,13 @@ import * as xApiJobOffer from "./features/job-offer/api.js"
 import * as xApiPosition from "./features/position/api.js"
 import * as xApiEducation from "./features/education/api.js"
 import * as xApiProfile from "./features/profile/api.js"
+
+import * as measureBlocks from "../js/features/resume/engine/measurement.js";
+import * as paginateColumn from "../js/features/resume/engine/pagination.js";
+import * as  paginateTwoColumns from "../js/features/resume/engine/pagination.js";
+import * as renderPages from "../js/features/resume/engine/renderer.js";
+import * as modern from "../js/features/resume/templates/modern.js";
+import * as professional from "../js/features/resume/templates/professional.js";
 
 window.xApiProfile = xApiProfile
 window.xApiInvite = xApiInvite
@@ -49,5 +56,12 @@ window.xinvitation = templateInvitation;
 window.xprofile = templateProfile
 
 window.bootstrap = bootstrap;
+
+window.measureBlocks = measureBlocks;
+window.paginateTwoColumns = paginateTwoColumns;
+window.paginateColumn = paginateColumn;
+window.renderPages = renderPages;
+window.modern = modern;
+window.professional = professional;
 
 window.toggle = () => document.body.classList.toggle('filter-open')
