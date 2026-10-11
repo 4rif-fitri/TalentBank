@@ -515,7 +515,11 @@
         const contentToAdd = [
             ...educationChanges.toAdd.map(item => ({
                 source_type: "education",
-                source_id: Number(item.education_id ?? item.id ?? item.programme_id)
+                source_id: Number(
+                    item.education_id ??
+                    item.id ??
+                    item.programme_id
+                )
             })),
 
             ...skillChanges.toAdd.map(item => ({
@@ -602,11 +606,7 @@
                 let sourceId;
 
                 if (sectionKey === "education") {
-                    sourceId =
-                        item.education_id ??
-                        item.programme_id ??
-                        item.programme?.id ??
-                        item.id;
+                    sourceId = item.id;
                 } else if (sectionKey === "skill") {
                     sourceId = item.pivot?.id;
                 } else if (sectionKey === "language") {
@@ -904,7 +904,7 @@
 
                     image: {
                         type: "jpeg",
-                        quality: 0.98
+                        quality: 1
                     },
 
                     html2canvas: {
@@ -1163,10 +1163,6 @@
             }
 
             renderSection("education");
-            renderSection("skill");
-            renderSection("language");
-            renderSection("socialMedia");
-
             loadResumeToApp(dataResume);
 
         } catch (error) {
