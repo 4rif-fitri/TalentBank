@@ -69,7 +69,7 @@
 
     const templates = { modern, professional };
 
-    let currentTemplate = "modern";
+    let currentTemplate = "professional";
     let resumeData = null;
     let zoom = getDefaultZoom();
 
@@ -127,13 +127,29 @@
             title: "Language",
             data: data.language.data,
             getId: getLanguageId,
-            renderItem: xresume.language.inResume,
-            renderAvailableItem: xresume.language.outResume,
-            update: xresume.language.update
+            renderItem: item => xresume.language.inResume(item, getLanguageId),
+            renderAvailableItem: item => xresume.language.outResume(item, getLanguageId),
+            update: updateResumeLanguage
         }
     };
 
     // update
+    function updateResumeLanguage() {
+        if (!dataResume) return;
+
+        dataResume.language = [...data.language.data.in];
+
+        if (resumeData) {
+            resumeData = {
+                ...resumeData,
+                language: [...data.language.data.in]
+            };
+
+            renderResume();
+            applyZoom();
+        }
+    }
+
     function updateResume(id, payload) {
         const url = "{{ route('resumes.update', ['id' => '__ID__']) }}"
             .replace('__ID__', encodeURIComponent(id));
@@ -230,6 +246,24 @@
     // Getter API
 
     // initialize
+    function initializeLanguage(allLanguage = [], selectedLanguage = []) {
+        const getId = getLanguageId;
+
+        const selectedIds = new Set(
+            selectedLanguage.map(getId)
+        );
+
+        data.language.data.in = [...selectedLanguage];
+
+        originalLanguage = structuredClone(
+            data.language.data.in
+        );
+
+        data.language.data.out = allLanguage.filter(
+            item => !selectedIds.has(getId(item))
+        );
+    }
+
     function initializeSkill(allSkill = [], selectedSkill = []) {
         const selectedIds = new Set(
             selectedSkill.map(getSkillId)
@@ -269,6 +303,14 @@
             );
         }
 
+        if (type === "language") {
+            return String(
+                item.user_language_id ??
+                item.id ??
+                ""
+            );
+        }
+
         return String(
             item.skill_id ??
             item.id ??
@@ -287,15 +329,35 @@
         );
     }
 
-    function getLanguageId() {
-
+    function getLanguageId(item) {
+        return String(
+            item.user_language_id ??
+            item.language_id ??
+            item.language?.id ??
+            item.id ??
+            ""
+        );
     }
 
     function getResumeContentId(item) {
+        console.log("Original Education:", originalEducation);
+        console.log("Current Education:", data.education.data.in);
+
+        console.log(
+            "Original IDs:",
+            originalEducation.map(item => getSourceId(item, "education"))
+        );
+
+        console.log(
+            "Current IDs:",
+            data.education.data.in.map(item => getSourceId(item, "education"))
+        );
+
         return (
             item.resume_content_id ??
             item.resume_content?.id ??
             item.resumeContent?.id ??
+            item.pivot?.resume_content_id ??
             item.pivot?.id ??
             null
         );
@@ -380,6 +442,12 @@
             "skill"
         );
 
+        const languageChanges = getChanges(
+            originalLanguage,
+            data.language.data.in,
+            "language"
+        );
+
         const contentToAdd = [
             ...educationChanges.toAdd.map(item => ({
                 source_type: "education",
@@ -389,12 +457,18 @@
             ...skillChanges.toAdd.map(item => ({
                 source_type: "user_skill",
                 source_id: Number(item.pivot.id)
+            })),
+
+            ...languageChanges.toAdd.map(item => ({
+                source_type: "user_language",
+                source_id: Number(item.user_language_id ?? item.id)
             }))
         ];
 
         const removedItems = [
             ...educationChanges.toRemove,
-            ...skillChanges.toRemove
+            ...skillChanges.toRemove,
+            ...languageChanges.toRemove
         ];
 
         const contentIdsToDelete = removedItems
@@ -431,7 +505,18 @@
         if (contentIdsToDelete.length > 0) {
             payload.content_ids_to_delete = contentIdsToDelete;
         }
+        console.log("Original Education:", originalEducation);
+        console.log("Current Education:", data.education.data.in);
 
+        console.log(
+            "Original IDs:",
+            originalEducation.map(item => getSourceId(item, "education"))
+        );
+
+        console.log(
+            "Current IDs:",
+            data.education.data.in.map(item => getSourceId(item, "education"))
+        );
         return payload;
     }
 
@@ -450,6 +535,8 @@
                         item.id;
                 } else if (sectionKey === "skill") {
                     sourceId = item.pivot?.id;
+                } else if (sectionKey === "language") {
+                    sourceId =item.user_language_id ?? item.id;
                 } else {
                     console.warn(
                         "Source ID mapping not configured:",
@@ -468,7 +555,10 @@
                     source_type:
                         sectionKey === "education"
                             ? "education"
-                            : "user_skill",
+                            : sectionKey === "skill"
+                                ? "user_skill"
+                                : "user_language",
+
                     source_id: Number(sourceId)
                 });
             }
@@ -536,7 +626,8 @@
         const templateData = {
             ...resumeData,
             education: data.education.data.in,
-            skills: data.skill.data.in
+            skills: data.skill.data.in,
+            language: data.language.data.in
         };
 
         let pages;
@@ -678,20 +769,6 @@
 
                 alert("Resume created successfully.");
 
-                // Jika API memulangkan ID resume, gunakan ID itu
-                // untuk membuka resume yang baru dicipta.
-                const createdResume =
-                    response.data?.data ?? response.data;
-
-                const newResumeId =
-                    createdResume?.id ?? createdResume?.resume?.id;
-
-                if (newResumeId != null) {
-                    window.location.href =
-                        window.location.pathname +
-                        "?id=" +
-                        encodeURIComponent(newResumeId);
-                }
             }
         } catch (error) {
             console.error(
@@ -706,6 +783,8 @@
             alert(message);
         } finally {
             $button.prop("disabled", false);
+             window.location.href = "{{ route('student.resume') }}";
+
         }
     });
 
@@ -897,73 +976,103 @@
         console.log("Current data:", data);
     });
 
-    $(document).ready(async function () {
-        const id = new URLSearchParams(window.location.search).get("id");
-        const profileId = "{{ session('user_profile_id') }}";
 
-        try {
-            if (id) {
-                $("#template_id").val(id);
+        $(document).ready(async function () {
+            const id = new URLSearchParams(window.location.search).get("id");
+            const profileId = "{{ session('user_profile_id') }}";
 
-                const [
-                    resumeResponse,
-                    educationResponse,
-                    profileResponse
-                ] = await Promise.all([
-                    getResumeById(id),
-                    getEducationByUserProfileId(profileId),
-                    getProfileDataByProfileId(profileId)
-                ]);
+            try {
+                if (id) {
+                    $("#template_id").val(id);
 
-                dataResume = resumeResponse.data;
-                educationByUser = educationResponse.data ?? [];
-                profileData = profileResponse.data;
+                    const [
+                        resumeResponse,
+                        educationResponse,
+                        profileResponse
+                    ] = await Promise.all([
+                        getResumeById(id),
+                        getEducationByUserProfileId(profileId),
+                        getProfileDataByProfileId(profileId)
+                    ]);
 
-                const selectedEducation = Array.isArray(dataResume.education) ? dataResume.education : [];
-                const selectedSkills = Array.isArray(dataResume.user_skills) ? dataResume.user_skills : [];
-                const allSkills = Array.isArray(profileData.skills) ? profileData.skills : [];
+                    dataResume = resumeResponse.data;
+                    educationByUser = educationResponse.data ?? [];
+                    profileData = profileResponse.data;
 
-                initializeEducation(educationByUser, selectedEducation);
-                initializeSkill(allSkills, selectedSkills);
+                    const selectedEducation = Array.isArray(dataResume.education)
+                        ? dataResume.education
+                        : [];
 
-                dataResume = {
-                    ...dataResume,
-                    profile: dataResume.profile ?? profileData,
-                    education: [...data.education.data.in],
-                    skills: [...data.skill.data.in]
-                };
+                    const selectedSkills = Array.isArray(dataResume.user_skills)
+                        ? dataResume.user_skills
+                        : [];
 
-            } else {
-                const [profileResponse, educationResponse] = await Promise.all([
-                    getProfileDataByProfileId(profileId),
-                    getEducationByUserProfileId(profileId)
-                ]);
+                    const allSkills = Array.isArray(profileData.skills)
+                        ? profileData.skills
+                        : [];
 
-                profileData = profileResponse.data;
-                educationByUser = educationResponse.data ?? [];
+                    // LANGUAGE
+                    const allLanguage = Array.isArray(profileData.user_languages)
+                        ? profileData.user_languages
+                        : [];
 
-                const allSkills = Array.isArray(profileData.skills)
-                    ? profileData.skills
-                    : [];
+                    // Pastikan nama property ini sama dengan response API resume
+                    const selectedLanguage = Array.isArray(dataResume.user_languages)
+                        ? dataResume.user_languages
+                        : [];
 
-                initializeEducation(educationByUser, []);
-                initializeSkill(allSkills, []);
+                    initializeEducation(educationByUser, selectedEducation);
+                    initializeSkill(allSkills, selectedSkills);
+                    initializeLanguage(allLanguage, selectedLanguage);
 
-                dataResume = {
-                    profile: profileData,
-                    education: [],
-                    skills: []
-                };
+                    dataResume = {
+                        ...dataResume,
+                        profile: dataResume.profile ?? profileData,
+                        education: [...data.education.data.in],
+                        skills: [...data.skill.data.in],
+                        language: [...data.language.data.in]
+                    };
+
+                } else {
+                    const [
+                        profileResponse,
+                        educationResponse
+                    ] = await Promise.all([
+                        getProfileDataByProfileId(profileId),
+                        getEducationByUserProfileId(profileId)
+                    ]);
+
+                    profileData = profileResponse.data;
+                    educationByUser = educationResponse.data ?? [];
+
+                    const allSkills = Array.isArray(profileData.skills)
+                        ? profileData.skills
+                        : [];
+
+                    const allLanguage = Array.isArray(profileData.user_languages)
+                        ? profileData.user_languages
+                        : [];
+
+                    initializeEducation(educationByUser, []);
+                    initializeSkill(allSkills, []);
+                    initializeLanguage(allLanguage, []);
+
+                    dataResume = {
+                        profile: profileData,
+                        education: [],
+                        skills: [],
+                        language: []
+                    };
+                }
+
+                renderSection("education");
+                loadResumeToApp(dataResume);
+
+            } catch (error) {
+                console.error("Failed to load resume data:", error);
             }
+        });
 
-            renderSection("education");
-            loadResumeToApp(dataResume);
-
-
-        } catch (error) {
-            console.error("Failed to load resume data:", error);
-        }
-    });
 
     window.addEventListener("resumeDataLoaded", function (event) {
         resumeData = event.detail;

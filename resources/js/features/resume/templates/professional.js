@@ -97,6 +97,48 @@ const professional = {
             });
         }
 
+        const languages = Array.isArray(data.language)
+            ? data.language
+            : Array.isArray(profile.user_languages)
+                ? profile.user_languages
+                : [];
+
+        const languageNames = languages
+            .map(item => ({
+                name: item.language?.language_name ?? item.language_name ?? "",
+                proficiency: item.proficiency_level ?? ""
+            }))
+            .filter(item => item.name);
+
+        if (languageNames.length > 0) {
+            left.push({
+                id: "language-heading",
+                html: `
+            <section class="resume-section">
+                <h2 class="resume-section-title">
+                    LANGUAGES
+                </h2>
+            </section>
+        `
+            });
+
+
+            left.push({
+                id: "languages",
+                html: `
+        <div class="languages-list d-flex flex-wrap gap-2 mb-2">
+            ${languageNames.map(item => `
+                <span class="language-name badge rounded-pill bg-light text-black">
+                    ${item.name}
+                </span>
+            `).join("")}
+        </div>
+    `
+            });
+
+        }
+
+
         // ==========================================
         // RIGHT COLUMN: EDUCATION
         // ==========================================

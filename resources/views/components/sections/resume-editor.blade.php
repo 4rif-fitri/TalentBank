@@ -6,7 +6,8 @@
             </li> -->
             <li class="page-item"><a class="page-link" href="#" data-content="education">1</a></li>
             <li class="page-item"><a class="page-link" href="#" data-content="skill">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#" data-content="language">3</a></li>
+            <li class="page-item"><a class="page-link" href="#" data-content="socialMedia">4</a></li>
             <!-- <li class="page-item">
                 <a class="page-link" href="#">Next</a>
             </li> -->

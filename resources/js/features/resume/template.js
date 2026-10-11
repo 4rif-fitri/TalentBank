@@ -1,11 +1,59 @@
+
 export let language = {
-    inResume(){
+    inResume(item, getLanguageId) {
+        const id = getLanguageId(item);
+        const name = item.language?.language_name
+            ?? item.language_name
+            ?? "Unknown language";
 
+        return `
+            <div class="card mb-2" data-id="${id}" data-section="language">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${name}</h6>
+                        <small class="text-muted">
+                            ${item.proficiency_level ?? ""}
+                        </small>
+                    </div>
+
+                    <button type="button"
+                        class="btn btn-outline-danger btn-sm"
+                        data-action="remove">
+                        Remove
+                    </button>
+                </div>
+            </div>
+        `;
     },
-    outResume(){
 
+    outResume(item, getLanguageId) {
+        const id = getLanguageId(item);
+        const name = item.language?.language_name
+            ?? item.language_name
+            ?? "Unknown language";
+
+        return `
+            <div class="card mb-2" data-id="${id}" data-section="language">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">${name}</h6>
+                        <small class="text-muted">
+                            ${item.proficiency_level ?? ""}
+                        </small>
+                    </div>
+
+                    <button type="button"
+                        class="btn btn-outline-primary btn-sm"
+                        data-action="add">
+                        Add
+                    </button>
+                </div>
+            </div>
+        `;
     }
-}
+};
+
+
 
 export let skill = {
     inResume(item, getSkillId) {

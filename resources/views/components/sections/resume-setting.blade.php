@@ -12,12 +12,11 @@
         <div class="d-flex">
             <h4>Template</h4>
                 <select id="templateSelect" class="form-select">
-                    <option value="modern" data-template-id="1">
-                        Modern
-                    </option>
-
                     <option value="professional" data-template-id="2">
                         Professional
+                    </option>
+                    <option value="modern" data-template-id="1">
+                        Modern
                     </option>
                 </select>
         </div>
