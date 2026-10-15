@@ -4,6 +4,7 @@
 - buat register sama macam login
 -> lepas register go to login page
 -> if error return page back 
+-> when register assign role as student
 
 <!-- front -->
 - when add education kene rerender balik lepas popup add keluar 

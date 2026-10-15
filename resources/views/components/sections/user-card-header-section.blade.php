@@ -117,33 +117,33 @@
     </div>
 
     <nav class="horizontal-nav d-flex flex-wrap px-3">
-        <x-button-horizontal-nav target="main" class="active">
+        <x-atom.button-horizontal-nav target="main" class="active">
             Main
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="result">
+        <x-atom.button-horizontal-nav target="result">
             Result
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="education">
+        <x-atom.button-horizontal-nav target="education">
             Education
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="awards">
+        <x-atom.button-horizontal-nav target="awards">
             Awards
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="projects">
+        <x-atom.button-horizontal-nav target="projects">
             Projects
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="experience">
+        <x-atom.button-horizontal-nav target="experience">
             Experience
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="certifications">
+        <x-atom.button-horizontal-nav target="certifications">
             Certifications
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
     </nav>
 
 </section>
