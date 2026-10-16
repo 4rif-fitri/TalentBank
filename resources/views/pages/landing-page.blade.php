@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexora — SaaS &amp; Digital Agency Bootstrap Theme</title>
+    <title>TalentBank — Landing Page</title>
     <meta name="description"
         content="Nexora is a premium Bootstrap 5 theme for SaaS startups, digital agencies, IT companies and consulting firms. Build a high-converting marketing website fast.">
     <meta name="keywords" content="SaaS theme, agency template, bootstrap 5 business theme, IT company website">
@@ -58,15 +58,11 @@
         <div class="container">
             <div class="row align-items-center gy-5">
                 <div class="col-lg-6 hero-content">
-                    <h1 class="mb-4">Build, launch and scale your <span class="text-primary-custom">digital
-                            product</span> faster.</h1>
-                    <p class="fs-5 mb-4" style="max-width: 540px;">Nexora is your end-to-end product partner — strategy,
-                        design and engineering teams that ship measurable results for SaaS and tech-driven businesses.
-                    </p>
+                    <h1 class="mb-4">Discover Your Potential. <span class="text-primary-custom">Build Your Future.</span></h1>
+                    <p class="fs-5 mb-4" style="max-width: 540px;">Connect your skills, education, and career ambitions with opportunities that match your potential.</p>
                     <div class="d-flex flex-wrap gap-3 mb-4 justify-content-lg-start justify-content-center">
-                        <a href="contact.html" class="btn btn-primary btn-lg-custom">Start a Project <i
-                                class="bi bi-arrow-right ms-1"></i></a>
-                        <a href="services.html" class="btn btn-light-custom btn-lg-custom">Explore Services</a>
+                        <a href="contact.html" class="btn btn-primary btn-lg-custom">Create Your Profile<i class="bi bi-arrow-right ms-1"></i></a>
+                        <!-- <a href="services.html" class="btn btn-light-custom btn-lg-custom">Explore Services</a> -->
                     </div>
 
                 </div>
@@ -75,12 +71,9 @@
                         <div class="hero-mock-card">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex gap-2">
-                                    <span
-                                        style="width:10px;height:10px;border-radius:50%;background:#FF5F56;display:block;"></span>
-                                    <span
-                                        style="width:10px;height:10px;border-radius:50%;background:#FFBD2E;display:block;"></span>
-                                    <span
-                                        style="width:10px;height:10px;border-radius:50%;background:#27C93F;display:block;"></span>
+                                    <span style="width:10px;height:10px;border-radius:50%;background:#FF5F56;display:block;"></span>
+                                    <span style="width:10px;height:10px;border-radius:50%;background:#FFBD2E;display:block;"></span>
+                                    <span style="width:10px;height:10px;border-radius:50%;background:#27C93F;display:block;"></span>
                                 </div>
                                 <span class="badge-soft">Live</span>
                             </div>
@@ -91,7 +84,7 @@
                                     <div class="p-3 rounded-3" style="background: var(--n-bg-alt);">
                                         <i class="bi bi-graph-up-arrow text-primary-custom fs-4"></i>
                                         <div class="fw-bold text-navy mt-2 font-display">+148%</div>
-                                        <small class="text-slate">Conversions</small>
+                                        <small class="text-slate">Profile Completion</small>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -155,64 +148,55 @@
     </section> -->
 
     <!-- SERVICES OVERVIEW -->
-    <!-- <section class="section bg-soft">
+    <section class="section bg-soft">
         <div class="container">
             <div class="row section-header align-items-end">
                 <div class="col-lg-7 reveal">
-                    <span class="eyebrow">What we do</span>
-                    <h2 class="section-title">Capabilities built for modern product teams</h2>
-                    <p class="section-subtitle">From early-stage validation to scaling infrastructure, our specialists
-                        plug directly into your roadmap.</p>
+                    <span class="eyebrow">WHAT YOU CAN DO</span>
+                    <h2 class="section-title">Everything You Need to Grow Your Career</h2>
+                    <p class="section-subtitle">TalentBank brings your professional profile, career opportunities, and application progress together in one convenient platform</p>
                 </div>
-                <div class="col-lg-5 text-lg-end mt-3 mt-lg-0 reveal">
+                <!-- <div class="col-lg-5 text-lg-end mt-3 mt-lg-0 reveal">
                     <a href="services.html" class="card-link-arrow">View all services <i
                             class="bi bi-arrow-right"></i></a>
-                </div>
+                </div> -->
             </div>
             <div class="row g-4">
                 <div class="col-md-6 col-lg-3 reveal">
                     <div class="card-premium">
                         <div class="icon-box icon-box-primary mb-4"><i class="bi bi-bar-chart-line"></i></div>
-                        <h3 class="card-title">Product Strategy</h3>
-                        <p class="mb-3">Research-driven roadmaps that align stakeholders and de-risk what you build
-                            next.</p>
-                        <a href="service-details.html" class="card-link-arrow">Learn more <i
-                                class="bi bi-arrow-right"></i></a>
+                        <h3 class="card-title">Professional Profile</h3>
+                        <p class="mb-3">Showcase your education, qualifications, skills, experience, and achievements in one professional profile</p>
+                        <!-- <a href="service-details.html" class="card-link-arrow">Learn more <i class="bi bi-arrow-right"></i></a> -->
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 reveal">
                     <div class="card-premium">
                         <div class="icon-box icon-box-secondary mb-4"><i class="bi bi-palette"></i></div>
-                        <h3 class="card-title">UI/UX Design</h3>
-                        <p class="mb-3">Interfaces that convert — wireframes, design systems and prototypes ready for
-                            dev.</p>
-                        <a href="service-details.html" class="card-link-arrow">Learn more <i
-                                class="bi bi-arrow-right"></i></a>
+                        <h3 class="card-title">Career Opportunities</h3>
+                        <p class="mb-3">Explore internship programmes, graduate positions, and job opportunities that align with your qualifications and interests.</p>
+                        <!-- <a href="service-details.html" class="card-link-arrow">Learn more <i class="bi bi-arrow-right"></i></a> -->
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 reveal">
                     <div class="card-premium">
                         <div class="icon-box icon-box-success mb-4"><i class="bi bi-code-slash"></i></div>
-                        <h3 class="card-title">Web Development</h3>
-                        <p class="mb-3">Performant, scalable web apps built on modern frameworks with clean
-                            architecture.</p>
-                        <a href="service-details.html" class="card-link-arrow">Learn more <i
-                                class="bi bi-arrow-right"></i></a>
+                        <h3 class="card-title">Application Tracking</h3>
+                        <p class="mb-3">Monitor your application status, interview invitations, and recruitment progress through a centralised dashboard.</p>
+                        <!-- <a href="service-details.html" class="card-link-arrow">Learn more <i class="bi bi-arrow-right"></i></a> -->
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 reveal">
                     <div class="card-premium">
                         <div class="icon-box icon-box-primary mb-4"><i class="bi bi-cloud-arrow-up"></i></div>
-                        <h3 class="card-title">Cloud &amp; DevOps</h3>
-                        <p class="mb-3">CI/CD pipelines, monitoring and cloud infrastructure that scales with your
-                            traffic.</p>
-                        <a href="service-details.html" class="card-link-arrow">Learn more <i
-                                class="bi bi-arrow-right"></i></a>
+                        <h3 class="card-title">Career Development</h3>
+                        <p class="mb-3">Organise your career journey, highlight your achievements, and prepare for future professional opportunities.</p>
+                        <!-- <a href="service-details.html" class="card-link-arrow">Learn more <i class="bi bi-arrow-right"></i></a> -->
                     </div>
                 </div>
             </div>
         </div>
-    </section> -->
+    </section>
 
     <!-- ABOUT / WHY US -->
     <!-- <section class="section">
@@ -283,48 +267,48 @@
     </section> -->
 
     <!-- PROCESS -->
-    <!-- <section class="section bg-soft">
+    <section class="section bg-soft">
         <div class="container">
             <div class="row section-header justify-content-center text-center">
                 <div class="col-lg-7 reveal">
-                    <span class="eyebrow">How we work</span>
-                    <h2 class="section-title">A proven four-step delivery process</h2>
-                    <p class="section-subtitle mx-auto">Every engagement follows the same disciplined process — refined
-                        across hundreds of launches.</p>
+                    <span class="eyebrow">HOW IT WORKS</span>
+                    <h2 class="section-title">Your Career Journey, Made Simple</h2>
+                    <p class="section-subtitle mx-auto">From building your professional profile to securing your next opportunity, TalentBank helps you navigate every stage of
+                    your career journey</p>
                 </div>
             </div>
             <div class="row g-4">
                 <div class="col-md-6 col-lg-3 reveal">
                     <div class="process-step">
                         <span class="process-number">01</span>
-                        <h3 class="card-title">Discover</h3>
-                        <p>We audit your product, market and users to identify the highest-leverage opportunities.</p>
+                        <h3 class="card-title">Create Your Profile</h3>
+                        <p>Register and complete your professional profile with your education, skills, qualifications, and experience</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 reveal">
                     <div class="process-step">
                         <span class="process-number">02</span>
-                        <h3 class="card-title">Design</h3>
-                        <p>Wireframes evolve into polished, tested interfaces backed by a reusable design system.</p>
+                        <h3 class="card-title">Discover Opportunities</h3>
+                        <p>Explore available opportunities and connect with employers looking for candidates with your skills</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 reveal">
                     <div class="process-step">
                         <span class="process-number">03</span>
-                        <h3 class="card-title">Build</h3>
-                        <p>Engineers ship in two-week sprints with continuous integration and staging previews.</p>
+                        <h3 class="card-title">Attend Interviews</h3>
+                        <p>Manage interview invitations and keep track of your application progress</p>
                     </div>
                 </div>
                 <div class="col-md-6 col-lg-3 reveal">
                     <div class="process-step">
                         <span class="process-number">04</span>
-                        <h3 class="card-title">Scale</h3>
-                        <p>Post-launch, we monitor performance and iterate based on real usage data.</p>
+                        <h3 class="card-title">Start Your Career</h3>
+                        <p>Review job offers, complete onboarding, and take the next step towards your professional future</p>
                     </div>
                 </div>
             </div>
         </div>
-    </section> -->
+    </section>
 
     <!-- PORTFOLIO PREVIEW -->
     <!-- <section class="section">
@@ -455,9 +439,8 @@
                 <div class="col-lg-4 col-md-6">
 
                     <a class="navbar-brand-custom d-inline-block mb-3" href="index.html"
-                        style="color:#fff !important;">Nexora<span style="color:var(--n-primary)">.</span></a>
-                    <p class="text-white-50 mb-4" style="max-width:320px;">We help ambitious SaaS and tech companies
-                        design, build and scale digital products that customers love.</p>
+                        style="color:#fff !important;">TalentBank<span style="color:var(--n-primary)">.</span></a>
+                    <p class="text-white-50 mb-4" style="max-width:320px;">Your career development platform for showcasing talent, discovering opportunities, and connecting skills with career possibilities</p>
                     <div class="d-flex gap-2">
                         <a href="#" class="social-icon"><i class="bi bi-twitter-x"></i></a>
                         <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
