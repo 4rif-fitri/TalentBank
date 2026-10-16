@@ -1,102 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.fullscreen-layout')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Screen - Spark Admin Premium Bootstrap 5 Admin Dashboard Template</title>
+@section('content')
+<div class="relative z-1 bg-white p-6 sm:p-0 dark:bg-gray-900">
+    <div class="flex h-screen w-full flex-col justify-center sm:p-0 lg:flex-row dark:bg-gray-900">
+        <!-- Form -->
+        <div class="flex w-full flex-1 flex-col lg:w-1/2">
+            <div class="mx-auto w-full max-w-md pt-5 sm:py-10">
+                <a href="/"
+                    class="inline-flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300">
+                    <svg class="stroke-current rtl:rotate-180" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                        viewBox="0 0 20 20" fill="none">
+                        <path d="M12.7083 5L7.5 10.2083L12.7083 15.4167" stroke="" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Back to dashboard
+                </a>
+            </div>
+            <div class="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
+                <div class="mb-5 sm:mb-8">
+                    <h1 class="text-title-sm sm:text-title-md mb-2 font-semibold text-gray-800 dark:text-white/90">
+                        Sign Up
+                    </h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Enter your email and password to sign up!
+                    </p>
+                </div>
+                <div>
+                    <form>
+                        <div class="space-y-5">
 
-    <!-- SEO Optimization -->
-    <meta name="description" content="Login Screen - Spark Admin Premium Bootstrap 5 Admin Dashboard Template">
-    <meta name="author" content="Spark Admin Team">
-
-    <!-- Local Third-Party Libraries (100% Offline Compatible) -->
-    <link rel="stylesheet" href="{{ asset('assets/internship-assets/libs/bootstrap.min.css') }}">
-    <!-- <link rel="stylesheet" href="assets/libs/bootstrap-icons/bootstrap-icons.css"> -->
-
-    <!-- Main Design System & Custom Stylesheet -->
-    <link href="{{ asset('assets/n/css/main.css') }}" rel="stylesheet">
-</head>
-
-<body>
-
-    <!-- ==========================================
-         START: Authentication Container & Login Card
-         ========================================== -->
-    <div class="login-wrapper">
-        <!-- Glowing background shapes for modern visual appearance -->
-        <div class="login-bg-shape login-bg-shape-1"></div>
-        <div class="login-bg-shape login-bg-shape-2"></div>
-
-        <!-- Main centered login card -->
-        <div class="login-card">
-
-            <!-- Brand Identity -->
-            <a href="index.html" class="login-brand text-decoration-none">
-                <i class="bi bi-asterisk"></i>
-                <span>Spark Admin</span>
-            </a>
-
-            <p class="login-subtitle">Please sign in to access your dashboard</p>
-
-            <!-- Login Form -->
-            <form action="index.html" method="GET" id="loginForm" class="needs-validation" novalidate>
-
-                <!-- Email Input Group -->
-                <div class="login-form-group">
-                    <label for="email" class="login-form-label">Email Address</label>
-                    <div class="login-input-group">
-                        <i class="bi bi-envelope input-icon"></i>
-                        <input type="email" id="email" class="login-input" placeholder="name@company.com" required>
+                            <!-- Email -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Email<span class="text-error-500">*</span>
+                                </label>
+                                <input type="email" id="email" name="email" placeholder="Enter your email"
+                                    class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
+                            </div>
+                            <!-- Password -->
+                            <div>
+                                <label class="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                                    Password<span class="text-error-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input :type="showPassword ? 'text' : 'password'" placeholder="Enter your password"
+                                        class="dark:bg-dark-900 shadow-theme-xs focus:border-brand-300 focus:ring-brand-500/10 dark:focus:border-brand-800 h-11 w-full rounded-lg border border-gray-300 bg-transparent py-2.5 pr-11 pl-4 text-sm text-gray-800 placeholder:text-gray-400 focus:ring-3 focus:outline-hidden dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30" />
+                                </div>
+                            </div>
+                            <!-- Button -->
+                            <div>
+                                <button
+                                    class="bg-blue-600 shadow-theme-xs hover:bg-brand-600 flex w-full items-center justify-center rounded-lg px-4 py-3 text-sm font-medium text-white transition">
+                                    Sign Up
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="mt-5">
+                        <p class="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
+                            Already have an account?
+                            <a href="/signin" class="text-brand-500 hover:text-brand-600 dark:text-brand-400">Sign In</a>
+                        </p>
                     </div>
                 </div>
-
-                <!-- Password Input Group -->
-                <div class="login-form-group">
-                    <label for="password" class="login-form-label">Password</label>
-                    <div class="login-input-group">
-                        <i class="bi bi-shield-lock input-icon"></i>
-                        <input type="password" id="password" class="login-input login-input-password"
-                            placeholder="••••••••" required>
-                        <button type="button" class="password-toggle-btn" id="toggle-password"
-                            aria-label="Show password">
-                            <i class="bi bi-eye"></i>
-                        </button>
-                    </div>
+            </div>
+        </div>
+        <div class="bg-brand-950 relative hidden h-full w-full items-center lg:grid lg:w-1/2 dark:bg-white/5">
+            <div class="z-1 flex items-center justify-center">
+                <!-- ===== Common Grid Shape Start ===== -->
+                <x-common.common-grid-shape />
+                <div class="flex max-w-xs flex-col items-center">
+                    <a href="/" class="mb-4 block">
+                        <img src="./images/logo/auth-logo.svg" alt="Logo" />
+                    </a>
+                    <p class="text-center text-gray-400 dark:text-white/60">
+                        Free and Open-Source Tailwind CSS Admin Dashboard Template
+                    </p>
                 </div>
-
-                <!-- Options (Remember me & Forgot Password) -->
-                <div class="login-options">
-                    <label class="custom-control-label">
-                        <input type="checkbox" class="custom-checkbox-input" id="rememberMe">
-                        <span>Remember Me</span>
-                    </label>
-                    <a href="#" class="forgot-password-link">Forgot Password?</a>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn-login" id="btn-submit">
-                    <span>Sign In to Dashboard</span>
-                    <i class="bi bi-arrow-right"></i>
-                </button>
-
-            </form>
-
-            <!-- Footer Link -->
-            <p class="login-footer-text mt-2">
-                Don't have an account? <a href="#" id="link-register">Register Now</a>
-            </p>
-
+            </div>
         </div>
     </div>
-    <!-- END: Authentication Container -->
-
-    <!-- Local Bootstrap bundle -->
-    <script src="{{ asset('assets/internship-assets/libs/bootstrap.bundle.min') }}"></script>
-
-    <!-- Custom Authentication interactions script -->
-    <script src="{{ asset('assets/n/js/auth.js') }}"></script>
-
-</body>
-
-</html>
+</div>
+@endsection
