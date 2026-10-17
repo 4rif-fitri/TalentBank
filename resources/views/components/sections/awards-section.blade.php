@@ -31,3 +31,14 @@
 
     <a href="./honors&awards.html" class="d-flex justify-content-center align-items-center">Show All</a>
 </section>
+@push('childScript')
+
+<script type="module">
+
+    $(".profile-tab[data-target='award']").on("click", function () {
+        console.log("award");
+    });
+
+</script>
+
+@endpush

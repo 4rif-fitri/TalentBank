@@ -133,20 +133,20 @@
             Result
         </x-atom.button-horizontal-nav>
 
-        <x-atom.button-horizontal-nav target="awards">
-            Awards
+        <x-atom.button-horizontal-nav target="award">
+            Award
         </x-atom.button-horizontal-nav>
 
-        <x-atom.button-horizontal-nav target="projects">
-            Projects
+        <x-atom.button-horizontal-nav target="project">
+            Project
         </x-atom.button-horizontal-nav>
 
         <x-atom.button-horizontal-nav target="experience">
             Experience
         </x-atom.button-horizontal-nav>
 
-        <x-atom.button-horizontal-nav target="certifications">
-            Certifications
+        <x-atom.button-horizontal-nav target="certification">
+            Certification
         </x-atom.button-horizontal-nav>
     </nav>
 
@@ -254,14 +254,24 @@
             $("#resultTabContent").addClass("d-none");
             $("#resumeTabContent").addClass("d-none");
             $("#educationsTabContent").addClass("d-none");
+            $("#awardTabContent").addClass("d-none");
+            $("#projectTabContent").addClass("d-none");
+            $("#experienceTabContent").addClass("d-none");
+            $("#certificationTabContent").addClass("d-none");
+
             $("#mainTabContent").removeClass("d-none");
         }
 
         if (target === "result") {
             $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").removeClass("d-none");
             $("#resumeTabContent").addClass("d-none");
+            $("#awardTabContent").addClass("d-none");
             $("#educationsTabContent").addClass("d-none");
+            $("#projectTabContent").addClass("d-none");
+            $("#experienceTabContent").addClass("d-none");
+            $("#certificationTabContent").addClass("d-none");
+
+            $("#resultTabContent").removeClass("d-none");
 
            $(document).trigger("loadResult");
         }
@@ -270,18 +280,76 @@
             $("#mainTabContent").addClass("d-none");
             $("#resultTabContent").addClass("d-none");
             $("#resumeTabContent").addClass("d-none");
-            $("#educationsTabContent").removeClass("d-none");
-            // handleLoadEducations()
+            $("#awardTabContent").addClass("d-none");
+            $("#projectTabContent").addClass("d-none");
+            $("#experienceTabContent").addClass("d-none");
+            $("#certificationTabContent").addClass("d-none");
 
+            $("#educationsTabContent").removeClass("d-none");
         }
+
         if(target === "myResume"){
            $(document).trigger("myResume");
             $("#mainTabContent").addClass("d-none");
             $("#resultTabContent").addClass("d-none");
             $("#educationsTabContent").addClass("d-none");
+            $("#awardTabContent").addClass("d-none");
+            $("#projectTabContent").addClass("d-none");
+            $("#experienceTabContent").addClass("d-none");
+            $("#certificationTabContent").addClass("d-none");
+
             $("#resumeTabContent").removeClass("d-none");
 
            $(document).trigger("loadResume");
+        }
+
+        if (target === "award") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
+            $("#resumeTabContent").addClass("d-none");
+            $("#projectTabContent").addClass("d-none");
+            $("#experienceTabContent").addClass("d-none");
+            $("#certificationTabContent").addClass("d-none");
+
+            $("#awardTabContent").removeClass("d-none");
+        }
+
+        if (target === "project") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
+            $("#resumeTabContent").addClass("d-none");
+            $("#awardTabContent").addClass("d-none");
+            $("#experienceTabContent").addClass("d-none");
+            $("#certificationTabContent").addClass("d-none");
+
+            $("#projectTabContent").removeClass("d-none");
+        }
+
+        if (target === "experience") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
+            $("#resumeTabContent").addClass("d-none");
+            $("#awardTabContent").addClass("d-none");
+            $("#projectTabContent").addClass("d-none");
+            $("#certificationTabContent").addClass("d-none");
+
+            $("#experienceTabContent").removeClass("d-none");
+        }
+
+        if (target === "certification") {
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
+            $("#resumeTabContent").addClass("d-none");
+            $("#awardTabContent").addClass("d-none");
+            $("#projectTabContent").addClass("d-none");
+            $("#experienceTabContent").addClass("d-none");
+
+            $("#certificationTabContent").removeClass("d-none");
+
         }
     }
 
