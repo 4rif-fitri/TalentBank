@@ -251,27 +251,37 @@
         // console.log(target);
 
         if (target === "main") {
-            $("#mainTabContent").removeClass("d-none");
             $("#resultTabContent").addClass("d-none");
+            $("#resumeTabContent").addClass("d-none");
             $("#educationsTabContent").addClass("d-none");
+            $("#mainTabContent").removeClass("d-none");
         }
 
         if (target === "result") {
             $("#mainTabContent").addClass("d-none");
             $("#resultTabContent").removeClass("d-none");
+            $("#resumeTabContent").addClass("d-none");
             $("#educationsTabContent").addClass("d-none");
 
            $(document).trigger("loadResult");
-
         }
 
         if (target === "education") {
             $("#mainTabContent").addClass("d-none");
             $("#resultTabContent").addClass("d-none");
+            $("#resumeTabContent").addClass("d-none");
             $("#educationsTabContent").removeClass("d-none");
             // handleLoadEducations()
 
+        }
+        if(target === "myResume"){
+           $(document).trigger("myResume");
+            $("#mainTabContent").addClass("d-none");
+            $("#resultTabContent").addClass("d-none");
+            $("#educationsTabContent").addClass("d-none");
+            $("#resumeTabContent").removeClass("d-none");
 
+           $(document).trigger("loadResume");
         }
     }
 

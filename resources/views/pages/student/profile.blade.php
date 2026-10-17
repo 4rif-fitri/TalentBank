@@ -25,6 +25,10 @@
             <x-sections.education-section />
         </div>
 
+        <div id="resumeTabContent" class="d-none">
+            <x-sections.resume-section />
+        </div>
+
     </div>
 
     <div class="user-card-right">
