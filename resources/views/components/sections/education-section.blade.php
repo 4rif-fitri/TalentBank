@@ -255,6 +255,10 @@
         getEducationByUserProfileId(profileId);
     });
 
+    $(document).on("education:updated", function (event, data) {
+        getEducationByUserProfileId(profileId);
+    })
+
     $(document).on("click","#educationsContainer .carousel-next",function () {
         const $track = $("#educationsContainer .carousel-track");
         const totalItems = $track.find(".item").length;

@@ -1,15 +1,7 @@
 ## Todo
 
-<!-- Back -->
-- buat register sama macam login
--> lepas register go to login page
--> if error return page back 
--> when register assign role as student
-
 <!-- front -->
-- when add education kene rerender balik lepas popup add keluar 
-- same when update education
-- same when delete education
+
 
 - when add semester kene rerender balik lepas popup add keluar
 - same when update semester
