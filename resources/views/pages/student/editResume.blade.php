@@ -1,25 +1,25 @@
 @extends('layouts.internship-layouts')
-    <style>
+<style>
+    .asd{
+        width: 600px;
+    }
+    @media screen and (max-width:1300px) {
         .asd{
-            width: 600px;
+            width: 400px;
         }
-        @media screen and (max-width:1300px) {
-            .asd{
-                width: 400px;
-            }
+    }
+    @media screen and (max-width:1000px) {
+        .asd{
+            width: 300px;
         }
-        @media screen and (max-width:1000px) {
-            .asd{
-                width: 300px;
-            }
+    }
+    @media screen and (max-width:760px) {
+        .asd{
+            width: 100%;
         }
-        @media screen and (max-width:760px) {
-            .asd{
-                width: 100%;
-            }
-        }
+    }
 
-        .social-media-item {
+    .social-media-item {
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -283,16 +283,6 @@
             type: "GET"
         });
     }
-
-    function getEducationId(item) {
-        return String(
-            item.id ??
-            item.education_id ??
-            item.programme_id ??
-            item.programme?.id ??
-            ""
-        );
-    }
     // Getter API
 
     // initialize
@@ -358,6 +348,16 @@
     // initialize
 
     // utils
+    function getEducationId(item) {
+        return String(
+            item.id ??
+            item.education_id ??
+            item.programme_id ??
+            item.programme?.id ??
+            ""
+        );
+    }
+
     function getSocialMediaId(item) {
         return String(
             item.user_social_media_id ??
@@ -649,9 +649,7 @@
         }
 
         if (contentToAdd.length === 0) {
-            throw new Error(
-                "Please add at least one item to your resume."
-            );
+            throw new Error("Please add at least one item to your resume");
         }
 
         return {
@@ -804,13 +802,12 @@
             payload = resumeId ? prepareResumePayload() : prepareCreateResumePayload();
 
             if (Object.keys(payload).length === 0) {
-                console.log("No changes to save.");
+                xalert.warning("warning","No changes to save",)
                 return;
             }
 
         } catch (error) {
-            console.error("Invalid resume payload:", error);
-            alert(error.message);
+            xalert.warning("Warning", error.message)
             return;
         }
 
@@ -833,15 +830,14 @@
                     data.skill.data.in
                 );
 
-                alert("Resume updated successfully.");
+                xalert.success("Success", "Resume updated successfully.");
 
             } else {
                 // Resume baharu
                 response = await createResume(payload);
 
                 console.log("Resume created:", response);
-
-                alert("Resume created successfully.");
+                xalert.success("Success","Resume created successfully.");
 
             }
         } catch (error) {

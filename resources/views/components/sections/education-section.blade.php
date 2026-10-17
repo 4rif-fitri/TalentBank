@@ -148,11 +148,7 @@
             currentEducation = maxIndex;
         }
 
-        $track.css(
-            "transform",
-            `translateX(-${currentEducation * (100 / itemsPerView)}%)`
-        );
-
+        $track.css("transform",`translateX(-${currentEducation * (100 / itemsPerView)}%)`);
         $track.data("current", currentEducation);
     }
 
@@ -199,12 +195,8 @@
             ],
 
             responsive: {
-                0: {
-                    items: 1
-                },
-                992: {
-                    items: 2
-                },
+                0: { items: 1 },
+                992: { items: 2 },
             }
         });
     }

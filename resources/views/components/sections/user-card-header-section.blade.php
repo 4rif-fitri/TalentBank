@@ -121,12 +121,16 @@
             Main
         </x-atom.button-horizontal-nav>
 
-        <x-atom.button-horizontal-nav target="result">
-            Result
+        <x-atom.button-horizontal-nav target="myResume">
+            Resume
         </x-atom.button-horizontal-nav>
 
         <x-atom.button-horizontal-nav target="education">
             Education
+        </x-atom.button-horizontal-nav>
+
+        <x-atom.button-horizontal-nav target="result">
+            Result
         </x-atom.button-horizontal-nav>
 
         <x-atom.button-horizontal-nav target="awards">

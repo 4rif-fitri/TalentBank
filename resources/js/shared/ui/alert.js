@@ -10,6 +10,9 @@ export function success(title, text) {
 export function error(title, text) {
     Swal.fire({ title, text, icon: "error" });
 }
+export function warning(title, text) {
+    Swal.fire({ title, text, icon: "warning" });
+}
 export function fire(title, text, icon) {
     Swal.fire({ title, text, icon });
 }
