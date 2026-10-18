@@ -65,7 +65,7 @@ window.measureBlocks = measureBlocks;
 window.paginateTwoColumns = paginateTwoColumns;
 window.paginateColumn = paginateColumn;
 window.renderPages = renderPages;
-window.modern = modern;
-window.professional = professional;
+window.Modern = modern;
+window.Professional = professional;
 
 window.toggle = () => document.body.classList.toggle('filter-open')

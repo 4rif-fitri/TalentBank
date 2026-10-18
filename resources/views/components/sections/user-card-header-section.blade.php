@@ -312,6 +312,7 @@
 
         const formData = new FormData();
         formData.append('profile_image', file);
+        formData.append('_token', $('meta[name="csrf-token"]').attr("content"))
 
         $.ajax({
             url: "{{ route('profile.uploadProfileImage') }}",
@@ -319,19 +320,13 @@
             data: formData,
             processData: false,
             contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
 
             success: async response => {
-                console.log('Success:', response);
                 xalert.fire('Success', 'Profile image uploaded successfully', 'success');
-
                 changePhotoProfileImage(response.data.profile_image)
             },
 
             error: xhr => {
-                console.error('Upload failed:', xhr);
                 console.error('Response:', xhr.responseJSON);
                 xalert.fire('Error', xhr.responseJSON?.message || 'Failed to upload cover image', 'error');
             }
@@ -340,11 +335,11 @@
 
     async function handleUpdateCoverImage(event) {
         const file = event.target.files[0]
-
         if (!file) return;
 
         const formData = new FormData();
         formData.append('cover_image', file);
+        formData.append('_token', $('meta[name="csrf-token"]').attr("content"))
 
         $.ajax({
             url: "{{ route('profile.uploadCoverImage') }}",
@@ -352,19 +347,13 @@
             data: formData,
             processData: false,
             contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
 
             success: async response => {
-                console.log('Success:', response);
                 xalert.fire('Success','Cover image uploaded successfully','success');
-
                 changePhotoCoverImage(response.data.cover_image)
             },
 
             error: xhr => {
-                console.error('Upload failed:', xhr);
                 console.error('Response:', xhr.responseJSON);
                 xalert.fire('Error', xhr.responseJSON?.message || 'Failed to upload cover image', 'error');
             }

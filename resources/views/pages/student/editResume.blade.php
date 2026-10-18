@@ -45,8 +45,8 @@
 
 @section('content')
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/base.css') }}">
-<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/modern.css') }}">
-<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/professional.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/Modern.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/Professional.css') }}">
 
 <div class="">
 
@@ -87,9 +87,9 @@
     let educationByUser = [];
     let profileData = null;
 
-    const templates = { modern, professional };
+    const templates = { Modern, Professional };
 
-    let currentTemplate = "professional";
+    let currentTemplate = "Modern";
     let resumeData = null;
     let zoom = getDefaultZoom();
 
@@ -250,6 +250,28 @@
     // update
 
     // Getter API
+
+    function getAllResumeTemplates() {
+        console.log("getAllResumeTemplates");
+
+        $.ajax({
+            url: "{{ route('resumes.getAllResumeTemplates') }}",
+            type: "GET",
+            success: function (response) {
+                let data = response.data
+                console.log(data);
+                $("#templateSelect").html("")
+
+                data.forEach(nameTemplate => {
+                    $("#templateSelect").append(`
+                    <option value="${nameTemplate.template_file_name}" data-template-id="${nameTemplate.id}">
+                        ${nameTemplate.template_file_name}
+                    </option>`)
+                });
+            }
+        });
+    }
+
     function getEducationByUserProfileId(id) {
         let url = "{{ route('education.getEducationByUserProfileId', ['id' => '__ID__']) }}";
 
@@ -769,9 +791,7 @@
     }
 
     function applyZoom() {
-
         const resumePages = document.querySelector("#resumePages");
-
         if (!resumePages) return;
 
         resumePages.style.scale = zoom;
@@ -1039,13 +1059,46 @@
         console.log("Current data:", data);
     });
 
+
+    $("#deleteResume").on("click", function () {
+        let id = $(this).data("resumeId");
+
+        if (!id) {
+            console.error("Resume ID not found!");
+            return;
+        }
+
+        let url = "{{ route('resumes.delete', ':id') }}";
+        url = url.replace(":id", id);
+
+        $.ajax({
+            type: "DELETE",
+            url: url,
+            data: {
+                _token: "{{ csrf_token() }}"
+            },
+            success: function (response) {
+                console.log(response);
+                 window.location.href = "{{ route('student.resume') }}";
+
+            },
+            error: function (xhr) {
+                console.error(xhr.responseJSON);
+            },
+        });
+    });
+
+
     $(document).ready(async function () {
         const id = new URLSearchParams(window.location.search).get("id");
         const profileId = "{{ session('user_profile_id') }}";
+        getAllResumeTemplates()
 
         try {
             if (id) {
                 $("#template_id").val(id);
+                $("#deleteResume").removeClass("d-none")
+                $("#deleteResume").data("resumeId", id);
 
                 const [
                     resumeResponse,
@@ -1064,38 +1117,13 @@
                 console.log("Profile Data:", profileData);
                 console.log("Resume Data:", dataResume);
 
-                // EDUCATION
-                const selectedEducation = Array.isArray(dataResume.education)
-                    ? dataResume.education
-                    : [];
-
-                // SKILL
-                const selectedSkills = Array.isArray(dataResume.user_skills)
-                    ? dataResume.user_skills
-                    : [];
-
-                const allSkills = Array.isArray(profileData.skills)
-                    ? profileData.skills
-                    : [];
-
-                // LANGUAGE
-                const allLanguage = Array.isArray(profileData.user_languages)
-                    ? profileData.user_languages
-                    : [];
-
-                const selectedLanguage = Array.isArray(dataResume.user_languages)
-                    ? dataResume.user_languages
-                    : [];
-
-                // SOCIAL MEDIA
-                const allSocialMedia = Array.isArray(profileData.social_media_links)
-                    ? profileData.social_media_links
-                    : [];
-
-                // Tukar property ini jika API resume menggunakan nama lain.
-                const selectedSocialMedia = Array.isArray(dataResume.social_media_links)
-                    ? dataResume.social_media_links
-                    : [];
+                const selectedEducation = Array.isArray(dataResume.education) ? dataResume.education : [];
+                const selectedSkills = Array.isArray(dataResume.user_skills) ? dataResume.user_skills : [];
+                const allSkills = Array.isArray(profileData.skills) ? profileData.skills : [];
+                const allLanguage = Array.isArray(profileData.user_languages) ? profileData.user_languages : [];
+                const selectedLanguage = Array.isArray(dataResume.user_languages) ? dataResume.user_languages : [];
+                const allSocialMedia = Array.isArray(profileData.social_media_links) ? profileData.social_media_links : [];
+                const selectedSocialMedia = Array.isArray(dataResume.social_media_links) ? dataResume.social_media_links : [];
 
                 // INITIALIZE SEMUA SECTION
                 initializeEducation(educationByUser, selectedEducation);
@@ -1114,6 +1142,8 @@
                 };
 
             } else {
+                $("#deleteResume").addClass("d-none")
+
                 const [
                     profileResponse,
                     educationResponse
@@ -1125,17 +1155,9 @@
                 profileData = profileResponse.data;
                 educationByUser = educationResponse.data ?? [];
 
-                const allSkills = Array.isArray(profileData.skills)
-                    ? profileData.skills
-                    : [];
-
-                const allLanguage = Array.isArray(profileData.user_languages)
-                    ? profileData.user_languages
-                    : [];
-
-                const allSocialMedia = Array.isArray(profileData.social_media_links)
-                    ? profileData.social_media_links
-                    : [];
+                const allSkills = Array.isArray(profileData.skills) ? profileData.skills : [];
+                const allLanguage = Array.isArray(profileData.user_languages) ? profileData.user_languages : [];
+                const allSocialMedia = Array.isArray(profileData.social_media_links) ? profileData.social_media_links : [];
 
                 initializeEducation(educationByUser, []);
                 initializeSkill(allSkills, []);
