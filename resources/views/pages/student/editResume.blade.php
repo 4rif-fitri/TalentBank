@@ -65,7 +65,6 @@
 
         <div class="workspace w-100 " style="height: 92vh !important;">
             <x-sections.resume-setting />
-
             <div id="resumePages"></div>
         </div>
     </div>
@@ -609,10 +608,7 @@
                 } else if (sectionKey === "language") {
                     sourceId =item.user_language_id ?? item.id;
                 } else {
-                    console.warn(
-                        "Source ID mapping not configured:",
-                        sectionKey
-                    );
+                    console.warn("Source ID mapping not configured:", sectionKey);
                     continue;
                 }
 

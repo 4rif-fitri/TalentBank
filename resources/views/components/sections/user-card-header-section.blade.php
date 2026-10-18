@@ -168,8 +168,21 @@
 
 <script type="module">
 
-    async function renderUserDetail(name, headline, location, programmes, email, phoneNo, profile_image, cover_image){
+    async function changePhotoProfileImage(imgUrl){
+        let defaultProfile = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/default.png`;
+        let profileUrl = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/${imgUrl}`;
+        let validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultProfile)
+        $("#profileImage").css('background-image', `url("${validProfileUrl}")`);
+    }
 
+    async function changePhotoCoverImage(imgUrl) {
+        let defaultCover = `{{ asset('storage/' . env('COVER_IMAGE_URL') . '/default.png') }}`;
+        let profileUrl = `{{ asset('storage/' . env('COVER_IMAGE_URL')) }}/${imgUrl}`;
+        let validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultCover)
+        $("#coverImage").css('background-image', `url("${validProfileUrl}")`);
+    }
+
+    async function renderUserDetail(name, headline, location, programmes, email, phoneNo, profile_image, cover_image){
         stateProfile.name = name
         stateProfile.headline = headline
         stateProfile.location = location
@@ -187,21 +200,14 @@
             $("#uni-name").hide()
             $("#programme").hide()
             $("#seeMoreActiveEducations").hide()
+
         }else{
             $("#uni-name").text(stateProfile.programmes[0]?.organization.company_name)
             $("#programme").text(stateProfile.programmes[0]?.programme_name)
         }
 
-
-        let defaultProfile = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/default.png`;
-        let profileUrl = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/${stateProfile.profile_image}`;
-        let validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultProfile)
-        $("#profileImage").css('background-image', `url("${validProfileUrl}")`);
-
-        let defaultCover = `{{ asset('storage/' . env('COVER_IMAGE_URL') . '/default.png') }}`;
-        profileUrl = `{{ asset('storage/' . env('COVER_IMAGE_URL')) }}/${stateProfile.cover_image}`;
-        validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultCover)
-        $("#coverImage").css('background-image', `url("${validProfileUrl}")`);
+        changePhotoProfileImage(stateProfile.profile_image)
+        changePhotoCoverImage(stateProfile.cover_image)
     }
 
     $(document).on("profile:loaded", function (event, data) {
@@ -244,118 +250,64 @@
         }
     }
 
+    let tabs = [
+        "#resultTabContent","#resumeTabContent","#educationsTabContent",
+        "#awardTabContent","#projectTabContent","#experienceTabContent",
+        "#certificationTabContent","#mainTabContent"
+    ]
+
+    function renderTabContent(target) {
+        tabs.forEach(data => {
+            if (data === target) {
+                $(data).removeClass("d-none");
+            } else {
+                $(data).addClass("d-none");
+            }
+        });
+    }
+
     function handleProfileTab() {
         $(".profile-tab").removeClass("active");
         $(this).addClass("active");
         let target = $(this).data("target");
-        // console.log(target);
 
         if (target === "main") {
-            $("#resultTabContent").addClass("d-none");
-            $("#resumeTabContent").addClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
-            $("#awardTabContent").addClass("d-none");
-            $("#projectTabContent").addClass("d-none");
-            $("#experienceTabContent").addClass("d-none");
-            $("#certificationTabContent").addClass("d-none");
-
-            $("#mainTabContent").removeClass("d-none");
+            renderTabContent("#mainTabContent");
         }
 
         if (target === "result") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resumeTabContent").addClass("d-none");
-            $("#awardTabContent").addClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
-            $("#projectTabContent").addClass("d-none");
-            $("#experienceTabContent").addClass("d-none");
-            $("#certificationTabContent").addClass("d-none");
-
-            $("#resultTabContent").removeClass("d-none");
-
+            renderTabContent("#resultTabContent");
            $(document).trigger("loadResult");
         }
 
         if (target === "education") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-            $("#resumeTabContent").addClass("d-none");
-            $("#awardTabContent").addClass("d-none");
-            $("#projectTabContent").addClass("d-none");
-            $("#experienceTabContent").addClass("d-none");
-            $("#certificationTabContent").addClass("d-none");
-
-            $("#educationsTabContent").removeClass("d-none");
+            renderTabContent("#educationsTabContent");
         }
 
         if(target === "myResume"){
-           $(document).trigger("myResume");
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
-            $("#awardTabContent").addClass("d-none");
-            $("#projectTabContent").addClass("d-none");
-            $("#experienceTabContent").addClass("d-none");
-            $("#certificationTabContent").addClass("d-none");
-
-            $("#resumeTabContent").removeClass("d-none");
-
+            renderTabContent("#resumeTabContent");
            $(document).trigger("loadResume");
         }
 
         if (target === "award") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
-            $("#resumeTabContent").addClass("d-none");
-            $("#projectTabContent").addClass("d-none");
-            $("#experienceTabContent").addClass("d-none");
-            $("#certificationTabContent").addClass("d-none");
-
-            $("#awardTabContent").removeClass("d-none");
+            renderTabContent("#awardTabContent");
         }
 
         if (target === "project") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
-            $("#resumeTabContent").addClass("d-none");
-            $("#awardTabContent").addClass("d-none");
-            $("#experienceTabContent").addClass("d-none");
-            $("#certificationTabContent").addClass("d-none");
-
-            $("#projectTabContent").removeClass("d-none");
+            renderTabContent("#projectTabContent");
         }
 
         if (target === "experience") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
-            $("#resumeTabContent").addClass("d-none");
-            $("#awardTabContent").addClass("d-none");
-            $("#projectTabContent").addClass("d-none");
-            $("#certificationTabContent").addClass("d-none");
-
-            $("#experienceTabContent").removeClass("d-none");
+            renderTabContent("#experienceTabContent");
         }
 
         if (target === "certification") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
-            $("#resumeTabContent").addClass("d-none");
-            $("#awardTabContent").addClass("d-none");
-            $("#projectTabContent").addClass("d-none");
-            $("#experienceTabContent").addClass("d-none");
-
-            $("#certificationTabContent").removeClass("d-none");
-
+            renderTabContent("#certificationTabContent");
         }
     }
 
     async function handleUpdateProfileImage(event) {
         const file = event.target.files[0]
-
         if (!file) return;
 
         const formData = new FormData();
@@ -371,9 +323,11 @@
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
 
-            success: response => {
+            success: async response => {
                 console.log('Success:', response);
                 xalert.fire('Success', 'Profile image uploaded successfully', 'success');
+
+                changePhotoProfileImage(response.data.profile_image)
             },
 
             error: xhr => {
@@ -402,9 +356,11 @@
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
             },
 
-            success: response => {
+            success: async response => {
                 console.log('Success:', response);
                 xalert.fire('Success','Cover image uploaded successfully','success');
+
+                changePhotoCoverImage(response.data.cover_image)
             },
 
             error: xhr => {
