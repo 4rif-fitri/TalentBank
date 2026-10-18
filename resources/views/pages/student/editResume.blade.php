@@ -1,25 +1,25 @@
 @extends('layouts.internship-layouts')
 <style>
+.asd{
+    width: 600px;
+}
+@media screen and (max-width:1300px) {
     .asd{
-        width: 600px;
+        width: 400px;
     }
-    @media screen and (max-width:1300px) {
-        .asd{
-            width: 400px;
-        }
+}
+@media screen and (max-width:1000px) {
+    .asd{
+        width: 300px;
     }
-    @media screen and (max-width:1000px) {
-        .asd{
-            width: 300px;
-        }
+}
+@media screen and (max-width:760px) {
+    .asd{
+        width: 100%;
     }
-    @media screen and (max-width:760px) {
-        .asd{
-            width: 100%;
-        }
-    }
+}
 
-    .social-media-item {
+.social-media-item {
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -591,10 +591,7 @@
             originalEducation.map(item => getSourceId(item, "education"))
         );
 
-        console.log(
-            "Current IDs:",
-            data.education.data.in.map(item => getSourceId(item, "education"))
-        );
+        console.log("Current IDs:", data.education.data.in.map(item => getSourceId(item, "education")));
         return payload;
     }
 

@@ -272,9 +272,7 @@
             current = maxIndex;
         }
 
-        if (current < 0) {
-            current = 0;
-        }
+        if (current < 0) current = 0;
 
         $track.css('transform',`translateX(-${current * (100 / itemsPerView)}%)`);
         $track.data('current', current);
@@ -310,6 +308,10 @@
     $(".profile-tab[data-target='result']").on("click", function () {
         loadSemesterResults();
     });
+
+    $(document).on("semester:updated", function (event, data) {
+        loadSemesterResults();
+    })
 
     $(window).on("resize", function () {
         updateCarousel();

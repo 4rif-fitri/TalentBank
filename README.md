@@ -1,10 +1,13 @@
 ## Todo
 
+<!-- Back -->
+
+API Delete Result
+
 <!-- front -->
 
-
-- when add semester kene rerender balik lepas popup add keluar
-- same when update semester
+-! when add semester kene rerender balik lepas popup add keluar
+-! same when update semester
 
 - when add result kene rerender balik lepas popup add keluar
 - same when update result

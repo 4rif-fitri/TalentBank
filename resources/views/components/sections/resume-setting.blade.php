@@ -1,4 +1,4 @@
-<div class="d-flex border-bottom">
+<div class="d-flex border-bottom justify-content-center gap-2 flex-wrap">
     <div>
         <div class="d-flex gap-2 justify-content-center align-content-center">
             <h4>Zoom</h4>
@@ -22,9 +22,9 @@
         </div>
     </div>
     <div>
-        <button id="downloadResume">Download PDF</button>
+        <button class="btn btn-primary fw-semibold" id="downloadResume">Download</button>
     </div>
     <div>
-        <button id="saveResume">Save</button>
+        <button class="btn btn-success fw-semibold" id="saveResume">Save</button>
     </div>
 </div>
