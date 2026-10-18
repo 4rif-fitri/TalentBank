@@ -25,10 +25,30 @@
             <x-sections.education-section />
         </div>
 
+        <div id="awardTabContent" class="d-none">
+            <x-sections.awards-section />
+        </div>
+
+        <div id="projectTabContent" class="d-none">
+            <x-sections.projects-section />
+        </div>
+
+        <div id="experienceTabContent" class="d-none">
+            <x-sections.experience-section />
+        </div>
+
+        <div id="certificationTabContent" class="d-none">
+            <x-sections.certifications-section />
+        </div>
+
+        <div id="resumeTabContent" class="d-none">
+            <x-sections.resume-section />
+        </div>
+
     </div>
 
     <div class="user-card-right">
-        <x-sections.contact-information-section />
+        <x-sections.contact-section />
         <x-sections.languages-section />
         <x-sections.skills-section />
     </div>

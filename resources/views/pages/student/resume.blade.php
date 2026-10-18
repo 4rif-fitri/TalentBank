@@ -28,7 +28,6 @@
 
 @section('script')
 <script>
-
     let id = "{{ session('user_profile_id') }}";
 
     function template(data){

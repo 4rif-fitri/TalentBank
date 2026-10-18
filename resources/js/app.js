@@ -12,6 +12,7 @@ import * as templateCommon from "./features/common/template.js"
 import * as templateShortList from "./features/shortList/template.js"
 import * as templateProfile from "./features/profile/template.js"
 import * as templateResume from "./features/resume/template.js"
+import * as templateResult from "./features/result/template.js"
 
 import * as xvalidate from "./shared/utils/validation.js"
 import * as xformat from "./shared/utils/format.js"
@@ -56,6 +57,7 @@ window.xinterview = templateInterview;
 window.xinvitation = templateInvitation;
 window.xprofile = templateProfile
 window.xresume = templateResume
+window.xresult = templateResult
 
 window.bootstrap = bootstrap;
 
@@ -63,7 +65,7 @@ window.measureBlocks = measureBlocks;
 window.paginateTwoColumns = paginateTwoColumns;
 window.paginateColumn = paginateColumn;
 window.renderPages = renderPages;
-window.modern = modern;
-window.professional = professional;
+window.Modern = modern;
+window.Professional = professional;
 
 window.toggle = () => document.body.classList.toggle('filter-open')

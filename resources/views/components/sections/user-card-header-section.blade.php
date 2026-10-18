@@ -117,33 +117,37 @@
     </div>
 
     <nav class="horizontal-nav d-flex flex-wrap px-3">
-        <x-button-horizontal-nav target="main" class="active">
+        <x-atom.button-horizontal-nav target="main" class="active">
             Main
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="result">
-            Result
-        </x-button-horizontal-nav>
+        <x-atom.button-horizontal-nav target="myResume">
+            Resume
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="education">
+        <x-atom.button-horizontal-nav target="education">
             Education
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="awards">
-            Awards
-        </x-button-horizontal-nav>
+        <x-atom.button-horizontal-nav target="result">
+            Result
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="projects">
-            Projects
-        </x-button-horizontal-nav>
+        <x-atom.button-horizontal-nav target="award">
+            Award
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="experience">
+        <x-atom.button-horizontal-nav target="project">
+            Project
+        </x-atom.button-horizontal-nav>
+
+        <x-atom.button-horizontal-nav target="experience">
             Experience
-        </x-button-horizontal-nav>
+        </x-atom.button-horizontal-nav>
 
-        <x-button-horizontal-nav target="certifications">
-            Certifications
-        </x-button-horizontal-nav>
+        <x-atom.button-horizontal-nav target="certification">
+            Certification
+        </x-atom.button-horizontal-nav>
     </nav>
 
 </section>
@@ -164,8 +168,21 @@
 
 <script type="module">
 
-    async function renderUserDetail(name, headline, location, programmes, email, phoneNo, profile_image, cover_image){
+    async function changePhotoProfileImage(imgUrl){
+        let defaultProfile = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/default.png`;
+        let profileUrl = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/${imgUrl}`;
+        let validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultProfile)
+        $("#profileImage").css('background-image', `url("${validProfileUrl}")`);
+    }
 
+    async function changePhotoCoverImage(imgUrl) {
+        let defaultCover = `{{ asset('storage/' . env('COVER_IMAGE_URL') . '/default.png') }}`;
+        let profileUrl = `{{ asset('storage/' . env('COVER_IMAGE_URL')) }}/${imgUrl}`;
+        let validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultCover)
+        $("#coverImage").css('background-image', `url("${validProfileUrl}")`);
+    }
+
+    async function renderUserDetail(name, headline, location, programmes, email, phoneNo, profile_image, cover_image){
         stateProfile.name = name
         stateProfile.headline = headline
         stateProfile.location = location
@@ -183,21 +200,14 @@
             $("#uni-name").hide()
             $("#programme").hide()
             $("#seeMoreActiveEducations").hide()
+
         }else{
             $("#uni-name").text(stateProfile.programmes[0]?.organization.company_name)
             $("#programme").text(stateProfile.programmes[0]?.programme_name)
         }
 
-
-        let defaultProfile = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/default.png`;
-        let profileUrl = `{{ asset('storage/' . env('PROFILE_IMAGE_URL')) }}/${stateProfile.profile_image}`;
-        let validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultProfile)
-        $("#profileImage").css('background-image', `url("${validProfileUrl}")`);
-
-        let defaultCover = `{{ asset('storage/' . env('COVER_IMAGE_URL') . '/default.png') }}`;
-        profileUrl = `{{ asset('storage/' . env('COVER_IMAGE_URL')) }}/${stateProfile.cover_image}`;
-        validProfileUrl = await xvalidate.getValidImageUrl(profileUrl, defaultCover)
-        $("#coverImage").css('background-image', `url("${validProfileUrl}")`);
+        changePhotoProfileImage(stateProfile.profile_image)
+        changePhotoCoverImage(stateProfile.cover_image)
     }
 
     $(document).on("profile:loaded", function (event, data) {
@@ -240,44 +250,69 @@
         }
     }
 
+    let tabs = [
+        "#resultTabContent","#resumeTabContent","#educationsTabContent",
+        "#awardTabContent","#projectTabContent","#experienceTabContent",
+        "#certificationTabContent","#mainTabContent"
+    ]
+
+    function renderTabContent(target) {
+        tabs.forEach(data => {
+            if (data === target) {
+                $(data).removeClass("d-none");
+            } else {
+                $(data).addClass("d-none");
+            }
+        });
+    }
+
     function handleProfileTab() {
         $(".profile-tab").removeClass("active");
         $(this).addClass("active");
         let target = $(this).data("target");
-        // console.log(target);
 
         if (target === "main") {
-            $("#mainTabContent").removeClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
+            renderTabContent("#mainTabContent");
         }
 
         if (target === "result") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").removeClass("d-none");
-            $("#educationsTabContent").addClass("d-none");
-
+            renderTabContent("#resultTabContent");
            $(document).trigger("loadResult");
-
         }
 
         if (target === "education") {
-            $("#mainTabContent").addClass("d-none");
-            $("#resultTabContent").addClass("d-none");
-            $("#educationsTabContent").removeClass("d-none");
-            // handleLoadEducations()
+            renderTabContent("#educationsTabContent");
+        }
 
+        if(target === "myResume"){
+            renderTabContent("#resumeTabContent");
+           $(document).trigger("loadResume");
+        }
 
+        if (target === "award") {
+            renderTabContent("#awardTabContent");
+        }
+
+        if (target === "project") {
+            renderTabContent("#projectTabContent");
+        }
+
+        if (target === "experience") {
+            renderTabContent("#experienceTabContent");
+        }
+
+        if (target === "certification") {
+            renderTabContent("#certificationTabContent");
         }
     }
 
     async function handleUpdateProfileImage(event) {
         const file = event.target.files[0]
-
         if (!file) return;
 
         const formData = new FormData();
         formData.append('profile_image', file);
+        formData.append('_token', $('meta[name="csrf-token"]').attr("content"))
 
         $.ajax({
             url: "{{ route('profile.uploadProfileImage') }}",
@@ -285,17 +320,13 @@
             data: formData,
             processData: false,
             contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
 
-            success: response => {
-                console.log('Success:', response);
+            success: async response => {
                 xalert.fire('Success', 'Profile image uploaded successfully', 'success');
+                changePhotoProfileImage(response.data.profile_image)
             },
 
             error: xhr => {
-                console.error('Upload failed:', xhr);
                 console.error('Response:', xhr.responseJSON);
                 xalert.fire('Error', xhr.responseJSON?.message || 'Failed to upload cover image', 'error');
             }
@@ -304,11 +335,11 @@
 
     async function handleUpdateCoverImage(event) {
         const file = event.target.files[0]
-
         if (!file) return;
 
         const formData = new FormData();
         formData.append('cover_image', file);
+        formData.append('_token', $('meta[name="csrf-token"]').attr("content"))
 
         $.ajax({
             url: "{{ route('profile.uploadCoverImage') }}",
@@ -316,17 +347,13 @@
             data: formData,
             processData: false,
             contentType: false,
-            headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            },
 
-            success: response => {
-                console.log('Success:', response);
+            success: async response => {
                 xalert.fire('Success','Cover image uploaded successfully','success');
+                changePhotoCoverImage(response.data.cover_image)
             },
 
             error: xhr => {
-                console.error('Upload failed:', xhr);
                 console.error('Response:', xhr.responseJSON);
                 xalert.fire('Error', xhr.responseJSON?.message || 'Failed to upload cover image', 'error');
             }

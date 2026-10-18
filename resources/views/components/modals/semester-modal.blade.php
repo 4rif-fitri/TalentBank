@@ -196,6 +196,7 @@
 
                 $form[0].reset();
 
+                $(document).trigger("semester:updated");
             },
 
             error: function (xhr) {
@@ -208,11 +209,7 @@
                         ? "Failed to update semester"
                         : "Failed to add semester");
 
-                swalfire(
-                    mode === "edit" ? "Update Failed" : "Add Failed",
-                    message,
-                    "error"
-                );
+                swalfire(mode === "edit" ? "Update Failed" : "Add Failed",message,"error");
             }
         });
     });
@@ -229,13 +226,11 @@
 
         let $education = $("#education_ID");
 
-        $education
-            .html(`
+        $education.html(`
             <option value="${educationId}" selected>
                 ${programmeName}
-            </option>
-        `)
-            .prop("disabled", true);
+            </option>`)
+        .prop("disabled", true);
 
         $("#semesterModal #sessionInput").val(session);
         $("#semesterModal #cgpaInput").val(gpa);

@@ -34,3 +34,15 @@
 
     <a href="./project.html" class="d-flex justify-content-center align-items-center">Show All</a>
 </section>
+@push('childScript')
+
+<script type="module">
+
+    $(".profile-tab[data-target='project']").on("click", function () {
+        console.log("projectaward");
+    });
+
+
+</script>
+
+@endpush
