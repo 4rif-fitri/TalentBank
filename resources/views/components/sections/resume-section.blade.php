@@ -88,8 +88,16 @@
     }
 
     function loadResume(){
-        let url = "{{ route('resumes.getResumesByUserProfileId', ['id' => '__ID__']) }}"
-            .replace("__ID__", "{{ session('user_profile_id') }}")
+        let url = "{{ route('resumes.getResumesByUserProfileId', ['id' => '__ID__']) }}";
+
+        let link = window.location.href;
+        let id = link.split('/').pop();
+
+        if (id != null && id !== "") {
+            url = url.replace("__ID__", id);
+        } else {
+            url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+        }
 
         $.ajax({
             type: "GET",

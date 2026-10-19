@@ -131,13 +131,23 @@ export let student = {
     },
 
     educationCard: (education, htmlImage) => {
+        let link = window.location.href;
+        let id = link.split('/').pop();
+
+        let visible = false
+
+        if (id != null && id !== "") {
+            visible = true
+        }
+
         return `<div class="h-100 position-relative" data-educationId=${education.id}>
+         ${visible == false ? `
                     <button type="button" class="icon-container btn z-3 btnEditEducation"
                         data-education-id="${education.id}">
                         <label class="btn icon bg-body shadow">
                             <i class="fa-solid fa-pencil"></i>
                         </label>
-                    </button>
+                    </button>` : ''}
 
                     <div class="card p-3 h-100">
                         <h5 class="card-title">
