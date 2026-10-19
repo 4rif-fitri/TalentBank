@@ -1,14 +1,68 @@
-<section id="myResume">
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/base.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/Modern.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/Professional.css') }}">
+<style>
+    #myResume{
+        height: 50rem;
+    }
+</style>
+
+<section id="myResume" style="overflow: scroll;">
     <h3 class="fw-bold text-sm-center text-lg-start">My Resume</h3>
     <hr>
-
-
+    <div class="workspace w-100 overflow-hidden" style="height: 92vh !important;">
+        <div id="resumePages"></div>
+    </div>
 </section>
-
 
 @push('childScript')
 
-<script>
+<script type="module">
+
+    let templates = {
+        Modern,
+        Professional
+    };
+    let currentTemplate
+
+    let dataResume = {
+        profile: [],
+    };
+
+    function renderResume() {
+        const template = templates[currentTemplate]?.default;
+
+        if (!template) {
+            console.error("Template or resume data not found");
+            return;
+        }
+
+        console.error(dataResume);
+        let pages;
+
+        if (template.type === "single") {
+            const blocks = template.render(dataResume);
+            const measured = measureBlocks.measureBlocks(blocks);
+            const columnPages = paginateColumn.paginateColumn(measured);
+
+            pages = columnPages.map(blocks => ({
+                left: blocks,
+                right: []
+            }));
+        } else if (template.type === "columns") {
+            const layout = template.render(dataResume);
+            const left = measureBlocks.measureBlocks(layout.left);
+            const right = measureBlocks.measureBlocks(layout.right);
+
+            pages = paginateTwoColumns.paginateTwoColumns(left, right);
+        } else {
+            console.error("Unsupported template type:", template.type);
+            return;
+        }
+        console.log({ pages });
+
+        renderPages.renderPages(pages, template, "#");
+    }
 
     function loadResumeData(id){
         let url = "{{ route('resumes.getResumeById', ['id' => '__ID__']) }}"
@@ -18,8 +72,17 @@
             type: "GET",
             url,
             success: function (response) {
-                console.log(response.data);
+                currentTemplate = response.data.resume_template.template_file_name
+                let data = response.data
+                dataResume = {
+                    ...dataResume,
+                    profile: dataResume.profile,
+                    ...data
+                };
 
+                console.log(dataResume);
+
+                renderResume();
             }
         });
     }
@@ -32,18 +95,20 @@
             type: "GET",
             url,
             success: function (response) {
-                let data = response.data[0]
-                console.log(data);
-                loadResumeData(data.id)
+                loadResumeData(response.data[0].id)
             }
         });
     }
+
+    $(document).on("profile:loaded", function (event, data) {
+        dataResume.profile = data
+    })
 
     $(".profile-tab[data-target='myResume']").on("click", function () {
         console.log("myResume");
         loadResume()
     });
 
-
 </script>
 @endpush
+

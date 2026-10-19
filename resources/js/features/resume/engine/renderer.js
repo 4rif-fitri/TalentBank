@@ -7,8 +7,8 @@ export function createBlockElement(block) {
 }
 
 export function renderPages(pages,template) {
-	const container = document.querySelector("#resumePages");
-	container.innerHTML = "";
+    let container = document.querySelector("#resumePages");
+    container.innerHTML = "";
 
 	pages.forEach((pageData, pageIndex) => {
 

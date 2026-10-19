@@ -252,8 +252,6 @@
     // Getter API
 
     function getAllResumeTemplates() {
-        console.log("getAllResumeTemplates");
-
         $.ajax({
             url: "{{ route('resumes.getAllResumeTemplates') }}",
             type: "GET",
@@ -717,6 +715,8 @@
             language: data.language.data.in
         };
 
+        console.warn(templateData);
+
         let pages;
 
         if (template.type === "single") {
@@ -1113,6 +1113,12 @@
                 dataResume = resumeResponse.data;
                 educationByUser = educationResponse.data ?? [];
                 profileData = profileResponse.data;
+                currentTemplate = dataResume.resume_template.template_file_name
+
+
+                $("#templateSelect option").filter(function () {
+                    return $(this).text().trim() === currentTemplate;
+                }).prop("selected", true);
 
                 console.log("Profile Data:", profileData);
                 console.log("Resume Data:", dataResume);

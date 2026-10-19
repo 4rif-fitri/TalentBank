@@ -28,7 +28,7 @@ import * as xApiProfile from "./features/profile/api.js"
 
 import * as measureBlocks from "../js/features/resume/engine/measurement.js";
 import * as paginateColumn from "../js/features/resume/engine/pagination.js";
-import * as  paginateTwoColumns from "../js/features/resume/engine/pagination.js";
+import * as paginateTwoColumns from "../js/features/resume/engine/pagination.js";
 import * as renderPages from "../js/features/resume/engine/renderer.js";
 import * as modern from "../js/features/resume/templates/modern.js";
 import * as professional from "../js/features/resume/templates/professional.js";
