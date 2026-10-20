@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('checkRole:Recruiter')->group(function () {
         Route::get('/recruiter', [internshipController::class, "recruiterIndex"])->name('recruiter.index');
+        Route::get('/recruiter/profile', [internshipController::class, "recruiterProfile"])->name('recruiter.profile');
         Route::get('/recruiter/position', [internshipController::class, "recruiterPosition"])->name('recruiter.position');
         Route::get('/recruiter/profiles', [internshipController::class, "recruiterProfiles"])->name('recruiter.profiles');
         Route::get('/recruiter/likeTalent', [internshipController::class, "recruiterLikeTalent"])->name('recruiter.likeTalent');

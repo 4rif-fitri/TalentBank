@@ -190,7 +190,16 @@
             try {
                 let response = await xApiPosition.update("{{ route('positions.update', ['id' => '__ID__']) }}", position_id, data)
                 if (!response) return
-                console.log("response", response);
+                let dt = response
+                console.log(this.curruntPosition);
+
+                this.curruntPosition = {
+                    ...this.curruntPosition,
+                    ...dt
+                };
+
+                console.log(this.curruntPosition);
+
                 $(".ui_position_title").text(response.data.position_title)
                 $(".ui_description").text(response.data.description)
                 $(".ui_work_location").text(response.data.work_location)
@@ -199,8 +208,8 @@
                 $(".ui_vacancies").text(response.data.vacancies)
 
                 xalert.success("Success", response.message)
-
-                handleCloseModalPosition()
+                this.close()
+                this.handleCloseModalPosition()
 
             } catch (error) {
                 console.error(error);

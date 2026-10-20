@@ -8,10 +8,11 @@
 
     <!-- MENU -->
     <nav class="sidebar-menu">
-
         @if (array_intersect(session('roles') ?? [], ['Recruiter']))
         <x-atom.sidebar-link :route="route('recruiter.index')" routeName="recruiter.index" icon="fa-solid fa-gauge"
             label="Dashboard" />
+        <x-atom.sidebar-link :route="route('recruiter.profile')" routeName="recruiter.profile" icon="fa-solid fa-user"
+            label="Profile" />
         <x-atom.sidebar-link :route="route('recruiter.profiles')" routeName="recruiter.profiles"
             icon="fa-solid fa-user-graduate" label="Talent" />
         <x-atom.sidebar-link :route="route('recruiter.likeTalent')" routeName="recruiter.likeTalent"
