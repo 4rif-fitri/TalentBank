@@ -48,7 +48,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Cancel
                 </button>
-                <button type="button" id="btnAddInvitation" class="btn btn-primary">
+                <button type="button" id="btnAddInvitationn" class="btn btn-primary">
                     Add
                 </button>
                 <button type="button" id="btnUpdateInvitation" class="btn btn-primary">
@@ -91,14 +91,11 @@
 
             $("#invitationModal .candidate_name").text(`Candidate: ${this.invitationDetail.receiver.name}`)
             $("#invitationModal #candidate_id").val(this.invitationDetail.receiver.id)
-
             $("#invitationModal .position_title").text(`Position: ${this.invitationDetail.position.position_title}`)
             $("#invitationModal #position_id").val(this.invitationDetail.position.id)
-
             $("#invitationModal #invitation_title").val(this.invitationDetail.title)
             $("#invitationModal #expires_at").val(this.invitationDetail.expires_at)
             $("#invitationModal #invitation_message").val(this.invitationDetail.invitation_message)
-
             $("#btnAddInvitation").hide();
             $("#btnUpdateInvitation").show();
             xmodal.show("invitationModal");
@@ -109,11 +106,8 @@
             $("#invitationModal #invite_candidate").val("");
             $("#invitationModal #invite_position_id").val("");
             $("#invitationModal #invite_position_title").val("");
-
             $("#invitation_title").val("");
-
             $("#expires_at").val("");
-
             $("#invitation_message").val("");
         },
 
@@ -190,7 +184,6 @@
         },
 
         async store() {
-
             const candidate_id = $("#invitationModal #candidate_id").val();
             const position_id = $("#invitationModal #position_id").val();
             const expires_at = $("#invitationModal #expires_at").val();
@@ -313,7 +306,7 @@
                 self.show();
             });
 
-            $(document).on("click", "#invitationModal #btnAddInvitation", function () {
+            $(document).on("click", "#invitationModal  #btnAddInvitationn", function () {
                 self.store();
             });
 
@@ -322,8 +315,6 @@
             });
         }
     };
-
-    invitationModal.init()
 </script>
 
 @endpush

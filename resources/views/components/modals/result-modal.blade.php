@@ -373,12 +373,11 @@
                     "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
                 success: function (response) {
-                    // console.log("Upload result:", response);
-
                     addResultModal.hide();
                     resetResultForm();
                     swalfire("Success", response.message ?? "File uploaded successfully", "success")
 
+                    $(document).trigger("semester:updated")
                 },
 
                 error: function (xhr) {

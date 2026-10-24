@@ -50,10 +50,8 @@
             const self = this;
 
             $(document).on("position:detail", function(event, details, candidateList){
-
                 self.details = details
                 self.candidateList = candidateList
-
                 self.render()
             })
         }

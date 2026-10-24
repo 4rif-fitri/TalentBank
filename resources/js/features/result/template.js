@@ -42,6 +42,15 @@ export let common = {
     },
 
     semesterResultItem(semester, hasResult, resultButton){
+        let link = window.location.href;
+        let id = link.split('/').pop();
+
+        let visible = false
+
+        if (id != null && id !== ""){
+            visible = true
+        }
+
         return `
         <article class="semester-result-item border rounded-3 p-3 mb-2">
             <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
@@ -69,14 +78,17 @@ export let common = {
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
-                    <div>${resultButton}</div>
-                    <button type="button" class="btn text-secondary icon border-1 btnEditSemester"
-                        data-id="${semester.semesterId}"
-                        data-education-id="${semester.educationId}"
-                        data-programme-name="${escapeHtml(semester.programmeName ?? "-")}">
-                        <i class="fa-solid fa-pencil"></i>
-                    </button>
-                </div>
+                <div>${resultButton}</div>
+                    ${visible == false ? `
+                        <button type="button"
+                            class="btn text-secondary icon border-1 btnEditSemester"
+                            data-id="${semester.semesterId}"
+                            data-education-id="${semester.educationId}"
+                            data-programme-name="${escapeHtml(semester.programmeName ?? "-")}">
+                            <i class="fa-solid fa-pencil"></i>
+                            </button>
+                        ` : ''}
+                    </div>
             </div>
         </article>`;
     },

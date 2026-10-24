@@ -103,9 +103,12 @@
 <script type="module">
     window.shortlistModal = {
         myData: null,
+        curruntPosition: null,
 
         init(data){
             this.myData = data
+            console.warn(data);
+
             this.bindEvents()
         },
 
@@ -129,7 +132,16 @@
                 xalert.success("Success", response.message)
                 this.close()
 
-                // loadData()
+                await Swal.fire({
+                    title: 'Berjaya!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+
+                location.reload();
 
             } catch (error) {
                 console.error(error);
@@ -142,17 +154,17 @@
             xmodal.show("shortlistModal")
         },
         async handleEditPosition(){
-            console.log(curruntPosition);
+            console.log(this.curruntPosition);
 
             xmodal.show("shortlistModal")
             let $form = $("#shortlistModal")
-            $form.find("#position_id").val(curruntPosition.id)
-            $form.find("#position_title").val(curruntPosition.position_title)
-            $form.find("#employment_type").val(curruntPosition.employment_type)
-            $form.find("#vacancies").val(curruntPosition.vacancies)
-            $form.find("#department").val(curruntPosition.department)
-            $form.find("#work_location").val(curruntPosition.work_location)
-            $form.find("#description").val(curruntPosition.description)
+            $form.find("#position_id").val(this.curruntPosition.id)
+            $form.find("#position_title").val(this.curruntPosition.position_title)
+            $form.find("#employment_type").val(this.curruntPosition.employment_type)
+            $form.find("#vacancies").val(this.curruntPosition.vacancies)
+            $form.find("#department").val(this.curruntPosition.department)
+            $form.find("#work_location").val(this.curruntPosition.work_location)
+            $form.find("#description").val(this.curruntPosition.description)
             $("#btnAddShortlist").hide()
             $("#btnUpdateShortlist").show()
         },
@@ -171,18 +183,56 @@
             xmodal.show("shortlistModal")
         },
 
+        async updatePositions(position_id, position_title, employment_type, vacancies, department, work_location, description){
+            let data = {
+                organization_id: this.myData.organization_users[0].organization_id,
+                position_title: position_title,
+                employment_type: employment_type,
+                department: department,
+                work_location: work_location,
+                vacancies: vacancies,
+                description: description,
+                _method: "PUT",
+                _token: $('meta[name="csrf-token"]').attr("content")
+            }
+
+            try {
+                let response = await xApiPosition.update("{{ route('positions.update', ['id' => '__ID__']) }}", position_id, data)
+                if (!response) return
+                let dt = response
+                console.log(this.curruntPosition);
+
+                this.curruntPosition = {
+                    ...this.curruntPosition,
+                    ...dt
+                };
+
+                console.log(this.curruntPosition);
+
+                $(".ui_position_title").text(response.data.position_title)
+                $(".ui_description").text(response.data.description)
+                $(".ui_work_location").text(response.data.work_location)
+                $(".ui_employment_type").text(response.data.employment_type)
+                $(".ui_department").text(response.data.department)
+                $(".ui_vacancies").text(response.data.vacancies)
+
+                xalert.success("Success", response.message)
+                this.close()
+                this.handleCloseModalPosition()
+
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
         async handleUpdateShortlist(e) {
-            e.preventDefault();
-
-            let form = $(this).closest("form");
-
-            let position_id = form.find("#position_id").val()
-            let position_title = form.find("#position_title").val()
-            let employment_type = form.find("#employment_type").val()
-            let vacancies = form.find("#vacancies").val()
-            let department = form.find("#department").val()
-            let work_location = form.find("#work_location").val()
-            let description = form.find("#description").val()
+            let position_id = $("#position_id").val()
+            let position_title = $("#position_title").val()
+            let employment_type = $("#employment_type").val()
+            let vacancies = $("#vacancies").val()
+            let department = $("#department").val()
+            let work_location = $("#work_location").val()
+            let description = $("#description").val()
 
             if (position_id == "") {
                 xalert.fire("Validation Error", "Position id is NULL", "warning");
@@ -216,7 +266,7 @@
 
             try {
 
-                let response = await updatePositions(parseInt(position_id), position_title, employment_type, vacancies, department, work_location, description)
+                let response = await this.updatePositions(parseInt(position_id), position_title, employment_type, vacancies, department, work_location, description)
                 if (!response) return
 
                 xalert.fire('Success', response.message, 'success');
@@ -279,10 +329,9 @@
 
                 if (!response) return
 
-                xalert.fire('Success', response.message, 'success');
+                xalert.Success('Success', response.message, 'success');
                 form[0].reset();
                 xmodal.hide("shortlistModal")
-
                 xshortList.appendNew(response.data)
 
             } catch (xhr) {
@@ -299,6 +348,10 @@
 
         bindEvents() {
             let self = this
+
+            $(document).on("position:detail", function (event, details, candidateList) {
+                self.curruntPosition = details
+            });
 
             $(document).on("click", ".btnShowModalAddShortlist", function(){
                 self.open()

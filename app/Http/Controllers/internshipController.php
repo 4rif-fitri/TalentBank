@@ -71,7 +71,9 @@ class internshipController extends Controller
     {
         return view("pages.recruiter.index");
     }
-
+    public function  recruiterProfile(){
+        return view("pages.recruiter.profile");
+    }
     public function recruiterPosition()
     {
         return view("pages.recruiter.position");
@@ -99,11 +101,11 @@ class internshipController extends Controller
     }
     public function recruiterHiredTalent()
     {
-        return view("pages.recruiter.message");
+        return view("pages.recruiter.hiredTalent");
     }
     public function recruiterMessage()
     {
-        return view("pages.recruiter.hiredTalent");
+        return view("pages.recruiter.message");
     }
     public function recruiterSetting()
     {
