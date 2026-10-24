@@ -132,7 +132,16 @@
                 xalert.success("Success", response.message)
                 this.close()
 
-                // loadData()
+                await Swal.fire({
+                    title: 'Berjaya!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                });
+
+                location.reload();
 
             } catch (error) {
                 console.error(error);
@@ -320,10 +329,9 @@
 
                 if (!response) return
 
-                xalert.fire('Success', response.message, 'success');
+                xalert.Success('Success', response.message, 'success');
                 form[0].reset();
                 xmodal.hide("shortlistModal")
-
                 xshortList.appendNew(response.data)
 
             } catch (xhr) {

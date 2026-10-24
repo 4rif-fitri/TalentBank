@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="{{ URL::asset('assets/internship-assets/style/resume/Professional.css') }}">
 <style>
     #myResume{
-        height: 50rem;
+        height: 70rem;
     }
 </style>
 
@@ -93,7 +93,7 @@
         let link = window.location.href;
         let id = link.split('/').pop();
 
-        if (id != null && id !== "") {
+        if (id != null && id !== "" && id != "student") {
             url = url.replace("__ID__", id);
         } else {
             url = url.replace("__ID__", "{{ session('user_profile_id') }}");

@@ -38,7 +38,6 @@
             type: "GET",
             success: response => {
                 console.log("getProgrammesByUserProfileId",response);
-
             },
             error: xhr => {
                 console.log(xhr);

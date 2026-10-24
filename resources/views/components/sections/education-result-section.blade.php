@@ -234,7 +234,7 @@
         let link = window.location.href;
         let id = link.split('/').pop();
 
-        if (id != null && id !== "") {
+        if (id != null && id !== "" && id != "student") {
             url = url.replace("__ID__", id);
         } else {
             url = url.replace("__ID__", "{{ session('user_profile_id') }}");
