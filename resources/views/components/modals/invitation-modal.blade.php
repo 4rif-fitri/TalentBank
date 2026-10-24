@@ -48,7 +48,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Cancel
                 </button>
-                <button type="button" id="btnAddInvitation" class="btn btn-primary">
+                <button type="button" id="btnAddInvitationn" class="btn btn-primary">
                     Add
                 </button>
                 <button type="button" id="btnUpdateInvitation" class="btn btn-primary">
@@ -306,11 +306,8 @@
                 self.show();
             });
 
-            $(document).on("click", "#invitationModal  #btnAddInvitation", function () {
-                // self.store();
-
-                console.log("GG");
-
+            $(document).on("click", "#invitationModal  #btnAddInvitationn", function () {
+                self.store();
             });
 
             $(document).on("click","#btnUpdateInvitation",function () {
@@ -318,8 +315,6 @@
             });
         }
     };
-
-    invitationModal.init()
 </script>
 
 @endpush
