@@ -123,6 +123,7 @@ Route::middleware(['auth', 'ajax', 'throttle:api'])->prefix('api')->group(functi
 
     Route::prefix('organizations')->group(function () {
         Route::get('/', [OrganizationController::class, 'getAllOrganizations'])->name('organization.getAllOrganizations'); //+
+        Route::get('/getOrganizationById/{id}', [OrganizationController::class, 'getOrganizationById'])->name('organization.getOrganizationById'); //+
         Route::get('/types', [OrganizationController::class, 'getAllOrganizationTypes'])->name('organization.getAllOrganizationTypes'); //-
         Route::get('/industry-categories', [OrganizationController::class, 'getAllIndustryCategories'])->name('organization.getAllIndustryCategories'); //-
         Route::get('/industry-sectors', [OrganizationController::class, 'getAllIndustrySectors'])->name('organization.getAllIndustrySectors'); //-

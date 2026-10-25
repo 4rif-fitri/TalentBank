@@ -523,6 +523,47 @@
 @section('script')
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+
+        let companyId, companyData
+
+        function loadCompanyProfile(){
+            let url = "{{ route('organization.getOrganizationById', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", `${companyId}`);
+
+            $.ajax({
+                url,
+                type: "GET",
+                success: function (response) {
+                    companyData = response.data
+                    console.log(companyData);
+                },
+                error: function(xhr){
+                    console.log(xhr);
+                }
+            });
+        }
+
+        function getMyData() {
+            let url = "{{ route('profile.getProfileDataByProfileId', ['id' => '__ID__']) }}";
+            url = url.replace("__ID__", "{{ session('user_profile_id') }}");
+
+            return $.ajax({
+                url: url,
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    companyId = response.data.organization_users[0].organization.id
+
+                    loadCompanyProfile()
+                },
+                error: function (xhr) {
+                    console.error(xhr);
+                }
+            });
+        }
+
+        getMyData()
+
         const description = document.getElementById('companyDescription');
         const counter = document.getElementById('descriptionCharacterCount');
 

@@ -17,7 +17,7 @@ class OrganizationController extends Controller
 
     /**
      * Helper function to validate organization data from request
-     * 
+     *
      * @param   Request $request
      * @return  array
      */
@@ -43,7 +43,7 @@ class OrganizationController extends Controller
 
     /**
      * Handle request to get all organizations
-     * 
+     *
      * @return  JsonResponse
      */
     public function getAllOrganizations(): JsonResponse
@@ -54,8 +54,20 @@ class OrganizationController extends Controller
     }
 
     /**
+     * Handle request to get organization by organization ID
+     *
+     * @return  JsonResponse
+     */
+    public function getOrganizationById(int $id): JsonResponse
+    {
+        $organization = $this->organizationService->getOrganizationById($id);
+
+        return ApiResponse::success('Success.', $organization)->toJsonResponse();
+    }
+
+    /**
      * Handle request to create new organization
-     * 
+     *
      * @param   Request $request
      * @return  JsonResponse
      */
@@ -71,7 +83,7 @@ class OrganizationController extends Controller
 
     /**
      * Handle request for updating existing organization info
-     * 
+     *
      * @param   Request $request
      * @return  JsonResponse
      */
@@ -87,7 +99,7 @@ class OrganizationController extends Controller
 
     /**
      * Handles request to upload organization logo
-     * 
+     *
      * @param Request $request
      * @param int $orgId
      * @return JsonResponse
@@ -107,7 +119,7 @@ class OrganizationController extends Controller
 
     /**
      * Handle request for getting all organization types
-     * 
+     *
      * @return  JsonResponse
      */
     public function getAllOrganizationTypes(): JsonResponse
@@ -118,7 +130,7 @@ class OrganizationController extends Controller
 
     /**
      * Handle request for getting all industry categories
-     * 
+     *
      * @return  JsonResponse
      */
     public function getAllIndustryCategories(): JsonResponse
@@ -129,7 +141,7 @@ class OrganizationController extends Controller
 
     /**
      * Handle request for getting all industry sectors
-     * 
+     *
      * @return  JsonResponse
      */
     public function getAllIndustrySectors(): JsonResponse
