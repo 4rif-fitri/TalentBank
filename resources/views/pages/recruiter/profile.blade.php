@@ -7,131 +7,85 @@
 
     <section class="profile-card company-banner bg-body">
 
-        <div class="company-logo">
-            @if(!empty($company['logo']))
-            <img src="{{ asset('storage/' . $company['logo']) }}" alt="{{ $company['name'] }} logo">
-            @else
-            <div class="text-center">
-                <i class="bi bi-building fs-1 text-primary"></i>
-                <div class="fw-bold mt-2">
-                    UTEM
+        <div class="company-logo" style="position: relative;">
+            <div id="companyLogoContainer">
+                <div class="text-center">
+                    <i class="bi bi-building fs-1 text-primary"></i>
+                    <div class="fw-bold mt-2">Company</div>
                 </div>
             </div>
-            @endif
+
+            <label for="changeLogoCompany" class="btn-edit top-0 end-0" style="position: absolute;">
+                <i class="fa-solid fa-pencil"></i>
+            </label>
         </div>
 
         <div class="flex-grow-1">
-
-            <h1 class="company-name">
-                Universiti Teknikal Malaysia Melaka(UTeM)
-            </h1>
-
-            <p class="company-tagline">
-                Address
-            </p>
-
+            <h1 class="company-name" id="companyName"></h1>
+            <p class="company-tagline" id="address"></p>
             <div class="company-meta">
-
-                <span>
-                    <i class="bi bi-building"></i>
-                    State
-                </span>
-
-                <span>
-                    <i class="bi bi-geo-alt"></i>
-                    postcode
-                </span>
-
-                <span>
-                    <i class="bi bi-people"></i>
-                    city
-                </span>
-
+                <span id="state"></span>
+                <span id="postcode"></span>
+                <span id="city"></span>
             </div>
         </div>
 
         <button type="button" class="btn-edit position-absolute top-0 end-0 m-3" data-bs-toggle="modal"
             data-bs-target="#editCompanyProfileModal">
-            Edit
-            <i class="bi bi-pencil ms-2"></i>
+            <i class="fa-solid fa-pencil"></i>
         </button>
 
     </section>
 
     <section class="row" id="overview">
 
-        {{-- Left Column --}}
         <div class="col-12 col-xl-8">
 
-            {{-- Company Information --}}
             <div class="profile-card bg-body" id="company-information">
 
                 <div class="d-flex justify-content-between align-items-center gap-2">
                     <h2 class="profile-heading border-0 p-0 mb-0">
                         Company Information
                     </h2>
-
                     <button type="button" class="btn-edit" data-bs-toggle="modal" data-bs-target="#editCompanyInformationModal">
-                        <i class="bi bi-pencil-fill me-1"></i>
-                        Edit
+                        <i class="fa-solid fa-pencil"></i>
                     </button>
                 </div>
 
                 <div>
-
                     <div class="info-row">
                         <div class="info-label">ssm number</div>
-                        <div class="info-value">
-                            12345678958
-                        </div>
+                        <div class="info-value" id="ssmNumber"></div>
                     </div>
-
                     <div class="info-row">
-                        <div class="info-label">ORGANIZATION_TYPE</div>
-                        <div class="info-value">
-                            ORGANIZATION_TYPE
-                        </div>
+                        <div class="info-label">Organization Type</div>
+                        <div class="info-value" id="organizationType"></div>
                     </div>
-
                     <div class="info-row">
                         <div class="info-label">Industry</div>
-                        <div class="info-value">
-                            Education
-                        </div>
+                        <div class="info-value" id="industry"></div>
                     </div>
-
                     <div class="info-row">
-                        <div class="info-label">industry_sector</div>
-                        <div class="info-value">
-                            industry_sector
-                        </div>
+                        <div class="info-label">Industry Sector</div>
+                        <div class="info-value" id="industrySector"></div>
                     </div>
-
                     <div class="info-row">
-                        <div class="info-label">Company email</div>
-                        <div class="info-value">
-                            company_email
-                        </div>
+                        <div class="info-label">Company Email</div>
+                        <div class="info-value" id="companyEmail"></div>
                     </div>
-
                     <div class="info-row">
-                        <div class="info-label">company_phone</div>
-                        <div class="info-value">
-                            company_phone
-                        </div>
+                        <div class="info-label">Company Phone</div>
+                        <div class="info-value" id="company_phone"></div>
                     </div>
-
                     <div class="info-row">
                         <div class="info-label">Website</div>
                         <div class="info-value">
-                            <a href="" target="_blank" rel="noopener noreferrer" class="company-link">
-                            </a>
+                            <a class="text-primary" href="" target="_blank" rel="noopener noreferrer" id="companyWebsite"></a>
                         </div>
                     </div>
-
                 </div>
-            </div>
 
+            </div>
         </div>
 
         {{-- Right Column --}}
@@ -143,13 +97,10 @@
                         Company Description
                     </h2>
                 <button type="button" class="btn-edit" data-bs-toggle="modal" data-bs-target="#editCompanyDescriptionModal">
-                    <i class="bi bi-pencil-fill me-1"></i>
-                    Edit
+                    <i class="fa-solid fa-pencil"></i>
                 </button>
                 </div>
-                <p class="description-text mt-3">
-                    Description
-                </p>
+                <p class="description-text mt-3" id="description"></p>
             </div>
 
         </div>
@@ -183,43 +134,6 @@
 
                 <div class="modal-body p-4">
 
-                    {{-- Company Logo --}}
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">
-                            Company Logo
-                        </label>
-
-                        <div class="d-flex align-items-center gap-3">
-
-                            <div class="border rounded-3 p-2 bg-light">
-                                @if(!empty($company['logo']))
-                                <img src="{{ asset('storage/' . $company['logo']) }}" alt="Company logo"
-                                    id="companyLogoPreview" style="width:80px;height:80px;object-fit:contain;">
-                                @else
-                                <div id="companyLogoPlaceholder"
-                                    class="d-flex align-items-center justify-content-center"
-                                    style="width:80px;height:80px;">
-                                    <i class="bi bi-building fs-1 text-primary"></i>
-                                </div>
-
-                                <img src="" alt="Company logo preview" id="companyLogoPreview" class="d-none"
-                                    style="width:80px;height:80px;object-fit:contain;">
-                                @endif
-                            </div>
-
-                            <div>
-                                <input type="file" class="form-control" name="logo" id="companyLogo"
-                                    accept="image/png,image/jpeg,image/webp">
-
-                                <small class="text-muted">
-                                    PNG, JPG or WEBP. Maximum 2MB.
-                                </small>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    {{-- Company Name --}}
                     <div class="mb-3">
                         <label for="profileCompanyName" class="form-label fw-semibold">
                             Company Name <span class="text-danger">*</span>
@@ -229,7 +143,6 @@
                             value="Universiti Teknikal Malaysia Melaka (UTeM)" required>
                     </div>
 
-                    {{-- Address --}}
                     <div class="mb-3">
                         <label for="companyAddress" class="form-label fw-semibold">
                             Address <span class="text-danger">*</span>
@@ -241,7 +154,6 @@
 
                     <div class="row g-3">
 
-                        {{-- State --}}
                         <div class="col-md-6">
                             <label for="companyState" class="form-label fw-semibold">
                                 State <span class="text-danger">*</span>
@@ -268,7 +180,6 @@
                             </select>
                         </div>
 
-                        {{-- Postcode --}}
                         <div class="col-md-6">
                             <label for="companyPostcode" class="form-label fw-semibold">
                                 Postcode <span class="text-danger">*</span>
@@ -278,7 +189,6 @@
                                 inputmode="numeric" maxlength="5" placeholder="e.g. 76100" required>
                         </div>
 
-                        {{-- City --}}
                         <div class="col-12">
                             <label for="companyCity" class="form-label fw-semibold">
                                 City <span class="text-danger">*</span>
@@ -536,6 +446,25 @@
                 success: function (response) {
                     companyData = response.data
                     console.log(companyData);
+
+                    $("#companyName").text(companyData.company_name)
+                    $("#address").text(companyData.address)
+                    $("#state").text(companyData.state)
+                    $("#postcode").text(companyData.postcode)
+                    $("#city").text(companyData.city)
+
+                    $("#ssmNumber").text(companyData.ssm_number)
+                    $("#organizationType").text(companyData.organization_type.name)
+                    $("#industry").text(companyData.industry_category.name)
+                    $("#industrySector").text(companyData.industry_sector.name)
+                    $("#companyEmail").text(companyData.company_email)
+                    $("#company_phone").text(companyData.company_phone)
+                    $("#companyWebsite")
+                        .attr("href", companyData.website)
+                        .text(companyData.website);
+
+                    $("#description").text(companyData.description)
+
                 },
                 error: function(xhr){
                     console.log(xhr);
@@ -576,7 +505,6 @@
             updateCounter();
         }
 
-        // Preview company logo
         const logoInput = document.getElementById('companyLogo');
         const logoPreview = document.getElementById('companyLogoPreview');
         const logoPlaceholder = document.getElementById('companyLogoPlaceholder');
