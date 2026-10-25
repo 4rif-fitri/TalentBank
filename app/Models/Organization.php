@@ -33,4 +33,19 @@ class Organization extends Model
     {
         return $this->hasMany(OrganizationUser::class, 'organization_id');
     }
+
+    public function organizationType()
+    {
+        return $this->belongsTo(OrganizationType::class,'organization_type_id');
+    }
+
+    public function industryCategory()
+    {
+        return $this->belongsTo(IndustryCategory::class,'industry_category_id');
+    }
+
+    public function industrySector()
+    {
+        return $this->belongsTo(IndustrySector::class,'industry_sector_id');
+    }
 }

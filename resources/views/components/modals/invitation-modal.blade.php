@@ -96,7 +96,7 @@
             $("#invitationModal #invitation_title").val(this.invitationDetail.title)
             $("#invitationModal #expires_at").val(this.invitationDetail.expires_at)
             $("#invitationModal #invitation_message").val(this.invitationDetail.invitation_message)
-            $("#btnAddInvitation").hide();
+            $("#btnAddInvitationn").hide();
             $("#btnUpdateInvitation").show();
             xmodal.show("invitationModal");
         },
@@ -145,44 +145,6 @@
             this.openAdd();
         },
 
-        async storeInvitations(candidate_id,position_id,expires_at,invitation_message,title) {
-            const data = {
-                _token: $('meta[name="csrf-token"]').attr("content"),
-                receiver_profile_id: candidate_id,
-                invitation_message: invitation_message,
-                expires_at: expires_at,
-                position_id: position_id,
-                title: title
-            };
-
-            try {
-                const response = await xApiInvite.store("{{ route('invitations.store') }}", data);
-
-                if (!response) {
-                    return null;
-                }
-
-                const $row = $("#tableDetail").find(`tr[data-id="${candidate_id}"]`);
-
-                if ($row.length) {
-                    $row.find(".text-status").text("Invited");
-                    $row.find(".list-item-add-invite").hide();
-                    $row.find(".list-item-cancel-invite").hide();
-                }
-
-                xmodal.hide("invitationModal");
-
-                this.reset();
-
-                xalert.success("Success",response.message);
-                return response;
-
-            } catch (error) {
-                console.error("Error storing invitation:",error);
-                throw error;
-            }
-        },
-
         async store() {
             const candidate_id = $("#invitationModal #candidate_id").val();
             const position_id = $("#invitationModal #position_id").val();
@@ -217,7 +179,31 @@
             }
 
             try {
-                await this.storeInvitations(candidate_id,position_id,expires_at,invitation_message,title);
+                let data = {
+                    _token: $('meta[name="csrf-token"]').attr("content"),
+                    receiver_profile_id: candidate_id,
+                    invitation_message: invitation_message,
+                    expires_at: expires_at,
+                    position_id: position_id,
+                    title: title
+                };
+
+                let response = await xApiInvite.store("{{ route('invitations.store') }}", data);
+
+                if (!response) return null
+
+                xmodal.hide("invitationModal");
+
+                Swal.fire({
+                    title: 'Berjaya!',
+                    text: 'response.message',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then(() => {
+                    location.reload();
+                });
 
             } catch (error) {
                 console.error(error);

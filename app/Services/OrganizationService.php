@@ -25,7 +25,7 @@ class OrganizationService
 
     /**
      * Get all organizations
-     * 
+     *
      * @return  Collection
      */
     public function getAllOrganizations(): Collection
@@ -35,9 +35,9 @@ class OrganizationService
 
     /**
      * Create new organization
-     * 
+     *
      * @param   array $data
-     * 
+     *
      * @return  Organization
      */
     public function createOrganization(array $data, int $userProfileId): Organization
@@ -88,13 +88,22 @@ class OrganizationService
         return $organization;
     }
 
+    public function getOrganizationById(int $orgId): Organization
+    {
+        return Organization::with([
+            'organizationType',
+            'industryCategory',
+            'industrySector',
+        ])->findOrFail($orgId);
+    }
+
     /**
      * Update existing organization info
-     * 
+     *
      * @param   array $data
      * @param   int $orgId
      * @param   int $userProfileId
-     * 
+     *
      * @return  Organization
      */
     public function updateOrganization(array $data, int $orgId, int $userProfileId): Organization
@@ -176,7 +185,7 @@ class OrganizationService
 
     /**
      * Get all organization types
-     * 
+     *
      * @return  Collection
      */
     public function getAllOrganizationTypes(): Collection
@@ -188,7 +197,7 @@ class OrganizationService
 
     /**
      * Get all industry categories
-     * 
+     *
      * @return  Collection
      */
     public function getAllIndustryCategories(): Collection
@@ -200,7 +209,7 @@ class OrganizationService
 
     /**
      * Get all industry sectors
-     * 
+     *
      * @return  Collection
      */
     public function getAllIndustrySectors(): Collection

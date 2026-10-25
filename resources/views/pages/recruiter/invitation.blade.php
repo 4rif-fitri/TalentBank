@@ -26,7 +26,6 @@
 @section('script')
 <script type="module">
 
-// ======================= CLEAR ==============================
     $(document).ready(function () {
         invitationList.load("Pending");
     });
@@ -52,11 +51,23 @@
 
         invitationModal.Withdraw(id, {
             onSuccess: async response => {
-                await invitationList.refresh();
 
-                $("#shortlistContent").html(
-                    xcommon.noSelected("No Invitation Selected Yet","","btn-toggle-filter toggleFilter","Invitation")
-                );
+                Swal.fire({
+                    title: 'Success',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then(() => {
+                    location.reload();
+                });
+
+                // await invitationList.refresh();
+
+                // $("#shortlistContent").html(
+                //     xcommon.noSelected("No Invitation Selected Yet","","btn-toggle-filter toggleFilter","Invitation")
+                // );
             },
             onError: response => {
                 console.error(response);
@@ -69,13 +80,31 @@
         invitationModal.openUpdate(
             invitationDetail.current, {
             onSuccess: response => {
-                invitationDetail.reload(response.data)
+                // invitationDetail.reload(response.data)
+
+                Swal.fire({
+                    title: 'Success',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then(() => {
+                    location.reload();
+                });
+
             },
             onError: xhr => {
                 console.error(xhr);
             }
         })
     })
+
+
+    $(document).ready(function(){
+        invitationModal.init()
+    })
+
 
 </script>
 @endsection
