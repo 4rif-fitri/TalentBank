@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalentBank — Landing Page</title>
+    <title>TalentBank</title>
     <meta name="description"
         content="Nexora is a premium Bootstrap 5 theme for SaaS startups, digital agencies, IT companies and consulting firms. Build a high-converting marketing website fast.">
     <meta name="keywords" content="SaaS theme, agency template, bootstrap 5 business theme, IT company website">
@@ -12,8 +12,7 @@
     <meta property="og:description"
         content="A fully responsive, multi-page business and marketing theme built with Bootstrap 5.">
     <meta property="og:type" content="website">
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23155EEF'/%3E%3Ctext x='50' y='68' font-size='58' font-family='Arial' font-weight='800' fill='white' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E">
+    <link rel="shortcut icon" href="{{ URL::asset('assets/internship-assets/images/logoTalentBankWhite.png') }}">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -106,7 +105,7 @@
                                 style="width: 100%; height: 70px; border-radius: 10px; background: linear-gradient(90deg, var(--n-bg-alt), #F4F0FF);">
                             </div>
                         </div>
-                        <div class="hero-float-badge badge-1 d-none d-sm-flex">
+                        <!-- <div class="hero-float-badge badge-1 d-none d-sm-flex">
                             <div class="icon-box icon-box-success"
                                 style="width:36px;height:36px;border-radius:10px;font-size:1.1rem;"><i
                                     class="bi bi-check-lg"></i></div>
@@ -118,7 +117,7 @@
                                 style="width:36px;height:36px;border-radius:10px;font-size:1.1rem;"><i
                                     class="bi bi-lightning-charge-fill"></i></div>
                             <div>Avg. 3.2x ROI<br><small class="text-slate fw-normal">within 6 months</small></div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
