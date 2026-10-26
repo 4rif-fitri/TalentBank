@@ -16,6 +16,10 @@ class internshipController extends Controller
             return view('pages.recruiter.index');
         }
 
+        if (in_array('Organization Admin', $roles)) {
+            return view('pages.recruiter.index');
+        }
+
         return view('pages.404');
     }
     public function studentIndex()

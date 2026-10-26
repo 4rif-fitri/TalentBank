@@ -74,9 +74,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/student/settings', [internshipController::class, "settings"])->name('student.settings');
     });
 
+    Route::middleware('checkRole:Organization Admin')->group(function () {
+        Route::get('/company/profile', [internshipController::class, "recruiterProfile"])->name('company.profile');
+    });
+
     Route::middleware('checkRole:Recruiter')->group(function () {
         Route::get('/recruiter', [internshipController::class, "recruiterIndex"])->name('recruiter.index');
-        Route::get('/recruiter/profile', [internshipController::class, "recruiterProfile"])->name('recruiter.profile');
         Route::get('/recruiter/position', [internshipController::class, "recruiterPosition"])->name('recruiter.position');
         Route::get('/recruiter/profiles', [internshipController::class, "recruiterProfiles"])->name('recruiter.profiles');
         Route::get('/recruiter/likeTalent', [internshipController::class, "recruiterLikeTalent"])->name('recruiter.likeTalent');
