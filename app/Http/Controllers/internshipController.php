@@ -9,15 +9,15 @@ class internshipController extends Controller
         $roles = session('roles', []);
 
         if (in_array('Student', $roles)) {
-            return view('pages.student.index');
+            return view('pages.student.profile');
         }
 
         if (in_array('Recruiter', $roles)) {
-            return view('pages.recruiter.index');
+            return view('pages.recruiter.profiles');
         }
 
         if (in_array('Organization Admin', $roles)) {
-            return view('pages.recruiter.index');
+            return view('pages.recruiter.profiles');
         }
 
         return view('pages.404');

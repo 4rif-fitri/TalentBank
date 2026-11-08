@@ -157,7 +157,6 @@
         <div class="container">
             <div class="row section-header align-items-end">
                 <div class="col-lg-7 reveal">
-                    <span class="eyebrow">WHAT YOU CAN DO</span>
                     <h2 class="section-title">Everything You Need to Grow Your Career</h2>
                     <p class="section-subtitle">TalentBank brings your professional profile, career opportunities, and
                         application progress together in one convenient platform</p>
@@ -281,7 +280,7 @@
         <div class="container">
             <div class="row section-header justify-content-center text-center">
                 <div class="col-lg-7 reveal">
-                    <span class="eyebrow">HOW IT WORKS</span>
+                    <!-- <span class="eyebrow">HOW IT WORKS</span> -->
                     <h2 class="section-title">Your Career Journey, Made Simple</h2>
                     <p class="section-subtitle mx-auto">From building your professional profile to securing your next
                         opportunity, TalentBank helps you navigate every stage of
@@ -447,9 +446,9 @@
     </section> -->
 
     <!-- FOOTER -->
-    <footer class="footer-nexora">
+    <!-- <footer class="footer-nexora">
         <div class="container">
-            <div class="row gy-4">
+            <div class="row gy-3">
                 <div class="col-lg-4 col-md-6">
 
                     <a class="navbar-brand-custom d-inline-block mb-3" href="index.html"
@@ -480,19 +479,10 @@
                     <a href="service-details.html">Cloud &amp; DevOps</a>
                     <a href="service-details.html">Growth Marketing</a>
                 </div>
-                <div class="col-lg-4 col-md-6">
-                    <h6>Stay in the loop</h6>
-                    <p class="text-white-50 mb-3">Get product updates and insights from our team, once a month.</p>
-                    <form class="d-flex gap-2 needs-validation" novalidate>
-                        <input type="email" class="form-control" placeholder="Work email" required
-                            style="background:rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.12); color:#fff;">
-                        <button class="btn btn-primary flex-shrink-0" type="submit"><i class="bi bi-send"></i></button>
-                    </form>
-                </div>
+
             </div>
-            <div
-                class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 text-center text-md-start">
-                <p class="mb-0" style="display: flex;">&copy; 2026 Nexora. All rights reserved by <a target="_blank"
+            <div class="footer-bottom d-flex flex-column flex-md-row justify-content-between align-items-center gap-2 text-center text-md-start">
+                <!-- <p class="mb-0" style="display: flex;">&copy; 2026 Nexora. All rights reserved by <a target="_blank"
                         href="https://github.com/HarshadMahadik" style="color: white;padding-left: 5px;"> Harshad
                         Mahadik</a> &bull; Distributed by <a target="_blank" href="https://themewagon.com/"
                         style="color: white;padding-left: 5px;">Themewagon</a>
@@ -500,14 +490,13 @@
                 <div class="d-flex gap-4">
                     <a href="#" class="mb-0">Privacy Policy</a>
                     <a href="#" class="mb-0">Terms of Service</a>
-                </div>
+                </div> -->
             </div>
         </div>
-    </footer>
+    </footer> -->
 
-    <button class="back-to-top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button>
+    <!-- <button class="back-to-top" aria-label="Back to top"><i class="bi bi-arrow-up"></i></button> -->
 
-    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('assets/n/js/main.js') }}"></script>
 </body>
