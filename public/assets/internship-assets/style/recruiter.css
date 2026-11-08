@@ -32,13 +32,7 @@
 .shortlist-item:hover,
 .list-item:hover,
 .shortlist-item:hover {
-    border: 1px solid #6d7eca !important;
-    color: #6d7eca;
-
-    small {
-        color: #6d7eca !important;
-    }
-
+    background-color: var(--color-primary-soft);
 }
 
 .shortlist-item.active,

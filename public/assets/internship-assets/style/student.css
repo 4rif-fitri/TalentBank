@@ -19,9 +19,6 @@
     z-index: 1040;
 }
 
-.results-panel {
-}
-
 @media (max-width: 768px) {
     .talent-layout {
         display: block;

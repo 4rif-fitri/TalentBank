@@ -49,14 +49,9 @@ function renderStatus(status) {
 function renderSidebar(position) {
 
     return `
-        <button
-            type="button"
+        <button type="button"
             data-id="${position.id}"
-            class="list-item shortlist-item">
-
-            <div class="company-logo">
-                <i class="fa-regular fa-folder fa-xl"></i>
-            </div>
+            class="list-item shortlist-item mt-2">
 
             <div class="list-item__content">
 

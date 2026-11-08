@@ -7,10 +7,6 @@
     font-family: var(--font-inter);
 }
 
-// ========================================
-// Page Header
-// ========================================
-
 .page-header {
     display: flex;
     align-items: flex-start;
@@ -51,20 +47,12 @@
     }
 }
 
-// ========================================
-// Main Layout
-// ========================================
-
 .page-layout {
     display: grid;
     grid-template-columns: minmax(300px, 0.95fr) minmax(500px, 1.25fr);
     gap: var(--spacing-24);
     align-items: start;
 }
-
-// ========================================
-// Offer Tabs
-// ========================================
 
 .tabs {
     display: flex;
@@ -238,7 +226,6 @@
 }
 
 .list-item__content {
-    font-family: var( ) !important;
     min-width: 0;
     flex: 1;
 
